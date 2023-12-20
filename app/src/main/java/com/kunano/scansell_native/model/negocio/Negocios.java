@@ -42,17 +42,25 @@ public class Negocios {
     public CompletableFuture<List<Map<String, Object>>> getBusinessListDataAsync(){
 
         CompletableFuture<List<Map<String, Object>>> future = new CompletableFuture<>();
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> BusinessesListData = new ArrayList<>();
 
         businessCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()  {
             @Override
             public  void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                 if (task.isSuccessful()) {
+                    Map<String, Object> businessData;
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        list.add(document.getData());
+
+                        //Get the business ID
+                        businessData = document.getData();
+                        businessData.put("business_id", document.getId());
+
+                        BusinessesListData.add(businessData);
                     }
-                    future.complete(list);
+                    System.out.println("final data" + BusinessesListData);
+
+                    future.complete(BusinessesListData);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }

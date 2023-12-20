@@ -31,6 +31,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         Map<String, Object> businessData = businessesList.get(position);
         holder.title.setText(businessData.get("name").toString());
         holder.direction.setText(businessData.get("direction").toString());
+        holder.card.setTag(businessData.get("business_id").toString());
+       holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("id " + holder.card.getTag());
+                // Handle card click event
+                // For example, you can launch a new activity or perform any other action
+            }
+        });
     }
     @Override
     public int getItemCount() {
@@ -39,8 +48,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView direction;
+
+        private  View card;
+
         public MyViewHolder(View itemView) {
             super(itemView);
+            card = itemView;
             title = itemView.findViewById(R.id.titleTextView);
             direction = itemView.findViewById(R.id.textViewDirection);
         }
