@@ -4,17 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.PruebaController;
 import com.kunano.scansell_native.controllers.negocio.NegociosController;
 import com.kunano.scansell_native.databinding.FragmentHomeBinding;
+import com.kunano.scansell_native.databinding.ToolBarHomeBinding;
 import com.kunano.scansell_native.model.negocio.Negocios;
-import com.kunano.scansell_native.model.negocio.Prueba;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
@@ -35,6 +38,12 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ToolBarHomeBinding toolBarHomeBinding = binding.includeToolbar;
+        Toolbar toolbarHoma = toolBarHomeBinding.toolbar;
+        TextView title = toolbarHoma.findViewById(R.id.prueba);
+        title.setText(getString(R.string.businesses_title));
+       // toolBarHomeBinding.toolbar.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
         RecyclerView businessLIst = binding.businessList;
 
 
@@ -52,11 +61,7 @@ public class HomeFragment extends Fragment {
 
 
 
-    public Prueba getPruebaFromDataBase(){
-        Prueba prueba = new Prueba();
-        prueba.setNombre("zequiel");
-        return  prueba;
-    }
+  public void   showInterfTocreatBusiness(){}
 
     @Override
     public void onDestroyView() {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "88525641549",
+    "project_id": "scansell2",
+    "storage_bucket": "scansell2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88525641549:android:16f066522eb51bc5930904",
+        "android_client_info": {
+          "package_name": "com.kunano.scansell_native"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2Ek6nB8VueOXvdB6XsP91dN7wNbl4uuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
