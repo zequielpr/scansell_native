@@ -23,7 +23,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public CustomAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.card_view_item, parent, false);
+        View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
         return new CustomAdapter.MyViewHolder(view);
     }
     @Override
