@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.model.negocio;
+package com.kunano.scansell_native.model.Home;
 
 import static android.content.ContentValues.TAG;
 
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class Negocios {
+public class Home {
 
     public CollectionReference getBusinessCollection() {
         return businessCollection;

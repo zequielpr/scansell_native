@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui;
+package com.kunano.scansell_native.ui.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,21 +13,21 @@ import com.kunano.scansell_native.R;
 import java.util.List;
 import java.util.Map;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder>{
+public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepter.CardHolder>{
     private List<Map<String, Object>> businessesList;
     Context context;
-    public CustomAdapter(List<Map<String, Object>> businessesList, Context context){
+    public BusinessCardAdepter(List<Map<String, Object>> businessesList, Context context){
         this.context = context;
         this.businessesList = businessesList;
     }
     @Override
-    public CustomAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
-        return new CustomAdapter.MyViewHolder(view);
+        return new CardHolder(view);
     }
     @Override
-    public void onBindViewHolder(CustomAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(CardHolder holder, final int position) {
         Map<String, Object> businessData = businessesList.get(position);
         holder.title.setText(businessData.get("name").toString());
         holder.direction.setText(businessData.get("direction").toString());
@@ -45,13 +45,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public int getItemCount() {
         return businessesList.size();
     }
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class CardHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView direction;
 
         private  View card;
 
-        public MyViewHolder(View itemView) {
+        public CardHolder(View itemView) {
             super(itemView);
             card = itemView;
             title = itemView.findViewById(R.id.titleTextView);

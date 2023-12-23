@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,24 +14,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.controllers.PruebaController;
-import com.kunano.scansell_native.controllers.negocio.NegociosController;
+import com.kunano.scansell_native.controllers.home.HomeController;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.databinding.HomeToolbarBinding;
-import com.kunano.scansell_native.model.negocio.Negocios;
+import com.kunano.scansell_native.model.Home.Home;
+import com.kunano.scansell_native.ui.home.bottom_sheet.AdminBottomSheet;
 
 public class HomeFragment extends Fragment {
     private HomeFragmentBinding binding;
 
-    private PruebaController controller;
-    String new_name;
+    private ImageButton addBusinessButton;
+    private HomeToolbarBinding toolBarHomeBinding;
+    private Toolbar toolbarHoma;
+    private TextView title;
+    HomeController businessesController;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new HomeViewModel(inflater);
-        Negocios businessesModel = new Negocios();
+        Home businessesModel = new Home();
 
-        NegociosController businessesController = new NegociosController(businessesModel, homeViewModel);
+        businessesController = new HomeController(businessesModel, homeViewModel);
 
         businessesController.showData();
 
@@ -38,30 +43,29 @@ public class HomeFragment extends Fragment {
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        HomeToolbarBinding toolBarHomeBinding = binding.includeToolbar;
-        Toolbar toolbarHoma = toolBarHomeBinding.toolbar;
-        TextView title = toolbarHoma.findViewById(R.id.prueba);
+        //Set title on the app bar frame
+        toolBarHomeBinding = binding.includeToolbar;
+        toolbarHoma = toolBarHomeBinding.toolbar;
+        title = toolbarHoma.findViewById(R.id.create_business_title);
         title.setText(getString(R.string.businesses_title));
-       // toolBarHomeBinding.toolbar.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
+
+        //Get add business button
+        addBusinessButton = toolBarHomeBinding.addBusinessButton;
+
+
+        AdminBottomSheet adminBottomSheet = new AdminBottomSheet(addBusinessButton, businessesController, getActivity());
+        adminBottomSheet.setClickEventShowBottomSheet();
+
+
+
 
         RecyclerView businessLIst = binding.businessList;
 
-
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         homeViewModel.getListBusinessApader().observe(getViewLifecycleOwner(), businessLIst::setAdapter);
         businessLIst.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         return root;
     }
-
-    public void actualizar_nombre(){
-        System.out.println("nombre: "+new_name);
-    }
-
-
-
-
-
-  public void   showInterfTocreatBusiness(){}
 
     @Override
     public void onDestroyView() {
@@ -69,3 +73,6 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 }
+
+
+
