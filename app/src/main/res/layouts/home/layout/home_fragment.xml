@@ -20,7 +20,7 @@
 
     <include
         android:id="@+id/include_toolbar"
-        layout="@layout/tool_bar_home"
+        layout="@layout/home_toolbar"
         tools:layout_editor_absoluteX="-9dp"
         tools:layout_editor_absoluteY="87dp" />
 

@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.PruebaController;
 import com.kunano.scansell_native.controllers.negocio.NegociosController;
-import com.kunano.scansell_native.databinding.FragmentHomeBinding;
-import com.kunano.scansell_native.databinding.ToolBarHomeBinding;
+import com.kunano.scansell_native.databinding.HomeFragmentBinding;
+import com.kunano.scansell_native.databinding.HomeToolbarBinding;
 import com.kunano.scansell_native.model.negocio.Negocios;
 
 public class HomeFragment extends Fragment {
-    private FragmentHomeBinding binding;
+    private HomeFragmentBinding binding;
 
     private PruebaController controller;
     String new_name;
@@ -35,10 +35,10 @@ public class HomeFragment extends Fragment {
         businessesController.showData();
 
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = HomeFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ToolBarHomeBinding toolBarHomeBinding = binding.includeToolbar;
+        HomeToolbarBinding toolBarHomeBinding = binding.includeToolbar;
         Toolbar toolbarHoma = toolBarHomeBinding.toolbar;
         TextView title = toolbarHoma.findViewById(R.id.prueba);
         title.setText(getString(R.string.businesses_title));
