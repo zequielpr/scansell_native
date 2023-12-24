@@ -30,7 +30,7 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
     public void onBindViewHolder(CardHolder holder, final int position) {
         Map<String, Object> businessData = businessesList.get(position);
         holder.title.setText(businessData.get("name").toString());
-        holder.direction.setText(businessData.get("direction").toString());
+        holder.address.setText(businessData.get("address").toString());
         holder.card.setTag(businessData.get("business_id").toString());
        holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +47,7 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
     }
     public static class CardHolder extends RecyclerView.ViewHolder {
         private TextView title;
-        private TextView direction;
+        private TextView address;
 
         private  View card;
 
@@ -55,7 +55,7 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
             super(itemView);
             card = itemView;
             title = itemView.findViewById(R.id.titleTextView);
-            direction = itemView.findViewById(R.id.textViewDirection);
+            address = itemView.findViewById(R.id.textViewDirection);
         }
     }
 }

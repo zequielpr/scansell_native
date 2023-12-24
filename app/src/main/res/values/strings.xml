@@ -8,4 +8,9 @@
     <string name="business_name">Business name</string>
     <string name="business_address">Business address</string>
     <string name="save">Save</string>
+    <string name="advert_invalid_name">Name invalid. Letters and spaces only (At least 3 letters)</string>
+    <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
+    <string name="advert_introduce_name">Introduce a name</string>
+    <string name="advert_introduce_address">Introduce an address</string>
+    <string name="name_in_use">This name is in use</string>
 </resources>

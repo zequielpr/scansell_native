@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.controllers.home.BottomSheetCreateBusinessController;
 import com.kunano.scansell_native.model.Home.Business;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
@@ -19,10 +21,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private EditText editTextBusinessAddress;
     private Button savingButton;
 
-    AdminBottomSheet adminBottomSheet;
+    private TextView textViewAdvertName;
+    private TextView textViewAdvertAddress;
 
-    public BottomSheetFragment(AdminBottomSheet adminBottomSheet){
-     this.adminBottomSheet = adminBottomSheet;
+    BottomSheetCreateBusinessController bottomSheetCreateBusinessController;
+
+    public BottomSheetFragment(BottomSheetCreateBusinessController bottomSheetCreateBusinessController){
+     this.bottomSheetCreateBusinessController = bottomSheetCreateBusinessController;
     }
 
     @Override
@@ -33,6 +38,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         editTextBusinessAddress = createBusinessView.findViewById(R.id.business_address);
         savingButton = createBusinessView.findViewById(R.id.saving_button);
         imageButtonCancel = createBusinessView.findViewById(R.id.cancel_button);
+        textViewAdvertName = createBusinessView.findViewById(R.id.advert_name);
+        textViewAdvertAddress = createBusinessView.findViewById(R.id.advert_address);
+
+        bottomSheetCreateBusinessController.getAdvertIncorrectName().observe(getViewLifecycleOwner(), textViewAdvertName::setText);
+        bottomSheetCreateBusinessController.getAdvertIncorrectAddress().observe(getViewLifecycleOwner(), textViewAdvertAddress::setText);
+
         setClicksEventsOnButtons();
 
         return createBusinessView;
@@ -48,7 +59,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         imageButtonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adminBottomSheet.hideBottomSheet();
+                bottomSheetCreateBusinessController.hideBottomSheet();
             }
         });
     }
@@ -61,7 +72,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                 String address = editTextBusinessAddress.getText().toString();
 
                 businessData = new Business(name, address);
-                adminBottomSheet.crearBusiness(businessData);
+                bottomSheetCreateBusinessController.setNewBusinessData(businessData);
             }
         });
     }

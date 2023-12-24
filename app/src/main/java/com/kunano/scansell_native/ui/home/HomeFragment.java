@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.controllers.home.HomeController;
+import com.kunano.scansell_native.controllers.home.BusinessController;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.databinding.HomeToolbarBinding;
-import com.kunano.scansell_native.model.Home.Home;
-import com.kunano.scansell_native.ui.home.bottom_sheet.AdminBottomSheet;
+import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.controllers.home.BottomSheetCreateBusinessController;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 
 public class HomeFragment extends Fragment {
     private HomeFragmentBinding binding;
@@ -27,15 +28,15 @@ public class HomeFragment extends Fragment {
     private HomeToolbarBinding toolBarHomeBinding;
     private Toolbar toolbarHoma;
     private TextView title;
-    HomeController businessesController;
+    BusinessController businessesController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new HomeViewModel(inflater);
-        Home businessesModel = new Home();
+        Business businessesModel = new Business();
 
-        businessesController = new HomeController(businessesModel, homeViewModel);
+        businessesController = new BusinessController(businessesModel, homeViewModel);
 
         businessesController.showData();
 
@@ -54,7 +55,8 @@ public class HomeFragment extends Fragment {
         addBusinessButton = toolBarHomeBinding.addBusinessButton;
 
 
-        AdminBottomSheet adminBottomSheet = new AdminBottomSheet(addBusinessButton, businessesController, getActivity());
+        BottomSheetViewModel bottomSheetViewModel = new BottomSheetViewModel();
+        BottomSheetCreateBusinessController adminBottomSheet = new BottomSheetCreateBusinessController(addBusinessButton, businessesController, bottomSheetViewModel, getActivity());
         adminBottomSheet.setClickEventShowBottomSheet();
 
 

@@ -66,6 +66,12 @@
             android:hint="@string/business_name"
             android:inputType="text" />
 
+        <TextView
+            android:id="@+id/advert_name"
+            android:textColor="@color/red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <EditText
             android:id="@+id/business_address"
             android:layout_width="match_parent"
@@ -75,6 +81,12 @@
             android:ems="10"
             android:hint="@string/business_address"
             android:inputType="text" />
+
+        <TextView
+            android:id="@+id/advert_address"
+            android:textColor="@color/red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/saving_button"
