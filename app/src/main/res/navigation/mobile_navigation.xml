@@ -9,17 +9,17 @@
         android:id="@+id/navigation_home"
         android:name="com.kunano.scansell_native.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/home_fragment" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.kunano.scansell_native.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/sell_fragment" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.kunano.scansell_native.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/profile_fragment" />
 </navigation>

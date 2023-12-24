@@ -3,4 +3,16 @@
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Vender</string>
     <string name="title_notifications">Perfil</string>
+    <string name="businesses_title">Businesses</string>
+    <string name="create_new_business">New business</string>
+    <string name="business_name">Business name</string>
+    <string name="business_address">Business address</string>
+    <string name="save">Save</string>
+    <string name="advert_invalid_name">Name invalid. Letters and spaces only (At least 3 letters)</string>
+    <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
+    <string name="advert_introduce_name">Introduce a name</string>
+    <string name="advert_introduce_address">Introduce an address</string>
+    <string name="name_in_use">This name is in use</string>
+    <string name="business_created_succ">Business create successfully</string>
+    <string name="failure_to_create_business">Failure to create business</string>
 </resources>

@@ -23,12 +23,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    //Implemented to organize the xml files
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res',
+                            'src/main/res/layouts/main',
+                            'src/main/res/layouts/home',
+                            'src/main/res/layouts/profile',
+                            'src/main/res/layouts/sell',
+
+                    ]
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding true
+    }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src\\main\\res', 'src\\main\\res\\layouts\\home', 'src\\main\\res\\layouts\\sell', 'src\\main\\res\\layouts\\profile', 'src\\main\\res\\layouts\\main'
+            }
+        }
     }
 }
 
