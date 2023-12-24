@@ -13,4 +13,6 @@
     <string name="advert_introduce_name">Introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
     <string name="name_in_use">This name is in use</string>
+    <string name="business_created_succ">Business create successfully</string>
+    <string name="failure_to_create_business">Failure to create business</string>
 </resources>

@@ -2,6 +2,7 @@ package com.kunano.scansell_native.controllers.home;
 
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -80,7 +81,12 @@ public class BottomSheetCreateBusinessController {
             if(addSuccessfully){
                 businessesController.showData();
                 hideBottomSheet();
+                Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
+
+            }else {
+                Toast.makeText(activityParent, activityParent.getString(R.string.failure_to_create_business), Toast.LENGTH_LONG).show();
             }
+
         });
 
 
