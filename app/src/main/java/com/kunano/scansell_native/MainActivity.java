@@ -9,18 +9,25 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
+import com.kunano.scansell_native.model.DB;
+import com.kunano.scansell_native.model.DbSetting;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseApp.initializeApp(MainActivity.this);
+
+        DbSetting dbSetting = new DbSetting(DB.db);
+
+        dbSetting.setSizeCache();
+       dbSetting.inabilitarAccesoRed();
+
+
 
         super.onCreate(savedInstanceState);
 

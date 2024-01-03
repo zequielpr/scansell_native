@@ -7,13 +7,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.kunano.scansell_native.model.DB;
 
 import java.util.ArrayList;
@@ -73,11 +72,21 @@ public class Business {
 
 
     //Add business
-    public CompletableFuture<Boolean> addBusiness(HashMap<String, Object> data){
+    public boolean addBusinessOffline(HashMap<String, Object> data){
 
-        CompletableFuture<Boolean> furure = new CompletableFuture<>();
+        /*for (int i = 0; i < 10; i++){
+            businessesCollection.document().set(data);
+        }*/
 
-        businessesCollection.document(data.get("name").toString()).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+        try {
+            String businessId = data.get("name").toString();
+            businessesCollection.document( businessId).set(data);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
+        /*businessesCollection.document(data.get("name").toString()).set(data);*//*.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 furure.complete(true);
@@ -88,13 +97,31 @@ public class Business {
                 furure.complete(false);
                 Log.d(TAG, "Error adding document: "+ e.getMessage());
             }
-        });
-        return furure;
+        });*/
     }
 
     //Delet business
-    public boolean deleteBusiness(String id_Busines){
-        return businessesCollection.document(id_Busines).delete().isSuccessful();
+    public boolean deleteBusinessOffline(String id_Busines){
+        try {
+            businessesCollection.document(id_Busines).delete();
+            return  true;
+        }catch (Exception e){
+            return false;
+        }
+
+
+
+        /*.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                future.complete(true);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                future.complete(false);
+            }
+        });*/
     }
 
 
@@ -104,21 +131,23 @@ public class Business {
         CompletableFuture<List<Map<String, Object>>> future = new CompletableFuture<>();
         List<Map<String, Object>> BusinessesListData = new ArrayList<>();
 
-        businessesCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()  {
+
+        Source source = Source.CACHE;
+
+        businessesCollection.get(source).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()  {
             @Override
             public  void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                 if (task.isSuccessful()) {
                     Map<String, Object> businessData;
                     for (QueryDocumentSnapshot document : task.getResult()) {
-
                         //Get the business ID
                         businessData = document.getData();
                         businessData.put("business_id", document.getId());
 
                         BusinessesListData.add(businessData);
                     }
-
+                    
                     future.complete(BusinessesListData);
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());

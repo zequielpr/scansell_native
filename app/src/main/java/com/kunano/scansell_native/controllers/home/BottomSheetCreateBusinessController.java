@@ -77,7 +77,10 @@ public class BottomSheetCreateBusinessController {
         if (!validateBusinessData())return;
 
         //businessesController.showData();
+        System.out.println("Llama al metedo crear negocio");
         businessesController.addBusiness().thenAccept(addSuccessfully ->{
+            System.out.println("Termina al metedo crear negocio");
+
             if(addSuccessfully){
                 businessesController.showData();
                 hideBottomSheet();

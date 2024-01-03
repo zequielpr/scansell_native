@@ -15,4 +15,9 @@
     <string name="name_in_use">This name is in use</string>
     <string name="business_created_succ">Business create successfully</string>
     <string name="failure_to_create_business">Failure to create business</string>
+    <string name="delete_businesses_title">Delete businesses</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -11,8 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class DB {
     static DocumentReference documentReference;
 
-    private static  FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static  FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     public  static DocumentReference getUserDocument(){
+
         try {
 
             System.out.println("holaaa");
