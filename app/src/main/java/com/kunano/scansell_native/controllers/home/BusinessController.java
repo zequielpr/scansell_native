@@ -8,10 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.ValidateData;
-import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.db.Business;
+import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,20 +21,22 @@ import java.util.stream.Collectors;
 
 public class BusinessController {
     private View title;
-    private Business businessesModel;
+    private BusinessModel businessesModel;
     private HomeViewModel businessesView;
     private boolean isDeleteModeActive;
     private Drawable checkedCircle;
     private Drawable uncheckedCircle;
+
+
     private boolean isAllSelected;
-    private HashSet<String> businessListToDelete;
-    private HashSet<String> deletedBusinessList;
-    private List<Map<String, Object>> businessesListData;
+    private HashSet<Business> businessListToDelete;
+    private HashSet<Business> deletedBusinessList;
+    private List<Business> businessesListData;
 
     int deletedBusinesses;
 
 
-    public BusinessController(Business businessModel, HomeViewModel businessesView ){
+    public BusinessController(BusinessModel businessModel, HomeViewModel businessesView ){
         this.businessesModel = businessModel;
         this.businessesView = businessesView;
         checkedCircle = businessesView.getLayoutInflater().getContext().getResources().getDrawable(R.drawable.checked_circle);
@@ -43,71 +45,67 @@ public class BusinessController {
 
     //Add business
     public CompletableFuture<Boolean> addBusiness(){
+
         //Verify data
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("name", businessesModel.getName());
-        data.put("address", businessesModel.getAddress());
-
-
-
-        //Option te create businesses while the divice is offline
-        boolean isSuccessfully = businessesModel.addBusinessOffline(data);
-        future.complete(isSuccessfully);
-
-
-
-        return future;
+        return businessesModel.addBusinessOffline();
     }
 
 
     public void deleteBusinesses(){
-
-        deletedBusinesses = 0;
-        boolean isSuccessful;
+        int bumBusinessToDeleted = businessListToDelete.size();
         deletedBusinessList = new HashSet<>();
-        //Delete businesses while the device is offline
-        for (String businessId : businessListToDelete) {
+        for (Business business : businessListToDelete) {
             //Delete business offline
-            isSuccessful = deleteBusinessOffline(businessId);
-            if (!isSuccessful)break;
-            deletedBusinessList.add(businessId);
-            businessesListData.removeIf((businessData) -> businessData.get("name").equals(businessId));
-            deletedBusinesses++;
-            businessesView.setItemsToDelete(String.valueOf(deletedBusinesses).concat("/").concat(String.valueOf(businessListToDelete.size())));
-            businessesView.setProgress((deletedBusinesses * 100 / businessListToDelete.size()));
-            System.out.println("list business" + businessesListData.size());
-            businessesView.setBusinessList(businessesListData, this);
-        }
+            businessesModel.deleteBusinessOffline(business).thenAccept(result -> {
+                deletedBusinessList.add(business);
+                businessesView.setItemsToDelete(String.valueOf(deletedBusinessList.size()).concat("/").concat(String.valueOf(bumBusinessToDeleted)));
+                businessesView.setProgress((deletedBusinessList.size() * 100 / bumBusinessToDeleted));
 
+            });
+        }
         businessListToDelete.removeAll(deletedBusinessList);
+
+        desactivateDeletMode();
+
 
 
     }
 
     //Controll view
     public void showData(){
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        businessesModel.getBusinessListDataAsync().thenAccept(data ->{
-            if(!data.isEmpty()){
-                businessesView.setBusinessList(data, this);
-                businessesListData = new ArrayList<>(data);
-            }else{
+        businessesModel.getBusinessListDataAsync().observe(businessesView.getHomeLifecycleOwner(), (businesses) -> setBusinessesList(businesses));
 
-                System.out.println("No data");
-                //Show button to create a new business.
-            }
 
-        });
+    }
+
+    public Drawable getCheckedCircle() {
+        return checkedCircle;
+    }
+
+    public void setCheckedCircle(Drawable checkedCircle) {
+        this.checkedCircle = checkedCircle;
+    }
+
+    public Drawable getUncheckedCircle() {
+        return uncheckedCircle;
+    }
+
+    public void setUncheckedCircle(Drawable uncheckedCircle) {
+        this.uncheckedCircle = uncheckedCircle;
     }
 
 
-    public HashSet<String> getBusinessListToDelete() {
+    private void setBusinessesList(List<Business> businesses){
+        businessesListData = businesses;
+        businessesView.setBusinessList(businesses, this);
+    }
+
+
+    public HashSet<Business> getBusinessListToDelete() {
         return businessListToDelete;
     }
 
-    public void setBusinessListToDelete(HashSet<String> businessListToDelete) {
+    public void setBusinessListToDelete(HashSet<Business> businessListToDelete) {
         this.businessListToDelete = businessListToDelete;
     }
 
@@ -134,11 +132,11 @@ public class BusinessController {
     public void setDeleteModeActive(boolean deleteModeActive) {
         isDeleteModeActive = deleteModeActive;
     }
-    public Business getBusinessesModel() {
+    public BusinessModel getBusinessesModel() {
         return businessesModel;
     }
 
-    public void setBusinessesModel(Business businessesModel) {
+    public void setBusinessesModel(BusinessModel businessesModel) {
         this.businessesModel = businessesModel;
     }
     public void setName(String name){
@@ -169,11 +167,6 @@ public class BusinessController {
 
 
     //Delete business
-
-
-    public boolean deleteBusinessOffline(String businessId){
-       return businessesModel.deleteBusinessOffline(businessId);
-    }
 
 
 
@@ -249,6 +242,12 @@ public class BusinessController {
         businessesView.setImageForSeletAllButton(uncheckedCircle);
     }
 
+    public  boolean isBusinessTodelete(String businessID){
+        if (businessListToDelete == null) return false;
+        return businessListToDelete.containsAll(businessesListData.stream().filter(business ->
+                String.valueOf(business.businessId).equals(businessID)).collect(Collectors.toList()));
+    }
+
     public void longPressBusinessCard(View businessCard){
         String businessId = businessCard.getTag().toString();
         activateDeletMode();
@@ -258,8 +257,11 @@ public class BusinessController {
 
     public void shortPressBusinessCard(View businessCard){
         String businessId = businessCard.getTag().toString();
+
+
+
         if(isDeleteModeActive){
-            if(businessListToDelete.contains(businessId)){
+            if(isBusinessTodelete(businessId)){
                 uncheckTouchedCard(businessId);
                 verifyIfAllCardsAreSelected();
                 if(businessListToDelete.isEmpty())hideDeleteButton();
@@ -269,7 +271,7 @@ public class BusinessController {
             checkTouchedCard(businessId);
         }
 
-        verifyIfAllCardsAreSelected();
+        //verifyIfAllCardsAreSelected();
 
 
     }
@@ -291,12 +293,7 @@ public class BusinessController {
     }
 
     public void checkAllCards(){
-        List<String> businessesId = businessesListData.stream()
-                .map(map -> map.get("business_id"))  // Assuming the key is "businesId"
-                .map(value -> (String) value)
-                .collect(Collectors.toList());
-
-        businessListToDelete.addAll(businessesId);
+        businessListToDelete.addAll(businessesListData);
 
         isAllSelected = true;
         businessesView.setImageForSeletAllButton(checkedCircle);
@@ -317,10 +314,11 @@ public class BusinessController {
         Map<String, Object> imageAndBusinessId = new HashMap<>();
         imageAndBusinessId.put("businessId", businessCardId);
         imageAndBusinessId.put("checkedCircle", checkedCircle );
-        businessListToDelete.add(businessCardId);
+
+        businessListToDelete.addAll(businessesListData.stream().filter(business ->
+                String.valueOf(business.businessId).equals(businessCardId)).collect(Collectors.toList()));
 
         businessesView.setCircleForTouchedCard(imageAndBusinessId);
-
 
     }
 
@@ -328,7 +326,10 @@ public class BusinessController {
         Map<String, Object> imageAndBusinessId = new HashMap<>();
         imageAndBusinessId.put("businessId", businessCardId);
         imageAndBusinessId.put("checkedCircle", uncheckedCircle );
-        businessListToDelete.remove(businessCardId);
+
+
+        businessListToDelete.removeAll(businessesListData.stream().filter(business ->
+                String.valueOf(business.businessId).equals(businessCardId)).collect(Collectors.toList()));
 
         businessesView.setCircleForTouchedCard(imageAndBusinessId);
 

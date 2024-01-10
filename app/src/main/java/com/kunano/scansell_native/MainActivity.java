@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.room.Room;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
+import com.kunano.scansell_native.db.AppDatabase;
 import com.kunano.scansell_native.model.DB;
-import com.kunano.scansell_native.model.DbSetting;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,11 +23,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseApp.initializeApp(MainActivity.this);
 
-        DbSetting dbSetting = new DbSetting(DB.db);
 
-        dbSetting.setSizeCache();
-       dbSetting.inabilitarAccesoRed();
-
+        DB.db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "kunano").build();
 
 
         super.onCreate(savedInstanceState);

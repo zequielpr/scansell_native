@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.kunano.scansell_native.controllers.home.BusinessController;
+import com.kunano.scansell_native.db.Business;
 
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class HomeViewModel extends ViewModel {
 
     }
 
-    public void setBusinessList(List<Map<String, Object>> businessesListData, BusinessController businessController){
+    public void setBusinessList(List<Business> businessesListData, BusinessController businessController){
         this.listBusinessApader.postValue(new BusinessCardAdepter(businessesListData, businessController,homeLifecycleOwner, layoutInflater.getContext()));
     }
 

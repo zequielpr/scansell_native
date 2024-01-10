@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 
@@ -72,17 +72,15 @@ public class BottomSheetCreateBusinessController {
     }
 
 
-    public void setNewBusinessData(Business businessesData){
+    public void setNewBusinessData(BusinessModel businessesData){
         businessesController.setBusinessesModel(businessesData);
         if (!validateBusinessData())return;
 
         //businessesController.showData();
         System.out.println("Llama al metedo crear negocio");
         businessesController.addBusiness().thenAccept(addSuccessfully ->{
-            System.out.println("Termina al metedo crear negocio");
 
             if(addSuccessfully){
-                businessesController.showData();
                 hideBottomSheet();
                 Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
 

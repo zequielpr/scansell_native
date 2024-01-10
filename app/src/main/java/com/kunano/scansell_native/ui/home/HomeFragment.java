@@ -22,7 +22,7 @@ import com.kunano.scansell_native.controllers.home.BottomSheetCreateBusinessCont
 import com.kunano.scansell_native.controllers.home.BusinessController;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.databinding.HomeToolbarBinding;
-import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 
@@ -45,7 +45,9 @@ public class HomeFragment extends Fragment {
 
         HomeViewModel homeViewModel =
                 new HomeViewModel(inflater, homeLifecycleOwner);
-        Business businessesModel = new Business();
+        BusinessModel businessesModel = new BusinessModel();
+
+
 
         businessesController = new BusinessController(businessesModel, homeViewModel);
 
@@ -170,43 +172,20 @@ class AdminButtons {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
+        //Button ok action
         customDialogOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (businessController.getBusinessListToDelete().isEmpty())return;
-
-
                 businessController.deleteBusinesses();
-
                 //Hide the deleting dialog
                 view.getRootView().setVisibility(View.GONE);
 
-                HomeViewModel homeViewModel = businessController.getBusinessesView();
-
-                progressBarDialog = new ProgressBarDialog(inflater, homeViewModel.getItemsToDelete(),
-                        homeViewModel.getProgress(), homeViewModel.getHomeLifecycleOwner(), context,
-                        "deleting businesses");
-
-                progressBarDialog.getProgressBarDeletingBusiness().show();
-                System.out.println("show progress");
-
-                homeViewModel.getProgress().observe(homeViewModel.getHomeLifecycleOwner(), (progress) ->{
-                    if(progress == 100){
-                        progressBarDialog.getDialogView().getRootView().setVisibility(View.GONE);
-                    }
-
-                } );
-                progressBarDialog.getCancelButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        view.getRootView().setVisibility(View.GONE);
-                    }
-                });
+                showProgressBar();
 
             }
         });
 
+        //Button cancel action
         customDialogCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,7 +193,40 @@ class AdminButtons {
             }
         });
 
+        //Sho delet dialog
         builder.setView(dialogView).show();
+    }
+
+
+
+    public void showProgressBar(){
+        HomeViewModel homeViewModel = businessController.getBusinessesView();
+
+        progressBarDialog = new ProgressBarDialog(inflater, homeViewModel.getItemsToDelete(),
+                homeViewModel.getProgress(), homeViewModel.getHomeLifecycleOwner(), context,
+                "deleting businesses");
+
+        progressBarDialog.getProgressBarDeletingBusiness().show();
+        System.out.println("show progress");
+
+        homeViewModel.getProgress().observe(homeViewModel.getHomeLifecycleOwner(), (progress) ->{
+          if(progress == 100){
+                progressBarDialog.getDialogView().getRootView().setVisibility(View.GONE);
+
+            }else {
+                progressBarDialog.getDialogView().getRootView().setVisibility(View.VISIBLE);
+            }
+
+        } );
+
+
+        //Button cancel deliting process
+        progressBarDialog.getCancelButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.getRootView().setVisibility(View.GONE);
+            }
+        });
     }
 
 

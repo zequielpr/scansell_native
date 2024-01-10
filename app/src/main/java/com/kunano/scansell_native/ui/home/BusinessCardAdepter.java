@@ -13,17 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.home.BusinessController;
+import com.kunano.scansell_native.db.Business;
 
 import java.util.List;
 import java.util.Map;
 
 public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepter.CardHolder>{
-    private List<Map<String, Object>> businessesList;
+    private List<Business>businessesList;
     private BusinessController businessController;
     LifecycleOwner homeLifecycleOwner;
 
     Context context;
-    public BusinessCardAdepter(List<Map<String, Object>> businessesList, BusinessController businessController, LifecycleOwner homeLifecycleOwner, Context context){
+    public BusinessCardAdepter(List<Business> businessesList, BusinessController businessController, LifecycleOwner homeLifecycleOwner, Context context){
         this.context = context;
         this.businessesList = businessesList;
         this.businessController = businessController;
@@ -37,20 +38,26 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
     }
     @Override
     public void onBindViewHolder(CardHolder holder, final int position) {
-        Map<String, Object> businessData = businessesList.get(position);
-        holder.title.setText(businessData.get("name").toString());
-        holder.address.setText(businessData.get("address").toString());
-        holder.card.setTag(businessData.get("business_id").toString());
+        Business businessData = businessesList.get(position);
+        holder.title.setText(businessData.businessName);
+        holder.address.setText(businessData.businessAddress);
+        holder.card.setTag(String.valueOf(businessData.businessId));
 
         //Visibility of the circle
         businessController.getUncheckedCircleVisibility().observe(homeLifecycleOwner, holder.unCheckedCircle::setVisibility );
 
 
-        //Checked the touch card only
+        //Check ot uncheck the touch card only
         businessController.getImageForTouchedCard().observe(homeLifecycleOwner, (data) -> holder.setCheckedImage(data, holder) );
 
         //Set image para todas las card
         businessController.getCircleForAllCards().observe(homeLifecycleOwner, holder.unCheckedCircle::setImageDrawable);
+
+
+        //When the card is recycled, it verify whether the card must be checked or unchecked
+        holder.isCardToDelete(businessController, holder);
+
+
        holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,8 +96,16 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
         }
 
         public void setCheckedImage(Map<String, Object> imageBusinessId, CardHolder holder){
-            if(imageBusinessId.get("businessId") == holder.card.getTag().toString()){
+            if(imageBusinessId.get("businessId").equals(holder.card.getTag().toString())){
                 holder.unCheckedCircle.setImageDrawable((Drawable)imageBusinessId.get("checkedCircle"));
+            }
+        }
+
+        public void isCardToDelete(BusinessController businessController, CardHolder holder){
+            if(businessController.isBusinessTodelete(holder.card.getTag().toString())){
+                holder.unCheckedCircle.setImageDrawable(businessController.getCheckedCircle());
+            }else {
+                holder.unCheckedCircle.setImageDrawable(businessController.getUncheckedCircle());
             }
         }
     }
