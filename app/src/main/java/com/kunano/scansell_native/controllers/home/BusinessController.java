@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class BusinessController {
@@ -26,16 +27,16 @@ public class BusinessController {
     private boolean isDeleteModeActive;
     private Drawable checkedCircle;
     private Drawable uncheckedCircle;
-
-
     private boolean isAllSelected;
     private HashSet<Business> businessListToDelete;
     private HashSet<Business> deletedBusinessList;
     private List<Business> businessesListData;
 
+    private boolean cancelDeletingProcess;
+
     int deletedBusinesses;
 
-
+    Thread deleteBusinessThread;
     public BusinessController(BusinessModel businessModel, HomeViewModel businessesView ){
         this.businessesModel = businessModel;
         this.businessesView = businessesView;
@@ -52,24 +53,17 @@ public class BusinessController {
 
 
     public void deleteBusinesses(){
+        cancelDeletingProcess = false;
         int bumBusinessToDeleted = businessListToDelete.size();
         deletedBusinessList = new HashSet<>();
-        for (Business business : businessListToDelete) {
-            //Delete business offline
-            businessesModel.deleteBusinessOffline(business).thenAccept(result -> {
-                deletedBusinessList.add(business);
-                businessesView.setItemsToDelete(String.valueOf(deletedBusinessList.size()).concat("/").concat(String.valueOf(bumBusinessToDeleted)));
-                businessesView.setProgress((deletedBusinessList.size() * 100 / bumBusinessToDeleted));
+        businessesView.setProgress(0);
+        //Prueba
 
-            });
-        }
-        businessListToDelete.removeAll(deletedBusinessList);
-
+        deleteBusinessThread = new DeleteBusinessThread();
+        deleteBusinessThread.start();
         desactivateDeletMode();
-
-
-
     }
+
 
     //Controll view
     public void showData(){
@@ -107,6 +101,14 @@ public class BusinessController {
 
     public void setBusinessListToDelete(HashSet<Business> businessListToDelete) {
         this.businessListToDelete = businessListToDelete;
+    }
+
+    public boolean isCancelDeletingProcess() {
+        return cancelDeletingProcess;
+    }
+
+    public void setCancelDeletingProcess(boolean cancelDeletingProcess) {
+        this.cancelDeletingProcess = cancelDeletingProcess;
     }
 
     public HomeViewModel getBusinessesView() {
@@ -269,9 +271,10 @@ public class BusinessController {
             }
             showDeleteButton();
             checkTouchedCard(businessId);
+            verifyIfAllCardsAreSelected();
         }
 
-        //verifyIfAllCardsAreSelected();
+
 
 
     }
@@ -352,8 +355,6 @@ public class BusinessController {
     }
 
     public void desactivateDeletMode(){
-        uncheckAllCards();
-        businessListToDelete.clear();
         isDeleteModeActive = false;
         setUncheckedCircleVisibility(View.GONE);
         showAddbusinessBotton();
@@ -364,6 +365,47 @@ public class BusinessController {
 
     }
 
+
+
+
+
+
+
+
+    //Create a thread to deletes the business and show the progress in real time. This way the main
+    // thread does not get locked
+    private class DeleteBusinessThread extends Thread {
+        @Override
+        public void run() {
+            int bumBusinessToDeleted = businessListToDelete.size();
+
+            System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
+            for (Business business : businessListToDelete) {
+                if(cancelDeletingProcess){
+                    try {
+                        break;
+                    }catch (Exception e){
+
+                    }
+                }
+                //System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
+
+                try {
+                    if(businessesModel.deleteBusinessOffline(business).get()){
+                        deletedBusinessList.add(business);
+                        businessesView.setItemsToDelete(String.valueOf(deletedBusinessList.size()).concat("/").concat(String.valueOf(bumBusinessToDeleted)));
+                        businessesView.setProgress((deletedBusinessList.size() * 100 / bumBusinessToDeleted));
+                    }
+
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            uncheckAllCards();
+        }
+    }
 
 
 

@@ -128,6 +128,7 @@ class AdminButtons {
             @Override
             public void onClick(View view) {
                 businessController.desactivateDeletMode();
+                businessController.uncheckAllCards();
             }
         });
 
@@ -207,13 +208,12 @@ class AdminButtons {
                 "deleting businesses");
 
         progressBarDialog.getProgressBarDeletingBusiness().show();
-        System.out.println("show progress");
 
         homeViewModel.getProgress().observe(homeViewModel.getHomeLifecycleOwner(), (progress) ->{
           if(progress == 100){
                 progressBarDialog.getDialogView().getRootView().setVisibility(View.GONE);
 
-            }else {
+            }else if(progress == 0) {
                 progressBarDialog.getDialogView().getRootView().setVisibility(View.VISIBLE);
             }
 
@@ -224,6 +224,8 @@ class AdminButtons {
         progressBarDialog.getCancelButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                businessController.setCancelDeletingProcess(true);
                 view.getRootView().setVisibility(View.GONE);
             }
         });

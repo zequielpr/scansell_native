@@ -90,11 +90,10 @@ public class BusinessModel {
             business.cratingDate = LocalDateTime.now().toString();
         }
 
-        System.out.println("Business to create: " + business.businessName);
 
 
         ListenableFuture<Long> insertBusines = businessDao.insertBusiness(business);
-       /* for (int i = 1; i < 1000; i++){
+       /*for (int i = 1; i < 5000; i++){
             insertBusines = businessDao.insertBusiness(business);
         }*/
 
@@ -102,7 +101,6 @@ public class BusinessModel {
             @Override
             public void onSuccess(Long result) {
                 future.complete(true);
-                System.out.println("Users inserted successfully. Number of inserted users: " + result);
             }
 
             @Override
@@ -120,14 +118,18 @@ public class BusinessModel {
     public CompletableFuture<Boolean> deleteBusinessOffline(Business business){
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-
         ListenableFuture<Integer> deleteBusiness = businessDao.delete(business);
 
 
         Futures.addCallback(deleteBusiness, new FutureCallback<Integer>() {
             @Override
             public void onSuccess(Integer result) {
-                future.complete(true);
+                if(result == 1){
+                    future.complete(true);
+                } else{
+                    future.complete(false);
+                }
+
             }
 
             @Override

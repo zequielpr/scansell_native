@@ -51,7 +51,7 @@ public class ProgressBarDialog{
         this.dialogView = dialogView;
     }
 
-    public AlertDialog.Builder getProgressBarDeletingBusiness(){
+    public AlertDialog getProgressBarDeletingBusiness(){
         // Reference views in the custom layout
         dialogView = layoutInflater.inflate(R.layout.deleting_progress_bar, null);
         customDialogTitle = dialogView.findViewById(R.id.progress_bar_title);
@@ -70,8 +70,11 @@ public class ProgressBarDialog{
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
 
-        return builder;
+        return dialog;
     }
 
 

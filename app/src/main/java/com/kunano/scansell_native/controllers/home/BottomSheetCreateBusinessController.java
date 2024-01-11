@@ -77,22 +77,33 @@ public class BottomSheetCreateBusinessController {
         if (!validateBusinessData())return;
 
         //businessesController.showData();
-        System.out.println("Llama al metedo crear negocio");
-        businessesController.addBusiness().thenAccept(addSuccessfully ->{
 
+        //Toasts mut be executated on the UI thread(main thread)
+        businessesController.addBusiness().thenAccept(addSuccessfully ->{
             if(addSuccessfully){
                 hideBottomSheet();
-                Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
+                activityParent.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
+                    }
+                });
+                System.out.println("Should show toast");
 
             }else {
-                Toast.makeText(activityParent, activityParent.getString(R.string.failure_to_create_business), Toast.LENGTH_LONG).show();
+                hideBottomSheet();
+                activityParent.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activityParent, activityParent.getString(R.string.failure_to_create_business), Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
 
+
+
         });
-
-
-        System.out.println("Business name " +businessesController.getName());
-        System.out.println("Business name " + businessesController.getAddress());
     }
 
 
