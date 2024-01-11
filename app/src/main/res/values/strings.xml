@@ -20,4 +20,6 @@
     <string name="ok">Ok</string>
     <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
     <string name="delete">Delete</string>
+    <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
+    <string name="undo">undo</string>
 </resources>

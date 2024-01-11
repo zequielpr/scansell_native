@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home;
 
+import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -41,10 +42,63 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> itemsToDelete;
     private MutableLiveData<Integer> progress;
+    private MutableLiveData<Drawable> imageForSeletAllButton;
+    private HomeFragment homeFragment;
+    private MutableLiveData<Integer> deletingProgresDialogVisibility;
+
+    public AlertDialog getProgressBarDialog() {
+        return progressBarDialog;
+    }
+
+    public void setProgressBarDialog(AlertDialog progressBarDialog) {
+        this.progressBarDialog = progressBarDialog;
+    }
+
+    AlertDialog progressBarDialog;
+
 
     public MutableLiveData<String> getItemsToDelete() {
         return itemsToDelete;
     }
+
+
+
+    public HomeViewModel(HomeFragment homeFragment) {
+
+        this.homeFragment = homeFragment;
+        this.layoutInflater = homeFragment.getLayoutInflater();
+        this.mText = new MutableLiveData<>();
+        this.listBusinessApader = new MutableLiveData<>();
+        this.addButtonVisibility = new MutableLiveData<>();
+        this.cancelDeleteModeButtonVisibility = new MutableLiveData<>();
+        this.selectAllButtonVisibility = new MutableLiveData<>();
+        this.deletButtonVisibility = new MutableLiveData<>();
+        this.titleWidth = new MutableLiveData<>();
+        this.unchedCircleVisibility = new MutableLiveData<>();
+        this.homeLifecycleOwner = homeFragment.getViewLifecycleOwner();
+        this.imageAndBusinessId = new MutableLiveData<>();
+        this.imageCheckedOrUnchecked = new MutableLiveData<>();
+        this.imageForSeletAllButton = new MutableLiveData<>();
+        this.itemsToDelete = new MutableLiveData<>();
+        this.progress = new MutableLiveData<>();
+        this.deletingProgresDialogVisibility = new MutableLiveData<>();
+
+
+    }
+
+
+
+
+    public MutableLiveData<Integer> getDeletingProgresDialogVisibility() {
+        return deletingProgresDialogVisibility;
+    }
+
+    public void setDeletingCustomViewVisibility(int visibility) {
+        this.deletingProgresDialogVisibility.postValue(visibility);
+    }
+
+
+
 
     public void setItemsToDelete(String itemsToDelete) {
         this.itemsToDelete.postValue(itemsToDelete);
@@ -65,30 +119,14 @@ public class HomeViewModel extends ViewModel {
     public void setImageForSeletAllButton(Drawable imageForSeletAllButton) {
         this.imageForSeletAllButton.postValue(imageForSeletAllButton);
     }
-
-    private MutableLiveData<Drawable> imageForSeletAllButton;
-
-
-    public HomeViewModel(LayoutInflater inflater, LifecycleOwner homeLifecycleOwner) {
-
-        this.layoutInflater = inflater;
-        this.mText = new MutableLiveData<>();
-        this.listBusinessApader = new MutableLiveData<>();
-        this.addButtonVisibility = new MutableLiveData<>();
-        this.cancelDeleteModeButtonVisibility = new MutableLiveData<>();
-        this.selectAllButtonVisibility = new MutableLiveData<>();
-        this.deletButtonVisibility = new MutableLiveData<>();
-        this.titleWidth = new MutableLiveData<>();
-        this.unchedCircleVisibility = new MutableLiveData<>();
-        this.homeLifecycleOwner = homeLifecycleOwner;
-        this.imageAndBusinessId = new MutableLiveData<>();
-        this.imageCheckedOrUnchecked = new MutableLiveData<>();
-        this.imageForSeletAllButton = new MutableLiveData<>();
-        this.itemsToDelete = new MutableLiveData<>();
-        this.progress = new MutableLiveData<>();
-
-
+    public HomeFragment getHomeFragment() {
+        return homeFragment;
     }
+
+    public void setHomeFragment(HomeFragment homeFragment) {
+        this.homeFragment = homeFragment;
+    }
+
 
     public void setBusinessList(List<Business> businessesListData, BusinessController businessController){
         this.listBusinessApader.postValue(new BusinessCardAdepter(businessesListData, businessController,homeLifecycleOwner, layoutInflater.getContext()));

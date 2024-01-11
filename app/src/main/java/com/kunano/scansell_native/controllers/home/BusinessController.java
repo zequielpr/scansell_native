@@ -6,12 +6,15 @@ import android.view.ViewGroup;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.ValidateData;
 import com.kunano.scansell_native.db.Business;
 import com.kunano.scansell_native.model.Home.BusinessModel;
+import com.kunano.scansell_native.threads.CustomThread;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +37,7 @@ public class BusinessController {
 
     private boolean cancelDeletingProcess;
 
-    int deletedBusinesses;
+
 
     Thread deleteBusinessThread;
     public BusinessController(BusinessModel businessModel, HomeViewModel businessesView ){
@@ -48,21 +51,79 @@ public class BusinessController {
     public CompletableFuture<Boolean> addBusiness(){
 
         //Verify data
-        return businessesModel.addBusinessOffline();
+        return businessesModel.addBusiness();
     }
 
 
     public void deleteBusinesses(){
         cancelDeletingProcess = false;
-        int bumBusinessToDeleted = businessListToDelete.size();
+        //int bumBusinessToDeleted = businessListToDelete.size();
         deletedBusinessList = new HashSet<>();
-        businessesView.setProgress(0);
-        //Prueba
 
-        deleteBusinessThread = new DeleteBusinessThread();
+        //Create a thread to deletes the business and show the progress in real time. This way the main
+        // thread does not get locked
+        Runnable deleteBusinesses = ()->{
+            int progress = 0;
+            businessesView.setProgress(progress);
+            //businessesView.setDeletingCustomViewVisibility(View.VISIBLE);
+            System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
+            for (Business business : businessListToDelete) {
+
+                if(cancelDeletingProcess){
+                    try {
+                        break;
+                    }catch (Exception e){
+                        System.out.println("Error" + e.getMessage());
+                    }
+                }
+                //System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
+
+                try {
+
+                    if(businessesModel.deleteBusinessOffline(business).get()){
+                        deletedBusinessList.add(business);
+                        businessesView.setItemsToDelete(String.valueOf(deletedBusinessList.size()).concat("/").concat(String.valueOf(businessListToDelete.size())));
+                        if(progress != (deletedBusinessList.size() * 100 / businessListToDelete.size())){
+                            progress = (deletedBusinessList.size() * 100 / businessListToDelete.size());
+                            businessesView.setProgress(progress);
+                        }
+                    }
+                    Thread.sleep(Math.round(1000/businessListToDelete.size()));
+
+                } catch (ExecutionException e) {
+                    System.out.println("Error" + e.getMessage());
+                    throw new RuntimeException(e);
+
+                } catch (InterruptedException e) {
+                    System.out.println("Error" + e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            }
+            //businessesView.setDeletingCustomViewVisibility(View.GONE);
+            businessesView.getProgressBarDialog().dismiss();
+            uncheckAllCards();
+            unoDeletedBusinessesOption();
+
+        };
+
+        deleteBusinessThread = new CustomThread(deleteBusinesses);
         deleteBusinessThread.start();
         desactivateDeletMode();
     }
+
+    private void unoDeletedBusinessesOption(){
+       Snackbar snackbar = Snackbar.make(businessesView.getHomeFragment().getView(), businessesView.getHomeFragment().getString(R.string.businesses_deleted_succ),
+                Snackbar.LENGTH_LONG);
+
+       snackbar.setAction(businessesView.getHomeFragment().getString(R.string.undo), new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               businessesModel.addBusinessList(new ArrayList<>(deletedBusinessList));
+           }
+       });
+        snackbar.show();
+    }
+
 
 
     //Controll view
@@ -364,49 +425,4 @@ public class BusinessController {
         wrapTitleContent();
 
     }
-
-
-
-
-
-
-
-
-    //Create a thread to deletes the business and show the progress in real time. This way the main
-    // thread does not get locked
-    private class DeleteBusinessThread extends Thread {
-        @Override
-        public void run() {
-            int bumBusinessToDeleted = businessListToDelete.size();
-
-            System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
-            for (Business business : businessListToDelete) {
-                if(cancelDeletingProcess){
-                    try {
-                        break;
-                    }catch (Exception e){
-
-                    }
-                }
-                //System.out.println("Deleted businesses: continuar?" +cancelDeletingProcess +" " + deletedBusinessList.size());
-
-                try {
-                    if(businessesModel.deleteBusinessOffline(business).get()){
-                        deletedBusinessList.add(business);
-                        businessesView.setItemsToDelete(String.valueOf(deletedBusinessList.size()).concat("/").concat(String.valueOf(bumBusinessToDeleted)));
-                        businessesView.setProgress((deletedBusinessList.size() * 100 / bumBusinessToDeleted));
-                    }
-
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            uncheckAllCards();
-        }
-    }
-
-
-
 }

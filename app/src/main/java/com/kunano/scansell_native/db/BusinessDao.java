@@ -30,6 +30,9 @@ public interface BusinessDao  {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     ListenableFuture<Long> insertBusiness(Business business);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    ListenableFuture<Void> insertBusinessList(List<Business> business);
+
     @Delete
     ListenableFuture<Integer> delete(Business business);
 }

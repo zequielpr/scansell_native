@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,10 +40,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        LifecycleOwner homeLifecycleOwner = getViewLifecycleOwner();
+
 
         HomeViewModel homeViewModel =
-                new HomeViewModel(inflater, homeLifecycleOwner);
+                new HomeViewModel(this);
         BusinessModel businessesModel = new BusinessModel();
 
 
@@ -71,7 +70,6 @@ public class HomeFragment extends Fragment {
 
         AdminButtons adminButtons = new AdminButtons(cancelDeleteModeButton, selectAllButton, deleteButton, businessesController, this.getContext(), inflater);
         adminButtons.setClickEventsOnButtons();
-
 
 
         BottomSheetViewModel bottomSheetViewModel = new BottomSheetViewModel();
@@ -207,17 +205,10 @@ class AdminButtons {
                 homeViewModel.getProgress(), homeViewModel.getHomeLifecycleOwner(), context,
                 "deleting businesses");
 
-        progressBarDialog.getProgressBarDeletingBusiness().show();
+        AlertDialog dialog =  progressBarDialog.getProgressBarDeletingBusiness();
+        dialog.show();
 
-        homeViewModel.getProgress().observe(homeViewModel.getHomeLifecycleOwner(), (progress) ->{
-          if(progress == 100){
-                progressBarDialog.getDialogView().getRootView().setVisibility(View.GONE);
-
-            }else if(progress == 0) {
-                progressBarDialog.getDialogView().getRootView().setVisibility(View.VISIBLE);
-            }
-
-        } );
+        homeViewModel.setProgressBarDialog(dialog);
 
 
         //Button cancel deliting process
@@ -226,7 +217,7 @@ class AdminButtons {
             public void onClick(View view) {
 
                 businessController.setCancelDeletingProcess(true);
-                view.getRootView().setVisibility(View.GONE);
+                dialog.dismiss();
             }
         });
     }

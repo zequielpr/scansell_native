@@ -77,7 +77,7 @@ public class BusinessModel {
 
     Business business;
     //Add business
-    public CompletableFuture<Boolean> addBusinessOffline(){
+    public CompletableFuture<Boolean> addBusiness(){
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -93,7 +93,7 @@ public class BusinessModel {
 
 
         ListenableFuture<Long> insertBusines = businessDao.insertBusiness(business);
-       /*for (int i = 1; i < 5000; i++){
+    /* for (int i = 1; i < 5000; i++){
             insertBusines = businessDao.insertBusiness(business);
         }*/
 
@@ -111,6 +111,10 @@ public class BusinessModel {
         }, MoreExecutors.directExecutor());
 
         return future;
+    }
+
+    public void addBusinessList(List<Business> businessesList){
+        businessDao.insertBusinessList(businessesList);
     }
 
 
@@ -151,6 +155,9 @@ public class BusinessModel {
 
         return businessDao.getAllBusinesses();
     }
+
+
+
 
 
 
