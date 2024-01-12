@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.home.BusinessController;
-import com.kunano.scansell_native.db.Business;
+import com.kunano.scansell_native.model.db.Business;
 
 import java.util.List;
 import java.util.Map;

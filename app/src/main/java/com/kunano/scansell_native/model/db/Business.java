@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.db;
+package com.kunano.scansell_native.model.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,13 +27,14 @@ import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 public class HomeFragment extends Fragment {
     private HomeFragmentBinding binding;
 
-    private ImageButton addBusinessButton;
-    private ImageButton cancelDeleteModeButton;
-    private  ImageButton selectAllButton;
-    private ImageButton deleteButton;
+    private Button addBusinessButton;
+    private Button cancelDeleteModeButton;
+    private  Button selectAllButton;
+    private Button deleteButton;
     private HomeToolbarBinding toolBarHomeBinding;
     private Toolbar toolbarHoma;
     private TextView title;
+    private TextView selectedBusinessesNumb;
     BusinessController businessesController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
         cancelDeleteModeButton = toolBarHomeBinding.cancelDeletingButton;
         selectAllButton = toolBarHomeBinding.selectAllButton;
         deleteButton = toolBarHomeBinding.deleteButton;
+        selectedBusinessesNumb = toolBarHomeBinding.textViewSelecetedBusinesses;
 
         AdminButtons adminButtons = new AdminButtons(cancelDeleteModeButton, selectAllButton, deleteButton, businessesController, this.getContext(), inflater);
         adminButtons.setClickEventsOnButtons();
@@ -81,11 +82,14 @@ public class HomeFragment extends Fragment {
         businessLIst.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
         homeViewModel.getAddButtonVisibility().observe(getViewLifecycleOwner(), addBusinessButton::setVisibility);
-        homeViewModel.getCancelDeleteModeButtonVisibility().observe(getViewLifecycleOwner(), cancelDeleteModeButton::setVisibility);
+        homeViewModel.getCancelDeleteModeButtonVisibility().observe(getViewLifecycleOwner(), (visibility)->{cancelDeleteModeButton.setVisibility(visibility);
+        selectedBusinessesNumb.setVisibility(visibility);});
         homeViewModel.getSelectAllButtonVisibility().observe(getViewLifecycleOwner(), selectAllButton::setVisibility);
-        homeViewModel.getImageForSeletAllButton().observe(getViewLifecycleOwner(), selectAllButton::setImageDrawable);
+        homeViewModel.getImageForSeletAllButton().observe(getViewLifecycleOwner(), (drawable)->selectAllButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null));
         homeViewModel.getDeletButtonVisibility().observe(getViewLifecycleOwner(), deleteButton::setVisibility);
-        homeViewModel.getTitleWidth().observe(getViewLifecycleOwner(), title::setLayoutParams);
+        //homeViewModel.getTitleWidth().observe(getViewLifecycleOwner(), title::setLayoutParams);
+        homeViewModel.getAddButtonVisibility().observe(getViewLifecycleOwner(), title::setVisibility);
+        homeViewModel.getSelectedBusinesses().observe(getViewLifecycleOwner(), selectedBusinessesNumb::setText);
         return root;
     }
 
@@ -98,15 +102,15 @@ public class HomeFragment extends Fragment {
 }
 
 class AdminButtons {
-    private ImageButton cancelDeleteModeButton;
-    private  ImageButton selectAllButton;
-    private ImageButton deleteButton;
+    private Button cancelDeleteModeButton;
+    private  Button selectAllButton;
+    private Button deleteButton;
     private BusinessController businessController;
     private Context context;
     private ProgressBarDialog progressBarDialog;
     LayoutInflater inflater;
 
-    public AdminButtons(ImageButton cancelDeleteModeButton, ImageButton selectAllButton, ImageButton deleteButton, BusinessController businessController, Context context, LayoutInflater inflater) {
+    public AdminButtons(Button cancelDeleteModeButton, Button selectAllButton, Button deleteButton, BusinessController businessController, Context context, LayoutInflater inflater) {
         this.cancelDeleteModeButton = cancelDeleteModeButton;
         this.selectAllButton = selectAllButton;
         this.deleteButton = deleteButton;
@@ -166,7 +170,7 @@ class AdminButtons {
         Button customDialogCancelButton = dialogView.findViewById(R.id.customDialogCancelButton);
 
         customDialogTitle.setText(context.getText(R.string.delete_businesses_title));
-        customDialogMessage.setText(context.getText(R.string.delete_businesses_warn));
+        customDialogMessage.setText("");
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

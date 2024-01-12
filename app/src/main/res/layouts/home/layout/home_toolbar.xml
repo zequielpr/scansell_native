@@ -32,42 +32,80 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:visibility="gone"
+        <Button
             android:id="@+id/delete_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/create_new_business"
-            android:src="@drawable/baseline_delete_24" />
-
-        <ImageButton
             android:visibility="gone"
-            android:id="@+id/select_all_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="10sp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/create_new_business"
-            android:src="@drawable/unchked_circle" />
+            android:text="@string/delete"
+            android:tooltipText="@string/delete"
+            android:drawableTop="@drawable/baseline_delete_24"
+            />
 
-        <ImageButton
-            android:visibility="gone"
+        <Button
             android:id="@+id/cancel_deleting_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="10sp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/create_new_business"
-            android:src="@drawable/cancel_24" />
+            android:text="@string/cancel"
+            android:tooltipText="@string/cancel"
+            android:drawableTop="@drawable/cancel_24"
+            />
 
-        <ImageButton
+
+
+        <Button
             android:id="@+id/add_business_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="10sp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/create_new_business"
-            android:src="@drawable/baseline_add_24" />
+            android:text="@string/add"
+            android:tooltipText="@string/add"
+            android:drawableTop="@drawable/baseline_add_24"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:id="@+id/select_all_button"
+            android:visibility="gone"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/unchked_circle"
+            android:text="@string/all"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:tooltipText="@string/all" />
+
+        <TextView
+            android:id="@+id/textViewSelecetedBusinesses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/cancel_deleting_button"
+            android:text="0 selcted"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 
 </RelativeLayout>

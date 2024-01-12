@@ -11,8 +11,8 @@ import androidx.room.Room;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
-import com.kunano.scansell_native.db.AppDatabase;
-import com.kunano.scansell_native.model.DB;
+import com.kunano.scansell_native.model.db.AppDatabaseHelper;
+import com.kunano.scansell_native.model.db.DB;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(MainActivity.this);
 
 
-        DB.db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "kunano").build();
+        DB.DB = Room.databaseBuilder(getApplicationContext(),
+                AppDatabaseHelper.class, "kunano").build();
 
 
         super.onCreate(savedInstanceState);

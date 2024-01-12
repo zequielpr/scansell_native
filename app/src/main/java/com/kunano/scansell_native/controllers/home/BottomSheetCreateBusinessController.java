@@ -1,7 +1,7 @@
 package com.kunano.scansell_native.controllers.home;
 
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
@@ -12,9 +12,9 @@ import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 
-public class BottomSheetCreateBusinessController {
+public class BottomSheetCreateBusinessController{
     private FragmentActivity activityParent;
-    private ImageButton addBusinessButton;
+    private Button addBusinessButton;
 
     private BottomSheetFragment bottomSheetFragment;
     private BusinessController businessesController;
@@ -25,8 +25,9 @@ public class BottomSheetCreateBusinessController {
         return bottomSheetViewModel;
     }
 
-    public BottomSheetCreateBusinessController(ImageButton addBusinessButton, BusinessController businessesController,
+    public BottomSheetCreateBusinessController(Button addBusinessButton, BusinessController businessesController,
                                                BottomSheetViewModel bottomSheetViewModel, FragmentActivity activity){
+        super();
         this.addBusinessButton = addBusinessButton;
         this.businessesController = businessesController;
         this.bottomSheetViewModel = bottomSheetViewModel;

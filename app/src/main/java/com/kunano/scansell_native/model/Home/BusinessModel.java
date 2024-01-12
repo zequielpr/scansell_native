@@ -8,11 +8,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.kunano.scansell_native.db.Business;
-import com.kunano.scansell_native.db.BusinessDao;
-import com.kunano.scansell_native.model.DB;
+import com.kunano.scansell_native.model.db.Business;
+import com.kunano.scansell_native.model.db.BusinessDao;
+import com.kunano.scansell_native.model.db.DB;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +21,7 @@ public class BusinessModel {
 
    private String name;
    private String address;
-   private DocumentReference documentReferenceBusiness;
-
-    private CollectionReference businessesCollection = DB.getUserDocument().collection("businesses");
-    private BusinessDao businessDao = DB.db.businessDao();
+    private BusinessDao businessDao = DB.DB.businessDao();
 
     public BusinessModel(){
         super();
@@ -35,10 +30,6 @@ public class BusinessModel {
 
     public BusinessModel(BusinessDao businessDao){
         this.businessDao = businessDao;
-    }
-
-    public BusinessModel(String businessId){
-        this.documentReferenceBusiness = businessesCollection.document(businessId);
     }
 
     public BusinessModel(String name, String address) {
@@ -60,18 +51,6 @@ public class BusinessModel {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public DocumentReference getDocumentReferenceBusiness() {
-        return documentReferenceBusiness;
-    }
-
-    public void setDocumentReferenceBusiness(DocumentReference documentReferenceBusiness) {
-        this.documentReferenceBusiness = documentReferenceBusiness;
-    }
-
-    public CollectionReference getBusinessesCollection() {
-        return businessesCollection;
     }
 
 
@@ -143,16 +122,13 @@ public class BusinessModel {
             }
         }, MoreExecutors.directExecutor());
 
-        businessDao.delete(business);
         return future;
 
     }
 
 
     //Get business list data
-    public LiveData<List<Business>> getBusinessListDataAsync(){
-        System.out.println("businesses: " + businessDao.getAllBusinesses().getValue());
-
+    public LiveData<List<Business>> getBusinessEsList(){
         return businessDao.getAllBusinesses();
     }
 

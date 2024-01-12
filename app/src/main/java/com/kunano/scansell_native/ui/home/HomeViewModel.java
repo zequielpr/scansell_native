@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.kunano.scansell_native.controllers.home.BusinessController;
-import com.kunano.scansell_native.db.Business;
+import com.kunano.scansell_native.model.db.Business;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +45,16 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Drawable> imageForSeletAllButton;
     private HomeFragment homeFragment;
     private MutableLiveData<Integer> deletingProgresDialogVisibility;
+
+    public MutableLiveData<String> getSelectedBusinesses() {
+        return selectedBusinesses;
+    }
+
+    public void setSelectedBusinesses(String selectedBusinesses) {
+        this.selectedBusinesses.postValue(selectedBusinesses);
+    }
+
+    private MutableLiveData<String> selectedBusinesses;
 
     public AlertDialog getProgressBarDialog() {
         return progressBarDialog;
@@ -82,6 +92,7 @@ public class HomeViewModel extends ViewModel {
         this.itemsToDelete = new MutableLiveData<>();
         this.progress = new MutableLiveData<>();
         this.deletingProgresDialogVisibility = new MutableLiveData<>();
+        this.selectedBusinesses = new MutableLiveData<>();
 
 
     }
