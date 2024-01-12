@@ -12,7 +12,15 @@
     <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
     <string name="advert_introduce_name">Introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
-    <string name="name_in_use">This name is in use</string>
-    <string name="business_created_succ">Business create successfully</string>
+    <string name="business_created_succ">Business createed successfully</string>
     <string name="failure_to_create_business">Failure to create business</string>
+    <string name="delete_businesses_title">Delete businesses</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
+    <string name="delete">Delete</string>
+    <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
+    <string name="undo">undo</string>
+    <string name="all">All</string>
+    <string name="add">Add</string>
+    <string name="selected">selcted</string>
 </resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/customDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom Title"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/customDialogMesage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="mesage"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/customDialogCancelButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:elevation="0dp"
+            android:text="@string/cancel"
+            android:textColor="@color/purple_500" />
+
+        <Button
+            android:id="@+id/customDialogOkButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:elevation="0dp"
+            android:text="@string/delete"
+            android:textColor="@color/purple_500" />
+    </RelativeLayout>
+
+</LinearLayout>

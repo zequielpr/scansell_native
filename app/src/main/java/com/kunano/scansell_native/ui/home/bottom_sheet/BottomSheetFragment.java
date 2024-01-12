@@ -12,10 +12,10 @@ import android.widget.TextView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.home.BottomSheetCreateBusinessController;
-import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.model.Home.BusinessModel;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
-    Business businessData;
+    BusinessModel businessData;
     private ImageButton imageButtonCancel;
     private EditText editTextBusinessName;
     private EditText editTextBusinessAddress;
@@ -71,7 +71,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                 String name = editTextBusinessName.getText().toString();
                 String address = editTextBusinessAddress.getText().toString();
 
-                businessData = new Business(name, address);
+                businessData = new BusinessModel(name, address);
                 bottomSheetCreateBusinessController.setNewBusinessData(businessData);
             }
         });

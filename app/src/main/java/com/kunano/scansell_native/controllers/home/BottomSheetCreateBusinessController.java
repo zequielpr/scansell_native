@@ -1,20 +1,20 @@
 package com.kunano.scansell_native.controllers.home;
 
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.model.Home.Business;
+import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetViewModel;
 
-public class BottomSheetCreateBusinessController {
+public class BottomSheetCreateBusinessController{
     private FragmentActivity activityParent;
-    private ImageButton addBusinessButton;
+    private Button addBusinessButton;
 
     private BottomSheetFragment bottomSheetFragment;
     private BusinessController businessesController;
@@ -25,8 +25,9 @@ public class BottomSheetCreateBusinessController {
         return bottomSheetViewModel;
     }
 
-    public BottomSheetCreateBusinessController(ImageButton addBusinessButton, BusinessController businessesController,
+    public BottomSheetCreateBusinessController(Button addBusinessButton, BusinessController businessesController,
                                                BottomSheetViewModel bottomSheetViewModel, FragmentActivity activity){
+        super();
         this.addBusinessButton = addBusinessButton;
         this.businessesController = businessesController;
         this.bottomSheetViewModel = bottomSheetViewModel;
@@ -72,26 +73,38 @@ public class BottomSheetCreateBusinessController {
     }
 
 
-    public void setNewBusinessData(Business businessesData){
+    public void setNewBusinessData(BusinessModel businessesData){
         businessesController.setBusinessesModel(businessesData);
         if (!validateBusinessData())return;
 
         //businessesController.showData();
+
+        //Toasts mut be executated on the UI thread(main thread)
         businessesController.addBusiness().thenAccept(addSuccessfully ->{
             if(addSuccessfully){
-                businessesController.showData();
                 hideBottomSheet();
-                Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
+                activityParent.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activityParent, activityParent.getString(R.string.business_created_succ), Toast.LENGTH_LONG).show();
+                    }
+                });
+                System.out.println("Should show toast");
 
             }else {
-                Toast.makeText(activityParent, activityParent.getString(R.string.failure_to_create_business), Toast.LENGTH_LONG).show();
+                hideBottomSheet();
+                activityParent.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activityParent, activityParent.getString(R.string.failure_to_create_business), Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
 
+
+
         });
-
-
-        System.out.println("Business name " +businessesController.getName());
-        System.out.println("Business name " + businessesController.getAddress());
     }
 
 
