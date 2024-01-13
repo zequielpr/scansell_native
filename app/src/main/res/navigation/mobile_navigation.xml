@@ -39,5 +39,17 @@
             android:name="business_key"
             app:argType="string"
             android:defaultValue="business_key" />
+        <action
+            android:id="@+id/action_productsFragment2_to_createProductFragment"
+            app:destination="@id/createProductFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createProductFragment"
+        android:name="com.kunano.scansell_native.ui.home.products.create_product.CreateProductFragment"
+        android:label="fragment_create_product"
+        tools:layout="@layout/fragment_create_product" >
+        <action
+            android:id="@+id/action_createProductFragment_to_productsFragment2"
+            app:destination="@id/productsFragment2" />
     </fragment>
 </navigation>

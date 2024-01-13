@@ -27,7 +27,6 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0"
             android:contentDescription="@string/image_product_decription"
-            android:src="@tools:sample/avatars"
             tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
 
         <LinearLayout
@@ -55,7 +54,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:src="@tools:sample/avatars"
                     app:srcCompat="@drawable/baseline_circle_24" />
 
                 <TextView
@@ -78,7 +76,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:src="@tools:sample/avatars"
                     app:srcCompat="@drawable/sell_ic" />
 
                 <TextView
@@ -101,7 +98,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:src="@tools:sample/avatars"
                     app:srcCompat="@drawable/buying_price_ic" />
 
                 <TextView
