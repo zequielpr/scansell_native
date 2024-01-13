@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentProductsBinding;
 
 public class ProductsFragment extends Fragment {
@@ -17,6 +19,7 @@ public class ProductsFragment extends Fragment {
     FragmentProductsBinding binding;
 
     private ProductsViewModel mViewModel;
+    private Toolbar toolbar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -27,7 +30,9 @@ public class ProductsFragment extends Fragment {
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
 
-        binding.businessKey.setText(businessKey);
+        toolbar = binding.toolbarProducts;
+        toolbar.inflateMenu(R.menu.actions_toolbar_products);
+        toolbar.setTitle("Business name");
 
         return binding.getRoot();
 
