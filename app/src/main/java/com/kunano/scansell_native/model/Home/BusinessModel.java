@@ -21,7 +21,7 @@ public class BusinessModel {
 
    private String name;
    private String address;
-    private BusinessDao businessDao = DB.DB.businessDao();
+    private BusinessDao businessDao;
 
     public BusinessModel(){
         super();
@@ -35,6 +35,7 @@ public class BusinessModel {
     public BusinessModel(String name, String address) {
         this.name = name;
         this.address = address;
+        this.businessDao  = DB.DB.businessDao();
     }
 
     public String getName() {

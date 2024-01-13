@@ -7,11 +7,10 @@ import androidx.room.PrimaryKey;
 
 
 @Entity
-
 public class Business {
 
     @PrimaryKey(autoGenerate = true)
-    public int businessId;
+    public Long businessId;
 
     @ColumnInfo(name = "business_name")
     public String businessName;
