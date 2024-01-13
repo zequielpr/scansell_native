@@ -36,7 +36,6 @@ public class HomeFragment extends Fragment {
     private TextView title;
     private TextView selectedBusinessesNumb;
     BusinessController businessesController;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -45,8 +44,6 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new HomeViewModel(this);
         BusinessModel businessesModel = new BusinessModel();
-
-
 
         businessesController = new BusinessController(businessesModel, homeViewModel);
 

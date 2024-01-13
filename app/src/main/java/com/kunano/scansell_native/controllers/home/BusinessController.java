@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.kunano.scansell_native.R;
@@ -12,6 +14,7 @@ import com.kunano.scansell_native.controllers.ValidateData;
 import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.model.db.Business;
 import com.kunano.scansell_native.threads.CustomThread;
+import com.kunano.scansell_native.ui.home.HomeFragmentDirections;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ public class BusinessController {
     private boolean cancelDeletingProcess;
     private Snackbar snackbar;
     Thread deleteBusinessThread;
+   NavController navController;
 
    public BusinessController(){
        super();
@@ -44,13 +48,14 @@ public class BusinessController {
     }
 
 
-    public BusinessController(BusinessModel businessModel, HomeViewModel businessesView ){
+    public BusinessController(BusinessModel businessModel, HomeViewModel businessesView){
        super();
         this.businessesModel = businessModel;
         this.businessesView = businessesView;
         checkedCircle = businessesView.getLayoutInflater().getContext().getResources().getDrawable(R.drawable.checked_circle);
         uncheckedCircle = businessesView.getLayoutInflater().getContext().getResources().getDrawable(R.drawable.unchked_circle);
     }
+
 
     //Add business
     public CompletableFuture<Boolean> addBusiness(){
@@ -146,8 +151,17 @@ public class BusinessController {
             showDeleteButton();
             checkTouchedCard(businessId);
             verifyIfAllCardsAreSelected();
+            return;
         }
+        navigateToProducts(businessId);
 
+    }
+
+    private void navigateToProducts(String businessId){
+        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action =
+                HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
+        action.setBusinessKey(businessId);
+        Navigation.findNavController(businessesView.getHomeFragment().getView()).navigate(action);
     }
 
 
