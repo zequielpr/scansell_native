@@ -31,5 +31,6 @@
     <string name="inventory">Inventory</string>
     <string name="update">Update</string>
     <string name="details">Details</string>
+    <string name="image_product_decription">Image of product</string>
 
 </resources>
