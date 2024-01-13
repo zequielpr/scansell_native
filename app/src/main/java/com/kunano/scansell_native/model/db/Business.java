@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 public class Business {
 
     @PrimaryKey(autoGenerate = true)
-    public int businessId;
+    public long businessId;
 
     @ColumnInfo(name = "business_name")
     public String businessName;
