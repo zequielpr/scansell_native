@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,11 +42,10 @@ public class HomeFragment extends Fragment {
 
 
 
-        HomeViewModel homeViewModel =
-                new HomeViewModel(this);
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         BusinessModel businessesModel = new BusinessModel();
 
-        businessesController = new BusinessController(businessesModel, homeViewModel);
+        businessesController = new BusinessController(businessesModel, homeViewModel, this);
 
         businessesController.showData();
 
@@ -203,7 +203,7 @@ class AdminButtons {
         HomeViewModel homeViewModel = businessController.getBusinessesView();
 
         progressBarDialog = new ProgressBarDialog(inflater, homeViewModel.getItemsToDelete(),
-                homeViewModel.getProgress(), homeViewModel.getHomeLifecycleOwner(), context,
+                homeViewModel.getProgress(), businessController.getHomeFragment().getViewLifecycleOwner(), context,
                 "deleting businesses");
 
         AlertDialog dialog =  progressBarDialog.getProgressBarDeletingBusiness();

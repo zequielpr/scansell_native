@@ -14,6 +14,7 @@ import com.kunano.scansell_native.controllers.ValidateData;
 import com.kunano.scansell_native.model.Home.BusinessModel;
 import com.kunano.scansell_native.model.db.Business;
 import com.kunano.scansell_native.threads.CustomThread;
+import com.kunano.scansell_native.ui.home.HomeFragment;
 import com.kunano.scansell_native.ui.home.HomeFragmentDirections;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 
@@ -42,18 +43,29 @@ public class BusinessController {
     Thread deleteBusinessThread;
    NavController navController;
 
+    public HomeFragment getHomeFragment() {
+        return homeFragment;
+    }
+
+    public void setHomeFragment(HomeFragment homeFragment) {
+        this.homeFragment = homeFragment;
+    }
+
+    HomeFragment homeFragment;
+
    public BusinessController(){
        super();
 
     }
 
 
-    public BusinessController(BusinessModel businessModel, HomeViewModel businessesView){
+    public BusinessController(BusinessModel businessModel, HomeViewModel businessesView,  HomeFragment homeFragment){
        super();
         this.businessesModel = businessModel;
         this.businessesView = businessesView;
-        checkedCircle = businessesView.getLayoutInflater().getContext().getResources().getDrawable(R.drawable.checked_circle);
-        uncheckedCircle = businessesView.getLayoutInflater().getContext().getResources().getDrawable(R.drawable.unchked_circle);
+        this.homeFragment = homeFragment;
+        checkedCircle = homeFragment.getResources().getDrawable(R.drawable.checked_circle);
+        uncheckedCircle = homeFragment.getResources().getDrawable(R.drawable.unchked_circle);
     }
 
 
@@ -73,10 +85,10 @@ public class BusinessController {
     }
 
     private void unoDeletedBusinessesOption(){
-       snackbar = Snackbar.make(businessesView.getHomeFragment().getView(), businessesView.getHomeFragment().getString(R.string.businesses_deleted_succ),
+       snackbar = Snackbar.make(homeFragment.getView(), homeFragment.getString(R.string.businesses_deleted_succ),
                 Snackbar.LENGTH_LONG);
 
-       snackbar.setAction(businessesView.getHomeFragment().getString(R.string.undo), new View.OnClickListener() {
+       snackbar.setAction(homeFragment.getString(R.string.undo), new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                businessesModel.addBusinessList(new ArrayList<>(deletedBusinessList));
@@ -89,14 +101,14 @@ public class BusinessController {
 
     //Controll view
     public void showData(){
-        businessesModel.getBusinessEsList().observe(businessesView.getHomeLifecycleOwner(),
+        businessesModel.getBusinessEsList().observe(homeFragment.getViewLifecycleOwner(),
                 this::setBusinessesList);
 
     }
 
     private void setBusinessesList(List<Business> businesses){
         businessesListData = businesses;
-        businessesView.setBusinessList(businesses, this);
+        businessesView.setBusinessList(businesses, this, homeFragment.getViewLifecycleOwner(), homeFragment.getContext());
     }
 
 
@@ -161,7 +173,7 @@ public class BusinessController {
         HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action =
                 HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
         action.setBusinessKey(businessId);
-        Navigation.findNavController(businessesView.getHomeFragment().getView()).navigate(action);
+        Navigation.findNavController(homeFragment.getView()).navigate(action);
     }
 
 
@@ -243,7 +255,7 @@ public class BusinessController {
 
     private void updateSelectedBusinessNumb(){
        String selectedBusinesses = String.valueOf(businessListToDelete.size()).
-               concat(" ").concat(businessesView.getHomeFragment().getString(R.string.selected));
+               concat(" ").concat(homeFragment.getString(R.string.selected));
        businessesView.setSelectedBusinesses(selectedBusinesses);
     }
 

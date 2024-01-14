@@ -1,8 +1,8 @@
 package com.kunano.scansell_native.ui.home;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeViewModel extends ViewModel {
-
-    private final MutableLiveData<String> mText;
     private MutableLiveData<BusinessCardAdepter>  listBusinessApader;
     private MutableLiveData<Integer> addButtonVisibility;
     private MutableLiveData<Integer> cancelDeleteModeButtonVisibility;
@@ -26,17 +24,6 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Integer> deletButtonVisibility;
     private MutableLiveData<ViewGroup.LayoutParams> titleWidth;
     private MutableLiveData<Integer> unchedCircleVisibility;
-    private LayoutInflater layoutInflater;
-
-    public LifecycleOwner getHomeLifecycleOwner() {
-        return homeLifecycleOwner;
-    }
-
-    public void setHomeLifecycleOwner(LifecycleOwner homeLifecycleOwner) {
-        this.homeLifecycleOwner = homeLifecycleOwner;
-    }
-
-    private LifecycleOwner homeLifecycleOwner;
     private MutableLiveData<Map<String, Object>> imageAndBusinessId;
     private  MutableLiveData<Drawable> imageCheckedOrUnchecked;
 
@@ -73,11 +60,7 @@ public class HomeViewModel extends ViewModel {
 
 
 
-    public HomeViewModel(HomeFragment homeFragment) {
-
-        this.homeFragment = homeFragment;
-        this.layoutInflater = homeFragment.getLayoutInflater();
-        this.mText = new MutableLiveData<>();
+    public HomeViewModel() {
         this.listBusinessApader = new MutableLiveData<>();
         this.addButtonVisibility = new MutableLiveData<>();
         this.cancelDeleteModeButtonVisibility = new MutableLiveData<>();
@@ -85,7 +68,6 @@ public class HomeViewModel extends ViewModel {
         this.deletButtonVisibility = new MutableLiveData<>();
         this.titleWidth = new MutableLiveData<>();
         this.unchedCircleVisibility = new MutableLiveData<>();
-        this.homeLifecycleOwner = homeFragment.getViewLifecycleOwner();
         this.imageAndBusinessId = new MutableLiveData<>();
         this.imageCheckedOrUnchecked = new MutableLiveData<>();
         this.imageForSeletAllButton = new MutableLiveData<>();
@@ -130,17 +112,11 @@ public class HomeViewModel extends ViewModel {
     public void setImageForSeletAllButton(Drawable imageForSeletAllButton) {
         this.imageForSeletAllButton.postValue(imageForSeletAllButton);
     }
-    public HomeFragment getHomeFragment() {
-        return homeFragment;
-    }
-
-    public void setHomeFragment(HomeFragment homeFragment) {
-        this.homeFragment = homeFragment;
-    }
 
 
-    public void setBusinessList(List<Business> businessesListData, BusinessController businessController){
-        this.listBusinessApader.postValue(new BusinessCardAdepter(businessesListData, businessController,homeLifecycleOwner, layoutInflater.getContext()));
+
+    public void setBusinessList(List<Business> businessesListData, BusinessController businessController, LifecycleOwner homeLifecycleOwner, Context context){
+        this.listBusinessApader.postValue(new BusinessCardAdepter(businessesListData, businessController,homeLifecycleOwner, context));
     }
 
     public LiveData<BusinessCardAdepter> getListBusinessApader(){return listBusinessApader;}
@@ -201,13 +177,6 @@ public class HomeViewModel extends ViewModel {
 
     public void setCircleForTouchedCard(Map<String, Object>imageAndBusinessId) {
         this.imageAndBusinessId.postValue(imageAndBusinessId);
-    }
-    public LayoutInflater getLayoutInflater() {
-        return layoutInflater;
-    }
-
-    public void setLayoutInflater(LayoutInflater layoutInflater) {
-        this.layoutInflater = layoutInflater;
     }
 
     public MutableLiveData<Drawable> getCircleForAllCards() {
