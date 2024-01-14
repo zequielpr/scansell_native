@@ -24,6 +24,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding{
+        enable = true
+    }
 
     //Implemented to organize the xml files
     sourceSets {
@@ -61,7 +64,10 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.7.6"
+    def lifecycle_version = "2.7.0"
 
+    // Annotation processor
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
