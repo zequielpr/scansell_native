@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.model.db;
+package com.kunano.scansell_native.model.Home.business;
 
 
 import androidx.lifecycle.LiveData;

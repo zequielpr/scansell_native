@@ -1,6 +1,8 @@
 package com.kunano.scansell_native.ui.home.bottom_sheet;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,72 +11,214 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.controllers.home.BottomSheetCreateBusinessController;
-import com.kunano.scansell_native.model.Home.BusinessModel;
+import com.kunano.scansell_native.databinding.HomeBottomSheetCreateBusinessFragmentBinding;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
 
-public class BottomSheetFragment extends BottomSheetDialogFragment {
-    BusinessModel businessData;
-    private ImageButton imageButtonCancel;
+;
+
+
+public class BottomSheetFragment extends BottomSheetDialogFragment{
     private EditText editTextBusinessName;
     private EditText editTextBusinessAddress;
-    private Button savingButton;
-
     private TextView textViewAdvertName;
     private TextView textViewAdvertAddress;
+    private Button saveBusinessButton;
+    private ImageButton cancelBtn;
+    private HomeBottomSheetCreateBusinessFragmentBinding binding;
+    HomeViewModel viewModel;
 
-    BottomSheetCreateBusinessController bottomSheetCreateBusinessController;
+    boolean isBusinessNameValid;
+    boolean isBusinessAddressValid;
 
-    public BottomSheetFragment(BottomSheetCreateBusinessController bottomSheetCreateBusinessController){
-     this.bottomSheetCreateBusinessController = bottomSheetCreateBusinessController;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //System.out.println("objetos para colectar comps: "+ bottomSheetComponents.hashCode());
-        View createBusinessView = inflater.inflate(R.layout.home_bottom_sheet_create_business_fragment, container, false);
-        editTextBusinessName = createBusinessView.findViewById(R.id.business_name);
-        editTextBusinessAddress = createBusinessView.findViewById(R.id.business_address);
-        savingButton = createBusinessView.findViewById(R.id.saving_button);
-        imageButtonCancel = createBusinessView.findViewById(R.id.cancel_button);
-        textViewAdvertName = createBusinessView.findViewById(R.id.advert_name);
-        textViewAdvertAddress = createBusinessView.findViewById(R.id.advert_address);
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        binding = HomeBottomSheetCreateBusinessFragmentBinding.inflate(inflater, container, false);
+        editTextBusinessName = binding.businessName;
+        editTextBusinessAddress = binding.businessAddress;
+        textViewAdvertName = binding.advertName;
+        textViewAdvertAddress = binding.advertAddress;
+        saveBusinessButton = binding.savingButton;
+        cancelBtn = binding.cancelButton;
+        isBusinessAddressValid = false;
+        isBusinessNameValid = false;
+        setLisnerSaveButton();
+        setEditTExtListeners();
+        setListenerCloseButton();
 
-        bottomSheetCreateBusinessController.getAdvertIncorrectName().observe(getViewLifecycleOwner(), textViewAdvertName::setText);
-        bottomSheetCreateBusinessController.getAdvertIncorrectAddress().observe(getViewLifecycleOwner(), textViewAdvertAddress::setText);
-
-        setClicksEventsOnButtons();
-
-        return createBusinessView;
+        return binding.getRoot();
     }
 
 
-    public void setClicksEventsOnButtons(){
-        setClickEventOnCancelButton();
-        setClickEventOnSavingButton();
-    }
-
-    private void setClickEventOnCancelButton(){
-        imageButtonCancel.setOnClickListener(new View.OnClickListener() {
+    public void setLisnerSaveButton(){
+        saveBusinessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetCreateBusinessController.hideBottomSheet();
+                System.out.println("Try introducir business: ");
+                if (isBusinessNameValid && isBusinessAddressValid){
+
+                    hideBottomSheet();
+                    provideBusinessDataToHomeViewModel();
+                    return;
+                }
+                showWarningName(getString(R.string.advert_introduce_address));
+                showWarningAddress(getString(R.string.advert_introduce_name));
+
             }
         });
     }
 
-    private void setClickEventOnSavingButton(){
-        savingButton.setOnClickListener(new View.OnClickListener() {
+    public void setListenerCloseButton(){
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = editTextBusinessName.getText().toString();
-                String address = editTextBusinessAddress.getText().toString();
-
-                businessData = new BusinessModel(name, address);
-                bottomSheetCreateBusinessController.setNewBusinessData(businessData);
+                hideBottomSheet();
             }
         });
     }
+
+
+
+
+
+
+
+
+    public void setEditTExtListeners(){
+        editTextBusinessName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence name, int i, int i1, int i2) {
+
+                if(name.length() == 0){
+                    isBusinessNameValid = false;
+                    showWarningName(getString(R.string.advert_introduce_name));
+                    desactivateSaveButton();
+                }
+
+                else if(!viewModel.validateName(name.toString())){
+                    desactivateSaveButton();
+                    showWarningName(getString(R.string.advert_invalid_name));
+                    isBusinessNameValid = false;
+
+                }else {
+                    isBusinessNameValid = true;
+                    hideWarningName();
+                }
+
+                if (isBusinessNameValid && isBusinessAddressValid){
+                    activateSaveButton();
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+        });
+
+        editTextBusinessAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence address, int i, int i1, int i2) {
+
+                if(address.toString().isEmpty()){
+                    isBusinessAddressValid = false;
+                    showWarningAddress(getString(R.string.advert_introduce_address));
+                    desactivateSaveButton();
+                }
+
+
+
+                else if(!viewModel.validateAddress(address.toString())){
+                    desactivateSaveButton();
+                    isBusinessAddressValid = false;
+                    showWarningAddress(getString(R.string.advert_invalid_address));
+                }else {
+                    isBusinessAddressValid = true;
+                    hideWarningAddress();
+                }
+
+                if (isBusinessNameValid && isBusinessAddressValid){
+                    activateSaveButton();
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+    public void desactivateSaveButton(){
+        saveBusinessButton.setClickable(false);
+    }
+
+    public void activateSaveButton(){
+        saveBusinessButton.setClickable(true);
+    }
+
+    public void provideBusinessDataToHomeViewModel(){
+        String name = editTextBusinessName.getText().toString();
+        String address = editTextBusinessAddress.getText().toString();
+        viewModel.reciveDataBusiness(name, address);
+
+    }
+
+
+
+
+
+
+    private void hideBottomSheet(){
+        this.dismiss();
+    }
+
+
+    public void showWarningName(String message) {
+        textViewAdvertName.setText(message);
+    }
+
+
+    public void showWarningAddress(String message) {
+
+        textViewAdvertAddress.setText(message);
+    }
+
+
+    public void hideWarningName() {
+        textViewAdvertName.setText("");
+    }
+
+
+    public void hideWarningAddress() {
+        textViewAdvertAddress.setText("");
+    }
+
 
 }
