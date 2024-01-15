@@ -1,19 +1,22 @@
 package com.kunano.scansell_native.ui.home.bottom_sheet;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class BottomSheetViewModel extends ViewModel {
-    MutableLiveData<String> advertIncorrectName;
-    MutableLiveData<String> advertIncorrectAddress;
+import com.kunano.scansell_native.controllers.ValidateData;
 
-    public BottomSheetViewModel(){
-        advertIncorrectName = new MutableLiveData<>();
-        advertIncorrectAddress = new MutableLiveData<>();
+public class BottomSheetViewModel extends ViewModel {
+
+    public boolean validateName(String name){
+        return ValidateData.validateName(name);
+    }
+    public boolean validateAddress(String address){
+        return ValidateData.validateAddress(address);
     }
 
 
-    public MutableLiveData<String> getAdvertIncorrectName() {
+
+
+/*    public MutableLiveData<String> getAdvertIncorrectName() {
         return advertIncorrectName;
     }
 
@@ -27,7 +30,7 @@ public class BottomSheetViewModel extends ViewModel {
 
     public void setAdvertIncorrectAddress(String advertIncorrectAddress) {
         this.advertIncorrectAddress.postValue(advertIncorrectAddress);
-    }
+    }*/
 
 
 
