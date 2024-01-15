@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     private Button addBusinessButton;
     private Button cancelDeleteModeButton;
-    private  Button selectAllButton;
+    private Button selectAllButton;
     private Button deleteButton;
     private HomeToolbarBinding toolBarHomeBinding;
     private Toolbar toolbarHoma;
@@ -42,57 +42,73 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     ListenHomeViewModel listenHomeViewModel;
     SpinningWheel spinningWheelDialog;
     FragmentManager suportFmanager;
+    BusinessCardAdepter businessCardAdepter;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = HomeFragmentBinding.inflate(inflater, container, false);
 
 
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         homeViewModel.getAllBusinesses().observe(getViewLifecycleOwner(), this::updateBusinessView);
-
-
-        suportFmanager = getActivity().getSupportFragmentManager();
-        recyclerViewBusinessList = binding.businessList;
         listenHomeViewModel = this;
-
-
-
         homeViewModel.setListenHomeViewModel(listenHomeViewModel);
 
+        suportFmanager = getActivity().getSupportFragmentManager();
 
+
+        recyclerViewBusinessList = binding.businessList;
+        recyclerViewBusinessList.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerViewBusinessList.setHasFixedSize(true);
+
+        businessCardAdepter = new BusinessCardAdepter();
+        recyclerViewBusinessList.setAdapter(businessCardAdepter);
+
+
+        setBusinessCardOncliListener();
         setListenerShowBottomSheetCrtNewBusines();
+        //setBusinessCardOncliListener();
 
 
-
-        View root = binding.getRoot();
-        return  root;
+        return binding.getRoot();
 
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    public void updateBusinessView(List<Business> businessesList){
-        System.out.println("Tray to printe businesses" + businessesList.size());
-        BusinessCardAdepter businessCardAdepter = new BusinessCardAdepter(businessesList, this, homeViewModel);
-        recyclerViewBusinessList.setAdapter(businessCardAdepter);
-        recyclerViewBusinessList.setLayoutManager(new LinearLayoutManager(this.getContext()));
+    public void updateBusinessView(List<Business> businessesList) {
+        businessCardAdepter.submitList(businessesList);
     }
 
-    public void setListenerShowBottomSheetCrtNewBusines(){
+    public void setListenerShowBottomSheetCrtNewBusines() {
         binding.includeToolbar.addBusinessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(homeViewModel);
+                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
                 bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
             }
         });
 
     }
 
+    public void setBusinessCardOncliListener() {
+        businessCardAdepter.setOnclickBusinessCardListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
+            @Override
+            public void onShortTap(Business business) {
+                homeViewModel.shortTap(business);
+            }
+
+            @Override
+            public void onLongTap(Business business) {
+
+            }
+        });
+    }
 
     @Override
     public void activateWaitingMode() {
@@ -102,14 +118,13 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void desactivateWaitingMode() {
-        if (spinningWheelDialog != null)spinningWheelDialog.dismiss();
+        if (spinningWheelDialog != null) spinningWheelDialog.dismiss();
 
     }
 
     @Override
     public void navigateToProducts(String businessId) {
-        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action =
-                HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
+        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action = HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
         action.setBusinessKey(businessId);
         Navigation.findNavController(getView()).navigate(action);
     }

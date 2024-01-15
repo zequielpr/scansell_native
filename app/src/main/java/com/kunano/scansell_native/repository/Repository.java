@@ -86,6 +86,7 @@ public class Repository {
         public void run() {
             synchronized (LOCK){
                 try {
+                    sleep(3000);
                     resultado = businessDao.insertBusiness(business).get();
                     if(resultado >0){
                         replay.isSuccessfull(true);
@@ -94,8 +95,10 @@ public class Repository {
                     }
 
                 } catch (ExecutionException e) {
+                    replay.isSuccessfull(false);
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
+                    replay.isSuccessfull(false);
                     throw new RuntimeException(e);
                 }
             }

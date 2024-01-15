@@ -22,9 +22,6 @@ import com.kunano.scansell_native.ui.home.HomeViewModel;
 
 
 public class BottomSheetFragment extends BottomSheetDialogFragment{
-
-    HomeViewModel homeViewModel;
-
     private EditText editTextBusinessName;
     private EditText editTextBusinessAddress;
     private TextView textViewAdvertName;
@@ -32,23 +29,15 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     private Button saveBusinessButton;
     private ImageButton cancelBtn;
     private HomeBottomSheetCreateBusinessFragmentBinding binding;
-    BottomSheetViewModel bottomSheetViewModel;
+    HomeViewModel viewModel;
 
     boolean isBusinessNameValid;
     boolean isBusinessAddressValid;
 
-    public BottomSheetFragment(){
-
-    }
-
-    public BottomSheetFragment(HomeViewModel homeViewModel) {
-        this.homeViewModel = homeViewModel;
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        bottomSheetViewModel = new ViewModelProvider(this).get(BottomSheetViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         binding = HomeBottomSheetCreateBusinessFragmentBinding.inflate(inflater, container, false);
         editTextBusinessName = binding.businessName;
         editTextBusinessAddress = binding.businessAddress;
@@ -116,7 +105,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
                     desactivateSaveButton();
                 }
 
-                else if(!bottomSheetViewModel.validateName(name.toString())){
+                else if(!viewModel.validateName(name.toString())){
                     desactivateSaveButton();
                     showWarningName(getString(R.string.advert_invalid_name));
                     isBusinessNameValid = false;
@@ -157,7 +146,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
 
 
 
-                else if(!bottomSheetViewModel.validateAddress(address.toString())){
+                else if(!viewModel.validateAddress(address.toString())){
                     desactivateSaveButton();
                     isBusinessAddressValid = false;
                     showWarningAddress(getString(R.string.advert_invalid_address));
@@ -197,7 +186,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     public void provideBusinessDataToHomeViewModel(){
         String name = editTextBusinessName.getText().toString();
         String address = editTextBusinessAddress.getText().toString();
-        homeViewModel.reciveDataBusiness(name, address);
+        viewModel.reciveDataBusiness(name, address);
 
     }
 
