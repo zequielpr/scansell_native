@@ -27,7 +27,7 @@ public class ProgressBarDialog{
     private TextView textViewItems;
     private TextView percentage;
     private Button cancelButton;
-    private View dialogView;
+    private View customView;
     String title;
 
     public ProgressBarDialog(LayoutInflater layoutInflater, MutableLiveData<String> itemsData,
@@ -43,22 +43,22 @@ public class ProgressBarDialog{
     }
 
 
-    public View getDialogView() {
-        return dialogView;
+    public View getCustomView() {
+        return customView;
     }
 
-    public void setDialogView(View dialogView) {
-        this.dialogView = dialogView;
+    public void setCustomView(View customView) {
+        this.customView = customView;
     }
 
     public AlertDialog getProgressBarDeletingBusiness(){
         // Reference views in the custom layout
-        dialogView = layoutInflater.inflate(R.layout.deleting_progress_bar, null);
-        customDialogTitle = dialogView.findViewById(R.id.progress_bar_title);
-        progressBar = dialogView.findViewById(R.id.progress_bar);
-        textViewItems = dialogView.findViewById(R.id.progress_bar_items);
-        percentage = dialogView.findViewById(R.id.progress_bar_percentage);
-        cancelButton = dialogView.findViewById(R.id.progress_bar_cancel_button);
+        customView = layoutInflater.inflate(R.layout.deleting_progress_bar, null);
+        customDialogTitle = customView.findViewById(R.id.progress_bar_title);
+        progressBar = customView.findViewById(R.id.progress_bar);
+        textViewItems = customView.findViewById(R.id.progress_bar_items);
+        percentage = customView.findViewById(R.id.progress_bar_percentage);
+        cancelButton = customView.findViewById(R.id.progress_bar_cancel_button);
 
 
         customDialogTitle.setText(title);
@@ -69,7 +69,7 @@ public class ProgressBarDialog{
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        builder.setView(dialogView);
+        builder.setView(customView);
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);

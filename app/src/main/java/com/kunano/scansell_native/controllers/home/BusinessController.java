@@ -1,3 +1,5 @@
+
+/*
 package com.kunano.scansell_native.controllers.home;
 
 import android.graphics.drawable.Drawable;
@@ -12,7 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.ValidateData;
 import com.kunano.scansell_native.model.Home.BusinessModel;
-import com.kunano.scansell_native.model.db.Business;
+import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.threads.CustomThread;
 import com.kunano.scansell_native.ui.home.HomeFragment;
 import com.kunano.scansell_native.ui.home.HomeFragmentDirections;
@@ -443,3 +445,5 @@ public class BusinessController {
     };
 
 }
+*/
+

@@ -1,5 +1,6 @@
-package com.kunano.scansell_native.model.db;
+package com.kunano.scansell_native.model.Home.product;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -19,6 +20,6 @@ public interface ProductDao {
 
 @Transaction
     @Query("SELECT * FROM business")
-    public List<BusinessWithProduct> getBusinessWithProduct();
+    public LiveData<List<BusinessWithProduct>> getBusinessWithProduct();
 
 }

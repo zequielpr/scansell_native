@@ -45,11 +45,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
     sourceSets {
         main {
@@ -86,6 +88,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation 'com.google.gms:google-services:4.3.10'  // Use the latest version available
+    implementation "androidx.databinding:databinding-runtime:7.1.0"
 
 
     def room_version = "2.6.1"
