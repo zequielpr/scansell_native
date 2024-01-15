@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -103,6 +104,14 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void desactivateWaitingMode() {
         if (spinningWheelDialog != null)spinningWheelDialog.dismiss();
 
+    }
+
+    @Override
+    public void navigateToProducts(String businessId) {
+        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action =
+                HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
+        action.setBusinessKey(businessId);
+        Navigation.findNavController(getView()).navigate(action);
     }
 
     @Override

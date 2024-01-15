@@ -4,6 +4,9 @@ public interface ListenHomeViewModel {
    abstract void activateWaitingMode();
    abstract void  desactivateWaitingMode();
 
+   abstract void navigateToProducts(String businessId);
+
+
 
    abstract void showProgressBar();
 

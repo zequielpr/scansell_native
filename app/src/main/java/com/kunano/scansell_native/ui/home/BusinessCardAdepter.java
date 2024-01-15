@@ -39,6 +39,22 @@ public class BusinessCardAdepter extends RecyclerView.Adapter<BusinessCardAdepte
         holder.address.setText(businessData.getBusinessAddress());
         holder.card.setTag(String.valueOf(businessData.getBusinessId()));
 
+
+        holder.card.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
+
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                homeViewModel.shortTap(view.getTag().toString());
+            }
+        });
+
     }
     @Override
     public int getItemCount() {

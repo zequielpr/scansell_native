@@ -59,4 +59,10 @@ public class HomeViewModel extends AndroidViewModel {
         this.listenHomeViewModel = listenHomeViewModel;
     }
 
+
+    //BusinessCard
+    public void shortTap(String businessId){
+        listenHomeViewModel.navigateToProducts(businessId);
+    }
+
 }
