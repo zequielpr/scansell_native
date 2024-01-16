@@ -86,8 +86,10 @@ public class Repository {
         public void run() {
             synchronized (LOCK){
                 try {
-                    sleep(3000);
-                    resultado = businessDao.insertBusiness(business).get();
+
+                    for (int i = 0; i <100; i++){
+                        resultado = businessDao.insertBusiness(business).get();
+                    }
                     if(resultado >0){
                         replay.isSuccessfull(true);
                     }else {

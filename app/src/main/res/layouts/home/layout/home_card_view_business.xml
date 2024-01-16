@@ -13,9 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
-        android:visibility="gone"
-        android:layout_marginRight="30dp"
-        android:src="@drawable/unchked_circle" />
+        android:layout_marginRight="30dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
