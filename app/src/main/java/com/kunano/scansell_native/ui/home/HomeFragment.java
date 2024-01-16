@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
     public void setBusinessCardOncliListener() {
-        businessCardAdepter.setOnclickBusinessCardListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
+        businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
             public void onShortTap(Business business) {
                 homeViewModel.shortTap(business);
@@ -105,8 +105,20 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
             @Override
             public void onLongTap(Business business) {
+                homeViewModel.longTap(business);
+            }
+
+            @Override
+            public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
             }
+
+            @Override
+            public void reciveCardHol(View cardHolder) {
+
+            }
+
+
         });
     }
 

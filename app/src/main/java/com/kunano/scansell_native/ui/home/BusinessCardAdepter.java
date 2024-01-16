@@ -15,7 +15,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 
 public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdepter.CardHolder> {
-    OnclickBusinessCardListener onclickBusinessCardListener;
+    OnclickBusinessCardListener listener;
 
     private static DiffUtil.ItemCallback<Business> DIFF_CALLBACK = new DiffUtil.ItemCallback<Business>() {
         @Override
@@ -49,6 +49,8 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
         holder.title.setText(businessData.getBusinessName());
         holder.address.setText(businessData.getBusinessAddress());
         holder.card.setTag(String.valueOf(businessData.getBusinessId()));
+
+        listener.getCardHolderOnBind(holder, businessData);
     }
 
 
@@ -67,12 +69,14 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
             address = itemView.findViewById(R.id.textViewDirection);
             unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
 
+            listener.reciveCardHol(itemView);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
-                    if(onclickBusinessCardListener != null && position != RecyclerView.NO_POSITION){
-                        onclickBusinessCardListener.onShortTap(getItem(position));
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onShortTap(getItem(position));
                     }
                 }
             });
@@ -82,8 +86,8 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
                 @Override
                 public boolean onLongClick(View view) {
                     int position = getAbsoluteAdapterPosition();
-                    if(onclickBusinessCardListener != null && position != RecyclerView.NO_POSITION){
-                        onclickBusinessCardListener.onLongTap(getItem(position));
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onLongTap(getItem(position));
                     }
                     return true;
                 }
@@ -95,12 +99,15 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
     public interface OnclickBusinessCardListener{
         abstract void onShortTap(Business business);
         abstract void onLongTap(Business business);
+        abstract void getCardHolderOnBind(CardHolder cardHolder, Business business);
+        abstract void reciveCardHol(View cardHolder);
+
     }
 
 
 
-    public void setOnclickBusinessCardListener(OnclickBusinessCardListener onclickBusinessCardListener) {
-        this.onclickBusinessCardListener = onclickBusinessCardListener;
+    public void setListener(OnclickBusinessCardListener listener) {
+        this.listener = listener;
     }
 
 }
