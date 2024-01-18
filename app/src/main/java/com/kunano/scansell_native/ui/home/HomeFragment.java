@@ -13,16 +13,20 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.SpinningWheel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.notifications.AskWhetherDeleteDialog;
 
 import java.util.List;
 
@@ -65,7 +69,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         toolbar.inflateMenu(R.menu.actions_toolbar_home);
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
-        homeViewModel.getSelectedBusinessesNumb().observe(getViewLifecycleOwner(),toolbar::setTitle);
+        homeViewModel.getSelectedBusinessesNumbLiveData().observe(getViewLifecycleOwner(),toolbar::setTitle);
 
 
 
@@ -83,6 +87,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        System.out.println("Activity obliterated");
     }
 
     private MenuItem addIcon;
@@ -97,7 +103,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.delete:
-                    // Navigate to settings screen.
+                    askDeleteBusiness();
                     return true;
                 case R.id.select_all:
                     if (homeViewModel.getIsAllSelected()) {
@@ -131,6 +137,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void showBottomSheet() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
         bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
+
     }
 
     public void updateToolbar() {
@@ -144,6 +151,12 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             selectAllIcon.setIcon(R.drawable.checked_circle);
         }else {
             selectAllIcon.setIcon(R.drawable.unchked_circle);
+        }
+
+        if(!isDeleteModeActivate){
+            toolbar.setNavigationIcon(null);
+        }else{
+            toolbar.setNavigationIcon(R.drawable.cancel_24);
         }
 
     }
@@ -183,7 +196,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             @Override
             public void reciveCardHol(View cardHolder) {
                 //Show empty circle when the delete mode is activated
-                homeViewModel.getCheckedOrUncheckedCircle().observe(getViewLifecycleOwner(),
+                homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
                         cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
             }
 
@@ -194,7 +207,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void selectAll() {
         selectAllIcon.setIcon(R.drawable.checked_circle);
-        homeViewModel.setCheckedOrUncheckedCircle(checkedCircle);
+        homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
         homeViewModel.selectAll();
 
 
@@ -203,7 +216,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void unSelectAll() {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
-        homeViewModel.setCheckedOrUncheckedCircle(null);
+        homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
         homeViewModel.unSelectAll();
     }
 
@@ -235,7 +248,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
     public void desactivateDeleteMode() {
-        homeViewModel.setCheckedOrUncheckedCircle(null);
+        homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         homeViewModel.desactivateDeleteMod();
         toolbar.setNavigationIcon(null);
@@ -264,16 +277,59 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void showProgressBar() {
+        ListenResponse action = (cancelDeleteProcess)->{
+            if(cancelDeleteProcess){
+                homeViewModel.cancelDeleteProcess();
+            }
+        };
+
+
+        String title =  getString(R.string.delete);
+        MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
+        MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedBusnLiveData();
+
+         progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+                title, getViewLifecycleOwner(), progress, deletedBusiness);
+
+        progressBarDialog.show(getParentFragmentManager(), "spinning_wheel");
 
     }
+    private  ProgressBarDialog progressBarDialog;
 
     @Override
     public void hideProgressBar() {
+        if(progressBarDialog != null){
+            progressBarDialog.dismiss();
+        }
+
+
+
+
 
     }
 
     @Override
-    public void updateProgressBar() {
+    public void askDeleteBusiness() {
+        ListenResponse action = (response)->{
+            if(response){
+                homeViewModel.deletetBusiness();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateToolbar();
+                    }
+                });
+
+            }else {
+                desactivateDeleteMode();
+            }
+        };
+
+        String title = getString(R.string.delete_businesses_warn);
+        AskWhetherDeleteDialog askWhetherDeleteDialog = new
+                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
+
+        askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
 
     }
 }

@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.home.products.create_product;
+package com.kunano.scansell_native.ui.home.business.create_product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

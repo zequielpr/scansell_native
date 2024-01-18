@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.home.products;
+package com.kunano.scansell_native.ui.home.business;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,23 +12,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.databinding.FragmentProductsBinding;
+import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 
-public class ProductsFragment extends Fragment {
+public class BusinessFragment extends Fragment {
 
-    FragmentProductsBinding binding;
+    FragmentBusinessBinding binding;
 
-    private ProductsViewModel mViewModel;
+    private BusinessViewModel mViewModel;
     private Toolbar toolbar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        String businessKey = ProductsFragmentArgs.fromBundle(getArguments()).getBusinessKey();
+        String businessKey = BusinessFragmentArgs.fromBundle(getArguments()).getBusinessKey();
 
 
 
-        binding = FragmentProductsBinding.inflate(inflater, container, false);
+        binding = FragmentBusinessBinding.inflate(inflater, container, false);
 
         toolbar = binding.toolbarProducts;
         toolbar.inflateMenu(R.menu.actions_toolbar_products);
@@ -42,7 +42,7 @@ public class ProductsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(BusinessViewModel.class);
         // TODO: Use the ViewModel
     }
 

@@ -29,7 +29,7 @@
         tools:layout="@layout/profile_fragment" />
     <fragment
         android:id="@+id/productsFragment2"
-        android:name="com.kunano.scansell_native.ui.home.products.ProductsFragment"
+        android:name="com.kunano.scansell_native.ui.home.business.BusinessFragment"
         android:label="fragment_products"
         tools:layout="@layout/fragment_products" >
         <action
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/createProductFragment"
-        android:name="com.kunano.scansell_native.ui.home.products.create_product.CreateProductFragment"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.CreateProductFragment"
         android:label="fragment_create_product"
         tools:layout="@layout/fragment_create_product" >
         <action
