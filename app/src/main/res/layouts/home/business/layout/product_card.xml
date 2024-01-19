@@ -1,113 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/productCard"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
-            android:id="@+id/imageViewProduct"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0"
-            android:contentDescription="@string/image_product_decription"
-            tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
+        app:cardElevation="0dp">
+
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textViewTitleProduct"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageViewProduct"
+                android:layout_width="92dp"
+                android:layout_height="94dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:contentDescription="@string/image_product_decription"
+                android:scaleType="center"
+                tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product title xxxxxxxx"
-                android:textSize="20sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageViewIconStock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    app:srcCompat="@drawable/baseline_circle_24" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textViewStock"
+                    android:id="@+id/textViewTitleProduct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
-                    android:text="Stock" />
-            </LinearLayout>
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Product title xxxxxxxx"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageViewIconSellingPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    app:srcCompat="@drawable/sell_ic" />
-
-                <TextView
-                    android:id="@+id/textViewSellingPrice"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
-                    android:text="Selling price" />
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/imageViewIconStock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/baseline_circle_24" />
 
-                <ImageView
-                    android:id="@+id/imageViewIconBuyinPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    app:srcCompat="@drawable/buying_price_ic" />
+                    <TextView
+                        android:id="@+id/textViewStock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="3dp"
+                        android:text="Stock" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textViewBuyingPrice"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
-                    android:text="Buying price" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageViewIconSellingPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/sell_ic" />
+
+                    <TextView
+                        android:id="@+id/textViewSellingPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="3dp"
+                        android:text="Selling price" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageViewIconBuyinPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/buying_price_ic" />
+
+                    <TextView
+                        android:id="@+id/textViewBuyingPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="3dp"
+                        android:text="Buying price" />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/productCard"
+        android:layout_marginTop="4dp"
+        android:background="@color/teal_700" />
+
+</RelativeLayout>

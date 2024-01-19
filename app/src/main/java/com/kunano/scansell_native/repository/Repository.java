@@ -20,16 +20,22 @@ import java.util.concurrent.Executors;
 
 public class Repository {
     private BusinessDao businessDao;
+
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
     private ProductDao productDao;
     private LiveData<List<Business>> allBusiness;
-    private LiveData<List<BusinessWithProduct>> allProducts;
+    private LiveData<List<BusinessWithProduct>> allProductsWithBusiness;
+    private LiveData<Product> allProducts;
 
     public Repository(Application application) {
         AppDatabase appDatabase = AppDatabase.getInstance(application);
         businessDao = appDatabase.businessDao();
         productDao = appDatabase.productDao();
         allBusiness = businessDao.getAllBusinesses();
-        allProducts = productDao.getBusinessWithProduct();
+        allProductsWithBusiness = businessDao.getBusinessWithProduct();
     }
 
 
@@ -67,7 +73,28 @@ public class Repository {
     }
 
 
-    public void insertProduct(Product product) {
+    public void insertProduct(Product product, ListenResponse response) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Long resultado = null;
+            try {
+
+                resultado = productDao.insertProduct(product).get();
+                if (resultado > 0) {
+                    response.isSuccessfull(true);
+                } else {
+                    response.isSuccessfull(false);
+                }
+
+            } catch (ExecutionException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 
@@ -88,9 +115,16 @@ public class Repository {
     public LiveData<List<Business>> getAllBusinesses() {
         return allBusiness;
     }
+    public LiveData<List<Business>> getBusinesById(Long id){
+        return businessDao.getBusinessById(id);
+    }
 
-    public LiveData<List<BusinessWithProduct>> getAllproducts() {
-        return allProducts;
+    public LiveData<List<BusinessWithProduct>> getAllBusinessWithProduct() {
+        return allProductsWithBusiness;
+    }
+
+    public LiveData<List<Product>> getProductsList(Long[] businessId){
+        return productDao.getProductList(businessId);
     }
 
 

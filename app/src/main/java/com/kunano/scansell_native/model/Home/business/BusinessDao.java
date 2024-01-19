@@ -7,8 +7,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 
 import java.util.List;
 
@@ -17,8 +19,8 @@ public interface BusinessDao  {
     @Query("SELECT * FROM business")
     LiveData<List<Business>> getAllBusinesses();
 
-    @Query("SELECT * FROM Business WHERE businessId IN (:userIds)")
-    List<Business> loadAllByIds(int[] userIds);
+    @Query("SELECT * FROM Business WHERE businessId IN (:businessId)")
+    LiveData<List<Business>> getBusinessById(Long businessId);
 
     /*
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND " +
@@ -35,4 +37,9 @@ public interface BusinessDao  {
 
     @Delete
     ListenableFuture<Integer> delete(Business business);
+
+
+    @Transaction
+    @Query("SELECT * FROM Business")
+    public LiveData<List<BusinessWithProduct>> getBusinessWithProduct();
 }

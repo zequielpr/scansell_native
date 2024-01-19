@@ -13,7 +13,7 @@ public class BusinessWithProduct{
     public Business business;
     @Relation(
             parentColumn = "businessId",
-            entityColumn = "createdInbusinessId"
+            entityColumn = "businessIdFK"
     )
     public List<Product> productsList;
 }

@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         toolbar.inflateMenu(R.menu.actions_toolbar_home);
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
-        homeViewModel.getSelectedBusinessesNumbLiveData().observe(getViewLifecycleOwner(),toolbar::setTitle);
+        homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(),toolbar::setTitle);
 
 
 
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                     askDeleteBusiness();
                     return true;
                 case R.id.select_all:
-                    if (homeViewModel.getIsAllSelected()) {
+                    if (homeViewModel.isAllSelected()) {
                         unSelectAll();
                     } else {
                         selectAll();
@@ -147,7 +147,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         deleteIcon.setVisible(isDeleteModeActivate);
         selectAllIcon.setVisible(isDeleteModeActivate);
 
-        if (homeViewModel.getIsAllSelected()){
+        if (homeViewModel.isAllSelected()){
             selectAllIcon.setIcon(R.drawable.checked_circle);
         }else {
             selectAllIcon.setIcon(R.drawable.unchked_circle);
@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void selectAll() {
         selectAllIcon.setIcon(R.drawable.checked_circle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
-        homeViewModel.selectAll();
+        homeViewModel.selectAll(homeViewModel.parseBusinessListToGeneric());
 
 
     }
@@ -224,7 +224,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void checkCard(View cardHolder, Business business) {
         updateToolbar();
 
-        if (homeViewModel.getBusinessesToDelete().contains(business)) {
+        if (homeViewModel.getItemsToDelete().contains(business)) {
             cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
             System.out.println("Seleccionada" +  cardHolder.getTag());
             return;
@@ -286,7 +286,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         String title =  getString(R.string.delete);
         MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
-        MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedBusnLiveData();
+        MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
 
          progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
                 title, getViewLifecycleOwner(), progress, deletedBusiness);

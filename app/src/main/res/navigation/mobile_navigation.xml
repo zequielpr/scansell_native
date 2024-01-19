@@ -12,7 +12,7 @@
         tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_navigation_home_to_productsFragment22"
-            app:destination="@id/productsFragment2"
+            app:destination="@id/businessFragment"
             app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
 
@@ -28,10 +28,10 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/profile_fragment" />
     <fragment
-        android:id="@+id/productsFragment2"
+        android:id="@+id/businessFragment"
         android:name="com.kunano.scansell_native.ui.home.business.BusinessFragment"
         android:label="fragment_products"
-        tools:layout="@layout/fragment_products" >
+        tools:layout="@layout/fragment_business" >
         <action
             android:id="@+id/action_productsFragment2_to_navigation_home"
             app:destination="@id/navigation_home" />
@@ -50,6 +50,6 @@
         tools:layout="@layout/fragment_create_product" >
         <action
             android:id="@+id/action_createProductFragment_to_productsFragment2"
-            app:destination="@id/productsFragment2" />
+            app:destination="@id/businessFragment" />
     </fragment>
 </navigation>
