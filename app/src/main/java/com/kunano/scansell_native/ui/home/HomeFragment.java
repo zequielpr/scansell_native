@@ -28,8 +28,6 @@ import com.kunano.scansell_native.ui.SpinningWheel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.notifications.AskWhetherDeleteDialog;
 
-import java.util.List;
-
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;
     HomeViewModel homeViewModel;
@@ -122,12 +120,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         if (homeViewModel.isDeleteModeActive()) {
             toolbar.setNavigationIcon(R.drawable.cancel_24);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    desactivateDeleteMode();
-                }
-            });
+            toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         }
         updateToolbar();
 
@@ -162,11 +155,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
 
-    public void updateBusinessView(List<Business> businessesList) {
-        businessCardAdepter.submitList(businessesList);
-    }
-
-
     public void setBusinessCardOncliListener() {
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
@@ -183,8 +171,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                 if(!homeViewModel.isDeleteModeActive()){
                     activateDeleteMode();
                 }
-
-
 
             }
 
@@ -238,19 +224,14 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void activateDeleteMode() {
         homeViewModel.setDeleteModeActive(true);
         toolbar.setNavigationIcon(R.drawable.cancel_24);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                desactivateDeleteMode();
-            }
-        });
+        toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         updateToolbar();
     }
 
-    public void desactivateDeleteMode() {
+    public void desactivateDeleteMode(View view) {
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
         selectAllIcon.setIcon(R.drawable.unchked_circle);
-        homeViewModel.desactivateDeleteMod();
+        homeViewModel.desactivateDeleteMod(getString(R.string.businesses_title));
         toolbar.setNavigationIcon(null);
         updateToolbar();
     }
@@ -321,7 +302,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                 });
 
             }else {
-                desactivateDeleteMode();
+                desactivateDeleteMode(null);
             }
         };
 

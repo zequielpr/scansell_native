@@ -15,64 +15,95 @@ import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BusinessViewModel extends DeleteItemsViewModel {
 
     private LiveData<List<BusinessWithProduct>> businessListWithProductsList;
-
-
-    private Long businessId;
+    private Long currentBusinessId;
     LiveData<List<Product>> allProductLive;
     private MutableLiveData<Business> currentBusinessLiveData;
-    private MutableLiveData<String> businessName;
+    private String businessName;
     private MutableLiveData<String> businessAddress;
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);
         businessListWithProductsList = repository.getAllBusinessWithProduct();
-        businessName = new MutableLiveData<>();
+        businessName = "";
         businessAddress = new MutableLiveData<>();
         currentBusinessLiveData = new MutableLiveData<>();
-
-        businessId = new Long(0);
+        productList = new ArrayList<>();
     }
+    public void shortTap(Product product){
+        if (isDeleteModeActive) {
+
+            if (itemsToDelete.contains(product)) {
+                itemsToDelete.remove(product);
+
+            } else {
+                itemsToDelete.add((Object) product);
+                //Select to delete
+            }
 
 
-    public void getProducts() {
-
-    }
-
-
-    public void updateCurrentBusiness(List<Business> currentBusiness) {
-        Optional<Business> business = currentBusiness.stream().findFirst();
-
-        if (business != null) {
-            currentBusinessLiveData.postValue(business.get());
-            businessName.postValue(business.get().getBusinessName());
-            businessAddress.postValue(business.get().getBusinessAddress());
+            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+            isAllSelected = productList.size() == itemsToDelete.size();
+            return;
         }
 
     }
 
+    public void longTap(Product product){
+        if (itemsToDelete.contains(product)) {
+            itemsToDelete.remove(product);
+        } else {
+            itemsToDelete.add(product);
+        }
+        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+        isAllSelected = productList.size() == itemsToDelete.size();
+
+    }
 
 
 
 
+    public void updateCurrentBusiness(Business currentBusiness) {
+        //Optional<Business> business = currentBusiness.stream().findFirst();
+
+        if (currentBusiness!= null) {
+
+            //Set name and address of the business
+            businessName = currentBusiness.getBusinessName();
+            if(!isDeleteModeActive)setSelectedItemsNumbLiveData(businessName);
+
+            businessAddress.postValue(currentBusiness.getBusinessAddress());
+
+        }
+
+    }
+
+    List<Product> productList;
     public List<Product> getProductsFromBusiness(List<BusinessWithProduct> businessWithProducts) {
-        Optional<List<Product>> productList = businessWithProducts.stream().
-                filter((bp) -> bp.business.getBusinessId() == getBusinessId()).
-                map((bp) -> (List<Product>) bp.productsList).
-                findFirst();
+
+       try {
+           BusinessWithProduct businessWithProduct = businessWithProducts.stream().
+                   filter((bp) -> bp.business.getBusinessId() == currentBusinessId).findFirst().get();
+
+           currentBusinessLiveData.postValue(businessWithProduct.business);
+           productList = businessWithProduct.productsList;
+           return  businessWithProduct.productsList;
+       }catch (Exception e){
+           return new ArrayList<>();
+       }
 
 
-        try {
-            return productList.get();
-        }catch (Exception e){
-            return new ArrayList<>();
-        }
+    }
 
+    public List<Object> parseProductListToGeneric() {
+        return productList.stream()
+                .map(product-> (Object) product)
+                .collect(Collectors.toList());
     }
 
 
@@ -83,9 +114,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         double bPrice = Double.parseDouble(buyingPrice);
         double sPrice = Double.parseDouble(sellingPrice);
         int stck = Integer.parseInt(stock);
-
-        System.out.println("business id: " + getBusinessId());
-        Product product = new Product(businessId, name, bPrice, sPrice, stck, img,
+        Product product = new Product(currentBusinessId, name, bPrice, sPrice, stck, img,
                 creatingDate);
 
         repository.insertProduct(product, response::isSuccessfull);
@@ -96,20 +125,17 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         return allProductLive;
     }
 
-    public void setAllProductLive(LiveData<List<Product>> allProductLive) {
-        this.allProductLive = allProductLive;
-    }
-
-    public void setActualBusinessLiveData(Business business) {
-        this.currentBusinessLiveData.postValue(business);
+    public void setAllProductLive() {
+        this.allProductLive = repository.getProductsList(currentBusinessId);
     }
 
 
-    public MutableLiveData<String> getBusinessName() {
+
+    public String getBusinessName() {
         return businessName;
     }
 
-    public void setBusinessName(MutableLiveData<String> businessName) {
+    public void setBusinessName(String businessName) {
         this.businessName = businessName;
     }
 
@@ -129,12 +155,15 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         this.businessListWithProductsList = businessListWithProductsList;
     }
 
-    public Long getBusinessId() {
-        return businessId;
+    public LiveData<Business> getCurrentBusinessLiveData() {
+        return currentBusinessLiveData;
     }
 
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
-        System.out.println("Business di: " + this.businessId);
+    public Long getCurrentBusinessId() {
+        return currentBusinessId;
+    }
+
+    public void setCurrentBusinessId(Long currentBusinessId) {
+        this.currentBusinessId = currentBusinessId;
     }
 }

@@ -19,7 +19,7 @@ public interface ProductDao {
 
 
     @Query("SELECT * FROM Product WHERE businessIdFK in (:businessId)")
-    public LiveData<List<Product>> getProductList(Long[] businessId);
+    public LiveData<List<Product>> getProductList(Long businessId);
 
 
 

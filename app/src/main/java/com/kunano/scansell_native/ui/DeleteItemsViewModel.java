@@ -44,7 +44,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
     public void selectAll(List<Object> items){
         isAllSelected = true;
-        itemsToDelete.addAll( items);
+        itemsToDelete.addAll(items);
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
 
     }
@@ -55,8 +55,8 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
     }
 
-    public void  desactivateDeleteMod(){
-        selectedItemsNumbLiveData.postValue(getApplication().getString(R.string.businesses_title));
+    public void  desactivateDeleteMod(String appBarTitle){
+        selectedItemsNumbLiveData.postValue(appBarTitle);
         itemsToDelete.clear();
         isAllSelected = false;
         isDeleteModeActive = false;
@@ -83,7 +83,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
 
 
-    public void deletetItems(ListenResponse response) {
+    public void deletetItems(ListenResponse response, String appBarTitle) {
         selectedItemsNumbLiveData.postValue(getApplication().getString(R.string.businesses_title));
         checkedOrUncheckedCirclLivedata.postValue(null);
         isAllSelected = false;
@@ -124,7 +124,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
             }
 
             response.isSuccessfull(true);
-            desactivateDeleteMod();
+            desactivateDeleteMod(appBarTitle);
 
             // Update the LiveData with the result
 
@@ -215,8 +215,8 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         return selectedItemsNumbLiveData;
     }
 
-    public void setSelectedItemsNumbLiveData(MutableLiveData<String> selectedItemsNumbLiveData) {
-        this.selectedItemsNumbLiveData = selectedItemsNumbLiveData;
+    public void setSelectedItemsNumbLiveData(String selectedItemsNumbLiveData) {
+        this.selectedItemsNumbLiveData.postValue(selectedItemsNumbLiveData);
     }
 
     public MutableLiveData<Drawable> getCheckedOrUncheckedCirclLivedata() {
@@ -238,5 +238,13 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     public DeleteItemsViewModel(@NonNull Application application) {
         super(application);
         repository = new Repository(application);
+        this.deleteProgressLiveData = new MutableLiveData<>();
+        this.selectedItemsNumbLiveData = new MutableLiveData<>();
+        checkedOrUncheckedCirclLivedata = new MutableLiveData<>();
+        this.deletedItemsLiveData = new MutableLiveData<>();
+        this.itemsToDelete = new LinkedHashSet<>();
+        this.deletedItems = new HashSet<>();
+        this.isDeleteModeActive = false;
+        this.isAllSelected = false;
     }
 }

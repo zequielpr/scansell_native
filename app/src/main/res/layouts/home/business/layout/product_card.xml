@@ -12,37 +12,51 @@
         android:id="@+id/productCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:outlineSpotShadowColor="@color/black"
+        android:layout_marginTop="15dp"
         app:cardElevation="0dp">
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/imageViewProduct"
-                android:layout_width="92dp"
-                android:layout_height="94dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="0"
-                android:contentDescription="@string/image_product_decription"
-                android:scaleType="center"
-                tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0">
+
+                <ImageView
+                    android:id="@+id/imageViewProduct"
+                    android:layout_width="92dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/image_product_decription"
+                    android:scaleType="center"
+                    tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
+
+                <ImageView
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/uncheckedCircle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/image_product_decription"
+                    android:scaleType="center"
+                    tools:srcCompat="@drawable/unchked_circle" />
+
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
@@ -64,8 +78,9 @@
 
                     <ImageView
                         android:id="@+id/imageViewIconStock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
                         android:layout_weight="0"
                         app:srcCompat="@drawable/baseline_circle_24" />
 
@@ -75,7 +90,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
-                        android:text="Stock" />
+                        android:text="Stock"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -86,8 +102,9 @@
 
                     <ImageView
                         android:id="@+id/imageViewIconSellingPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
                         android:layout_weight="0"
                         app:srcCompat="@drawable/sell_ic" />
 
@@ -97,7 +114,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
-                        android:text="Selling price" />
+                        android:text="Selling price"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -108,8 +126,9 @@
 
                     <ImageView
                         android:id="@+id/imageViewIconBuyinPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
                         android:layout_weight="0"
                         app:srcCompat="@drawable/buying_price_ic" />
 
@@ -119,7 +138,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
-                        android:text="Buying price" />
+                        android:text="Buying price"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -128,9 +148,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:layout_below="@id/productCard"
-        android:layout_marginTop="4dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/teal_700" />
 
 </RelativeLayout>

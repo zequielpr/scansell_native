@@ -4,15 +4,13 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.controllers.ValidateData;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,14 +27,6 @@ public class HomeViewModel extends DeleteItemsViewModel {
     public HomeViewModel(@NonNull Application application) {
         super(application);
         this.businessListLiveData = repository.getAllBusinesses();
-        this.deleteProgressLiveData = new MutableLiveData<>();
-        this.selectedItemsNumbLiveData = new MutableLiveData<>();
-        checkedOrUncheckedCirclLivedata = new MutableLiveData<>();
-        this.deletedItemsLiveData = new MutableLiveData<>();
-        this.itemsToDelete = new LinkedHashSet<>();
-        this.deletedItems = new HashSet<>();
-        this.isDeleteModeActive = false;
-        this.isAllSelected = false;
     }
 
 
@@ -76,7 +66,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
                 itemsToDelete.remove(business);
 
             } else {
-                itemsToDelete.add((Object) business);
+                itemsToDelete.add(business);
                 //Select to delete
             }
 
@@ -86,7 +76,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
             return;
         }
 
-        currentBusiness = repository.getBusinesById(business.getBusinessId());
+        //currentBusiness = repository.getBusinesById(business.getBusinessId());
 
         listenHomeViewModel.navigateToProducts(String.valueOf(business.getBusinessId()));
     }
@@ -125,7 +115,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
                     listenHomeViewModel.hideProgressBar();
                 }
             }
-        });
+        },getApplication().getString(R.string.businesses_title));
 
 
     }

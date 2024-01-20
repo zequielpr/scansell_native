@@ -20,7 +20,7 @@ public interface BusinessDao  {
     LiveData<List<Business>> getAllBusinesses();
 
     @Query("SELECT * FROM Business WHERE businessId IN (:businessId)")
-    LiveData<List<Business>> getBusinessById(Long businessId);
+    LiveData<Business> getBusinessById(Long businessId);
 
     /*
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND " +

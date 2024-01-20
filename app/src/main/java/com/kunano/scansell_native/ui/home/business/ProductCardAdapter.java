@@ -30,6 +30,10 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         public boolean areContentsTheSame(@NonNull Product oldItem, @NonNull Product newItem) {
             return oldItem.getProductName().equals(newItem.getProductName()) &&
                     oldItem.getCratingDate().equals(newItem.getCratingDate()) &&
+                    oldItem.getBuying_price() == newItem.getBuying_price() &&
+                    oldItem.getSelling_price() == newItem.getSelling_price() &&
+                    oldItem.getBusinessIdFK() == newItem.getBusinessIdFK() &&
+                    oldItem.getStock().equals(newItem.getStock()) &&
                     oldItem.getImg() == oldItem.getImg();
         }
     };
@@ -58,7 +62,6 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
         holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
         holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
-
         holder.card.setTag(String.valueOf(product.getProductId()));
 
         listener.getCardHolderOnBind(holder.itemView, product);
@@ -85,6 +88,8 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
             sellingPrice = itemView.findViewById(R.id.textViewSellingPrice);
             buyingPrice = itemView.findViewById(R.id.textViewBuyingPrice);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
+            unCheckedCircle = itemView.findViewById(R.id.uncheckedCircle);
+
 
             //unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
 
@@ -125,9 +130,9 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
 
 
     public interface OnclickProductCardListener{
-        abstract void onShortTap(Product business, View cardHolder);
-        abstract void onLongTap(Product  business, View cardHolder);
-        abstract void getCardHolderOnBind(View cardHolder, Product  business);
+        abstract void onShortTap(Product product, View cardHolder);
+        abstract void onLongTap(Product  product, View cardHolder);
+        abstract void getCardHolderOnBind(View cardHolder, Product  prod);
         abstract void reciveCardHol(View cardHolder);
 
     }

@@ -115,7 +115,7 @@ public class Repository {
     public LiveData<List<Business>> getAllBusinesses() {
         return allBusiness;
     }
-    public LiveData<List<Business>> getBusinesById(Long id){
+    public LiveData<Business> getBusinesById(Long id){
         return businessDao.getBusinessById(id);
     }
 
@@ -123,7 +123,7 @@ public class Repository {
         return allProductsWithBusiness;
     }
 
-    public LiveData<List<Product>> getProductsList(Long[] businessId){
+    public LiveData<List<Product>> getProductsList(Long businessId){
         return productDao.getProductList(businessId);
     }
 
