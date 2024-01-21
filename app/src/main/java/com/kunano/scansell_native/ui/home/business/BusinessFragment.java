@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -19,12 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
-
-import java.util.List;
+import com.kunano.scansell_native.ui.ProgressBarDialog;
+import com.kunano.scansell_native.ui.notifications.AskWhetherDeleteDialog;
 
 
 public class BusinessFragment extends Fragment {
@@ -45,6 +48,8 @@ public class BusinessFragment extends Fragment {
 
     private MenuItem deleteIcon;
     private MenuItem selectAllIcon;
+    private FragmentManager suportFmanager;
+    private  ProgressBarDialog progressBarDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -66,6 +71,7 @@ public class BusinessFragment extends Fragment {
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
 
 
+        suportFmanager = getActivity().getSupportFragmentManager();
 
         productCardAdapter= new ProductCardAdapter();
         recyclerViewProduct.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -74,7 +80,10 @@ public class BusinessFragment extends Fragment {
 
 
         businessViewModel.setCurrentBusinessId(Long.parseLong(businessKey));
-        businessViewModel.getBusinessListWithProductsList().observe(getViewLifecycleOwner(), this::updateProductsList);
+        //businessViewModel.getBusinessListWithProductsList().observe(getViewLifecycleOwner(), this::updateProductsList);
+
+        businessViewModel.queryAllProducts().observe(getViewLifecycleOwner(), this::updateProductsList);
+
         businessViewModel.getCurrentBusinessLiveData().observe(getViewLifecycleOwner(), businessViewModel::updateCurrentBusiness);
         businessViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
 
@@ -88,8 +97,10 @@ public class BusinessFragment extends Fragment {
 
     }
 
-    public void updateProductsList(List<BusinessWithProduct> businessWithProducts){
-        productCardAdapter.submitList(businessViewModel.getProductsFromBusiness(businessWithProducts));
+    public void updateProductsList(BusinessWithProduct businessWithProducts){
+        businessViewModel.setCurrentBusinessLiveData(businessWithProducts.business);
+        businessViewModel.setProductList(businessWithProducts.productsList);
+        productCardAdapter.submitList(businessWithProducts.productsList);
     }
 
 
@@ -182,13 +193,13 @@ public class BusinessFragment extends Fragment {
     public void inflateDeleteMenu(){
         toolbar.setNavigationIcon(R.drawable.cancel_24);
         toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
-        deleteIcon = toolbar.getMenu().findItem(R.id.delete);
+        deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
 
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
-                case R.id.delete:
-                    //askDeleteBusiness();
+                case R.id.delete_button:
+                    askDeleteBusiness();
                     return true;
                 case R.id.select_all_button:
                     if (businessViewModel.isAllSelected()) {
@@ -256,6 +267,75 @@ public class BusinessFragment extends Fragment {
         toolbar.setNavigationIcon(null);
         updateToolbar();
     }
+
+
+
+
+
+    public void askDeleteBusiness() {
+        System.out.println("Ask whether delete businiesses");
+        ListenResponse action = this::deleteOrCancel;
+        String title = getString(R.string.delete_businesses_warn);
+        AskWhetherDeleteDialog askWhetherDeleteDialog = new
+                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
+        askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
+
+    }
+
+
+    public void deleteOrCancel(boolean response){
+        if(response){
+            showProgressBar();
+            businessViewModel.deletetItems(this::hideProgressBar, businessViewModel.getBusinessName());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateToolbar();
+                }
+            });
+
+        }else {
+            desactivateDeleteMode(null);
+        }
+    }
+
+
+
+
+
+    public void showProgressBar() {
+        ListenResponse action = (cancelDeleteProcess)->{
+            if(cancelDeleteProcess){
+                businessViewModel.cancelDeleteProcess();
+            }
+        };
+
+
+        String title =  getString(R.string.delete);
+        MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
+        MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
+
+        progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+                title, getViewLifecycleOwner(), progress, deletedBusiness);
+
+        progressBarDialog.show(getParentFragmentManager(), "progress bar");
+
+    }
+
+
+
+    public void hideProgressBar(boolean result) {
+        if(!result){
+            //Show result
+            return;
+        }
+
+        if(progressBarDialog != null){
+            progressBarDialog.dismiss();
+        }
+
+    }
+
 
 
 

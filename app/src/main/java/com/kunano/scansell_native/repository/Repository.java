@@ -35,7 +35,6 @@ public class Repository {
         businessDao = appDatabase.businessDao();
         productDao = appDatabase.productDao();
         allBusiness = businessDao.getAllBusinesses();
-        allProductsWithBusiness = businessDao.getBusinessWithProduct();
     }
 
 
@@ -47,6 +46,9 @@ public class Repository {
             Long resultado = null;
             try {
 
+              /* for (int i = 0; i < 5000; i++){
+                    resultado = businessDao.insertBusiness(business).get();
+                }*/
                 resultado = businessDao.insertBusiness(business).get();
                 if (resultado > 0) {
                     response.isSuccessfull(true);
@@ -79,8 +81,15 @@ public class Repository {
         executor.execute(() -> {
             Long resultado = null;
             try {
+                Product p;
 
-                resultado = productDao.insertProduct(product).get();
+                for (int i = 0; i < 5000; i++){
+                   p = new Product(product.getBusinessIdFK(), product.getProductName(), product.getBuying_price(),
+                            product.getSelling_price(), product.getStock(), null, "");
+                    resultado = productDao.insertProduct(p).get();
+                    System.out.println("product id " + p.getProductId());
+                }
+                //resultado = productDao.insertProduct(product).get();
                 if (resultado > 0) {
                     response.isSuccessfull(true);
                 } else {
@@ -107,8 +116,8 @@ public class Repository {
         return businessDao.delete(business);
     }
 
-    public void deleteProduct(Product product) {
-
+    public ListenableFuture<Integer> deleteProduct(Product product) {
+        return productDao.deleteProduct(product);
     }
 
     //Read operations--------------------------------------------------------------
@@ -123,8 +132,8 @@ public class Repository {
         return allProductsWithBusiness;
     }
 
-    public LiveData<List<Product>> getProductsList(Long businessId){
-        return productDao.getProductList(businessId);
+    public LiveData<BusinessWithProduct> getProductsList(Long businessId){
+        return businessDao.getBusinessWithProduct(businessId);
     }
 
 

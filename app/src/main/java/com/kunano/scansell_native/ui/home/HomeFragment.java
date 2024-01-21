@@ -129,7 +129,9 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void showBottomSheet() {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+
         bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
+
 
     }
 
@@ -221,6 +223,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
 
+
     public void activateDeleteMode() {
         homeViewModel.setDeleteModeActive(true);
         toolbar.setNavigationIcon(R.drawable.cancel_24);
@@ -272,7 +275,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
          progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
 
-        progressBarDialog.show(getParentFragmentManager(), "spinning_wheel");
+        progressBarDialog.show(getParentFragmentManager(), "progress bar");
 
     }
     private  ProgressBarDialog progressBarDialog;
@@ -313,6 +316,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
 
     }
+
 }
 
 

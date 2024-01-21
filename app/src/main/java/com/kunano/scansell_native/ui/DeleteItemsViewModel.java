@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.repository.Repository;
 
 import java.util.HashSet;
@@ -40,6 +41,11 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
     /**example 10/20. 10 ites out of 20 have been eliminated **/
     protected MutableLiveData<String> deletedItemsLiveData;
+
+    public static ItemTypeToDelete itemTypeToDelete;
+    public static enum ItemTypeToDelete{
+        BUSINESS, PRODUCT
+    }
 
 
     public void selectAll(List<Object> items){
@@ -93,47 +99,80 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         percentageDeleted = 0;
 
 
+        System.out.println("type to delete " + itemTypeToDelete);
 
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
 
-            for (Object item : itemsToDelete) {
-
-                try {
-
-                    if (!continueDeleting) {
-                        break;
-                    }
-                    updateProgressBar();
-                    Thread.sleep(Math.round(1000 / itemsToDelete.size()));
-
-
-                    //Evaluar que tipo de item se recibe
-                    if(item.getClass() == Business.class){
-                        deleteBusiness(item);
-                    }
-                    deletedItems.add(item);
-
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
+            switch (itemTypeToDelete){
+                case BUSINESS:
+                    deleteBusiness();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                case PRODUCT:
+                    deleteProduct();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                default:
 
             }
 
-            response.isSuccessfull(true);
-            desactivateDeleteMod(appBarTitle);
+
 
             // Update the LiveData with the result
 
         });
     }
 
-    private  void deleteBusiness(Object business) throws ExecutionException, InterruptedException {
-        repository.deleteBusiness((Business) business).get();
+    private void deleteBusiness(){
+        for (Object item : itemsToDelete) {
+
+            try {
+
+                if (!continueDeleting) {
+                    break;
+                }
+                updateProgressBar();
+                Thread.sleep(Math.round(1000 / itemsToDelete.size()));
+
+                repository.deleteBusiness((Business) item).get();
+                deletedItems.add(item);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
+
+    private void deleteProduct(){
+        for (Object item : itemsToDelete) {
+
+            try {
+
+                if (!continueDeleting) {
+                    break;
+                }
+                updateProgressBar();
+                Thread.sleep(Math.round(1000 / itemsToDelete.size()));
+
+                repository.deleteProduct((Product) item).get();
+                deletedItems.add(item);
+
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
 
 
 
@@ -246,5 +285,20 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         this.deletedItems = new HashSet<>();
         this.isDeleteModeActive = false;
         this.isAllSelected = false;
+        itemTypeToDelete = null;
     }
+
+    public ItemTypeToDelete getItemTypeToDelete() {
+        return itemTypeToDelete;
+    }
+
+    public void setItemTypeToDelete(ItemTypeToDelete itemTypeToDelete) {
+        this.itemTypeToDelete = itemTypeToDelete;
+    }
+
+
+
 }
+
+
+

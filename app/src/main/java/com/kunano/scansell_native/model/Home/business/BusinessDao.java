@@ -40,6 +40,6 @@ public interface BusinessDao  {
 
 
     @Transaction
-    @Query("SELECT * FROM Business")
-    public LiveData<List<BusinessWithProduct>> getBusinessWithProduct();
+    @Query("SELECT * FROM Business  WHERE businessId = :businessId")
+    public LiveData<BusinessWithProduct> getBusinessWithProduct(Long businessId);
 }

@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.ui.ImageProcessor;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -61,8 +60,9 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         holder.stock.setText(Integer.toString(product.getStock()));
         holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
         holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
-        holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
+        //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
         holder.card.setTag(String.valueOf(product.getProductId()));
+        System.out.println("it is on bind");
 
         listener.getCardHolderOnBind(holder.itemView, product);
     }

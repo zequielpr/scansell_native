@@ -2,9 +2,18 @@ package com.kunano.scansell_native.model.Home.product;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
+import com.kunano.scansell_native.model.Home.business.Business;
+
+@Entity(tableName = "product",
+        foreignKeys = @ForeignKey(entity = Business.class,
+                parentColumns = "businessId",
+                childColumns = "businessIdFK",
+                onDelete = ForeignKey.CASCADE),
+indices = {@Index("img")})
 public class Product {
     @PrimaryKey(autoGenerate = true)
     private long productId;
@@ -22,7 +31,8 @@ public class Product {
     @ColumnInfo(defaultValue = "0.0")
     private  Integer stock;
 
-    @ColumnInfo(defaultValue = "Null")
+
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private  byte[] img;
 
     @ColumnInfo(defaultValue = "creating_date")

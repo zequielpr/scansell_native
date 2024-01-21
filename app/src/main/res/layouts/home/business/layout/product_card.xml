@@ -12,8 +12,8 @@
         android:id="@+id/productCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:outlineSpotShadowColor="@color/black"
         android:layout_marginTop="15dp"
+        android:outlineSpotShadowColor="@color/black"
         app:cardElevation="0dp">
 
 
@@ -42,11 +42,11 @@
                     tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
 
                 <ImageView
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="5dp"
                     android:id="@+id/uncheckedCircle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
                     android:contentDescription="@string/image_product_decription"
                     android:scaleType="center"
                     tools:srcCompat="@drawable/unchked_circle" />
@@ -55,7 +55,7 @@
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
@@ -63,7 +63,7 @@
                 <TextView
                     android:id="@+id/textViewTitleProduct"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Product title xxxxxxxx"
@@ -150,7 +150,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/productCard"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:background="@color/teal_700" />
 
 </RelativeLayout>
