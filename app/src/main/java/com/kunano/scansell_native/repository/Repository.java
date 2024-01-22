@@ -5,15 +5,20 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.business.BusinessDao;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
+import com.kunano.scansell_native.model.Home.product.ProductImg;
+import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
-import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.model.db.relationship.ProductWithImage;
+import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -26,6 +31,8 @@ public class Repository {
     }
 
     private ProductDao productDao;
+
+    private ProductImgDao productImgDao;
     private LiveData<List<Business>> allBusiness;
     private LiveData<List<BusinessWithProduct>> allProductsWithBusiness;
     private LiveData<Product> allProducts;
@@ -34,7 +41,9 @@ public class Repository {
         AppDatabase appDatabase = AppDatabase.getInstance(application);
         businessDao = appDatabase.businessDao();
         productDao = appDatabase.productDao();
+        productImgDao = appDatabase.productImgDao();
         allBusiness = businessDao.getAllBusinesses();
+
     }
 
 
@@ -75,20 +84,20 @@ public class Repository {
     }
 
 
-    public void insertProduct(Product product, ListenResponse response) {
+    public void insertProduct(Product product, byte[] productImg, ListenResponse response) {
         Executor executor = Executors.newSingleThreadExecutor();
+
 
         executor.execute(() -> {
             Long resultado = null;
             try {
-                Product p;
+                /*for (int i = 0; i < 2000; i++){
 
-                for (int i = 0; i < 5000; i++){
-                   p = new Product(product.getBusinessIdFK(), product.getProductName(), product.getBuying_price(),
-                            product.getSelling_price(), product.getStock(), null, "");
-                    resultado = productDao.insertProduct(p).get();
-                    System.out.println("product id " + p.getProductId());
-                }
+                }*/
+                product.setProductId(UUID.randomUUID().toString());
+                resultado = productDao.insertProduct(product).get();
+                ProductImg img = new ProductImg(product.getProductId(), productImg);
+                productImgDao.insertProductImg(img).get();
                 //resultado = productDao.insertProduct(product).get();
                 if (resultado > 0) {
                     response.isSuccessfull(true);
@@ -134,6 +143,25 @@ public class Repository {
 
     public LiveData<BusinessWithProduct> getProductsList(Long businessId){
         return businessDao.getBusinessWithProduct(businessId);
+    }
+
+
+    public void getProdductImage(String productId,
+                                 ProductCardAdapter.LisnedProductImage lisnedProductImage){
+        Executor executor = Executors.newSingleThreadExecutor();
+
+
+        executor.execute(() -> {
+            try {
+                ProductWithImage productWithImage = productImgDao.getBusinessWithProduct(productId).get();
+                lisnedProductImage.recieveProducImage(productWithImage);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ;
+        });
     }
 
 

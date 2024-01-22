@@ -15,6 +15,7 @@ import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BusinessViewModel extends DeleteItemsViewModel {
@@ -117,10 +118,10 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         double bPrice = Double.parseDouble(buyingPrice);
         double sPrice = Double.parseDouble(sellingPrice);
         int stck = Integer.parseInt(stock);
-        Product product = new Product(currentBusinessId, name, bPrice, sPrice, stck, null,
+        Product product = new Product( currentBusinessId, name, bPrice, sPrice, stck,
                 creatingDate);
 
-        repository.insertProduct(product, response::isSuccessfull);
+        repository.insertProduct(product, img, response::isSuccessfull);
     }
 
 

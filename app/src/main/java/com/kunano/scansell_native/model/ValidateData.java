@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.controllers;
+package com.kunano.scansell_native.model;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

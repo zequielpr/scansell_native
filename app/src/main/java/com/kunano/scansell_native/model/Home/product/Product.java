@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.model.Home.product;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -13,10 +14,11 @@ import com.kunano.scansell_native.model.Home.business.Business;
                 parentColumns = "businessId",
                 childColumns = "businessIdFK",
                 onDelete = ForeignKey.CASCADE),
-indices = {@Index("img")})
+indices = {@Index("businessIdFK")})
 public class Product {
-    @PrimaryKey(autoGenerate = true)
-    private long productId;
+    @PrimaryKey()
+    @NonNull
+    private String  productId;
 
     private  long businessIdFK;
 
@@ -31,10 +33,6 @@ public class Product {
     @ColumnInfo(defaultValue = "0.0")
     private  Integer stock;
 
-
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private  byte[] img;
-
     @ColumnInfo(defaultValue = "creating_date")
     private  String cratingDate;
 
@@ -45,23 +43,22 @@ public class Product {
 
 
 
-    public Product(long createdInbusinessId, String productName, double buying_price,
-                   double selling_price, Integer stock, byte[] img, String cratingDate) {
+    public Product(  long createdInbusinessId, String productName, double buying_price,
+                   double selling_price, Integer stock, String cratingDate) {
         this. businessIdFK = createdInbusinessId;
         this.productName = productName;
         this.buying_price = buying_price;
         this.selling_price = selling_price;
         this.stock = stock;
-        this.img = img;
         this.cratingDate = cratingDate;
     }
 
 
-    public long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -103,14 +100,6 @@ public class Product {
 
     public void setStock(Integer stock) {
         this.stock = stock;
-    }
-
-    public byte[] getImg() {
-        return img;
-    }
-
-    public void setImg(byte[] img) {
-        this.img = img;
     }
 
     public String getCratingDate() {

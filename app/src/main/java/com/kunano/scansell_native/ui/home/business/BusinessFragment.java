@@ -51,6 +51,7 @@ public class BusinessFragment extends Fragment {
     private FragmentManager suportFmanager;
     private  ProgressBarDialog progressBarDialog;
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -58,8 +59,6 @@ public class BusinessFragment extends Fragment {
 
 
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
-
-
 
         binding = FragmentBusinessBinding.inflate(inflater, container, false);
 
@@ -90,11 +89,12 @@ public class BusinessFragment extends Fragment {
 
         fButton.setOnClickListener(this::navigateToCreateProduct);
 
+        productCardAdapter.setLifecycleOwner(getViewLifecycleOwner());
+        productCardAdapter.setActivityParent(getActivity());
+
 
         setCardListener();
         return binding.getRoot();
-
-
     }
 
     public void updateProductsList(BusinessWithProduct businessWithProducts){

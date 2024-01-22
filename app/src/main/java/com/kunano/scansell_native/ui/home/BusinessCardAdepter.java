@@ -20,6 +20,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
     private static DiffUtil.ItemCallback<Business> DIFF_CALLBACK = new DiffUtil.ItemCallback<Business>() {
         @Override
         public boolean areItemsTheSame(@NonNull Business oldItem, @NonNull Business newItem) {
+
             return oldItem.getBusinessId() == newItem.getBusinessId();
         }
 

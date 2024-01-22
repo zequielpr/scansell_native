@@ -10,8 +10,10 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.business.BusinessDao;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
+import com.kunano.scansell_native.model.Home.product.ProductImg;
+import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 
-@Database(entities = {Business.class, Product.class}, version = 1)
+@Database(entities = {Business.class, Product.class, ProductImg.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase  instance;
@@ -19,6 +21,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BusinessDao businessDao();
 
     public abstract ProductDao productDao();
+
+    public abstract ProductImgDao productImgDao();
 
 
     public static synchronized AppDatabase getInstance(Context context){
