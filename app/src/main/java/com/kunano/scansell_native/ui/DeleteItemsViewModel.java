@@ -11,7 +11,8 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.repository.Repository;
+import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.BusinessRepository;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,7 +23,8 @@ import java.util.concurrent.Executors;
 
 public class DeleteItemsViewModel extends AndroidViewModel {
 
-    protected Repository repository;
+    protected BusinessRepository businessRepository;
+    private ProductRepository productRepository;
     protected boolean isDeleteModeActive;
     protected boolean isAllSelected;
     protected boolean continueDeleting;
@@ -137,7 +139,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 updateProgressBar();
                 Thread.sleep(Math.round(1000 / itemsToDelete.size()));
 
-                repository.deleteBusiness((Business) item).get();
+                businessRepository.deleteBusiness((Business) item).get();
                 deletedItems.add(item);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -159,7 +161,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 updateProgressBar();
                 Thread.sleep(Math.round(1000 / itemsToDelete.size()));
 
-                repository.deleteProduct((Product) item).get();
+                productRepository.deleteProduct((Product) item).get();
                 deletedItems.add(item);
 
 
@@ -178,12 +180,12 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
 
 
-    public Repository getRepository() {
-        return repository;
+    public BusinessRepository getRepository() {
+        return businessRepository;
     }
 
-    public void setRepository(Repository repository) {
-        this.repository = repository;
+    public void setRepository(BusinessRepository businessRepository) {
+        this.businessRepository = businessRepository;
     }
 
     public boolean isDeleteModeActive() {
@@ -276,7 +278,8 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
     public DeleteItemsViewModel(@NonNull Application application) {
         super(application);
-        repository = new Repository(application);
+        businessRepository = new BusinessRepository(application);
+        productRepository = new ProductRepository(application);
         this.deleteProgressLiveData = new MutableLiveData<>();
         this.selectedItemsNumbLiveData = new MutableLiveData<>();
         checkedOrUncheckedCirclLivedata = new MutableLiveData<>();

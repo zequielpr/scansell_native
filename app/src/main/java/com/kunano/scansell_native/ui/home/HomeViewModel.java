@@ -26,7 +26,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
-        this.businessListLiveData = repository.getAllBusinesses();
+        this.businessListLiveData = businessRepository.getAllBusinesses();
     }
 
 
@@ -36,7 +36,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         Business newBusiness = new Business(name, address, "");
 
-        repository.insertBusiness(newBusiness, this::notifyInsertNewBusinessResult);
+        businessRepository.insertBusiness(newBusiness, this::notifyInsertNewBusinessResult);
         listenHomeViewModel.activateWaitingMode();
     }
 

@@ -10,12 +10,11 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
-import com.kunano.scansell_native.repository.Repository;
+import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BusinessViewModel extends DeleteItemsViewModel {
@@ -27,11 +26,11 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private String businessName;
     private MutableLiveData<String> businessAddress;
     private   List<Product> productList;
+    private ProductRepository productRepository;
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
-        repository = new Repository(application);
-        businessListWithProductsList = repository.getAllBusinessWithProduct();
+        productRepository = new ProductRepository(application);
         businessName = "";
         businessAddress = new MutableLiveData<>();
         currentBusinessLiveData = new MutableLiveData<>();
@@ -56,13 +55,8 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     //prueba
     public LiveData<BusinessWithProduct> queryAllProducts(){
-        return repository.getProductsList(currentBusinessId);
+        return businessRepository.getProductsList(currentBusinessId);
     }
-
-
-
-
-
 
 
 
@@ -121,7 +115,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         Product product = new Product( currentBusinessId, name, bPrice, sPrice, stck,
                 creatingDate);
 
-        repository.insertProduct(product, img, response::isSuccessfull);
+        productRepository.insertProduct(product, img, response::isSuccessfull);
     }
 
 

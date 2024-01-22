@@ -18,13 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.ProductWithImage;
-import com.kunano.scansell_native.repository.Repository;
+import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {
     OnclickProductCardListener listener;
     ContentResolver contentResolver;
-    Repository repository;
+    ProductRepository productRepository;
     LifecycleOwner lifecycleOwner;
     private Activity activityParent;
 
@@ -52,7 +52,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
 
     @Override
     public ProductCardAdapter.CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        repository  = new  Repository((Application) parent.getContext().getApplicationContext());
+        productRepository = new ProductRepository((Application) parent.getContext().getApplicationContext());
        contentResolver = parent.getContext().getContentResolver();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.product_card, parent, false);
@@ -71,9 +71,10 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
         holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
-        repository.getProdductImage(product.getProductId(), new LisnedProductImage() {
+        productRepository.getProdductImage(product.getProductId(), new LisnedProductImage() {
             @Override
             public void recieveProducImage(ProductWithImage productWithImage) {
+
                 activityParent.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
