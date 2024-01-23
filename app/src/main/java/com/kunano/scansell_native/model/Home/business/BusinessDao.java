@@ -16,7 +16,8 @@ import java.util.List;
 
 @Dao
 public interface BusinessDao  {
-    @Query("SELECT * FROM business")
+    @Query("SELECT * FROM business WHERE NOT EXISTS (SELECT 1 FROM " +
+            "businessbin WHERE businessBin.businessIdFk = business.businessId) " )
     LiveData<List<Business>> getAllBusinesses();
 
     @Query("SELECT * FROM Business WHERE businessId IN (:businessId)")

@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home;
 
+import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,15 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.repository.BinsRepository;
 
 public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdepter.CardHolder> {
     OnclickBusinessCardListener listener;
+    private BinsRepository binsRepository;
+    LifecycleOwner lifecycleOwner;
 
     private static DiffUtil.ItemCallback<Business> DIFF_CALLBACK = new DiffUtil.ItemCallback<Business>() {
         @Override
@@ -40,6 +45,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
     @Override
     public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        binsRepository = new BinsRepository((Application) parent.getContext().getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
         return new CardHolder(view);
@@ -50,7 +56,6 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
         holder.title.setText(businessData.getBusinessName());
         holder.address.setText(businessData.getBusinessAddress());
         holder.card.setTag(String.valueOf(businessData.getBusinessId()));
-
         listener.getCardHolderOnBind(holder.itemView, businessData);
     }
 
@@ -109,6 +114,9 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
     }
 
 
+    public void setLifecycleOwner(LifecycleOwner lifecycleOwner) {
+        this.lifecycleOwner = lifecycleOwner;
+    }
 
     public void setListener(OnclickBusinessCardListener listener) {
         this.listener = listener;

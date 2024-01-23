@@ -53,6 +53,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         businessCardAdepter = new BusinessCardAdepter();
         recyclerViewBusinessList.setAdapter(businessCardAdepter);
+        businessCardAdepter.setLifecycleOwner(getViewLifecycleOwner());
 
 
 

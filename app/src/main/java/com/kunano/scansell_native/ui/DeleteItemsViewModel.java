@@ -11,6 +11,7 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.repository.BinsRepository;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.repository.BusinessRepository;
 
@@ -137,9 +138,11 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                     break;
                 }
                 updateProgressBar();
-                Thread.sleep(Math.round(1000 / itemsToDelete.size()));
+                //Thread.sleep(Math.round(1000 / itemsToDelete.size()));
 
-                businessRepository.deleteBusiness((Business) item).get();
+                binsRepository.sendBusinessTobin(((Business) item).getBusinessId()).get();
+
+                //businessRepository.deleteBusiness((Business) item).get();
                 deletedItems.add(item);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -276,10 +279,21 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         this.deletedItemsLiveData = deletedItemsLiveData;
     }
 
+
+    public BinsRepository getBinsRepository() {
+        return binsRepository;
+    }
+
+    public void setBinsRepository(BinsRepository binsRepository) {
+        this.binsRepository = binsRepository;
+    }
+
+    private BinsRepository binsRepository;
     public DeleteItemsViewModel(@NonNull Application application) {
         super(application);
         businessRepository = new BusinessRepository(application);
         productRepository = new ProductRepository(application);
+        binsRepository = new BinsRepository(application);
         this.deleteProgressLiveData = new MutableLiveData<>();
         this.selectedItemsNumbLiveData = new MutableLiveData<>();
         checkedOrUncheckedCirclLivedata = new MutableLiveData<>();

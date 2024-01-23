@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ba07bc1292dad97f66ae062655c98591",
+    "identityHash": "1a8eb79bafcb705c31c9429ea1e3e836",
     "entities": [
       {
         "tableName": "Business",
@@ -179,12 +179,60 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "BusinessBin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bindId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessIdFk` INTEGER NOT NULL, FOREIGN KEY(`businessIdFk`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "bindId",
+            "columnName": "bindId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessIdFk",
+            "columnName": "businessIdFk",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "bindId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_BusinessBin_businessIdFk",
+            "unique": false,
+            "columnNames": [
+              "businessIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BusinessBin_businessIdFk` ON `${TABLE_NAME}` (`businessIdFk`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdFk"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba07bc1292dad97f66ae062655c98591')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a8eb79bafcb705c31c9429ea1e3e836')"
     ]
   }
 }
