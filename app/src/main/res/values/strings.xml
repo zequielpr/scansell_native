@@ -3,7 +3,7 @@
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Vender</string>
     <string name="title_notifications">Perfil</string>
-    <string name="businesses_title">Businesses</string>
+    <string name="businesses_title">businesses</string>
     <string name="create_new_business">New business</string>
     <string name="business_name">Business name</string>
     <string name="business_address">Business address</string>
@@ -17,9 +17,11 @@
     <string name="delete_businesses_title">Delete businesses</string>
     <string name="cancel">Cancel</string>
     <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
+    <string name="send_items_to_bin_warning">Send items to bin?</string>
     <string name="delete">Delete</string>
     <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
     <string name="undo">undo</string>
+    <string name="ok">Ok</string>
     <string name="all">All</string>
     <string name="add">Add</string>
     <string name="selected">selcted</string>
@@ -36,5 +38,9 @@
     <string name="intro_selling_price">Introduce selling price</string>
     <string name="intro_stock">Introduce stock</string>
     <string name="warning">warning</string>
+    <string name="bin">bin</string>
+    <string name="recycle_bin">Recycle bin</string>
+    <string name="empty">empty</string>
+    <string name="edit">edit</string>
 
 </resources>

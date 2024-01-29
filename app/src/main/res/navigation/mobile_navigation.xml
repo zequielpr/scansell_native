@@ -14,6 +14,11 @@
             android:id="@+id/action_navigation_home_to_productsFragment22"
             app:destination="@id/businessFragment"
             app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_navigation_home_to_userBinFragment"
+            app:destination="@id/userBinFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -51,5 +56,16 @@
         <action
             android:id="@+id/action_createProductFragment_to_productsFragment2"
             app:destination="@id/businessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userBinFragment"
+        android:name="com.kunano.scansell_native.ui.home.bin.UserBinFragment"
+        android:label="fragment_user_bin"
+        tools:layout="@layout/fragment_user_bin" >
+        <action
+            android:id="@+id/action_userBinFragment_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 </navigation>

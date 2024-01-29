@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.home.bin.UserBinFragment">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/binToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/recycle_bin"
+        android:background="@color/transparent"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:tag="recycleListBin"
+        android:id="@+id/recycled_business_list"
+        android:layout_width="353dp"
+        android:layout_height="548dp"
+        android:layout_gravity="center" />
+</FrameLayout>

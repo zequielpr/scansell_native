@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +27,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.SpinningWheel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
-import com.kunano.scansell_native.ui.notifications.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;
@@ -53,7 +54,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         businessCardAdepter = new BusinessCardAdepter();
         recyclerViewBusinessList.setAdapter(businessCardAdepter);
-        businessCardAdepter.setLifecycleOwner(getViewLifecycleOwner());
 
 
 
@@ -114,6 +114,10 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                     return true;
                 case R.id.add:
                     showBottomSheet();
+                    return true;
+                case R.id.bin:
+                    navigateToBin();
+                    return true;
                 default:
                     return false;
             }
@@ -132,9 +136,17 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
 
         bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
-
-
     }
+
+    public void navigateToBin(){
+        @NonNull NavDirections action =
+                HomeFragmentDirections.actionNavigationHomeToUserBinFragment();
+
+        Navigation.findNavController(getView()).navigate(action);
+    }
+
+
+
 
     public void updateToolbar() {
         boolean isDeleteModeActivate = homeViewModel.isDeleteModeActive();
@@ -187,6 +199,11 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                 //Show empty circle when the delete mode is activated
                 homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
                         cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
+            }
+
+            @Override
+            public void onRestore(Business business) {
+
             }
 
 
@@ -310,11 +327,11 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             }
         };
 
-        String title = getString(R.string.delete_businesses_warn);
+        String title = getString(R.string.send_items_to_bin_warning);
         AskWhetherDeleteDialog askWhetherDeleteDialog = new
                 AskWhetherDeleteDialog(getLayoutInflater(),action, title);
 
-        askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
+        askWhetherDeleteDialog.show(suportFmanager, "ask to send business to bin");
 
     }
 

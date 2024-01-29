@@ -28,7 +28,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     private ProductRepository productRepository;
     protected boolean isDeleteModeActive;
     protected boolean isAllSelected;
-    protected boolean continueDeleting;
+    protected boolean continuePassing;
     protected LinkedHashSet<Object> itemsToDelete;
     protected HashSet<Object> deletedItems;
 
@@ -85,20 +85,20 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
 
     public void cancelDeleteProcess() {
-        continueDeleting = false;
+        continuePassing = false;
     }
 
 
 
 
 
-    public void deletetItems(ListenResponse response, String appBarTitle) {
+    public void passItemsToBin(ListenResponse response, String appBarTitle) {
         selectedItemsNumbLiveData.postValue(getApplication().getString(R.string.businesses_title));
         checkedOrUncheckedCirclLivedata.postValue(null);
         isAllSelected = false;
         isDeleteModeActive = false;
         deletedItems.clear();
-        continueDeleting = true;
+        continuePassing = true;
         percentageDeleted = 0;
 
 
@@ -109,12 +109,12 @@ public class DeleteItemsViewModel extends AndroidViewModel {
 
             switch (itemTypeToDelete){
                 case BUSINESS:
-                    deleteBusiness();
+                    passBusinessToBin();
                     response.isSuccessfull(true);
                     desactivateDeleteMod(appBarTitle);
                     return;
                 case PRODUCT:
-                    deleteProduct();
+                    passProductToBin();
                     response.isSuccessfull(true);
                     desactivateDeleteMod(appBarTitle);
                     return;
@@ -129,16 +129,16 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         });
     }
 
-    private void deleteBusiness(){
+    private void passBusinessToBin(){
         for (Object item : itemsToDelete) {
 
             try {
 
-                if (!continueDeleting) {
+                if (!continuePassing) {
                     break;
                 }
                 updateProgressBar();
-                //Thread.sleep(Math.round(1000 / itemsToDelete.size()));
+                Thread.sleep(Math.round(1000 / itemsToDelete.size()));
 
                 binsRepository.sendBusinessTobin(((Business) item).getBusinessId()).get();
 
@@ -153,12 +153,13 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         }
     }
 
-    private void deleteProduct(){
+
+    private void passProductToBin(){
         for (Object item : itemsToDelete) {
 
             try {
 
-                if (!continueDeleting) {
+                if (!continuePassing) {
                     break;
                 }
                 updateProgressBar();
@@ -177,6 +178,49 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         }
 
     }
+
+
+
+    //Delete Items
+    public void deleteItems(ListenResponse response, String appBarTitle) {
+        selectedItemsNumbLiveData.postValue(getApplication().getString(R.string.businesses_title));
+        checkedOrUncheckedCirclLivedata.postValue(null);
+        isAllSelected = false;
+        isDeleteModeActive = false;
+        deletedItems.clear();
+        continuePassing = true;
+        percentageDeleted = 0;
+
+
+        System.out.println("type to delete " + itemTypeToDelete);
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+
+            switch (itemTypeToDelete){
+                case BUSINESS:
+                    passBusinessToBin();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                case PRODUCT:
+                    passProductToBin();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                default:
+
+            }
+
+
+
+            // Update the LiveData with the result
+
+        });
+    }
+
+
+
 
 
 
@@ -207,12 +251,12 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         isAllSelected = allSelected;
     }
 
-    public boolean isContinueDeleting() {
-        return continueDeleting;
+    public boolean isContinuePassing() {
+        return continuePassing;
     }
 
-    public void setContinueDeleting(boolean continueDeleting) {
-        this.continueDeleting = continueDeleting;
+    public void setContinuePassing(boolean continuePassing) {
+        this.continuePassing = continuePassing;
     }
 
     public LinkedHashSet<Object> getItemsToDelete() {
@@ -288,7 +332,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         this.binsRepository = binsRepository;
     }
 
-    private BinsRepository binsRepository;
+    protected BinsRepository binsRepository;
     public DeleteItemsViewModel(@NonNull Application application) {
         super(application);
         businessRepository = new BusinessRepository(application);

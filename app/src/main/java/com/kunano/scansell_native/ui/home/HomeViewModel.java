@@ -109,7 +109,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         listenHomeViewModel.showProgressBar();
 
-        super.deletetItems(new ListenResponse() {
+        super.passItemsToBin(new ListenResponse() {
             @Override
             public void isSuccessfull(boolean resultado) {
                 if(resultado){

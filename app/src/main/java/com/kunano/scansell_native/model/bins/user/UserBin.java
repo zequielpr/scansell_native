@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.model.bins.business;
+package com.kunano.scansell_native.model.bins.user;
 
 
 import androidx.room.Entity;
@@ -8,24 +8,24 @@ import androidx.room.PrimaryKey;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 
-@Entity(tableName = "BusinessBin",
+@Entity(tableName = "UserBin",
         foreignKeys = @ForeignKey(entity = Business.class,
                 parentColumns = "businessId",
                 childColumns = "businessIdFk",
                 onDelete = ForeignKey.CASCADE),
         indices = {@Index("businessIdFk")})
-public class BusinessBin {
+public class UserBin {
     @PrimaryKey(autoGenerate = true)
     long bindId;
 
     long businessIdFk;
 
 
-    public BusinessBin(){
+    public UserBin(){
         super();
     }
 
-    public BusinessBin(long businessIdFk) {
+    public UserBin(long businessIdFk) {
         this.businessIdFk = businessIdFk;
     }
 

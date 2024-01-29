@@ -27,7 +27,7 @@ import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
-import com.kunano.scansell_native.ui.notifications.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 
 
 public class BusinessFragment extends Fragment {
@@ -286,7 +286,7 @@ public class BusinessFragment extends Fragment {
     public void deleteOrCancel(boolean response){
         if(response){
             showProgressBar();
-            businessViewModel.deletetItems(this::hideProgressBar, businessViewModel.getBusinessName());
+            businessViewModel.passItemsToBin(this::hideProgressBar, businessViewModel.getBusinessName());
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

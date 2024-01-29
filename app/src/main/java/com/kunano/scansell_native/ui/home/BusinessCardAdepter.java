@@ -1,26 +1,23 @@
 package com.kunano.scansell_native.ui.home;
 
-import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.repository.BinsRepository;
 
 public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdepter.CardHolder> {
-    OnclickBusinessCardListener listener;
-    private BinsRepository binsRepository;
-    LifecycleOwner lifecycleOwner;
+    private OnclickBusinessCardListener listener;
+    private String parentName;
 
     private static DiffUtil.ItemCallback<Business> DIFF_CALLBACK = new DiffUtil.ItemCallback<Business>() {
         @Override
@@ -45,9 +42,9 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
     @Override
     public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        binsRepository = new BinsRepository((Application) parent.getContext().getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
+        parentName = parent.getTag().toString();
         return new CardHolder(view);
     }
     @Override
@@ -66,6 +63,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
         private ImageView unCheckedCircle;
 
+        private ImageButton imageButtonRestore;
         private  View card;
 
         public CardHolder(View itemView) {
@@ -74,9 +72,15 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
             title = itemView.findViewById(R.id.titleTextView);
             address = itemView.findViewById(R.id.textViewDirection);
             unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
+            imageButtonRestore = itemView.findViewById(R.id.imageButtonRestoreFromTrash);
 
 
             listener.reciveCardHol(itemView);
+
+
+            if (parentName.equals("recycleListBin")){
+                imageButtonRestore.setVisibility(View.VISIBLE);
+            }
 
 
 
@@ -101,6 +105,16 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
                     return true;
                 }
             });
+
+            imageButtonRestore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAbsoluteAdapterPosition();
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onRestore(getItem(position));
+                    }
+                }
+            });
         }
 
     }
@@ -110,13 +124,10 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
         abstract void onLongTap(Business business, View cardHolder);
         abstract void getCardHolderOnBind(View cardHolder, Business business);
         abstract void reciveCardHol(View cardHolder);
+        abstract void onRestore(Business business);
 
     }
 
-
-    public void setLifecycleOwner(LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
-    }
 
     public void setListener(OnclickBusinessCardListener listener) {
         this.listener = listener;

@@ -23,7 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_add_24"
-        android:title="add"
-        app:showAsAction="ifRoom"
-        android:tooltipText="@string/add"/>
+        android:title="@string/add"
+        android:tooltipText="@string/add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/bin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/bin"
+        app:showAsAction="never" />
 </menu>

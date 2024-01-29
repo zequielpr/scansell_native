@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.notifications;
+package com.kunano.scansell_native.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,7 +36,7 @@ public class AskWhetherDeleteDialog extends DialogFragment {
         Button customDialogOkButton = dialogView.findViewById(R.id.customDialogOkButton);
         Button customDialogCancelButton = dialogView.findViewById(R.id.customDialogCancelButton);
 
-        customDialogTitle.setText(getString(R.string.delete_businesses_title));
+        customDialogTitle.setText(title);
         customDialogMessage.setText("");
 
 

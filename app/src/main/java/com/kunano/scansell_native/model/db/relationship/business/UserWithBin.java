@@ -4,9 +4,9 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.model.bins.business.BusinessBin;
+import com.kunano.scansell_native.model.bins.user.UserBin;
 
-public class BusinessWithBin {
+public class UserWithBin {
     @Embedded
     public Business business;
 
@@ -14,5 +14,5 @@ public class BusinessWithBin {
             parentColumn = "businessId",
             entityColumn = "businessIdFk"
     )
-    public BusinessBin businessBin;
+    public UserBin userBin;
 }
