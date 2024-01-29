@@ -10,6 +10,7 @@ import com.kunano.scansell_native.model.bins.user.UserBin;
 import com.kunano.scansell_native.model.bins.user.UserBinDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class BinsRepository {
@@ -24,7 +25,13 @@ public class BinsRepository {
 
 
     public ListenableFuture<Long> sendBusinessTobin(long businessId){
-        return userBinDao.sendBusinessToBin(new UserBin(businessId));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate actualDate = LocalDate.now();
+            return userBinDao.sendBusinessToBin(new UserBin(businessId,actualDate ));
+        }
+
+        return null;
+
     }
 
     public LiveData<List<Business>> getBusinessInBin(){
@@ -33,5 +40,10 @@ public class BinsRepository {
 
     public ListenableFuture<Integer> restorageBusiness(Long businessId){
         return userBinDao.restorageBusiness(businessId);
+    }
+
+
+    public ListenableFuture<LocalDate> getRecycleDate(Long businessId){
+       return userBinDao.getRecycleDate(businessId);
     }
 }

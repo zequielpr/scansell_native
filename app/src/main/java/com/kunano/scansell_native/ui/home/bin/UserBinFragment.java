@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,12 +95,17 @@ public class UserBinFragment extends Fragment {
 
             @Override
             public void getCardHolderOnBind(View cardHolder, Business business) {
-
+                mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
             }
 
             @Override
             public void reciveCardHol(View cardHolder) {
-
+                cardHolder.findViewById(R.id.imageButtonRestoreFromTrash).setVisibility(View.VISIBLE);
+                TextView textViewDaysLeft = cardHolder.findViewById(R.id.textViewDaysLeft);
+                textViewDaysLeft.setVisibility(View.VISIBLE);
+                mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d)->{
+                    textViewDaysLeft.setText((CharSequence) d);
+                });
             }
 
             @Override

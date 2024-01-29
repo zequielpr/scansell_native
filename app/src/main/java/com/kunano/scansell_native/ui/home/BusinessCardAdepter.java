@@ -17,7 +17,6 @@ import com.kunano.scansell_native.model.Home.business.Business;
 
 public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdepter.CardHolder> {
     private OnclickBusinessCardListener listener;
-    private String parentName;
 
     private static DiffUtil.ItemCallback<Business> DIFF_CALLBACK = new DiffUtil.ItemCallback<Business>() {
         @Override
@@ -44,7 +43,6 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
     public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
-        parentName = parent.getTag().toString();
         return new CardHolder(view);
     }
     @Override
@@ -76,13 +74,6 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
 
             listener.reciveCardHol(itemView);
-
-
-            if (parentName.equals("recycleListBin")){
-                imageButtonRestore.setVisibility(View.VISIBLE);
-            }
-
-
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

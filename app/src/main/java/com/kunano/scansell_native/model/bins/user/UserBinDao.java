@@ -9,6 +9,7 @@ import androidx.room.Query;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.model.Home.business.Business;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -27,6 +28,11 @@ public interface UserBinDao {
     @Query("SELECT * FROM business WHERE EXISTS (SELECT 1 FROM userbin" +
             " WHERE userbin.businessIdFk = business.businessId) " )
     public LiveData<List<Business>> getBusinessInBin();
+
+
+    //Get recycle date
+    @Query("SELECT recyclingDate FROM userbin WHERE businessIdFk IN(:businessId) ")
+    public ListenableFuture<LocalDate> getRecycleDate(Long businessId);
 
 
 

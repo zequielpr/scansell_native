@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4cd19e6601dea660902d16daeda7ce3c",
+    "identityHash": "6334aadc258f3a1917ed0fe4b2d14111",
     "entities": [
       {
         "tableName": "Business",
@@ -182,7 +182,7 @@
       },
       {
         "tableName": "UserBin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bindId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessIdFk` INTEGER NOT NULL, FOREIGN KEY(`businessIdFk`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bindId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessIdFk` INTEGER NOT NULL, `recyclingDate` INTEGER, FOREIGN KEY(`businessIdFk`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "bindId",
@@ -195,6 +195,12 @@
             "columnName": "businessIdFk",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "recyclingDate",
+            "columnName": "recyclingDate",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -232,7 +238,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4cd19e6601dea660902d16daeda7ce3c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6334aadc258f3a1917ed0fe4b2d14111')"
     ]
   }
 }

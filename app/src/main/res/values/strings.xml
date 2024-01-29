@@ -42,5 +42,7 @@
     <string name="recycle_bin">Recycle bin</string>
     <string name="empty">empty</string>
     <string name="edit">edit</string>
+    <string name="days">days</string>
+    <string name="day">day</string>
 
 </resources>

@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 
+import java.time.LocalDate;
+
 @Entity(tableName = "UserBin",
         foreignKeys = @ForeignKey(entity = Business.class,
                 parentColumns = "businessId",
@@ -19,14 +21,16 @@ public class UserBin {
     long bindId;
 
     long businessIdFk;
+    LocalDate recyclingDate;
 
 
     public UserBin(){
         super();
     }
 
-    public UserBin(long businessIdFk) {
+    public UserBin(long businessIdFk, LocalDate recyclingDate) {
         this.businessIdFk = businessIdFk;
+        this.recyclingDate = recyclingDate;
     }
 
     public long getBindId() {
@@ -43,5 +47,13 @@ public class UserBin {
 
     public void setBusinessIdFk(long businessIdFk) {
         this.businessIdFk = businessIdFk;
+    }
+
+    public LocalDate getRecyclingDate() {
+        return recyclingDate;
+    }
+
+    public void setRecyclingDate(LocalDate recyclingDate) {
+        this.recyclingDate = recyclingDate;
     }
 }
