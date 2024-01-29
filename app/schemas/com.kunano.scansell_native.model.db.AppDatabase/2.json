@@ -1,0 +1,238 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "4cd19e6601dea660902d16daeda7ce3c",
+    "entities": [
+      {
+        "tableName": "Business",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`businessId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `business_name` TEXT, `businessAddress` TEXT DEFAULT 'business_address', `cratingDate` TEXT DEFAULT 'creating_date')",
+        "fields": [
+          {
+            "fieldPath": "businessId",
+            "columnName": "businessId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessName",
+            "columnName": "business_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "businessAddress",
+            "columnName": "businessAddress",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "'business_address'"
+          },
+          {
+            "fieldPath": "cratingDate",
+            "columnName": "cratingDate",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "'creating_date'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "businessId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "product",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` TEXT NOT NULL, `businessIdFK` INTEGER NOT NULL, `product_name` TEXT, `buying_price` REAL NOT NULL DEFAULT 0.0, `selling_price` REAL NOT NULL DEFAULT 0.0, `stock` INTEGER DEFAULT 0.0, `cratingDate` TEXT DEFAULT 'creating_date', PRIMARY KEY(`productId`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "productId",
+            "columnName": "productId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessIdFK",
+            "columnName": "businessIdFK",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productName",
+            "columnName": "product_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "buying_price",
+            "columnName": "buying_price",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0.0"
+          },
+          {
+            "fieldPath": "selling_price",
+            "columnName": "selling_price",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0.0"
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "0.0"
+          },
+          {
+            "fieldPath": "cratingDate",
+            "columnName": "cratingDate",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "'creating_date'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "productId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_product_businessIdFK",
+            "unique": false,
+            "columnNames": [
+              "businessIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_product_businessIdFK` ON `${TABLE_NAME}` (`businessIdFK`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdFK"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "productImg",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imgId` INTEGER PRIMARY KEY AUTOINCREMENT, `productIdFk` TEXT, `img` BLOB, FOREIGN KEY(`productIdFk`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "imgId",
+            "columnName": "imgId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "productIdFk",
+            "columnName": "productIdFk",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "img",
+            "columnName": "img",
+            "affinity": "BLOB",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "imgId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_productImg_productIdFk",
+            "unique": false,
+            "columnNames": [
+              "productIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_productImg_productIdFk` ON `${TABLE_NAME}` (`productIdFk`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "product",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "productIdFk"
+            ],
+            "referencedColumns": [
+              "productId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UserBin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bindId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessIdFk` INTEGER NOT NULL, FOREIGN KEY(`businessIdFk`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "bindId",
+            "columnName": "bindId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessIdFk",
+            "columnName": "businessIdFk",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "bindId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_UserBin_businessIdFk",
+            "unique": false,
+            "columnNames": [
+              "businessIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_UserBin_businessIdFk` ON `${TABLE_NAME}` (`businessIdFk`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdFk"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4cd19e6601dea660902d16daeda7ce3c')"
+    ]
+  }
+}

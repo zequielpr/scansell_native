@@ -12,8 +12,13 @@
         tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/action_navigation_home_to_productsFragment22"
-            app:destination="@id/productsFragment2"
+            app:destination="@id/businessFragment"
             app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_navigation_home_to_userBinFragment"
+            app:destination="@id/userBinFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -28,10 +33,10 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/profile_fragment" />
     <fragment
-        android:id="@+id/productsFragment2"
-        android:name="com.kunano.scansell_native.ui.home.products.ProductsFragment"
+        android:id="@+id/businessFragment"
+        android:name="com.kunano.scansell_native.ui.home.business.BusinessFragment"
         android:label="fragment_products"
-        tools:layout="@layout/fragment_products" >
+        tools:layout="@layout/fragment_business" >
         <action
             android:id="@+id/action_productsFragment2_to_navigation_home"
             app:destination="@id/navigation_home" />
@@ -45,11 +50,22 @@
     </fragment>
     <fragment
         android:id="@+id/createProductFragment"
-        android:name="com.kunano.scansell_native.ui.home.products.create_product.CreateProductFragment"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.CreateProductFragment"
         android:label="fragment_create_product"
         tools:layout="@layout/fragment_create_product" >
         <action
             android:id="@+id/action_createProductFragment_to_productsFragment2"
-            app:destination="@id/productsFragment2" />
+            app:destination="@id/businessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userBinFragment"
+        android:name="com.kunano.scansell_native.ui.home.bin.UserBinFragment"
+        android:label="fragment_user_bin"
+        tools:layout="@layout/fragment_user_bin" >
+        <action
+            android:id="@+id/action_userBinFragment_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 </navigation>

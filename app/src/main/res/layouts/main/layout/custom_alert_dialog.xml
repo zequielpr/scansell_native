@@ -47,7 +47,7 @@
             android:layout_weight="1"
             android:background="@color/transparent"
             android:elevation="0dp"
-            android:text="@string/delete"
+            android:text="@string/ok"
             android:textColor="@color/purple_500" />
     </RelativeLayout>
 

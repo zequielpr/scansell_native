@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey;
 
 
 @Entity
-
 public class Business {
 
     @PrimaryKey(autoGenerate = true)

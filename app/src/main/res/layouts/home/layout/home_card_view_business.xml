@@ -1,49 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Card Title"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewNumProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="20 products" />
+
+            <TextView
+                android:id="@+id/textViewDirection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Card Content goes here." />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButtonRestoreFromTrash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="0"
+            android:background="@color/transparent"
+            android:src="@drawable/restore_from_trash"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/checked_unchecked_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
-        android:visibility="gone"
-        android:layout_marginRight="30dp"
-        android:src="@drawable/unchked_circle" />
+        android:layout_marginRight="30dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textViewDaysLeft"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-
-            android:id="@+id/titleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Card Title"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textViewNumProducts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="20 products" />
-
-        <TextView
-            android:id="@+id/textViewDirection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Card Content goes here." />
-
-    </LinearLayout>
+        android:layout_gravity="end"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_weight="1"
+        tools:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

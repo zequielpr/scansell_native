@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.products.create_product.CreateProductFragment">
+    tools:context=".ui.home.business.create_product.CreateProductFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/createProductToolbar"
@@ -32,10 +32,11 @@
 
         <ImageButton
             android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="124dp"
+            android:layout_height="110dp"
             android:layout_weight="0"
             android:background="#00FFFFFF"
+            android:scaleType="center"
             android:src="@drawable/add_image_ic_80dp" />
 
         <EditText
@@ -111,7 +112,7 @@
             android:textColor="@color/red" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"

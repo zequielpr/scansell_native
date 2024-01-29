@@ -186,7 +186,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     public void provideBusinessDataToHomeViewModel(){
         String name = editTextBusinessName.getText().toString();
         String address = editTextBusinessAddress.getText().toString();
-        viewModel.reciveDataBusiness(name, address);
+        viewModel.insertNewBusiness(name, address);
 
     }
 
