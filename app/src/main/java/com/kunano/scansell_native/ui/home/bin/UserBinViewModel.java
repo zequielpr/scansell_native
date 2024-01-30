@@ -61,7 +61,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
         executor.execute(()->{
             try {
-                calcuLateDaysTobeDeleted( binsRepository.getRecycleDate(businessId).get());
+                calculateDaysTobeDeleted( binsRepository.getRecycleDate(businessId).get());
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
@@ -74,7 +74,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
         return "";
     }
 
-    public void calcuLateDaysTobeDeleted(LocalDate recycleDate){
+    public void calculateDaysTobeDeleted(LocalDate recycleDate){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Long daysLeftTimestamp = Converters.dateToTimestamp(LocalDate.now()) - Converters.dateToTimestamp(recycleDate)  ;
 
@@ -84,9 +84,6 @@ public class UserBinViewModel extends DeleteItemsViewModel {
                     concat( days > 1?
                     getApplication().getString(R.string.days):
                     getApplication().getString(R.string.day));
-
-
-            System.out.println("days left: " + daysLeft);
 
             daysLeftTobeDeletedLiveDate.postValue(daysLeft);
         }

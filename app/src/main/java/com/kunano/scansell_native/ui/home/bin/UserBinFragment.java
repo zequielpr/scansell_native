@@ -17,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
@@ -31,20 +33,22 @@ public class UserBinFragment extends Fragment {
     private BusinessCardAdepter businessCardAdepter;
 
     private UserBinViewModel mViewModel;
+    BottomNavigationView deleteOrRestoreOptions;
 
-
-
+    MainActivityViewModel mainActivityViewModel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentUserBinBinding.inflate(inflater, container, false);
 
 
+
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
 
 
         toolbar = binding.binToolbar;
-
+        deleteOrRestoreOptions = binding.deleteOrRestoreOption;
         recyclerView = binding.recycledBusinessList;
 
 
@@ -63,10 +67,17 @@ public class UserBinFragment extends Fragment {
 
 
         toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
+        deleteOrRestoreOptions.setVisibility(View.GONE);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (deleteOrRestoreOptions.getVisibility() == View.VISIBLE){
+                    desactivateDeleteMode();
+                    return;
+                }
+
+
                 NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
                 Navigation.findNavController(getView()).navigate(action);
             }
@@ -85,12 +96,11 @@ public class UserBinFragment extends Fragment {
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
             public void onShortTap(Business business, View cardHolder) {
-
             }
 
             @Override
             public void onLongTap(Business business, View cardHolder) {
-
+                actcivateDeleteMode();
             }
 
             @Override
@@ -116,13 +126,54 @@ public class UserBinFragment extends Fragment {
 
 
 
+        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
+            @Override
+            public void backButtonPressed() {
+                if (deleteOrRestoreOptions.getVisibility() == View.VISIBLE){
+                    desactivateDeleteMode();
+                    return;
+                }
+
+
+                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+                Navigation.findNavController(getView()).navigate(action);
+            }
+        });
+
+
         return binding.getRoot();
     }
+
+    public void showDeleteOrRestoreOptions(){
+        DeleteOrRestoreOptions bottomSheetFragment = new DeleteOrRestoreOptions();
+        bottomSheetFragment.show(getParentFragmentManager(), bottomSheetFragment.getTag());
+    }
+
+
 
     private void setToolbarSubtitle(List<Business> businessList){
         toolbar.setSubtitle(Integer.toString(businessList.size()).
                 concat(" ").
                 concat(getString(R.string.businesses_title)));
+    }
+
+
+    public void actcivateDeleteMode(){
+        toolbar.getMenu().clear();
+        toolbar.setSubtitle("");
+        toolbar.inflateMenu(R.menu.delete_mode_user_bin);
+        deleteOrRestoreOptions.setVisibility(View.VISIBLE);
+        mainActivityViewModel.hideBottomNavBar();
+
+    }
+
+    public void desactivateDeleteMode(){
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
+        deleteOrRestoreOptions.setVisibility(View.GONE);
+        mainActivityViewModel.showBottomNavBar();
+
     }
 
 
@@ -136,5 +187,7 @@ public class UserBinFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
         // TODO: Use the ViewModel
     }
+
+
 
 }
