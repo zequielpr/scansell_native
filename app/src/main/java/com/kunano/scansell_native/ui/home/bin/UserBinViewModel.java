@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.home.bin;
 
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class UserBinViewModel extends DeleteItemsViewModel {
     private ListenUserBinViewModel listenUserBinViewModel;
@@ -24,10 +26,13 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     private MutableLiveData<String> daysLeftTobeDeletedLiveDate;
 
+    private MutableLiveData<Integer> restoreButtonVisibilityLiveData;
+
     public UserBinViewModel(@NonNull Application application) {
         super(application);
         recycledBusinessLiveData = getBinsRepository().getBusinessInBin();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
+        restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
     }
 
 
@@ -91,6 +96,46 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
 
 
+    public void shortTap(Business business) {
+        if (isDeleteModeActive) {
+
+            if (itemsToDelete.contains(business)) {
+                itemsToDelete.remove(business);
+
+            } else {
+                itemsToDelete.add(business);
+                //Select to delete
+            }
+
+
+            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+            isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
+            return;
+        }
+
+        //currentBusiness = repository.getBusinesById(business.getBusinessId());
+    }
+
+    public void longTap(Business business) {
+        if (itemsToDelete.contains(business)) {
+            itemsToDelete.remove(business);
+        } else {
+            itemsToDelete.add(business);
+        }
+        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+        isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
+    }
+
+
+
+    public List<Object> parseBusinessListToGeneric() {
+        return recycledBusinessLiveData.getValue().stream()
+                .map(business -> (Object) business)
+                .collect(Collectors.toList());
+    }
+
+
+
 
 
     public LiveData<List<Business>> getRecycledBusinessLiveData() {
@@ -117,6 +162,15 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     public void setDaysLeftTobeDeletedLiveDate(MutableLiveData daysLeftTobeDeletedLiveDate) {
         this.daysLeftTobeDeletedLiveDate = daysLeftTobeDeletedLiveDate;
+    }
+
+
+    public MutableLiveData<Integer> getRestoreButtonVisibilityLiveData() {
+        return restoreButtonVisibilityLiveData;
+    }
+
+    public void setRestoreButtonVisibilityLiveData(Integer restoreButtonVisibilityLiveData) {
+        this.restoreButtonVisibilityLiveData.postValue(restoreButtonVisibilityLiveData);
     }
 
     public interface ListenUserBinViewModel{

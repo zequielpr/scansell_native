@@ -232,7 +232,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         if (homeViewModel.getItemsToDelete().contains(business)) {
             cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            System.out.println("Seleccionada" +  cardHolder.getTag());
             return;
         }
         cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
