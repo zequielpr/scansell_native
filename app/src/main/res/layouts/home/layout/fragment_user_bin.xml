@@ -30,6 +30,8 @@
         android:layout_gravity="bottom"
 
         android:focusable="false"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         app:menu="@menu/delete_or_restore_options"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 </FrameLayout>
