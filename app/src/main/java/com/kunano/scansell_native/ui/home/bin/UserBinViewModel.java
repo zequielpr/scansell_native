@@ -61,6 +61,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     public String setDaysLeftToBeDeleted(Long businessId){
 
+        if (continuePassing) return "";
         Executor executor = Executors.newSingleThreadExecutor();
         String daysLeftTobeDeleted = "";
 
@@ -71,6 +72,8 @@ public class UserBinViewModel extends DeleteItemsViewModel {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }catch (Exception e){
+                System.out.println("Exception: " + e.getMessage());
             }
 
         });

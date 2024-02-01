@@ -313,7 +313,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void askDeleteBusiness() {
         ListenResponse action = (response)->{
             if(response){
-                homeViewModel.deletetBusiness();
+                homeViewModel.passBusinessToBin();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

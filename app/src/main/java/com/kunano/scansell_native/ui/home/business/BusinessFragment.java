@@ -22,12 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
-import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.ProgressBarDialog;
 
 
 public class BusinessFragment extends Fragment {
@@ -51,6 +52,7 @@ public class BusinessFragment extends Fragment {
     private FragmentManager suportFmanager;
     private  ProgressBarDialog progressBarDialog;
 
+    MainActivityViewModel mainActivityViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -59,6 +61,7 @@ public class BusinessFragment extends Fragment {
 
 
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
         binding = FragmentBusinessBinding.inflate(inflater, container, false);
 
@@ -94,6 +97,15 @@ public class BusinessFragment extends Fragment {
 
 
         setCardListener();
+
+        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
+            @Override
+            public void backButtonPressed() {
+                NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+                Navigation.findNavController(getView()).navigate(action);
+                mainActivityViewModel.setHandleBackPress(null);
+            }
+        });
         return binding.getRoot();
     }
 
