@@ -258,6 +258,17 @@ public class UserBinFragment extends Fragment {
         }
     }
 
+    public void restoreBusinesses() {
+
+        showProgressBar(getString(R.string.restoring));
+        mViewModel.restoreItems(this::hideProgressBar, getString(R.string.recycle_bin));
+
+    }
+
+
+
+
+
     public void askDeleteBusiness() {
         System.out.println("Ask whether delete businiesses");
         ListenResponse action = this::deleteOrCancel;
@@ -271,7 +282,7 @@ public class UserBinFragment extends Fragment {
 
     public void deleteOrCancel(boolean response){
         if(response){
-            showProgressBar();
+            showProgressBar(getString(R.string.deleting));
             mViewModel.deleteItems(this::hideProgressBar, getString(R.string.recycle_bin));
         }else {
             desactivateDeleteMode();
@@ -279,7 +290,7 @@ public class UserBinFragment extends Fragment {
     }
 
 
-    public void showProgressBar() {
+    public void showProgressBar(String title) {
         ListenResponse action = (cancelDeleteProcess)->{
             if(cancelDeleteProcess){
                 mViewModel.cancelDeleteProcess();
@@ -288,7 +299,6 @@ public class UserBinFragment extends Fragment {
         };
 
 
-        String title =  getString(R.string.delete);
         MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
 
@@ -358,8 +368,6 @@ public class UserBinFragment extends Fragment {
             }
         });
 
-        int editBinPosition = 0;
-        int emptyBinPosition = 1;
 
         mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(),(list)->{
             if (list.isEmpty()){
@@ -376,6 +384,7 @@ public class UserBinFragment extends Fragment {
                     askDeleteBusiness();
                     return true;
                 case R.id.restore:
+                    restoreBusinesses();
                     return true;
                 default :
                     return false;
