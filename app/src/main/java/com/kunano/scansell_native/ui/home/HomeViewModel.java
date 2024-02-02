@@ -104,7 +104,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
 
 
-    public void deletetBusiness() {
+    public void passBusinessToBin() {
         this.itemTypeToDelete = ItemTypeToDelete.BUSINESS;
 
         listenHomeViewModel.showProgressBar();

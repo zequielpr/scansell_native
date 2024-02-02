@@ -232,7 +232,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         if (homeViewModel.getItemsToDelete().contains(business)) {
             cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            System.out.println("Seleccionada" +  cardHolder.getTag());
             return;
         }
         cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
@@ -314,7 +313,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void askDeleteBusiness() {
         ListenResponse action = (response)->{
             if(response){
-                homeViewModel.deletetBusiness();
+                homeViewModel.passBusinessToBin();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

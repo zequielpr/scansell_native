@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="NonModalBottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.BottomSheetDialog</item>
+    </style>
+
+    <style name="Animation.BottomSheetDialog" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/nav_default_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/nav_default_exit_anim</item>
+    </style>
+
+</resources>

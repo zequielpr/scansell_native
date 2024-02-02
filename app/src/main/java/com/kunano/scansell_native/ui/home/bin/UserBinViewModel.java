@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.home.bin;
 
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class UserBinViewModel extends DeleteItemsViewModel {
     private ListenUserBinViewModel listenUserBinViewModel;
@@ -24,10 +26,13 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     private MutableLiveData<String> daysLeftTobeDeletedLiveDate;
 
+    private MutableLiveData<Integer> restoreButtonVisibilityLiveData;
+
     public UserBinViewModel(@NonNull Application application) {
         super(application);
         recycledBusinessLiveData = getBinsRepository().getBusinessInBin();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
+        restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
     }
 
 
@@ -56,16 +61,19 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     public String setDaysLeftToBeDeleted(Long businessId){
 
+        if (continuePassing) return "";
         Executor executor = Executors.newSingleThreadExecutor();
         String daysLeftTobeDeleted = "";
 
         executor.execute(()->{
             try {
-                calcuLateDaysTobeDeleted( binsRepository.getRecycleDate(businessId).get());
+                calculateDaysTobeDeleted( binsRepository.getRecycleDate(businessId).get());
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }catch (Exception e){
+                System.out.println("Exception: " + e.getMessage());
             }
 
         });
@@ -74,7 +82,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
         return "";
     }
 
-    public void calcuLateDaysTobeDeleted(LocalDate recycleDate){
+    public void calculateDaysTobeDeleted(LocalDate recycleDate){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Long daysLeftTimestamp = Converters.dateToTimestamp(LocalDate.now()) - Converters.dateToTimestamp(recycleDate)  ;
 
@@ -85,11 +93,48 @@ public class UserBinViewModel extends DeleteItemsViewModel {
                     getApplication().getString(R.string.days):
                     getApplication().getString(R.string.day));
 
-
-            System.out.println("days left: " + daysLeft);
-
             daysLeftTobeDeletedLiveDate.postValue(daysLeft);
         }
+    }
+
+
+
+    public void shortTap(Business business) {
+        if (isDeleteModeActive) {
+
+            if (itemsToDelete.contains(business)) {
+                itemsToDelete.remove(business);
+
+            } else {
+                itemsToDelete.add(business);
+                //Select to delete
+            }
+
+
+            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+            isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
+            return;
+        }
+
+        //currentBusiness = repository.getBusinesById(business.getBusinessId());
+    }
+
+    public void longTap(Business business) {
+        if (itemsToDelete.contains(business)) {
+            itemsToDelete.remove(business);
+        } else {
+            itemsToDelete.add(business);
+        }
+        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
+        isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
+    }
+
+
+
+    public List<Object> parseBusinessListToGeneric() {
+        return recycledBusinessLiveData.getValue().stream()
+                .map(business -> (Object) business)
+                .collect(Collectors.toList());
     }
 
 
@@ -120,6 +165,15 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     public void setDaysLeftTobeDeletedLiveDate(MutableLiveData daysLeftTobeDeletedLiveDate) {
         this.daysLeftTobeDeletedLiveDate = daysLeftTobeDeletedLiveDate;
+    }
+
+
+    public MutableLiveData<Integer> getRestoreButtonVisibilityLiveData() {
+        return restoreButtonVisibilityLiveData;
+    }
+
+    public void setRestoreButtonVisibilityLiveData(Integer restoreButtonVisibilityLiveData) {
+        this.restoreButtonVisibilityLiveData.postValue(restoreButtonVisibilityLiveData);
     }
 
     public interface ListenUserBinViewModel{

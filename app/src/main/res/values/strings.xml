@@ -18,7 +18,9 @@
     <string name="cancel">Cancel</string>
     <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
     <string name="send_items_to_bin_warning">Send items to bin?</string>
-    <string name="delete">Delete</string>
+    <string name="delete">delete</string>
+    <string name="deleting">deleteing</string>
+    <string name="restoring">restoring...</string>
     <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
     <string name="undo">undo</string>
     <string name="ok">Ok</string>
@@ -44,5 +46,6 @@
     <string name="edit">edit</string>
     <string name="days">days</string>
     <string name="day">day</string>
+    <string name="restore">restore</string>
 
 </resources>
