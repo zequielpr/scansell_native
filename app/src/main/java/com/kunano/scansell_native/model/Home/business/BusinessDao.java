@@ -10,7 +10,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
+import com.kunano.scansell_native.model.Home.product.Product;
 
 import java.util.List;
 
@@ -41,6 +41,7 @@ public interface BusinessDao  {
 
 
     @Transaction
-    @Query("SELECT * FROM Business  WHERE businessId = :businessId")
-    public LiveData<BusinessWithProduct> getBusinessWithProduct(Long businessId);
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " )
+    public LiveData<List<Product>> getProducts(Long businessId);
 }

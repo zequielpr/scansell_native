@@ -18,7 +18,7 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,8 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:id="@+id/textViewDaysLeftProduct"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0">
 
@@ -51,13 +52,22 @@
                     android:scaleType="center"
                     tools:srcCompat="@drawable/unchked_circle" />
 
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/daysLeftProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/imageViewProduct"
+                    android:text="TextView"
+                    android:textColor="#FFFFFF"
+                    android:visibility="gone" />
 
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -143,6 +153,18 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/restoreButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:srcCompat="@drawable/restore_from_trash" />
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

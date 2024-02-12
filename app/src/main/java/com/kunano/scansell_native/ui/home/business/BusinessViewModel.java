@@ -33,6 +33,8 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         productRepository = new ProductRepository(application);
         businessName = "";
         businessAddress = new MutableLiveData<>();
+        allProductLive = new MutableLiveData<>();
+        currentBusinessId = new Long(-1);
         currentBusinessLiveData = new MutableLiveData<>();
         productList = new ArrayList<>();
     }
@@ -54,8 +56,15 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
     //prueba
-    public LiveData<BusinessWithProduct> queryAllProducts(){
-        return businessRepository.getProductsList(currentBusinessId);
+    public LiveData<List<Product>> queryAllProducts(long currentBusinessId){
+        if(this.currentBusinessId != currentBusinessId){
+            System.out.println("New businessID: " + currentBusinessId);
+            this.currentBusinessId = currentBusinessId;
+            allProductLive = businessRepository.getProductsList(currentBusinessId);
+            return allProductLive;
+        }
+        return allProductLive;
+
     }
 
 
@@ -99,7 +108,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
     public List<Object> parseProductListToGeneric() {
-        return productList.stream()
+        return allProductLive.getValue().stream()
                 .map(product-> (Object) product)
                 .collect(Collectors.toList());
     }
@@ -170,6 +179,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     }
 
     public void setCurrentBusinessId(Long currentBusinessId) {
+
         this.currentBusinessId = currentBusinessId;
     }
 }

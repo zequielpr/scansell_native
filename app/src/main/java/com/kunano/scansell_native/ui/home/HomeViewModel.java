@@ -79,7 +79,10 @@ public class HomeViewModel extends DeleteItemsViewModel {
         //currentBusiness = repository.getBusinesById(business.getBusinessId());
 
         listenHomeViewModel.navigateToProducts(String.valueOf(business.getBusinessId()));
+        currentBusinessId = business.getBusinessId();
     }
+
+    private Long currentBusinessId = null;
 
 
     public void longTap(Business business) {
@@ -147,4 +150,11 @@ public class HomeViewModel extends DeleteItemsViewModel {
         this.currentBusiness = currentBusiness;
     }
 
+    public Long getCurrentBusinessId() {
+        return currentBusinessId;
+    }
+
+    public void setCurrentBusinessId(Long currentBusinessId) {
+        this.currentBusinessId = currentBusinessId;
+    }
 }

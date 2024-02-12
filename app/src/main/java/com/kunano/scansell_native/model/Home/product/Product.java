@@ -14,7 +14,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
                 parentColumns = "businessId",
                 childColumns = "businessIdFK",
                 onDelete = ForeignKey.CASCADE),
-indices = {@Index("businessIdFK")})
+indices = {@Index("businessIdFK"), @Index("productId")})
 public class Product {
     @PrimaryKey()
     @NonNull

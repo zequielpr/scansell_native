@@ -15,11 +15,13 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
+import com.kunano.scansell_native.model.bins.business.BusinessBin;
+import com.kunano.scansell_native.model.bins.business.BusinessBinDao;
 import com.kunano.scansell_native.model.bins.user.UserBin;
 import com.kunano.scansell_native.model.bins.user.UserBinDao;
 
 @Database(entities = {Business.class, Product.class, ProductImg.class,
-        UserBin.class},  version = 1)
+        UserBin.class, BusinessBin.class},  version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -32,6 +34,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ProductImgDao productImgDao();
 
     public abstract UserBinDao userBinDao();
+
+    public abstract BusinessBinDao businessBinDao();
 
 
     public static synchronized AppDatabase getInstance(Context context){

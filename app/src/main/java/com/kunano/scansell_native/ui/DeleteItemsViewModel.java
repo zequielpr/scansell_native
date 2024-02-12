@@ -12,9 +12,10 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.repository.BinsRepository;
-import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.repository.BusinessRepository;
+import com.kunano.scansell_native.repository.ProductRepository;
 
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,39 +33,47 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     protected LinkedHashSet<Object> itemsToDelete;
     protected HashSet<Object> deletedItems;
 
-    /**example 10/20. 10 ites out of 20 have been eliminated **/
+    /**
+     * example 10/20. 10 ites out of 20 have been eliminated
+     **/
     protected String deletedItemsQuantity;
     protected int percentageDeleted;
     protected MutableLiveData<Integer> deleteProgressLiveData;
 
-    /**Quantity of items to show in the appBar**/
+    /**
+     * Quantity of items to show in the appBar
+     **/
     protected MutableLiveData<String> selectedItemsNumbLiveData;
 
     protected MutableLiveData<Drawable> checkedOrUncheckedCirclLivedata;
 
-    /**example 10/20. 10 ites out of 20 have been eliminated **/
+    /**
+     * example 10/20. 10 ites out of 20 have been eliminated
+     **/
     protected MutableLiveData<String> deletedItemsLiveData;
 
     public static ItemTypeToDelete itemTypeToDelete;
-    public static enum ItemTypeToDelete{
+
+    public static enum ItemTypeToDelete {
         BUSINESS, PRODUCT
     }
 
 
-    public void selectAll(List<Object> items){
+    public void selectAll(List<Object> items) {
         isAllSelected = true;
+        itemsToDelete.clear();
         itemsToDelete.addAll(items);
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
 
     }
 
-    public void unSelectAll(){
+    public void unSelectAll() {
         isAllSelected = false;
         itemsToDelete.clear();
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
     }
 
-    public void  desactivateDeleteMod(String appBarTitle){
+    public void desactivateDeleteMod(String appBarTitle) {
         selectedItemsNumbLiveData.postValue(appBarTitle);
         itemsToDelete.clear();
         isAllSelected = false;
@@ -89,10 +98,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     }
 
 
-
-
-
-    public void  passItemsToBin(ListenResponse response, String appBarTitle) {
+    public void passItemsToBin(ListenResponse response, String appBarTitle) {
         selectedItemsNumbLiveData.postValue(getApplication().getString(R.string.businesses_title));
         checkedOrUncheckedCirclLivedata.postValue(null);
         isAllSelected = false;
@@ -107,24 +113,26 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
 
-            itemsToDelete.stream().findAny().get().getClass();
-
-
             Class<?> aClass = itemsToDelete.stream().findAny().get().getClass();
 
 
-            if (aClass.equals(Business.class)) {
-                passBusinessToBin();
+            try {
+                if (aClass.equals(Business.class)) {
+                    passBusinessToBin();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                } else if (aClass.equals(Product.class)) {
+                    passProductToBin();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("error " + e);
                 response.isSuccessfull(true);
                 desactivateDeleteMod(appBarTitle);
-                return;
-            } else if (aClass.equals(Product.class)) {
-                passProductToBin();
-                response.isSuccessfull(true);
-                desactivateDeleteMod(appBarTitle);
-                return;
             }
-
 
 
             // Update the LiveData with the result
@@ -132,7 +140,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         });
     }
 
-    private void passBusinessToBin(){
+    private void passBusinessToBin() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -157,7 +165,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     }
 
 
-    private void passProductToBin(){
+    private void passProductToBin() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -168,7 +176,9 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 updateProgressBar();
                 Thread.sleep(Math.round(1000 / itemsToDelete.size()));
 
-                productRepository.deleteProduct((Product) item).get();
+                String productId = ((Product) item).getProductId();
+                long businessId = ((Product) item).getBusinessIdFK();
+                binsRepository.sendProductTobin(businessId, productId).get();
                 deletedItems.add(item);
 
 
@@ -181,7 +191,6 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         }
 
     }
-
 
 
     //Delete Items
@@ -201,18 +210,22 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         executor.execute(() -> {
             Class<?> aClass = itemsToDelete.stream().findAny().get().getClass();
 
-            if (aClass.equals(Business.class)) {
-                deleteBusinesses();
-                response.isSuccessfull(true);
-                desactivateDeleteMod(appBarTitle);
-                return;
-            } else if (aClass.equals(Product.class)) {
-                deleteProducts();
-                response.isSuccessfull(true);
-                desactivateDeleteMod(appBarTitle);
-                return;
-            }
+            try {
+                if (aClass.equals(Business.class)) {
+                    deleteBusinesses();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
 
+                } else if (aClass.equals(Product.class)) {
+                    deleteProducts();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                }
+            } catch (Exception e) {
+                System.out.println("error " + e);
+                response.isSuccessfull(true);
+                desactivateDeleteMod(appBarTitle);
+            }
 
 
             // Update the LiveData with the result
@@ -220,7 +233,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         });
     }
 
-    private void deleteBusinesses(){
+    private void deleteBusinesses() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -245,7 +258,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     }
 
 
-    private void deleteProducts(){
+    private void deleteProducts() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -264,12 +277,15 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
+            } catch (ConcurrentModificationException e) {
+                System.out.println("error ".concat(e.getMessage()));
+            } catch (Exception e) {
+                System.out.println("error ".concat(e.getMessage()));
             }
 
         }
 
     }
-
 
 
     //Restore items --------------------------------------------------
@@ -289,18 +305,24 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         executor.execute(() -> {
             Class<?> aClass = itemsToDelete.stream().findAny().get().getClass();
 
-            if (aClass.equals(Business.class)) {
-                restoreBusinesses();
-                response.isSuccessfull(true);
-                desactivateDeleteMod(appBarTitle);
-                return;
-            } else if (aClass.equals(Product.class)) {
-                restoreProducts();
-                response.isSuccessfull(true);
-                desactivateDeleteMod(appBarTitle);
-                return;
-            }
 
+            try {
+                if (aClass.equals(Business.class)) {
+                    restoreBusinesses();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                } else if (aClass.equals(Product.class)) {
+                    restoreProducts();
+                    response.isSuccessfull(true);
+                    desactivateDeleteMod(appBarTitle);
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("error " + e);
+                response.isSuccessfull(true);
+                desactivateDeleteMod(appBarTitle);
+            }
 
 
             // Update the LiveData with the result
@@ -308,7 +330,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
         });
     }
 
-    private void  restoreBusinesses(){
+    private void restoreBusinesses() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -333,7 +355,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     }
 
 
-    private void  restoreProducts(){
+    private void restoreProducts() {
         for (Object item : itemsToDelete) {
 
             try {
@@ -343,25 +365,20 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 }
                 updateProgressBar();
                 Thread.sleep(Math.round(1000 / itemsToDelete.size()));
-
-                //binsRepository.restorageBusiness((((Product) item).getProductId())).get();
+                String productId = ((Product) item).getProductId();
+                binsRepository.restorageProducts(productId).get();
                 deletedItems.add(item);
 
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
             }
 
         }
 
     }
-
-
-
-
-
-
-
 
 
     public BusinessRepository getRepository() {
@@ -470,6 +487,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     }
 
     protected BinsRepository binsRepository;
+
     public DeleteItemsViewModel(@NonNull Application application) {
         super(application);
         businessRepository = new BusinessRepository(application);
@@ -493,7 +511,6 @@ public class DeleteItemsViewModel extends AndroidViewModel {
     public void setItemTypeToDelete(ItemTypeToDelete itemTypeToDelete) {
         this.itemTypeToDelete = itemTypeToDelete;
     }
-
 
 
 }
