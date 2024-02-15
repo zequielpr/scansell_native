@@ -57,7 +57,7 @@
         android:label="fragment_create_product"
         tools:layout="@layout/fragment_create_product" >
         <action
-            android:id="@+id/action_createProductFragment_to_productsFragment2"
+            android:id="@+id/action_createProductFragment_to_businessFragment"
             app:destination="@id/businessFragment" />
     </fragment>
     <fragment

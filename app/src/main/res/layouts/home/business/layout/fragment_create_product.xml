@@ -54,7 +54,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -62,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_buy_price"
             android:inputType="numberDecimal" />
@@ -72,7 +72,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -80,6 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_selling_price"
             android:inputType="numberDecimal" />
@@ -90,7 +90,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -98,6 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_stock"
             android:inputType="number" />
@@ -108,7 +108,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <Button

@@ -27,6 +27,7 @@ public class ImageProcessor {
 
     // Convert Bitmap to byte array
     public byte[] bitmapToBytes(Bitmap bitmap) {
+        if (bitmap == null)return new byte[0];
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
