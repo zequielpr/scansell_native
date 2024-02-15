@@ -24,7 +24,7 @@ public interface UserBinDao {
 
 
 
-    //Get products in the bind
+    //Get businesses in the bind
     @Query("SELECT * FROM business WHERE EXISTS (SELECT 1 FROM userbin" +
             " WHERE userbin.businessIdFk = business.businessId) " )
     public LiveData<List<Business>> getBusinessInBin();

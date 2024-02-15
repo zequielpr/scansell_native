@@ -29,6 +29,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
 
 
 public class BusinessFragment extends Fragment {
@@ -45,7 +46,7 @@ public class BusinessFragment extends Fragment {
     private ProductCardAdapter productCardAdapter;
     private Drawable checkedCircle;
     private  Drawable uncheckedCircle;
-    private  String businessKey;
+    private  Long businessKey;
 
     private MenuItem deleteIcon;
     private MenuItem selectAllIcon;
@@ -53,17 +54,21 @@ public class BusinessFragment extends Fragment {
     private  ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
+    HomeViewModel homeViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        businessKey = BusinessFragmentArgs.fromBundle(getArguments()).getBusinessKey();
 
 
+
+
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
-        binding = FragmentBusinessBinding.inflate(inflater, container, false);
+        businessKey = homeViewModel.getCurrentBusinessId();
+                binding = FragmentBusinessBinding.inflate(inflater, container, false);
 
         toolbar = binding.toolbarProducts;
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
@@ -81,10 +86,10 @@ public class BusinessFragment extends Fragment {
         recyclerViewProduct.setAdapter(productCardAdapter);
 
 
-        businessViewModel.setCurrentBusinessId(Long.parseLong(businessKey));
+        //businessViewModel.setCurrentBusinessId(businessKey);
         //businessViewModel.getBusinessListWithProductsList().observe(getViewLifecycleOwner(), this::updateProductsList);
 
-        businessViewModel.queryAllProducts().observe(getViewLifecycleOwner(), this::updateProductsList);
+        businessViewModel.queryAllProducts(businessKey).observe(getViewLifecycleOwner(), productCardAdapter::submitList);
 
         businessViewModel.getCurrentBusinessLiveData().observe(getViewLifecycleOwner(), businessViewModel::updateCurrentBusiness);
         businessViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
@@ -101,6 +106,13 @@ public class BusinessFragment extends Fragment {
         mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
             @Override
             public void backButtonPressed() {
+                if (businessViewModel.isDeleteModeActive()){
+                    desactivateDeleteMode(getView());
+                    updateToolbar();
+                    return;
+                }
+
+
                 NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
                 Navigation.findNavController(getView()).navigate(action);
                 mainActivityViewModel.setHandleBackPress(null);
@@ -150,6 +162,11 @@ public class BusinessFragment extends Fragment {
                 businessViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
                         cardHolder.findViewById(R.id.uncheckedCircle)::setBackground);
             }
+
+            @Override
+            public void onRestore(Product product) {
+
+            }
         });
     }
 
@@ -171,6 +188,13 @@ public class BusinessFragment extends Fragment {
         }
         updateToolbar();
 
+
+    }
+
+    public void navigateBusinessBin(){
+        NavDirections directions = BusinessFragmentDirections.actionBusinessFragmentToBusinessBinFragment();
+
+        Navigation.findNavController(getView()).navigate(directions);
     }
 
 
@@ -200,6 +224,17 @@ public class BusinessFragment extends Fragment {
     public void inflateNormarMenu(){
         toolbar.setNavigationIcon(null);
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
+        toolbar.setOnMenuItemClickListener((intemMenu)->{
+
+            switch (intemMenu.getItemId()){
+                case R.id.bin_action:
+                    navigateBusinessBin();
+                    return true;
+                default:
+                    return true;
+            }
+
+        });
     }
 
     public void inflateDeleteMenu(){
@@ -286,8 +321,8 @@ public class BusinessFragment extends Fragment {
 
     public void askDeleteBusiness() {
         System.out.println("Ask whether delete businiesses");
-        ListenResponse action = this::deleteOrCancel;
-        String title = getString(R.string.delete_businesses_warn);
+        ListenResponse action = this::pasToBinOrCancel;
+        String title = getString(R.string.send_items_to_bin_warning);
         AskWhetherDeleteDialog askWhetherDeleteDialog = new
                 AskWhetherDeleteDialog(getLayoutInflater(),action, title);
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
@@ -295,7 +330,7 @@ public class BusinessFragment extends Fragment {
     }
 
 
-    public void deleteOrCancel(boolean response){
+    public void pasToBinOrCancel(boolean response){
         if(response){
             showProgressBar();
             businessViewModel.passItemsToBin(this::hideProgressBar, businessViewModel.getBusinessName());
@@ -323,7 +358,7 @@ public class BusinessFragment extends Fragment {
         };
 
 
-        String title =  getString(R.string.delete);
+        String title =  getString(R.string.send_items_to_bin_warning);
         MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 

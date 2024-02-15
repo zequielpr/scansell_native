@@ -51,9 +51,9 @@ public class BusinessRepository {
             Long resultado = null;
             try {
 
-               for (int i = 0; i < 5000; i++){
+               /*for (int i = 0; i < 5000; i++){
                     resultado = businessDao.insertBusiness(business).get();
-                }
+                }*/
                 resultado = businessDao.insertBusiness(business).get();
                 if (resultado > 0) {
                     response.isSuccessfull(true);
@@ -96,7 +96,7 @@ public class BusinessRepository {
         return businessDao.getBusinessById(id);
     }
 
-    public LiveData<BusinessWithProduct> getProductsList(Long businessId){
-        return businessDao.getBusinessWithProduct(businessId);
+    public LiveData<List<Product>> getProductsList(Long businessId){
+        return businessDao.getProducts(businessId);
     }
 }

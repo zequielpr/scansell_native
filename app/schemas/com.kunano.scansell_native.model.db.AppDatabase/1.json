@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6334aadc258f3a1917ed0fe4b2d14111",
+    "identityHash": "43ba9f5d4b91c430c5789fbe7b3a3e35",
     "entities": [
       {
         "tableName": "Business",
@@ -110,6 +110,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_product_businessIdFK` ON `${TABLE_NAME}` (`businessIdFK`)"
+          },
+          {
+            "name": "index_product_productId",
+            "unique": false,
+            "columnNames": [
+              "productId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_product_productId` ON `${TABLE_NAME}` (`productId`)"
           }
         ],
         "foreignKeys": [
@@ -233,12 +242,92 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "BusinessBin",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`binId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `businessIdFk` INTEGER NOT NULL, `productIdFk` TEXT, `recyclingDate` INTEGER, FOREIGN KEY(`businessIdFk`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`productIdFk`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "binId",
+            "columnName": "binId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessIdFk",
+            "columnName": "businessIdFk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productIdFk",
+            "columnName": "productIdFk",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recyclingDate",
+            "columnName": "recyclingDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "binId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_BusinessBin_businessIdFk",
+            "unique": false,
+            "columnNames": [
+              "businessIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BusinessBin_businessIdFk` ON `${TABLE_NAME}` (`businessIdFk`)"
+          },
+          {
+            "name": "index_BusinessBin_productIdFk",
+            "unique": false,
+            "columnNames": [
+              "productIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BusinessBin_productIdFk` ON `${TABLE_NAME}` (`productIdFk`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdFk"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          },
+          {
+            "table": "product",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "productIdFk"
+            ],
+            "referencedColumns": [
+              "productId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6334aadc258f3a1917ed0fe4b2d14111')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '43ba9f5d4b91c430c5789fbe7b3a3e35')"
     ]
   }
 }

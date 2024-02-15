@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.db.relationship.ProductWithImage;
+import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
 
@@ -45,7 +46,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         }
     };
 
-    protected ProductCardAdapter() {
+    public ProductCardAdapter() {
         super(DIFF_CALLBACK);
     }
 
@@ -73,13 +74,14 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
         productRepository.getProdductImage(product.getProductId(), new LisnedProductImage() {
             @Override
-            public void recieveProducImage(ProductWithImage productWithImage) {
+            public void recieveProducImage(ProductImg productImg) {
 
+                if (activityParent == null) return;
                 activityParent.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (productWithImage != null){
-                            holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(productWithImage.productImg.getImg()));
+                        if (productImg != null){
+                            holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(productImg.getImg()));
                         }
                     }
                 });
@@ -100,6 +102,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
 
         private ImageView imageViewProduct;
         private ImageView unCheckedCircle;
+        ImageButton restoreButton;
 
         private  View card;
 
@@ -113,9 +116,22 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
             buyingPrice = itemView.findViewById(R.id.textViewBuyingPrice);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
             unCheckedCircle = itemView.findViewById(R.id.uncheckedCircle);
+            restoreButton = itemView.findViewById(R.id.restoreButton);
             //unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
 
-            listener.reciveCardHol(itemView);
+            if (listener != null && itemView != null){
+                listener.reciveCardHol(itemView);
+            }
+
+            restoreButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAbsoluteAdapterPosition();
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onRestore(getItem(position));
+                    }
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -163,12 +179,13 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         abstract void onLongTap(Product  product, View cardHolder);
         abstract void getCardHolderOnBind(View cardHolder, Product  prod);
         abstract void reciveCardHol(View cardHolder);
+        abstract void onRestore(Product product);
 
     }
 
     @FunctionalInterface
     public interface LisnedProductImage{
-        abstract void recieveProducImage(ProductWithImage productWithImage);
+        abstract void recieveProducImage(ProductImg productWithImage);
     }
 
 }

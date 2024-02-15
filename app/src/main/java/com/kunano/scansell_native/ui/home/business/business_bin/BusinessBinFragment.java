@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.home.bin;
+package com.kunano.scansell_native.ui.home.business.business_bin;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -26,39 +26,46 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
-import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
+import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
-import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
+import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
 
-public class UserBinFragment extends Fragment {
-    private FragmentUserBinBinding binding;
+public class BusinessBinFragment extends Fragment {
+
     private Toolbar toolbar;
     private RecyclerView recyclerView;
-    private BusinessCardAdepter businessCardAdepter;
+    private ProductCardAdapter productCardAdepter;
 
-    private UserBinViewModel mViewModel;
+    private BusinessBinViewModel mViewModel;
     BottomNavigationView deleteOrRestoreOptions;
     private Drawable checkedCircle;
     private Drawable uncheckedCircle;
     private MenuItem selectAllIcon;
 
-    private  ProgressBarDialog progressBarDialog;
+    private ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
+    HomeViewModel homeViewModel;
+    long currentBusinessId;
+    private FragmentBusinessBinBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = FragmentUserBinBinding.inflate(inflater, container, false);
+        binding = FragmentBusinessBinBinding.inflate(inflater, container, false);
 
 
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(BusinessBinViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
+        currentBusinessId = homeViewModel.getCurrentBusinessId();
 
         toolbar = binding.binToolbar;
         deleteOrRestoreOptions = binding.deleteOrRestoreOption;
@@ -68,11 +75,12 @@ public class UserBinFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerView.setHasFixedSize(true);
 
-        businessCardAdepter = new BusinessCardAdepter();
-        recyclerView.setAdapter(businessCardAdepter);
+        productCardAdepter = new ProductCardAdapter();
+        recyclerView.setAdapter(productCardAdepter);
+        productCardAdepter.setActivityParent(getActivity());
 
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), businessCardAdepter::submitList);
+        mViewModel.getRecycledProductLiveData(currentBusinessId).observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
+        mViewModel.getRecycledProductLiveData(currentBusinessId).observe(getViewLifecycleOwner(), productCardAdepter::submitList);
 
 
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
@@ -93,11 +101,11 @@ public class UserBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragmentToBusinessFragment();
                 Navigation.findNavController(getView()).navigate(action);
             }
         });
-        mViewModel.setListenUserBinViewModel(new UserBinViewModel.ListenUserBinViewModel() {
+        mViewModel.setListenBusinessBinViewModel(new BusinessBinViewModel.ListenBusinessBinViewModel() {
             @Override
             public void requestResult(String message) {
                 getActivity().runOnUiThread(() -> {
@@ -108,43 +116,47 @@ public class UserBinFragment extends Fragment {
         });
 
 
-        businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
+
+        productCardAdepter.setListener(new ProductCardAdapter.OnclickProductCardListener(){
+
+
             @Override
-            public void onShortTap(Business business, View cardHolder) {
-                mViewModel.shortTap(business);
-                if (mViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+            public void onShortTap(Product product, View cardHolder) {
+                mViewModel.shortTap(product);
+                if (mViewModel.isDeleteModeActive()) checkCard(cardHolder, product);
             }
 
             @Override
-            public void onLongTap(Business business, View cardHolder) {
+            public void onLongTap(Product product, View cardHolder) {
                 if (!mViewModel.isDeleteModeActive()) {
                     actcivateDeleteMode();
                 }
-                mViewModel.longTap(business);
-                checkCard(cardHolder, business);
+                mViewModel.longTap(product);
+                checkCard(cardHolder, product);
 
 
             }
 
             @Override
-            public void getCardHolderOnBind(View cardHolder, Business business) {
-                mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
+            public void getCardHolderOnBind(View cardHolder, Product prod) {
+                mViewModel.setDaysLeftToBeDeleted(prod.getProductId());
+                checkCard(cardHolder, prod);
             }
 
             @Override
             public void reciveCardHol(View cardHolder) {
-                mViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
-                        cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
+               mViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
+                        cardHolder.findViewById(R.id.uncheckedCircle)::setBackground);
 
-                ImageButton imageButton = cardHolder.findViewById(R.id.imageButtonRestoreFromTrash);
+                ImageButton imageButton = cardHolder.findViewById(R.id.restoreButton);
 
 
-                mViewModel.getRestoreButtonVisibilityLiveData().observe(getViewLifecycleOwner(),
+               mViewModel.getRestoreButtonVisibilityLiveData().observe(getViewLifecycleOwner(),
                         imageButton::setVisibility
                 );
 
 
-                TextView textViewDaysLeft = cardHolder.findViewById(R.id.textViewDaysLeftProduct);
+              TextView textViewDaysLeft = cardHolder.findViewById(R.id.daysLeftProduct);
                 textViewDaysLeft.setVisibility(View.VISIBLE);
                 mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d) -> {
                     textViewDaysLeft.setText((CharSequence) d);
@@ -152,9 +164,10 @@ public class UserBinFragment extends Fragment {
             }
 
             @Override
-            public void onRestore(Business business) {
-                mViewModel.restoreSingleBusiness(business);
+            public void onRestore(Product product) {
+                mViewModel.restoreSingleProduct(product);
             }
+
         });
 
 
@@ -168,7 +181,7 @@ public class UserBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragmentToBusinessFragment();
                 Navigation.findNavController(getView()).navigate(action);
                 mainActivityViewModel.setHandleBackPress(null);
             }
@@ -184,7 +197,7 @@ public class UserBinFragment extends Fragment {
     }
 
 
-    private void setToolbarSubtitle(List<Business> businessList) {
+    private void setToolbarSubtitle(List<Product> businessList) {
         toolbar.setSubtitle(Integer.toString(businessList.size()).
                 concat(" ").
                 concat(getString(R.string.businesses_title)));
@@ -209,7 +222,7 @@ public class UserBinFragment extends Fragment {
         mViewModel.setDeleteModeActive(false);
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
+        mViewModel.getRecycledProductLiveData(currentBusinessId).observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
         deleteOrRestoreOptions.setVisibility(View.GONE);
         mainActivityViewModel.showBottomNavBar();
         mViewModel.desactivateDeleteMod(getString(R.string.recycle_bin));
@@ -219,16 +232,15 @@ public class UserBinFragment extends Fragment {
     }
 
 
-    public void checkCard(View cardHolder, Business business) {
+    public void checkCard(View cardHolder, Product product) {
         if (mViewModel.getItemsToDelete().isEmpty()){
             deleteOrRestoreOptions.setVisibility(View.GONE);
         }else {
             deleteOrRestoreOptions.setVisibility(View.VISIBLE);
         }
 
-        if (mViewModel.getItemsToDelete().contains(business)) {
-            cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            System.out.println("Seleccionada" + cardHolder.getTag());
+        if (mViewModel.getItemsToDelete().contains(product)) {
+            cardHolder.findViewById(R.id.uncheckedCircle).setBackground(checkedCircle);
             checkIfAllSelected();
             return;
         }
@@ -236,7 +248,7 @@ public class UserBinFragment extends Fragment {
 
 
         checkIfAllSelected();
-        cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
+        cardHolder.findViewById(R.id.uncheckedCircle).setBackground(null);
 
 
     }
@@ -327,22 +339,6 @@ public class UserBinFragment extends Fragment {
     }
 
 
-
-
-
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
@@ -369,7 +365,7 @@ public class UserBinFragment extends Fragment {
         });
 
 
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(),(list)->{
+        mViewModel.getRecycledProductLiveData(currentBusinessId).observe(getViewLifecycleOwner(),(list)->{
             if (list.isEmpty()){
                 toolbar.getMenu().clear();
             }else {
@@ -409,6 +405,5 @@ public class UserBinFragment extends Fragment {
         mViewModel.unSelectAll();
         deleteOrRestoreOptions.setVisibility(View.GONE);
     }
-
 
 }

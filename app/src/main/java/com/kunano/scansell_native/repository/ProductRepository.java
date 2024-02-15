@@ -9,7 +9,6 @@ import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
-import com.kunano.scansell_native.model.db.relationship.ProductWithImage;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
@@ -38,14 +37,17 @@ public class ProductRepository {
         executor.execute(() -> {
             Long resultado = null;
             try {
-                for (int i = 0; i < 10000; i++){
+              /*  for (int i = 0; i < 10000; i++){
                     product.setProductId(UUID.randomUUID().toString());
                     resultado = productDao.insertProduct(product).get();
                     ProductImg img = new ProductImg(product.getProductId(), productImg);
                     productImgDao.insertProductImg(img).get();
-                }
+                }*/
 
-                //resultado = productDao.insertProduct(product).get();
+                product.setProductId(UUID.randomUUID().toString());
+                resultado = productDao.insertProduct(product).get();
+                ProductImg img = new ProductImg(product.getProductId(), productImg);
+                productImgDao.insertProductImg(img).get();
                 if (resultado > 0) {
                     response.isSuccessfull(true);
                 } else {
@@ -79,8 +81,8 @@ public class ProductRepository {
 
         executor.execute(() -> {
             try {
-                ProductWithImage productWithImage = productImgDao.getBusinessWithProduct(productId).get();
-                lisnedProductImage.recieveProducImage(productWithImage);
+                ProductImg productImg = productImgDao.getProductImg(productId).get();
+                lisnedProductImage.recieveProducImage(productImg);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
