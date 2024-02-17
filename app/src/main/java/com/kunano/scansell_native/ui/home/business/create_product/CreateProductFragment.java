@@ -1,6 +1,8 @@
 package com.kunano.scansell_native.ui.home.business.create_product;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +19,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -24,8 +28,10 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
+import com.kunano.scansell_native.ui.AdminPermissions;
 import com.kunano.scansell_native.ui.ImageProcessor;
 import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
+import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
 
 public class CreateProductFragment extends Fragment {
@@ -51,6 +57,9 @@ public class CreateProductFragment extends Fragment {
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private Bitmap bitmapImg;
     private MainActivityViewModel mainActivityViewModel;
+    private ImageButton cancelImageUploadButton;
+    private  ImageSourceFragment imageSourceFragment;
+    private ActivityResultLauncher<String> requestCameraPermissionLauncher;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -59,7 +68,7 @@ public class CreateProductFragment extends Fragment {
 
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
 
-        createProductViewModel = new ViewModelProvider(this).get(CreateProductViewModel.class);
+        createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
 
@@ -76,15 +85,21 @@ public class CreateProductFragment extends Fragment {
         warningBuyinPrice = binding.textViewBuyingPriceWarn;
         warningSellingPrice = binding.textViewSellingPriceWarn;
         warningStock = binding.textViewStockWarn;
+        cancelImageUploadButton = binding.cancelImageUpload;
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
 
 
+        requestCameraPermissionLauncher = registerForActivityResult(new
+                ActivityResultContracts.RequestPermission(), this::resultCameraPermission);
+
+        cancelImageUploadButton.setOnClickListener(this::cancelImageUpload);
+
 
         createProductViewModel.getBitmapImgMutableLiveData().observe(getViewLifecycleOwner(),
-                imageViewAddImage::setImageBitmap);
+                imageViewAddImage::setImageDrawable);
 
-        imageViewAddImage.setOnClickListener(this::lunchImagePicker);
+        imageViewAddImage.setOnClickListener(this::showOptionPickImage);
         saveButton.setOnClickListener(this::createProduct);
 
         createProductViewModel.getHandleSaveButtonClickLiveData().observe(getViewLifecycleOwner(), saveButton::setClickable);
@@ -92,10 +107,20 @@ public class CreateProductFragment extends Fragment {
         createProductViewModel.getWarningBuyinPrice().observe(getViewLifecycleOwner(), warningBuyinPrice::setText);
         createProductViewModel.getWarningSellingPrice().observe(getViewLifecycleOwner(), warningSellingPrice::setText);
         createProductViewModel.getWarningStock().observe(getViewLifecycleOwner(), warningStock::setText);
+        createProductViewModel.getCancelImageButtonVisibility().observe(getViewLifecycleOwner(), cancelImageUploadButton::setVisibility);
 
+        imageSourceFragment = new ImageSourceFragment();
+        imageSourceFragment.setImageSoucerLisner(new ImageSourceFragment.imageSoucerLisner() {
+            @Override
+            public void fromFiles(View view) {
+                lunchImagePicker();
+            }
 
-
-
+            @Override
+            public void fromCamera(View view) {
+                captureImage();
+            }
+        });
 
 
         mainActivityViewModel.setHandleBackPress(this::navigateBack);
@@ -112,6 +137,14 @@ public class CreateProductFragment extends Fragment {
     }
 
 
+    //Show option to pick image
+    public void showOptionPickImage(View view){
+        imageSourceFragment.show(getParentFragmentManager(), "pick image options");
+    }
+
+
+
+
 
     void createProduct(View view){
         if (!validateData()) return;
@@ -121,7 +154,7 @@ public class CreateProductFragment extends Fragment {
         String sPrice = sellingPrice.getText().toString();
         String stck = stock.getText().toString();
 
-        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImgMutableLiveData().getValue());
+        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
         businessViewModel.createProduct(name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
     }
@@ -140,7 +173,7 @@ public class CreateProductFragment extends Fragment {
 
 
 
-    public void lunchImagePicker(View view){
+    public void lunchImagePicker(){
         pickMedia.launch(new PickVisualMediaRequest.Builder()
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                 .build());
@@ -149,8 +182,8 @@ public class CreateProductFragment extends Fragment {
 
 
     private void loadImageFromFilePath(Uri uri) {
+        imageSourceFragment.dismiss();
         if(uri == null){
-            imageViewAddImage.setImageResource(R.drawable.cancel_24);
             return;
         }
 
@@ -164,10 +197,13 @@ public class CreateProductFragment extends Fragment {
 
         if ( bitmapImg != null) {
             // If the decoding was successful, set the Bitmap to the ImageView
-            createProductViewModel.setBitmapImgMutableLiveData(bitmapImg);
+            createProductViewModel.setBitmapImg(bitmapImg);
+            createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(), bitmapImg));
+            //imageViewAddImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border_shape));
+            createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
         } else {
             // Handle the case where decoding fails, e.g., show an error image
-            imageViewAddImage.setImageResource(R.drawable.cancel_24);
+            imageViewAddImage.setImageResource(R.drawable.close_24);
         }
     }
 
@@ -206,4 +242,36 @@ public class CreateProductFragment extends Fragment {
     }
 
 
+    public void cancelImageUpload(View view){
+        Drawable imgAdd = ContextCompat.getDrawable(getContext(), R.drawable.add_image_ic_80dp);
+        createProductViewModel.setDrawableImgMutableLiveData(imgAdd);
+        createProductViewModel.setBitmapImg(null);
+        createProductViewModel.setCancelImageButtonVisibility(View.GONE);
+    }
+
+
+
+    //Capture image from camera
+
+
+    public void captureImage(){
+        imageSourceFragment.dismiss();
+
+        AdminPermissions adminPermissions = new AdminPermissions(this);
+        adminPermissions.setRequestPermissionLauncher(requestCameraPermissionLauncher);
+        if (!adminPermissions.verifyCameraPermission()) return;
+
+        //Navigate to camera fragment
+        NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
+        Navigation.findNavController(getView()).navigate(navDirections);
+    }
+
+
+    public void resultCameraPermission(boolean result){
+        if(!result) return;
+
+        //Navigate to camera fragment
+        NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
+        Navigation.findNavController(getView()).navigate(navDirections);
+    }
 }

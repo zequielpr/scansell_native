@@ -2,28 +2,38 @@ package com.kunano.scansell_native.ui.home.business.create_product;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 
+import androidx.camera.core.ImageCapture;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class CreateProductViewModel extends ViewModel {
 
-    private MutableLiveData<Bitmap> bitmapImgMutableLiveData;
+    private MutableLiveData<Drawable> bitmapImgMutableLiveData;
     private MutableLiveData<Boolean> handleSaveButtonClickLiveData;
     private MutableLiveData<String> warningName;
     private MutableLiveData<String> warningBuyinPrice;
     private MutableLiveData<String> warningSellingPrice;
     private MutableLiveData<String> warningStock;
     private MutableLiveData<Color> buttonColor;
+    private MutableLiveData<Integer> cancelImageButtonVisibility;
+
+    private MutableLiveData<Integer> flashMode;
+    private Bitmap bitmapImg;
 
 
     public CreateProductViewModel(){
         bitmapImgMutableLiveData = new MutableLiveData<>();
+        bitmapImg = null;
         handleSaveButtonClickLiveData = new MutableLiveData<>();
         warningName = new MutableLiveData<>();
         warningBuyinPrice = new MutableLiveData<>();
         warningSellingPrice = new MutableLiveData<>();
         warningStock = new MutableLiveData<>();
+        cancelImageButtonVisibility = new MutableLiveData<>(View.GONE);
+        flashMode = new MutableLiveData<>(ImageCapture.FLASH_MODE_OFF);
     }
 
 
@@ -33,13 +43,18 @@ public class CreateProductViewModel extends ViewModel {
 
 
 
-    public MutableLiveData<Bitmap> getBitmapImgMutableLiveData() {
+    public MutableLiveData<Drawable> getBitmapImgMutableLiveData() {
         return bitmapImgMutableLiveData;
     }
 
-    public void setBitmapImgMutableLiveData(Bitmap bitmapImgMutableLiveData) {
+    public void setDrawableImgMutableLiveData(Drawable bitmapImgMutableLiveData) {
         this.bitmapImgMutableLiveData.postValue(bitmapImgMutableLiveData);
     }
+
+    public void setBitmapImg(Bitmap bitmapImgMutableLiveData) {
+        bitmapImg = bitmapImgMutableLiveData;
+    }
+
 
     public MutableLiveData<Boolean> getHandleSaveButtonClickLiveData() {
         return handleSaveButtonClickLiveData;
@@ -80,5 +95,25 @@ public class CreateProductViewModel extends ViewModel {
 
     public void setWarningStock(String warningStock) {
         this.warningStock.postValue(warningStock);
+    }
+
+    public Bitmap getBitmapImg() {
+        return bitmapImg;
+    }
+
+    public MutableLiveData<Integer> getCancelImageButtonVisibility() {
+        return cancelImageButtonVisibility;
+    }
+
+    public void setCancelImageButtonVisibility(Integer cancelImageButtonVisibility) {
+        this.cancelImageButtonVisibility.postValue(cancelImageButtonVisibility);
+    }
+
+    public MutableLiveData<Integer> getFlashMode() {
+        return flashMode;
+    }
+
+    public void setFlashMode(Integer flashMode) {
+        this.flashMode.postValue(flashMode);
     }
 }

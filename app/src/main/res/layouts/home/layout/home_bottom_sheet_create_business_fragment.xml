@@ -50,7 +50,7 @@ tools:context=".ui.home.HomeFragment">
             android:layout_alignEnd="@id/toolbar"
             android:background="@android:color/transparent"
             android:contentDescription="@string/save"
-            android:src="@drawable/cancel_24" />
+            android:src="@drawable/close_24" />
 
     </RelativeLayout>
 

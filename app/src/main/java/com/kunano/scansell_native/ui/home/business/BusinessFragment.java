@@ -183,7 +183,7 @@ public class BusinessFragment extends Fragment {
 
 
         if (businessViewModel.isDeleteModeActive()) {
-            toolbar.setNavigationIcon(R.drawable.cancel_24);
+            toolbar.setNavigationIcon(R.drawable.close_24);
             toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         }
         updateToolbar();
@@ -238,7 +238,7 @@ public class BusinessFragment extends Fragment {
     }
 
     public void inflateDeleteMenu(){
-        toolbar.setNavigationIcon(R.drawable.cancel_24);
+        toolbar.setNavigationIcon(R.drawable.close_24);
         toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
         deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
@@ -303,7 +303,7 @@ public class BusinessFragment extends Fragment {
 
     public void activateDeleteMode() {
         businessViewModel.setDeleteModeActive(true);
-        toolbar.setNavigationIcon(R.drawable.cancel_24);
+        toolbar.setNavigationIcon(R.drawable.close_24);
         toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         updateToolbar();
     }

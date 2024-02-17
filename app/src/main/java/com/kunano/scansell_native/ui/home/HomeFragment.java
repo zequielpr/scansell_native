@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         });
 
         if (homeViewModel.isDeleteModeActive()) {
-            toolbar.setNavigationIcon(R.drawable.cancel_24);
+            toolbar.setNavigationIcon(R.drawable.close_24);
             toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         }
         updateToolbar();
@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         if(!isDeleteModeActivate){
             toolbar.setNavigationIcon(null);
         }else{
-            toolbar.setNavigationIcon(R.drawable.cancel_24);
+            toolbar.setNavigationIcon(R.drawable.close_24);
         }
 
     }
@@ -243,7 +243,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void activateDeleteMode() {
         homeViewModel.setDeleteModeActive(true);
-        toolbar.setNavigationIcon(R.drawable.cancel_24);
+        toolbar.setNavigationIcon(R.drawable.close_24);
         toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
         updateToolbar();
     }

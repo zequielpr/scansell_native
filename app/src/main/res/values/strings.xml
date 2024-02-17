@@ -50,5 +50,8 @@
     <string name="set_buying_price">set buying price</string>
     <string name="set_selling_price">set selling price</string>
     <string name="set_stock">set stock</string>
+    <string name="camera">camera</string>
+    <string name="files">files</string>
+    <string name="tray_again">tray again</string>
 
 </resources>
