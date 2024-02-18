@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import androidx.camera.core.ImageCapture;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,7 +19,6 @@ public class CreateProductViewModel extends ViewModel {
     private MutableLiveData<Color> buttonColor;
     private MutableLiveData<Integer> cancelImageButtonVisibility;
 
-    private MutableLiveData<Integer> flashMode;
     private Bitmap bitmapImg;
 
 
@@ -33,7 +31,6 @@ public class CreateProductViewModel extends ViewModel {
         warningSellingPrice = new MutableLiveData<>();
         warningStock = new MutableLiveData<>();
         cancelImageButtonVisibility = new MutableLiveData<>(View.GONE);
-        flashMode = new MutableLiveData<>(ImageCapture.FLASH_MODE_OFF);
     }
 
 
@@ -107,13 +104,5 @@ public class CreateProductViewModel extends ViewModel {
 
     public void setCancelImageButtonVisibility(Integer cancelImageButtonVisibility) {
         this.cancelImageButtonVisibility.postValue(cancelImageButtonVisibility);
-    }
-
-    public MutableLiveData<Integer> getFlashMode() {
-        return flashMode;
-    }
-
-    public void setFlashMode(Integer flashMode) {
-        this.flashMode.postValue(flashMode);
     }
 }
