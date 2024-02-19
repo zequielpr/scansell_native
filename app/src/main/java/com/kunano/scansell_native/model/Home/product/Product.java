@@ -43,8 +43,9 @@ public class Product {
 
 
 
-    public Product(  long createdInbusinessId, String productName, double buying_price,
+    public Product(String productId,  long createdInbusinessId, String productName, double buying_price,
                    double selling_price, Integer stock, String cratingDate) {
+        this.productId = productId;
         this. businessIdFK = createdInbusinessId;
         this.productName = productName;
         this.buying_price = buying_price;

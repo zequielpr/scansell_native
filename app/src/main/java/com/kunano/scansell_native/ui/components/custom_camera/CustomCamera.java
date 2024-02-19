@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.components;
+package com.kunano.scansell_native.ui.components.custom_camera;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.Uri;
+import android.util.Size;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -25,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.ui.components.BarcodeScannerCustom;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -72,14 +74,15 @@ public class CustomCamera {
     }
 
 
-    public void startCamera() {
+    public void startCamera(boolean scanBarCode) {
         cameraExecutor = Executors.newSingleThreadExecutor();
         cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+
 
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                bindPreview(cameraProvider);
+                bindPreview(cameraProvider, scanBarCode);
             } catch (ExecutionException | InterruptedException e) {
                 // No errors need to be handled for this Future.
                 // This should never be reached.
@@ -89,24 +92,53 @@ public class CustomCamera {
     }
 
 
-    private void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
+    private void bindPreview(@NonNull ProcessCameraProvider cameraProvider, boolean scanBarCode) {
         Preview preview = new Preview.Builder()
                 .build();
+        preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
 
-        ImageAnalysis imageAnalysis = new ImageAnalysis.Builder().build();
+
+        ImageAnalysis imageAnalysis;
+        if(scanBarCode){
+             imageAnalysis = new ImageAnalysis.Builder().
+                    setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).
+                    setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888).
+                    setTargetResolution(new Size(1600, 1200)).build();
+        }else {
+            imageAnalysis = new ImageAnalysis.Builder().
+                    setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build();
+        }
+
+
+
+
+
+
+        if(scanBarCode){
+            BarcodeScannerCustom barcodeScannerCustom = new BarcodeScannerCustom();
+            barcodeScannerCustom.setBarcodeScannerCustomListenner(customCameraListener::receiveBarCodeData);
+            imageAnalysis.setAnalyzer(cameraExecutor, barcodeScannerCustom);
+        };
 
         ImageCapture.Builder builder = new ImageCapture.Builder();
 
         imageCapture = builder.build();
 
 
-        preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-        androidx.camera.core.Camera camera = cameraProvider.bindToLifecycle(fragment.getViewLifecycleOwner(), cameraSelector, preview, imageCapture);
+
+      try {
+          cameraProvider.unbindAll();
+          cameraProvider.
+                  bindToLifecycle(fragment.getViewLifecycleOwner(), cameraSelector, preview, imageCapture, imageAnalysis);
+
+      }catch (Exception e){
+          e.printStackTrace();
+      }
 
         customCameraviewModel.getFlashMode().observe(fragment.getViewLifecycleOwner(), imageCapture::setFlashMode);
 
@@ -179,10 +211,14 @@ public class CustomCamera {
 
 
 
-    @FunctionalInterface
+
     public interface CustomCameraListener{
         abstract void receiveImg(Bitmap bitmapImg);
+
+        abstract void receiveBarCodeData(String barCodeData);
     }
+
+
 
 
 

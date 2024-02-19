@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -69,6 +70,7 @@ public class CreateProductFragment extends Fragment {
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
 
         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
+        createProductViewModel.setBusinessId(businessViewModel.getCurrentBusinessId());
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
 
@@ -108,6 +110,11 @@ public class CreateProductFragment extends Fragment {
         createProductViewModel.getWarningSellingPrice().observe(getViewLifecycleOwner(), warningSellingPrice::setText);
         createProductViewModel.getWarningStock().observe(getViewLifecycleOwner(), warningStock::setText);
         createProductViewModel.getCancelImageButtonVisibility().observe(getViewLifecycleOwner(), cancelImageUploadButton::setVisibility);
+        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(), productName::setText);
+        createProductViewModel.getBuyingPriceLivedata().observe(getViewLifecycleOwner(), buyingPrice::setText);
+        createProductViewModel.getSellingPriceLiveData().observe(getViewLifecycleOwner(), sellingPrice::setText);
+        createProductViewModel.getStockLiveData().observe(getViewLifecycleOwner(), stock::setText);
+        createProductViewModel.getButtonSaveTitle().observe(getViewLifecycleOwner(), saveButton::setText);
 
         imageSourceFragment = new ImageSourceFragment();
         imageSourceFragment.setImageSoucerLisner(new ImageSourceFragment.imageSoucerLisner() {
@@ -156,7 +163,8 @@ public class CreateProductFragment extends Fragment {
 
         byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
-        businessViewModel.createProduct(name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+        businessViewModel.createProduct(createProductViewModel.getProductId(),
+                name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
     }
 
     private void recibirRespuesta(boolean result){
@@ -273,5 +281,24 @@ public class CreateProductFragment extends Fragment {
         //Navigate to camera fragment
         NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
         Navigation.findNavController(getView()).navigate(navDirections);
+    }
+
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        System.out.println("On destroy");
+        createProductViewModel.setButtonSaveTitle(new MutableLiveData<>(getString(R.string.save).toString()));
+        createProductViewModel.setProductNameLiveData("");
+        createProductViewModel.setWarningName("");
+        createProductViewModel.setBuyingPriceLivedata("");
+        createProductViewModel.setWarningBuyinPrice("");
+        createProductViewModel.setSellingPriceLiveData("");
+        createProductViewModel.setWarningSellingPrice("");
+        createProductViewModel.setStockLiveData("");
+        createProductViewModel.setWarningStock("");
+        createProductViewModel.setBitmapImg(null);
+        createProductViewModel.setCancelImageButtonVisibility(View.GONE);
+        createProductViewModel.setDrawableImgMutableLiveData(ContextCompat.getDrawable(getContext(), R.drawable.add_image_ic_80dp));
     }
 }

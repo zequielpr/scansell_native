@@ -172,7 +172,11 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view ) {
-        NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToCreateProductFragment();
+
+
+
+
+        NavDirections action = BusinessFragmentDirections.actionBusinessFragmentToScannProductCreateFragment();
         Navigation.findNavController(getView()).navigate(action);
     }
 

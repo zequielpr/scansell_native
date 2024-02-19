@@ -148,5 +148,9 @@ dependencies {
     implementation "androidx.camera:camera-extensions:${camerax_version}"
 
 
+    //Google mlkit
+    implementation 'com.google.mlkit:barcode-scanning:17.2.0'
+
+
 
 }

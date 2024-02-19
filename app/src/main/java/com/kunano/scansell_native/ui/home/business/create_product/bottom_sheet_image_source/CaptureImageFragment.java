@@ -20,7 +20,7 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.databinding.FragmentCaptureImageBinding;
-import com.kunano.scansell_native.ui.components.CustomCamera;
+import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 public class CaptureImageFragment extends Fragment {
@@ -57,9 +57,19 @@ public class CaptureImageFragment extends Fragment {
 
         //Take image process
         customCamera = new CustomCamera(previewView, this, imageButtonFlash);
-        customCamera.startCamera();
+        customCamera.startCamera(false);
         cameraCaptureButton.setOnClickListener(customCamera::takePhoto);
-        customCamera.setCustomCameraListener(this::receiveBitmapImg);
+        customCamera.setCustomCameraListener(new CustomCamera.CustomCameraListener() {
+            @Override
+            public void receiveImg(Bitmap bitmapImg) {
+                receiveBitmapImg(bitmapImg);
+            }
+
+            @Override
+            public void receiveBarCodeData(String barCodeData) {
+
+            }
+        });
 
 
         mainActivityViewModel.setHandleBackPress(this::navigateBack);

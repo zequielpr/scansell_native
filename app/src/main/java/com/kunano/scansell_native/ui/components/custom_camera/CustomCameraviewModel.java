@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.components;
+package com.kunano.scansell_native.ui.components.custom_camera;
 
 import androidx.camera.core.ImageCapture;
 import androidx.lifecycle.MutableLiveData;

@@ -1,14 +1,25 @@
 package com.kunano.scansell_native.ui.home.business.create_product;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class CreateProductViewModel extends ViewModel {
+import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.model.Home.product.ProductImg;
+import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.ui.ImageProcessor;
+
+import java.util.concurrent.ExecutorService;
+
+public class CreateProductViewModel extends AndroidViewModel {
 
     private MutableLiveData<Drawable> bitmapImgMutableLiveData;
     private MutableLiveData<Boolean> handleSaveButtonClickLiveData;
@@ -18,11 +29,19 @@ public class CreateProductViewModel extends ViewModel {
     private MutableLiveData<String> warningStock;
     private MutableLiveData<Color> buttonColor;
     private MutableLiveData<Integer> cancelImageButtonVisibility;
-
+    private String productId;
+    private Long businessId;
     private Bitmap bitmapImg;
 
-
-    public CreateProductViewModel(){
+    private MutableLiveData<String> productNameLiveData;
+    private MutableLiveData<String> buyingPriceLivedata;
+    private MutableLiveData<String> sellingPriceLiveData;
+    private MutableLiveData<String> stockLiveData;
+    private ProductRepository productRepository;
+    private MutableLiveData<String> buttonSaveTitle;
+    public CreateProductViewModel(@NonNull Application application){
+        super(application);
+        productRepository = new ProductRepository(application);
         bitmapImgMutableLiveData = new MutableLiveData<>();
         bitmapImg = null;
         handleSaveButtonClickLiveData = new MutableLiveData<>();
@@ -31,6 +50,65 @@ public class CreateProductViewModel extends ViewModel {
         warningSellingPrice = new MutableLiveData<>();
         warningStock = new MutableLiveData<>();
         cancelImageButtonVisibility = new MutableLiveData<>(View.GONE);
+
+        productNameLiveData = new MutableLiveData<>();
+        buyingPriceLivedata = new MutableLiveData<>();
+        sellingPriceLiveData = new MutableLiveData<>();
+        stockLiveData = new MutableLiveData<>();
+        buttonSaveTitle = new MutableLiveData<>();
+    }
+
+    private ExecutorService executors;
+
+
+    public void checkIfProductExists(String productId){
+
+        if (this.productId != null & this.productId != productId){
+            clearOlddata();
+        }
+
+        this.productId = productId;
+        productRepository.getProductByIds(productId, businessId, this::showData);
+        System.out.println("Businessid create product: " + businessId + " ProductId: " + productId);
+    }
+
+    private void showData(Object result){
+        Product product = (Product) result;
+
+        if(product != null){
+            System.out.println("Product name: " + product.getProductName());
+            productNameLiveData.postValue(product.getProductName());
+            buyingPriceLivedata.postValue(String.valueOf(product.getBuying_price()));
+            sellingPriceLiveData.postValue(String.valueOf(product.getSelling_price()));
+            stockLiveData.postValue(String.valueOf(product.getStock()));
+            buttonSaveTitle.postValue(this.getApplication().getResources().getString(R.string.update));
+            productRepository.getProdductImage(productId, this::showImage );
+
+        }
+    }
+
+    private void showImage(ProductImg productImg){
+        bitmapImg  = ImageProcessor.bytesToBitmap(productImg.getImg());
+
+        setDrawableImgMutableLiveData(new BitmapDrawable(this.getApplication().getResources(), bitmapImg));
+        cancelImageButtonVisibility.postValue(View.VISIBLE);
+
+    }
+
+    //Clear olddata
+    private void  clearOlddata(){
+        setButtonSaveTitle(new MutableLiveData<>(this.getApplication().getString(R.string.save)));
+        setProductNameLiveData("");
+        setWarningName("");
+        setBuyingPriceLivedata("");
+        setWarningBuyinPrice("");
+        setSellingPriceLiveData("");
+        setWarningSellingPrice("");
+        setStockLiveData("");
+        setWarningStock("");
+        setBitmapImg(null);
+        setCancelImageButtonVisibility(View.GONE);
+        setDrawableImgMutableLiveData( this.getApplication().getDrawable( R.drawable.add_image_ic_80dp));
     }
 
 
@@ -104,5 +182,62 @@ public class CreateProductViewModel extends ViewModel {
 
     public void setCancelImageButtonVisibility(Integer cancelImageButtonVisibility) {
         this.cancelImageButtonVisibility.postValue(cancelImageButtonVisibility);
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public MutableLiveData<String> getProductNameLiveData() {
+        return productNameLiveData;
+    }
+
+    public void setProductNameLiveData(String productNameLiveData) {
+        this.productNameLiveData.postValue( productNameLiveData);
+    }
+
+    public MutableLiveData<String> getBuyingPriceLivedata() {
+        return buyingPriceLivedata;
+    }
+
+    public void setBuyingPriceLivedata(String buyingPriceLivedata) {
+        this.buyingPriceLivedata.postValue( buyingPriceLivedata);
+    }
+
+    public MutableLiveData<String> getSellingPriceLiveData() {
+        return sellingPriceLiveData;
+    }
+
+    public void setSellingPriceLiveData(String sellingPriceLiveData) {
+        this.sellingPriceLiveData.postValue(sellingPriceLiveData);
+    }
+
+    public MutableLiveData<String> getStockLiveData() {
+        return stockLiveData;
+    }
+
+    public void setStockLiveData(String stockLiveData) {
+        this.stockLiveData.postValue(stockLiveData);
+    }
+
+
+    public Long getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
+    }
+
+    public MutableLiveData<String> getButtonSaveTitle() {
+        return buttonSaveTitle;
+    }
+
+    public void setButtonSaveTitle(MutableLiveData<String> buttonSaveTitle) {
+        this.buttonSaveTitle = buttonSaveTitle;
     }
 }
