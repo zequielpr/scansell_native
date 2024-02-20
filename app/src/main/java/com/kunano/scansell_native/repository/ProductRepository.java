@@ -12,9 +12,9 @@ import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ProductRepository {
@@ -44,7 +44,7 @@ public class ProductRepository {
                     productImgDao.insertProductImg(img).get();
                 }*/
 
-                product.setProductId(UUID.randomUUID().toString());
+                //product.setProductId(UUID.randomUUID().toString());
                 resultado = productDao.insertProduct(product).get();
                 ProductImg img = new ProductImg(product.getProductId(), productImg);
                 productImgDao.insertProductImg(img).get();
@@ -76,7 +76,7 @@ public class ProductRepository {
 
     public void getProdductImage(String productId,
                                  ProductCardAdapter.LisnedProductImage lisnedProductImage){
-        Executor executor = Executors.newSingleThreadExecutor();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
         executor.execute(() -> {
@@ -90,6 +90,30 @@ public class ProductRepository {
             }
             ;
         });
+
+    }
+
+
+    public void getProductByIds(String productId, Long businessId, ProductRepositoryListener productRepositoryListener){
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(()->{
+            Product product = null;
+            try {
+                product = productDao.getProductByIds(businessId, productId).get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            productRepositoryListener.receiveResult(product);
+        });
+    }
+
+
+
+    public interface ProductRepositoryListener{
+        abstract void receiveResult(Object result);
     }
 
 }

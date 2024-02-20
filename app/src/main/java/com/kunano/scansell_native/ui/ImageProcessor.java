@@ -3,7 +3,9 @@ package com.kunano.scansell_native.ui;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 
@@ -27,6 +29,7 @@ public class ImageProcessor {
 
     // Convert Bitmap to byte array
     public byte[] bitmapToBytes(Bitmap bitmap) {
+        if (bitmap == null)return new byte[0];
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
@@ -121,6 +124,17 @@ public class ImageProcessor {
         return ExifInterface.ORIENTATION_UNDEFINED;
     }
 
+
+    public static Bitmap parseDrawbleToBitmap(Drawable drawable ){
+        int widthPixels = 300;
+        int heightPixels = 300;
+        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mutableBitmap);
+        drawable.setBounds(0, 0, widthPixels, heightPixels);
+        drawable.draw(canvas);
+
+        return mutableBitmap;
+    }
 
 }
 

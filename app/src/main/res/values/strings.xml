@@ -10,7 +10,7 @@
     <string name="save">Save</string>
     <string name="advert_invalid_name">Name invalid. Letters and spaces only (At least 3 letters)</string>
     <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
-    <string name="advert_introduce_name">Introduce a name</string>
+    <string name="advert_introduce_name">introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
     <string name="business_created_succ">Business createed successfully</string>
     <string name="failure_to_create_business">Failure to create business</string>
@@ -47,5 +47,11 @@
     <string name="days">days</string>
     <string name="day">day</string>
     <string name="restore">restore</string>
+    <string name="set_buying_price">set buying price</string>
+    <string name="set_selling_price">set selling price</string>
+    <string name="set_stock">set stock</string>
+    <string name="camera">camera</string>
+    <string name="files">files</string>
+    <string name="tray_again">tray again</string>
 
 </resources>

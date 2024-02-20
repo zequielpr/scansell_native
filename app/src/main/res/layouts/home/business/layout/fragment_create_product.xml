@@ -30,14 +30,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createProductToolbar">
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="124dp"
-            android:layout_height="110dp"
-            android:layout_weight="0"
-            android:background="#00FFFFFF"
-            android:scaleType="center"
-            android:src="@drawable/add_image_ic_80dp" />
+        <RelativeLayout
+            android:layout_width="114dp"
+            android:layout_height="114dp">
+
+            <ImageButton
+                android:id="@+id/cancelImageUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@color/transparent"
+                android:layout_alignParentEnd="true"
+                android:elevation="1dp"
+                android:src="@drawable/cancel_24" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:layout_weight="1"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@color/transparent"
+                android:scaleType="center"
+                android:src="@drawable/add_image_ic_80dp" />
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/editTextTextNombreProduct"
@@ -54,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -62,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_buy_price"
             android:inputType="numberDecimal" />
@@ -72,7 +89,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -80,6 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_selling_price"
             android:inputType="numberDecimal" />
@@ -90,7 +107,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <EditText
@@ -98,6 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:maxLength="9"
             android:ems="10"
             android:hint="@string/intro_stock"
             android:inputType="number" />
@@ -108,7 +125,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
             android:layout_weight="0"
-            android:text="@string/warning"
             android:textColor="@color/red" />
 
         <Button

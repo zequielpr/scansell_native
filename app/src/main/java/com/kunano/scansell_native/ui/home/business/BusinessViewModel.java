@@ -28,6 +28,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private   List<Product> productList;
     private ProductRepository productRepository;
 
+
     public BusinessViewModel(@NonNull Application application) {
         super(application);
         productRepository = new ProductRepository(application);
@@ -115,13 +116,13 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
 
-    public void createProduct(String name, String buyingPrice, String sellingPrice, String stock,
+    public void createProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
                               String creatingDate, byte[] img, ListenResponse response) {
 
         double bPrice = Double.parseDouble(buyingPrice);
         double sPrice = Double.parseDouble(sellingPrice);
         int stck = Integer.parseInt(stock);
-        Product product = new Product( currentBusinessId, name, bPrice, sPrice, stck,
+        Product product = new Product(productId, currentBusinessId, name, bPrice, sPrice, stck,
                 creatingDate);
 
         productRepository.insertProduct(product, img, response::isSuccessfull);
