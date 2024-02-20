@@ -8,6 +8,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.model.Home.product.Product;
@@ -35,6 +36,9 @@ public interface BusinessDao  {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     ListenableFuture<Void> insertBusinessList(List<Business> business);
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    ListenableFuture<Integer> updateBusiness(Business business);
 
     @Delete
     ListenableFuture<Integer> delete(Business business);

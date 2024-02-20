@@ -21,7 +21,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
     private ListenHomeViewModel listenHomeViewModel;
     private LiveData<List<Business>> businessListLiveData;
 
-    private LiveData<List<Business>> currentBusiness;
+
 
 
     public HomeViewModel(@NonNull Application application) {
@@ -40,6 +40,13 @@ public class HomeViewModel extends DeleteItemsViewModel {
         listenHomeViewModel.activateWaitingMode();
     }
 
+    public void updateBusiness(String name, String address, String creatingData){
+        Business business = new Business(name, address, creatingData);
+        business.setBusinessId(currentBusinessId);
+        businessRepository.updateBusiness(business, this::notifyUpdateBusinessResult);
+    }
+
+
     public LiveData<List<Business>> getAllBusinesses() {
         return businessListLiveData;
     }
@@ -47,6 +54,10 @@ public class HomeViewModel extends DeleteItemsViewModel {
     private void notifyInsertNewBusinessResult(boolean result) {
         listenHomeViewModel.desactivateWaitingMode();
     }
+    private void notifyUpdateBusinessResult(boolean result) {
+        //listenHomeViewModel.desactivateWaitingMode();
+    }
+
 
     //Validate data
     public boolean validateName(String name) {
@@ -139,15 +150,6 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setListenHomeViewModel(ListenHomeViewModel listenHomeViewModel) {
         this.listenHomeViewModel = listenHomeViewModel;
-    }
-
-
-    public LiveData<List<Business>> getCurrentBusiness() {
-        return currentBusiness;
-    }
-
-    public void setCurrentBusiness(LiveData<List<Business>> currentBusiness) {
-        this.currentBusiness = currentBusiness;
     }
 
     public Long getCurrentBusinessId() {

@@ -133,7 +133,10 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
 
     public void showBottomSheet() {
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(getString(R.string.create_new_business),
+                getString(R.string.save), "", "");
+
+        bottomSheetFragment.setButtomSheetFragmentListener(homeViewModel::insertNewBusiness);
 
         bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
     }

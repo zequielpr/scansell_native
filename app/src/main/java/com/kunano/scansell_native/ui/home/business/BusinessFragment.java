@@ -25,11 +25,14 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
+import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+
+import java.util.LinkedHashSet;
 
 
 public class BusinessFragment extends Fragment {
@@ -55,6 +58,7 @@ public class BusinessFragment extends Fragment {
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+    private boolean sendingBusinessToBin;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -103,28 +107,25 @@ public class BusinessFragment extends Fragment {
 
         setCardListener();
 
-        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
-            @Override
-            public void backButtonPressed() {
-                if (businessViewModel.isDeleteModeActive()){
-                    desactivateDeleteMode(getView());
-                    updateToolbar();
-                    return;
-                }
+        mainActivityViewModel.setHandleBackPress(this::handlerBackPress);
 
-
-                NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
-                Navigation.findNavController(getView()).navigate(action);
-                mainActivityViewModel.setHandleBackPress(null);
-            }
-        });
         return binding.getRoot();
     }
 
-    public void updateProductsList(BusinessWithProduct businessWithProducts){
-        businessViewModel.setCurrentBusinessLiveData(businessWithProducts.business);
-        businessViewModel.setProductList(businessWithProducts.productsList);
-        productCardAdapter.submitList(businessWithProducts.productsList);
+
+    private void handlerBackPress(){
+        if (businessViewModel.isDeleteModeActive()){
+            desactivateDeleteMode(getView());
+            updateToolbar();
+            return;
+        }
+        navigateBAck();
+    }
+
+    public void navigateBAck(){
+        NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+        Navigation.findNavController(getView()).navigate(action);
+        mainActivityViewModel.setHandleBackPress(null);
     }
 
 
@@ -172,10 +173,6 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view ) {
-
-
-
-
         NavDirections action = BusinessFragmentDirections.actionBusinessFragmentToScannProductCreateFragment();
         Navigation.findNavController(getView()).navigate(action);
     }
@@ -184,14 +181,7 @@ public class BusinessFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-
-        if (businessViewModel.isDeleteModeActive()) {
-            toolbar.setNavigationIcon(R.drawable.close_24);
-            toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
-        }
         updateToolbar();
-
 
     }
 
@@ -209,12 +199,16 @@ public class BusinessFragment extends Fragment {
         boolean isDeleteModeActivate = businessViewModel.isDeleteModeActive();
         toolbar.getMenu().clear();
 
+
         if(isDeleteModeActivate){
         inflateDeleteMenu();
+            inflateBackIcon();
         }else{
             inflateNormarMenu();
+            inflateBackIcon();
             return;
         }
+
 
         if (businessViewModel.isAllSelected()){
             selectAllIcon.setIcon(R.drawable.checked_circle);
@@ -222,6 +216,12 @@ public class BusinessFragment extends Fragment {
             selectAllIcon.setIcon(R.drawable.unchked_circle);
         }
 
+    }
+
+    private void inflateBackIcon(){
+
+        toolbar.setNavigationIcon(R.drawable.back_arrow);
+        toolbar.setNavigationOnClickListener((v)->handlerBackPress());
     }
 
 
@@ -234,6 +234,12 @@ public class BusinessFragment extends Fragment {
                 case R.id.bin_action:
                     navigateBusinessBin();
                     return true;
+                case R.id.update_action:
+                    upateBusiness();
+                    return true;
+                case R.id.delete_action:
+                    sendCurrentBusinessTobin();
+                    return true;
                 default:
                     return true;
             }
@@ -242,7 +248,6 @@ public class BusinessFragment extends Fragment {
     }
 
     public void inflateDeleteMenu(){
-        toolbar.setNavigationIcon(R.drawable.close_24);
         toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
         deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
@@ -250,7 +255,7 @@ public class BusinessFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.delete_button:
-                    askDeleteBusiness();
+                    askToSendProductsBin();
                     return true;
                 case R.id.select_all_button:
                     if (businessViewModel.isAllSelected()) {
@@ -307,8 +312,7 @@ public class BusinessFragment extends Fragment {
 
     public void activateDeleteMode() {
         businessViewModel.setDeleteModeActive(true);
-        toolbar.setNavigationIcon(R.drawable.close_24);
-        toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
+        sendingBusinessToBin = false;
         updateToolbar();
     }
 
@@ -323,13 +327,12 @@ public class BusinessFragment extends Fragment {
 
 
 
-    public void askDeleteBusiness() {
+    public void askToSendProductsBin() {
         System.out.println("Ask whether delete businiesses");
-        ListenResponse action = this::pasToBinOrCancel;
         String title = getString(R.string.send_items_to_bin_warning);
         AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
-        askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
+                AskWhetherDeleteDialog(getLayoutInflater(),this::pasToBinOrCancel, title);
+        askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
     }
 
@@ -338,12 +341,7 @@ public class BusinessFragment extends Fragment {
         if(response){
             showProgressBar();
             businessViewModel.passItemsToBin(this::hideProgressBar, businessViewModel.getBusinessName());
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateToolbar();
-                }
-            });
+            getActivity().runOnUiThread(()-> updateToolbar());
 
         }else {
             desactivateDeleteMode(null);
@@ -359,6 +357,7 @@ public class BusinessFragment extends Fragment {
             if(cancelDeleteProcess){
                 businessViewModel.cancelDeleteProcess();
             }
+
         };
 
 
@@ -382,10 +381,49 @@ public class BusinessFragment extends Fragment {
         }
 
         if(progressBarDialog != null){
+            if(sendingBusinessToBin)getActivity().runOnUiThread(()->navigateBAck());
             progressBarDialog.dismiss();
         }
 
     }
+
+
+
+    //Update name and address
+    private void upateBusiness(){
+        String businessName = businessViewModel.getBusinessName();
+        String businessAddress = businessViewModel.getBusinessAddress();
+
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
+                getString(R.string.update), businessName, businessAddress);
+
+        bottomSheetFragment.setButtomSheetFragmentListener(new BottomSheetFragment.ButtomSheetFragmentListener() {
+            @Override
+            public void receiveData(String name, String address) {
+                homeViewModel.updateBusiness(name, address, "");
+                //getActivity().runOnUiThread(BusinessFragment.this::navigateBAck);
+            }
+        });
+
+        bottomSheetFragment.show(getParentFragmentManager(), "Update business");
+
+    }
+
+
+
+    private void sendCurrentBusinessTobin(){
+        sendingBusinessToBin = true;
+        Business business = businessViewModel.getCurrentBusiness();
+        System.out.println("Business name: " +business.getBusinessName());
+        LinkedHashSet businessList = new LinkedHashSet<>();
+
+        businessList.add(((Object) business));
+        businessViewModel.setItemsToDelete(businessList);
+        askToSendProductsBin();
+
+
+    }
+
 
 
 

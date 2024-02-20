@@ -80,6 +80,38 @@ public class BusinessRepository {
     }
 
 
+    public void updateBusiness(Business business, ListenResponse response) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Integer resultado = null;
+            try {
+
+               /*for (int i = 0; i < 5000; i++){
+                    resultado = businessDao.insertBusiness(business).get();
+                }*/
+                resultado = businessDao.updateBusiness(business).get();
+                if (resultado > 0) {
+                    response.isSuccessfull(true);
+                } else {
+                    response.isSuccessfull(false);
+                }
+
+            } catch (ExecutionException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+
+
+
+
 
 
 

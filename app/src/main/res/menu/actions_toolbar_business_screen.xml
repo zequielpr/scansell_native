@@ -33,12 +33,6 @@
         android:title="@string/update"
         app:showAsAction="never" />
     <item
-        android:id="@+id/details_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="@string/details"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/delete_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

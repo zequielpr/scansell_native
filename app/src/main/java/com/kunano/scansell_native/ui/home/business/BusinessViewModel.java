@@ -22,9 +22,9 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private LiveData<List<BusinessWithProduct>> businessListWithProductsList;
     private Long currentBusinessId;
     LiveData<List<Product>> allProductLive;
-    private MutableLiveData<Business> currentBusinessLiveData;
+    private LiveData<Business> currentBusinessLiveData;
     private String businessName;
-    private MutableLiveData<String> businessAddress;
+    private String businessAddress;
     private   List<Product> productList;
     private ProductRepository productRepository;
 
@@ -33,7 +33,6 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         super(application);
         productRepository = new ProductRepository(application);
         businessName = "";
-        businessAddress = new MutableLiveData<>();
         allProductLive = new MutableLiveData<>();
         currentBusinessId = new Long(-1);
         currentBusinessLiveData = new MutableLiveData<>();
@@ -44,13 +43,15 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     public void updateCurrentBusiness(Business currentBusiness) {
         //Optional<Business> business = currentBusiness.stream().findFirst();
 
+        System.out.println("Business name: " + businessName);
         if (currentBusiness!= null) {
-
+            this.currentBusiness = currentBusiness;
             //Set name and address of the business
             businessName = currentBusiness.getBusinessName();
+            System.out.println("Business name: " + businessName);
             if(!isDeleteModeActive)setSelectedItemsNumbLiveData(businessName);
 
-            businessAddress.postValue(currentBusiness.getBusinessAddress());
+            businessAddress = currentBusiness.getBusinessAddress();
 
         }
     }
@@ -150,11 +151,11 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         this.businessName = businessName;
     }
 
-    public MutableLiveData<String> getBusinessAddress() {
+    public String getBusinessAddress() {
         return businessAddress;
     }
 
-    public void setBusinessAddress(MutableLiveData<String> businessAddress) {
+    public void setBusinessAddress(String businessAddress) {
         this.businessAddress = businessAddress;
     }
 
@@ -167,13 +168,23 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     }
 
     public LiveData<Business> getCurrentBusinessLiveData() {
+
+        if(this.currentBusinessId != null){
+            currentBusinessLiveData = businessRepository.getBusinesById(currentBusinessId);
+
+        }
         return currentBusinessLiveData;
     }
 
-    public void setCurrentBusinessLiveData(Business currentBusinessData) {
-        currentBusinessLiveData.postValue(currentBusinessData);
+    private Business currentBusiness;
+
+    public Business getCurrentBusiness() {
+        return currentBusiness;
     }
 
+    public void setCurrentBusiness(Business currentBusiness) {
+        this.currentBusiness = currentBusiness;
+    }
 
     public Long getCurrentBusinessId() {
         return currentBusinessId;
