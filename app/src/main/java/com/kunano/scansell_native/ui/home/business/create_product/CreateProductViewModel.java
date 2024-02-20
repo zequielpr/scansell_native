@@ -108,7 +108,7 @@ public class CreateProductViewModel extends AndroidViewModel {
         setWarningStock("");
         setBitmapImg(null);
         setCancelImageButtonVisibility(View.GONE);
-        setDrawableImgMutableLiveData( this.getApplication().getDrawable( R.drawable.add_image_ic_80dp));
+        setDrawableImgMutableLiveData( this.getApplication().getDrawable(R.drawable.add_image_ic_80dp));
     }
 
 

@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -281,24 +280,5 @@ public class CreateProductFragment extends Fragment {
         //Navigate to camera fragment
         NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
         Navigation.findNavController(getView()).navigate(navDirections);
-    }
-
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        System.out.println("On destroy");
-        createProductViewModel.setButtonSaveTitle(new MutableLiveData<>(getString(R.string.save).toString()));
-        createProductViewModel.setProductNameLiveData("");
-        createProductViewModel.setWarningName("");
-        createProductViewModel.setBuyingPriceLivedata("");
-        createProductViewModel.setWarningBuyinPrice("");
-        createProductViewModel.setSellingPriceLiveData("");
-        createProductViewModel.setWarningSellingPrice("");
-        createProductViewModel.setStockLiveData("");
-        createProductViewModel.setWarningStock("");
-        createProductViewModel.setBitmapImg(null);
-        createProductViewModel.setCancelImageButtonVisibility(View.GONE);
-        createProductViewModel.setDrawableImgMutableLiveData(ContextCompat.getDrawable(getContext(), R.drawable.add_image_ic_80dp));
     }
 }

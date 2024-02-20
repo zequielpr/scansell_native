@@ -58,7 +58,7 @@ public class CaptureImageFragment extends Fragment {
         //Take image process
         customCamera = new CustomCamera(previewView, this, imageButtonFlash);
         customCamera.startCamera(false);
-        cameraCaptureButton.setOnClickListener(customCamera::takePhoto);
+        cameraCaptureButton.setOnClickListener(this::takePhoto);
         customCamera.setCustomCameraListener(new CustomCamera.CustomCameraListener() {
             @Override
             public void receiveImg(Bitmap bitmapImg) {
@@ -79,6 +79,11 @@ public class CaptureImageFragment extends Fragment {
 
 
         return binding.getRoot();
+    }
+
+    public void takePhoto(View view){
+        cameraCaptureButton.setClickable(false);
+        customCamera.takePhoto(getView());
     }
 
     public void navigateBack(){

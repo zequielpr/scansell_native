@@ -105,7 +105,10 @@ public class ScannProductCreateFragment extends Fragment {
     public void onDestroy(){
         super.onDestroy();
 
-        customCamera.setCustomCameraListener(null);
-        customCamera.shutDwonThread();
+        if (customCamera != null){
+            customCamera.setCustomCameraListener(null);
+            customCamera.shutDwonThread();
+        }
+
     }
 }

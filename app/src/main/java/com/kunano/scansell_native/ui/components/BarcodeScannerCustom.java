@@ -36,7 +36,7 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
             InputImage inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
             BarcodeScannerOptions barcodeScannerOptions = new BarcodeScannerOptions.Builder().
                     setBarcodeFormats(Barcode.FORMAT_UPC_A, Barcode.FORMAT_EAN_13,
-                            Barcode.FORMAT_CODE_39, Barcode.FORMAT_CODE_128 ).enableAllPotentialBarcodes().build();
+                            Barcode.FORMAT_CODE_39, Barcode.FORMAT_CODE_128, Barcode.FORMAT_EAN_8 ). enableAllPotentialBarcodes().build();
 
 
             BarcodeScanner scanner = BarcodeScanning.getClient(barcodeScannerOptions);
@@ -48,7 +48,7 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
                 public void onSuccess(List<Barcode> barcodes) {
                     for (Barcode barcode : barcodes) {
                         barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
-                        //System.out.println("Resultado: " + barcode.getRawValue());
+                        //System.out.println("Resultado: " + barcode.getFormat());
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -68,6 +68,7 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
     @FunctionalInterface
     public interface BarcodeScannerCustomListenner{
+
         abstract void receiveBarCodeData(String data);
     }
 
