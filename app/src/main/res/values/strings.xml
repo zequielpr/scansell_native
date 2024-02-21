@@ -53,5 +53,9 @@
     <string name="camera">camera</string>
     <string name="files">files</string>
     <string name="tray_again">tray again</string>
+    <string name="name_a_z">sort by name a-z </string>
+    <string name="name_z_a">sort by name z-a </string>
+    <string name="stock_less_more">Stock less-more</string>
+    <string name="stock_more_less">Stock more-less</string>
 
 </resources>

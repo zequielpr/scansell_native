@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,6 +63,7 @@ public class BusinessFragment extends Fragment {
     HomeViewModel homeViewModel;
     private boolean sendingBusinessToBin;
     private CreateProductViewModel createProductViewModel;
+    private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -84,6 +86,7 @@ public class BusinessFragment extends Fragment {
         recyclerViewProduct = binding.recycleViewProducts;
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
+
 
 
         suportFmanager = getActivity().getSupportFragmentManager();
@@ -123,7 +126,14 @@ public class BusinessFragment extends Fragment {
             desactivateDeleteMode(getView());
             updateToolbar();
             return;
+        }else if(businessViewModel.isSearchModeActive()){
+            System.out.println("Desactivate search mode: ");
+            searchView.onActionViewCollapsed();
+            businessViewModel.setSearchModeActive(false);
+            return;
         }
+        System.out.println("Desactivate search mode?: " + businessViewModel.isSearchModeActive());
+
         navigateBAck();
     }
 
@@ -254,13 +264,19 @@ public class BusinessFragment extends Fragment {
                 case R.id.delete_action:
                     sendCurrentBusinessTobin();
                     return true;
+                case R.id.filter_action:
+                    setFiltreMenuListener();
+                    return true;
                 default:
                     return true;
             }
 
         });
 
-        SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
+
+
+        searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
+        searchView.setOnSearchClickListener((v)->businessViewModel.setSearchModeActive(true));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -269,6 +285,7 @@ public class BusinessFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                businessViewModel.setSearchModeActive(true);
                 System.out.println("Query: " + newText);
                 businessViewModel.searchProduct(newText.trim());
                 return false;
@@ -277,6 +294,40 @@ public class BusinessFragment extends Fragment {
 
 
     }
+
+
+    private void setFiltreMenuListener(){
+       MenuItem filter = toolbar.getMenu().findItem(R.id.filter_action);
+        SubMenu filterOptionsMenu = filter.getSubMenu();
+
+        for(int i = 0; i < filterOptionsMenu.size(); i++){
+            filterOptionsMenu.getItem(i).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.name_a_z:
+                            businessViewModel.sortProductByNameAsc();
+                            return true;
+                        case R.id.name_z_a:
+                            businessViewModel.sortProductByNameDesc();
+                            return true;
+                        case R.id.stock_more_less:
+                            businessViewModel.sortProductByStcokDesc();
+                            return true;
+                        case R.id.stock_less_more:
+                            businessViewModel.sortProductByStockAsc();
+                            return true;
+                        default:
+                            return true;
+                    }
+                }
+            });
+        }
+
+
+    }
+
+
 
     public void inflateDeleteMenu(){
         toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);

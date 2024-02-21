@@ -19,6 +19,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,6 +50,7 @@ public class CreateProductFragment extends Fragment {
     private TextView warningStock;
     private ImageView imageViewAddImage;
     private Button saveButton;
+    private Toolbar createProductToolbar;
 
     private BusinessViewModel businessViewModel;
     private CreateProductViewModel createProductViewModel;
@@ -87,6 +89,7 @@ public class CreateProductFragment extends Fragment {
         warningSellingPrice = binding.textViewSellingPriceWarn;
         warningStock = binding.textViewStockWarn;
         cancelImageUploadButton = binding.cancelImageUpload;
+        createProductToolbar = binding.createProductToolbar;
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
 
@@ -215,6 +218,8 @@ public class CreateProductFragment extends Fragment {
     }
 
 
+
+
     //Validate
     private boolean validateData(){
         if (productName.getText().toString().isEmpty()){
@@ -281,4 +286,20 @@ public class CreateProductFragment extends Fragment {
         NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
+
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(), createProductToolbar::setTitle);
+        createProductToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
+        createProductToolbar.setNavigationOnClickListener((v)->navigateBack());
+        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(),this::inflateToolbar);
+
+    }
+
+    private void inflateToolbar(String productName){
+        if(!productName.isBlank()){
+            createProductToolbar.inflateMenu(R.menu.product_details_tool_bar);
+        }
+    }
+
 }

@@ -55,4 +55,30 @@ public interface BusinessDao  {
             " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
             "AND product.product_name LIKE (:query)" )
     public LiveData<List<Product>> searchProducts(Long businessId, String query);
+
+
+    @Transaction
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
+            " ORDER BY product.product_name ASC")
+    public LiveData<List<Product>> sortProductByNameAsc(Long businessId);
+
+    @Transaction
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
+            " ORDER BY product.product_name DESC")
+    public LiveData<List<Product>> sortProductByNameDesc(Long businessId);
+
+
+    @Transaction
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
+            " ORDER BY product.stock ASC")
+    public LiveData<List<Product>> sortProductByStockAsc(Long businessId);
+
+    @Transaction
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
+            " ORDER BY product.stock DESC")
+    public LiveData<List<Product>> sortProductByStockDesc(Long businessId);
 }

@@ -27,6 +27,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private String businessAddress;
     private   List<Product> productList;
     private ProductRepository productRepository;
+    private boolean searchModeActive;
 
 
     public BusinessViewModel(@NonNull Application application) {
@@ -37,6 +38,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         currentBusinessId = new Long(-1);
         currentBusinessLiveData = new MutableLiveData<>();
         productList = new ArrayList<>();
+        searchModeActive = false;
     }
 
 
@@ -74,7 +76,23 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     //Search
     public void searchProduct(String query){
         businessRepository.searchProducts(currentBusinessId, query).observeForever(allProductLive::postValue);
+    }
 
+    public void sortProductByNameAsc(){
+
+        businessRepository.sortProductByNameAsc(currentBusinessId).observeForever(allProductLive::postValue);
+    }
+
+    public void sortProductByNameDesc(){
+        businessRepository.sortProductByNameDesc(currentBusinessId).observeForever(allProductLive::postValue);
+    }
+
+    public void sortProductByStockAsc(){
+        businessRepository.sortProductByStockAsc(currentBusinessId).observeForever(allProductLive::postValue);
+    }
+
+    public void sortProductByStcokDesc(){
+        businessRepository.sortProductByStockDesc(currentBusinessId).observeForever(allProductLive::postValue);
     }
 
 
@@ -204,5 +222,13 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     public void setCurrentBusinessId(Long currentBusinessId) {
 
         this.currentBusinessId = currentBusinessId;
+    }
+
+    public boolean isSearchModeActive() {
+        return searchModeActive;
+    }
+
+    public void setSearchModeActive(boolean searchModeActive) {
+        this.searchModeActive = searchModeActive;
     }
 }

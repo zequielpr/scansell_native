@@ -136,4 +136,21 @@ public class BusinessRepository {
         query =  "%" + query.concat("%");
         return businessDao.searchProducts(businessId, query);
     }
+
+    public LiveData<List<Product>> sortProductByNameAsc(Long businessId){
+        return businessDao.sortProductByNameAsc(businessId);
+    }
+
+    public LiveData<List<Product>> sortProductByNameDesc(Long businessId){
+        return businessDao.sortProductByNameDesc(businessId);
+    }
+
+    public LiveData<List<Product>> sortProductByStockAsc(Long businessId){
+        return businessDao.sortProductByStockAsc(businessId);
+    }
+    public LiveData<List<Product>> sortProductByStockDesc(Long businessId){
+        return businessDao.sortProductByStockDesc(businessId);
+    }
+
+
 }
