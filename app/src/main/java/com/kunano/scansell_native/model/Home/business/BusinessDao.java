@@ -48,4 +48,11 @@ public interface BusinessDao  {
     @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
             " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " )
     public LiveData<List<Product>> getProducts(Long businessId);
+
+
+    @Transaction
+    @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
+            "AND product.product_name LIKE (:query)" )
+    public LiveData<List<Product>> searchProducts(Long businessId, String query);
 }

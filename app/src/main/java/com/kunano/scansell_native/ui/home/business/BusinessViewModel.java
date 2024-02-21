@@ -21,7 +21,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     private LiveData<List<BusinessWithProduct>> businessListWithProductsList;
     private Long currentBusinessId;
-    LiveData<List<Product>> allProductLive;
+    MutableLiveData<List<Product>> allProductLive;
     private LiveData<Business> currentBusinessLiveData;
     private String businessName;
     private String businessAddress;
@@ -62,10 +62,18 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         if(this.currentBusinessId != currentBusinessId){
             System.out.println("New businessID: " + currentBusinessId);
             this.currentBusinessId = currentBusinessId;
-            allProductLive = businessRepository.getProductsList(currentBusinessId);
+             businessRepository.getProductsList(currentBusinessId).observeForever(allProductLive::postValue);
+
             return allProductLive;
         }
         return allProductLive;
+
+    }
+
+
+    //Search
+    public void searchProduct(String query){
+        businessRepository.searchProducts(currentBusinessId, query).observeForever(allProductLive::postValue);
 
     }
 
@@ -84,7 +92,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
             selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = productList.size() == itemsToDelete.size();
+            isAllSelected = allProductLive.getValue().size() == itemsToDelete.size();
             return;
         }
 
@@ -98,9 +106,12 @@ public class BusinessViewModel extends DeleteItemsViewModel {
             itemsToDelete.add(product);
         }
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = productList.size() == itemsToDelete.size();
+        isAllSelected = allProductLive.getValue().size() == itemsToDelete.size();
 
     }
+
+
+
 
 
 

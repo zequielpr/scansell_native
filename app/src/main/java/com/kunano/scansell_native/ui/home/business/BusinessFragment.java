@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -109,6 +110,7 @@ public class BusinessFragment extends Fragment {
 
         mainActivityViewModel.setHandleBackPress(this::handlerBackPress);
 
+
         return binding.getRoot();
     }
 
@@ -127,6 +129,8 @@ public class BusinessFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(action);
         mainActivityViewModel.setHandleBackPress(null);
     }
+
+
 
 
 
@@ -181,7 +185,9 @@ public class BusinessFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
         updateToolbar();
+
 
     }
 
@@ -226,7 +232,7 @@ public class BusinessFragment extends Fragment {
 
 
     public void inflateNormarMenu(){
-        toolbar.setNavigationIcon(null);
+
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
         toolbar.setOnMenuItemClickListener((intemMenu)->{
 
@@ -245,6 +251,23 @@ public class BusinessFragment extends Fragment {
             }
 
         });
+
+        SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                System.out.println("Query: " + newText);
+                businessViewModel.searchProduct(newText.trim());
+                return false;
+            }
+        });
+
+
     }
 
     public void inflateDeleteMenu(){

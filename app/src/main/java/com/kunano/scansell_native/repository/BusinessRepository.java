@@ -131,4 +131,9 @@ public class BusinessRepository {
     public LiveData<List<Product>> getProductsList(Long businessId){
         return businessDao.getProducts(businessId);
     }
+
+    public LiveData<List<Product>> searchProducts(Long businessId, String query){
+        query =  "%" + query.concat("%");
+        return businessDao.searchProducts(businessId, query);
+    }
 }
