@@ -90,6 +90,12 @@ public class CreateProductViewModel extends AndroidViewModel {
     private void showImage(ProductImg productImg){
         bitmapImg  = ImageProcessor.bytesToBitmap(productImg.getImg());
 
+        if(bitmapImg == null){
+            setDrawableImgMutableLiveData(getApplication().getDrawable(R.drawable.add_image_ic_80dp));
+            cancelImageButtonVisibility.postValue(View.GONE);
+            return;
+        }
+
         setDrawableImgMutableLiveData(new BitmapDrawable(this.getApplication().getResources(), bitmapImg));
         cancelImageButtonVisibility.postValue(View.VISIBLE);
 

@@ -32,6 +32,7 @@ import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 import java.util.LinkedHashSet;
 
@@ -60,6 +61,7 @@ public class BusinessFragment extends Fragment {
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
     private boolean sendingBusinessToBin;
+    private CreateProductViewModel createProductViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -71,6 +73,7 @@ public class BusinessFragment extends Fragment {
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
 
         businessKey = homeViewModel.getCurrentBusinessId();
                 binding = FragmentBusinessBinding.inflate(inflater, container, false);
@@ -141,7 +144,12 @@ public class BusinessFragment extends Fragment {
             @Override
             public void onShortTap(Product product, View cardHolder) {
                 businessViewModel.shortTap(product);
-                if (businessViewModel.isDeleteModeActive()) checkCard(cardHolder, product);
+                if (businessViewModel.isDeleteModeActive()){
+                    checkCard(cardHolder, product);
+                    return;
+                };
+                showProductDetails(product.getProductId());
+
             }
 
             @Override
@@ -443,10 +451,16 @@ public class BusinessFragment extends Fragment {
         businessList.add(((Object) business));
         businessViewModel.setItemsToDelete(businessList);
         askToSendProductsBin();
-
-
     }
 
+
+
+    private void showProductDetails(String productId){
+        createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
+        createProductViewModel.checkIfProductExists(productId);
+        NavDirections navDirections = BusinessFragmentDirections.actionProductsFragment2ToCreateProductFragment();
+        Navigation.findNavController(getView()).navigate(navDirections);
+    }
 
 
 
