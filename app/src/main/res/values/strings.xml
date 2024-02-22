@@ -57,5 +57,8 @@
     <string name="name_z_a">sort by name z-a </string>
     <string name="stock_less_more">Stock less-more</string>
     <string name="stock_more_less">Stock more-less</string>
+    <string name="send_bin_product">bin product</string>
+    <string name="product_sent_to_bin_successfuly">product bined succefuly</string>
+    <string name="error_to_send_bin_product">error to bin product</string>
 
 </resources>

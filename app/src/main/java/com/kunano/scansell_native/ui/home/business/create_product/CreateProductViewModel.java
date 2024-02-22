@@ -14,10 +14,14 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
+import com.kunano.scansell_native.repository.BinsRepository;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.ui.components.FragmentListener;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CreateProductViewModel extends AndroidViewModel {
 
@@ -39,9 +43,12 @@ public class CreateProductViewModel extends AndroidViewModel {
     private MutableLiveData<String> stockLiveData;
     private ProductRepository productRepository;
     private MutableLiveData<String> buttonSaveTitle;
+    private BinsRepository binsRepository;
+    private FragmentListener fragmentListener;
     public CreateProductViewModel(@NonNull Application application){
         super(application);
         productRepository = new ProductRepository(application);
+        binsRepository = new BinsRepository(application);
         bitmapImgMutableLiveData = new MutableLiveData<>();
         bitmapImg = null;
         handleSaveButtonClickLiveData = new MutableLiveData<>();
@@ -116,6 +123,30 @@ public class CreateProductViewModel extends AndroidViewModel {
         setCancelImageButtonVisibility(View.GONE);
         setDrawableImgMutableLiveData( this.getApplication().getDrawable(R.drawable.add_image_ic_80dp));
     }
+
+
+    ExecutorService executor;
+    public void sendProductToBin(FragmentListener fragmentListener){
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(()->{
+            try {
+               Long result = binsRepository.sendProductTobin(businessId, productId).get();
+
+                fragmentListener.result(result > 0);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void shotDownExecutors(){
+        if (executor != null){
+            executor.shutdown();
+        }
+    }
+
 
 
 
@@ -245,5 +276,13 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void setButtonSaveTitle(MutableLiveData<String> buttonSaveTitle) {
         this.buttonSaveTitle = buttonSaveTitle;
+    }
+
+    public FragmentListener getFragmentListener() {
+        return fragmentListener;
+    }
+
+    public void setFragmentListener(FragmentListener fragmentListener) {
+        this.fragmentListener = fragmentListener;
     }
 }

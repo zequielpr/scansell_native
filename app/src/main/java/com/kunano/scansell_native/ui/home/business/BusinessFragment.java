@@ -277,6 +277,11 @@ public class BusinessFragment extends Fragment {
 
         searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
         searchView.setOnSearchClickListener((v)->businessViewModel.setSearchModeActive(true));
+        searchView.setOnCloseListener(()->{
+            searchView.onActionViewCollapsed();
+            businessViewModel.setSearchModeActive(false);
+            return true;
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
