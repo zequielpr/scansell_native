@@ -53,5 +53,15 @@
     <string name="camera">camera</string>
     <string name="files">files</string>
     <string name="tray_again">tray again</string>
+    <string name="name_a_z">sort by name a-z </string>
+    <string name="name_z_a">sort by name z-a </string>
+    <string name="stock_less_more">Stock less-more</string>
+    <string name="stock_more_less">Stock more-less</string>
+    <string name="send_bin_product">bin product</string>
+    <string name="product_sent_to_bin_successfuly">product binned succefuly</string>
+    <string name="error_to_send_bin_product">error to bin product</string>
+    <string name="bin_business">bin business</string>
+    <string name="error_to_bin_business">error to bin business</string>
+    <string name="business_binned_successfuly">business binned successfuly</string>
 
 </resources>

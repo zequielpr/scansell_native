@@ -29,11 +29,26 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     private Button saveBusinessButton;
     private ImageButton cancelBtn;
     private HomeBottomSheetCreateBusinessFragmentBinding binding;
+    private  ButtomSheetFragmentListener buttomSheetFragmentListener;
     HomeViewModel viewModel;
 
     boolean isBusinessNameValid;
     boolean isBusinessAddressValid;
 
+    private String title;
+    private String buttonTitle;
+
+    private String businessName;
+    private String businessAddress;
+
+
+    public BottomSheetFragment(String title, String buttonTitle, String businessName,
+                               String businessAddress) {
+        this.title = title;
+        this.buttonTitle = buttonTitle;
+        this.businessName = businessName;
+        this.businessAddress = businessAddress;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,8 +60,20 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
         textViewAdvertAddress = binding.advertAddress;
         saveBusinessButton = binding.savingButton;
         cancelBtn = binding.cancelButton;
-        isBusinessAddressValid = false;
-        isBusinessNameValid = false;
+
+        if (!businessName.isBlank() & !businessAddress.isBlank()){
+            isBusinessAddressValid = true;
+            isBusinessNameValid = true;
+        }else {
+            isBusinessAddressValid = false;
+            isBusinessNameValid = false;
+        }
+
+        binding.createBusinessTitle.setText(title);
+        saveBusinessButton.setText(buttonTitle);
+        editTextBusinessName.setText(businessName);
+        editTextBusinessAddress.setText(businessAddress);
+
         setLisnerSaveButton();
         setEditTExtListeners();
         setListenerCloseButton();
@@ -66,8 +93,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
                     provideBusinessDataToHomeViewModel();
                     return;
                 }
-                showWarningName(getString(R.string.advert_introduce_address));
-                showWarningAddress(getString(R.string.advert_introduce_name));
+                showWarningName(getString(R.string.advert_introduce_name));
+                showWarningAddress(getString(R.string.advert_introduce_address));
 
             }
         });
@@ -186,7 +213,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     public void provideBusinessDataToHomeViewModel(){
         String name = editTextBusinessName.getText().toString();
         String address = editTextBusinessAddress.getText().toString();
-        viewModel.insertNewBusiness(name, address);
+
+        buttomSheetFragmentListener.receiveData(name, address);
 
     }
 
@@ -220,5 +248,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
         textViewAdvertAddress.setText("");
     }
 
+    public void setButtomSheetFragmentListener(ButtomSheetFragmentListener buttomSheetFragmentListener) {
+        this.buttomSheetFragmentListener = buttomSheetFragmentListener;
+    }
+
+    public interface ButtomSheetFragmentListener{
+        abstract void receiveData(String name, String address);
+    }
 
 }

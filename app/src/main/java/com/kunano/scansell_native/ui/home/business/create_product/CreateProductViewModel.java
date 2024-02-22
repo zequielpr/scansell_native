@@ -14,10 +14,14 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
+import com.kunano.scansell_native.repository.BinsRepository;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CreateProductViewModel extends AndroidViewModel {
 
@@ -39,9 +43,12 @@ public class CreateProductViewModel extends AndroidViewModel {
     private MutableLiveData<String> stockLiveData;
     private ProductRepository productRepository;
     private MutableLiveData<String> buttonSaveTitle;
+    private BinsRepository binsRepository;
+    private ViewModelListener viewModelListener;
     public CreateProductViewModel(@NonNull Application application){
         super(application);
         productRepository = new ProductRepository(application);
+        binsRepository = new BinsRepository(application);
         bitmapImgMutableLiveData = new MutableLiveData<>();
         bitmapImg = null;
         handleSaveButtonClickLiveData = new MutableLiveData<>();
@@ -90,6 +97,12 @@ public class CreateProductViewModel extends AndroidViewModel {
     private void showImage(ProductImg productImg){
         bitmapImg  = ImageProcessor.bytesToBitmap(productImg.getImg());
 
+        if(bitmapImg == null){
+            setDrawableImgMutableLiveData(getApplication().getDrawable(R.drawable.add_image_ic_80dp));
+            cancelImageButtonVisibility.postValue(View.GONE);
+            return;
+        }
+
         setDrawableImgMutableLiveData(new BitmapDrawable(this.getApplication().getResources(), bitmapImg));
         cancelImageButtonVisibility.postValue(View.VISIBLE);
 
@@ -110,6 +123,30 @@ public class CreateProductViewModel extends AndroidViewModel {
         setCancelImageButtonVisibility(View.GONE);
         setDrawableImgMutableLiveData( this.getApplication().getDrawable(R.drawable.add_image_ic_80dp));
     }
+
+
+    ExecutorService executor;
+    public void sendProductToBin(ViewModelListener viewModelListener){
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(()->{
+            try {
+               Long result = binsRepository.sendProductTobin(businessId, productId).get();
+
+                viewModelListener.result(result > 0);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void shotDownExecutors(){
+        if (executor != null){
+            executor.shutdown();
+        }
+    }
+
 
 
 
@@ -239,5 +276,13 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void setButtonSaveTitle(MutableLiveData<String> buttonSaveTitle) {
         this.buttonSaveTitle = buttonSaveTitle;
+    }
+
+    public ViewModelListener getFragmentListener() {
+        return viewModelListener;
+    }
+
+    public void setFragmentListener(ViewModelListener viewModelListener) {
+        this.viewModelListener = viewModelListener;
     }
 }

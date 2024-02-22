@@ -2,13 +2,18 @@ package com.kunano.scansell_native.ui.home.business;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -26,10 +31,11 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 
 public class BusinessFragment extends Fragment {
@@ -55,6 +61,9 @@ public class BusinessFragment extends Fragment {
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+    private boolean sendingBusinessToBin;
+    private CreateProductViewModel createProductViewModel;
+    private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -66,6 +75,7 @@ public class BusinessFragment extends Fragment {
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
 
         businessKey = homeViewModel.getCurrentBusinessId();
                 binding = FragmentBusinessBinding.inflate(inflater, container, false);
@@ -76,6 +86,7 @@ public class BusinessFragment extends Fragment {
         recyclerViewProduct = binding.recycleViewProducts;
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
+
 
 
         suportFmanager = getActivity().getSupportFragmentManager();
@@ -103,29 +114,38 @@ public class BusinessFragment extends Fragment {
 
         setCardListener();
 
-        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
-            @Override
-            public void backButtonPressed() {
-                if (businessViewModel.isDeleteModeActive()){
-                    desactivateDeleteMode(getView());
-                    updateToolbar();
-                    return;
-                }
+        mainActivityViewModel.setHandleBackPress(this::handlerBackPress);
 
 
-                NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
-                Navigation.findNavController(getView()).navigate(action);
-                mainActivityViewModel.setHandleBackPress(null);
-            }
-        });
         return binding.getRoot();
     }
 
-    public void updateProductsList(BusinessWithProduct businessWithProducts){
-        businessViewModel.setCurrentBusinessLiveData(businessWithProducts.business);
-        businessViewModel.setProductList(businessWithProducts.productsList);
-        productCardAdapter.submitList(businessWithProducts.productsList);
+
+    private void handlerBackPress(){
+        if (businessViewModel.isDeleteModeActive()){
+            desactivateDeleteMode(getView());
+            updateToolbar();
+            return;
+        }else if(businessViewModel.isSearchModeActive()){
+            System.out.println("Desactivate search mode: ");
+            searchView.onActionViewCollapsed();
+            businessViewModel.setSearchModeActive(false);
+            return;
+        }
+        System.out.println("Desactivate search mode?: " + businessViewModel.isSearchModeActive());
+
+        navigateBAck();
     }
+
+    public void navigateBAck(){
+        getActivity().runOnUiThread(()->{
+            NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+            Navigation.findNavController(getView()).navigate(action);
+            mainActivityViewModel.setHandleBackPress(null);
+        });
+    }
+
+
 
 
 
@@ -136,7 +156,12 @@ public class BusinessFragment extends Fragment {
             @Override
             public void onShortTap(Product product, View cardHolder) {
                 businessViewModel.shortTap(product);
-                if (businessViewModel.isDeleteModeActive()) checkCard(cardHolder, product);
+                if (businessViewModel.isDeleteModeActive()){
+                    checkCard(cardHolder, product);
+                    return;
+                };
+                showProductDetails(product.getProductId());
+
             }
 
             @Override
@@ -172,10 +197,6 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view ) {
-
-
-
-
         NavDirections action = BusinessFragmentDirections.actionBusinessFragmentToScannProductCreateFragment();
         Navigation.findNavController(getView()).navigate(action);
     }
@@ -185,11 +206,6 @@ public class BusinessFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-
-        if (businessViewModel.isDeleteModeActive()) {
-            toolbar.setNavigationIcon(R.drawable.close_24);
-            toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
-        }
         updateToolbar();
 
 
@@ -209,12 +225,16 @@ public class BusinessFragment extends Fragment {
         boolean isDeleteModeActivate = businessViewModel.isDeleteModeActive();
         toolbar.getMenu().clear();
 
+
         if(isDeleteModeActivate){
         inflateDeleteMenu();
+            inflateBackIcon();
         }else{
             inflateNormarMenu();
+            inflateBackIcon();
             return;
         }
+
 
         if (businessViewModel.isAllSelected()){
             selectAllIcon.setIcon(R.drawable.checked_circle);
@@ -224,9 +244,15 @@ public class BusinessFragment extends Fragment {
 
     }
 
+    private void inflateBackIcon(){
+
+        toolbar.setNavigationIcon(R.drawable.back_arrow);
+        toolbar.setNavigationOnClickListener((v)->handlerBackPress());
+    }
+
 
     public void inflateNormarMenu(){
-        toolbar.setNavigationIcon(null);
+
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
         toolbar.setOnMenuItemClickListener((intemMenu)->{
 
@@ -234,15 +260,83 @@ public class BusinessFragment extends Fragment {
                 case R.id.bin_action:
                     navigateBusinessBin();
                     return true;
+                case R.id.update_action:
+                    upateBusiness();
+                    return true;
+                case R.id.delete_action:
+                    sendCurrentBusinessTobin();
+                    return true;
+                case R.id.filter_action:
+                    setFiltreMenuListener();
+                    return true;
                 default:
                     return true;
             }
 
         });
+
+
+
+        searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
+        searchView.setOnSearchClickListener((v)->businessViewModel.setSearchModeActive(true));
+        searchView.setOnCloseListener(()->{
+            searchView.onActionViewCollapsed();
+            businessViewModel.setSearchModeActive(false);
+            return true;
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                businessViewModel.setSearchModeActive(true);
+                System.out.println("Query: " + newText);
+                businessViewModel.searchProduct(newText.trim());
+                return false;
+            }
+        });
+
+
     }
 
+
+    private void setFiltreMenuListener(){
+       MenuItem filter = toolbar.getMenu().findItem(R.id.filter_action);
+        SubMenu filterOptionsMenu = filter.getSubMenu();
+
+        for(int i = 0; i < filterOptionsMenu.size(); i++){
+            filterOptionsMenu.getItem(i).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.name_a_z:
+                            businessViewModel.sortProductByNameAsc();
+                            return true;
+                        case R.id.name_z_a:
+                            businessViewModel.sortProductByNameDesc();
+                            return true;
+                        case R.id.stock_more_less:
+                            businessViewModel.sortProductByStcokDesc();
+                            return true;
+                        case R.id.stock_less_more:
+                            businessViewModel.sortProductByStockAsc();
+                            return true;
+                        default:
+                            return true;
+                    }
+                }
+            });
+        }
+
+
+    }
+
+
+
     public void inflateDeleteMenu(){
-        toolbar.setNavigationIcon(R.drawable.close_24);
         toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
         deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
@@ -250,7 +344,7 @@ public class BusinessFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.delete_button:
-                    askDeleteBusiness();
+                    askToSendProductsBin();
                     return true;
                 case R.id.select_all_button:
                     if (businessViewModel.isAllSelected()) {
@@ -307,8 +401,7 @@ public class BusinessFragment extends Fragment {
 
     public void activateDeleteMode() {
         businessViewModel.setDeleteModeActive(true);
-        toolbar.setNavigationIcon(R.drawable.close_24);
-        toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
+        sendingBusinessToBin = false;
         updateToolbar();
     }
 
@@ -323,13 +416,12 @@ public class BusinessFragment extends Fragment {
 
 
 
-    public void askDeleteBusiness() {
+    public void askToSendProductsBin() {
         System.out.println("Ask whether delete businiesses");
-        ListenResponse action = this::pasToBinOrCancel;
         String title = getString(R.string.send_items_to_bin_warning);
         AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
-        askWhetherDeleteDialog.show(suportFmanager, "ask to delete business");
+                AskWhetherDeleteDialog(getLayoutInflater(),this::pasToBinOrCancel, title);
+        askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
     }
 
@@ -338,12 +430,7 @@ public class BusinessFragment extends Fragment {
         if(response){
             showProgressBar();
             businessViewModel.passItemsToBin(this::hideProgressBar, businessViewModel.getBusinessName());
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateToolbar();
-                }
-            });
+            getActivity().runOnUiThread(()-> updateToolbar());
 
         }else {
             desactivateDeleteMode(null);
@@ -359,6 +446,7 @@ public class BusinessFragment extends Fragment {
             if(cancelDeleteProcess){
                 businessViewModel.cancelDeleteProcess();
             }
+
         };
 
 
@@ -382,9 +470,74 @@ public class BusinessFragment extends Fragment {
         }
 
         if(progressBarDialog != null){
+            if(sendingBusinessToBin)getActivity().runOnUiThread(()->navigateBAck());
             progressBarDialog.dismiss();
         }
 
+    }
+
+
+
+    //Update name and address
+    private void upateBusiness(){
+        String businessName = businessViewModel.getBusinessName();
+        String businessAddress = businessViewModel.getBusinessAddress();
+
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
+                getString(R.string.update), businessName, businessAddress);
+
+        bottomSheetFragment.setButtomSheetFragmentListener(new BottomSheetFragment.ButtomSheetFragmentListener() {
+            @Override
+            public void receiveData(String name, String address) {
+                homeViewModel.updateBusiness(name, address, "");
+                //getActivity().runOnUiThread(BusinessFragment.this::navigateBAck);
+            }
+        });
+
+        bottomSheetFragment.show(getParentFragmentManager(), "Update business");
+
+    }
+
+
+
+    private AskWhetherDeleteDialog askWhetherDeleteDialogBinBusiness;
+    private void sendCurrentBusinessTobin(){
+        askWhetherDeleteDialogBinBusiness = new AskWhetherDeleteDialog(getLayoutInflater(),
+                this::handleCancelOrBinBusiness, getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
+    }
+
+    public void handleCancelOrBinBusiness(boolean result){
+        if (result){
+            businessViewModel.binSingleBusiness(this::processResult);
+        }else {
+            askWhetherDeleteDialogBinBusiness.dismiss();
+        }
+    }
+
+    private void processResult(Object result){
+        boolean r = (Boolean) result;
+
+        if (r){
+           showToast(getString(R.string.business_binned_successfuly), Toast.LENGTH_SHORT);
+           navigateBAck();
+        }else {
+            showToast(getString(R.string.error_to_bin_business), Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void showToast(String message, Integer lenght){
+         new Handler(Looper.getMainLooper()).post(()->Toast.makeText(getContext(), message, lenght).show());
+
+    }
+
+
+
+    private void showProductDetails(String productId){
+        createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
+        createProductViewModel.checkIfProductExists(productId);
+        NavDirections navDirections = BusinessFragmentDirections.actionProductsFragment2ToCreateProductFragment();
+        Navigation.findNavController(getView()).navigate(navDirections);
     }
 
 

@@ -80,6 +80,38 @@ public class BusinessRepository {
     }
 
 
+    public void updateBusiness(Business business, ListenResponse response) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            Integer resultado = null;
+            try {
+
+               /*for (int i = 0; i < 5000; i++){
+                    resultado = businessDao.insertBusiness(business).get();
+                }*/
+                resultado = businessDao.updateBusiness(business).get();
+                if (resultado > 0) {
+                    response.isSuccessfull(true);
+                } else {
+                    response.isSuccessfull(false);
+                }
+
+            } catch (ExecutionException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+
+
+
+
 
 
 
@@ -99,4 +131,26 @@ public class BusinessRepository {
     public LiveData<List<Product>> getProductsList(Long businessId){
         return businessDao.getProducts(businessId);
     }
+
+    public LiveData<List<Product>> searchProducts(Long businessId, String query){
+        query =  "%" + query.concat("%");
+        return businessDao.searchProducts(businessId, query);
+    }
+
+    public LiveData<List<Product>> sortProductByNameAsc(Long businessId){
+        return businessDao.sortProductByNameAsc(businessId);
+    }
+
+    public LiveData<List<Product>> sortProductByNameDesc(Long businessId){
+        return businessDao.sortProductByNameDesc(businessId);
+    }
+
+    public LiveData<List<Product>> sortProductByStockAsc(Long businessId){
+        return businessDao.sortProductByStockAsc(businessId);
+    }
+    public LiveData<List<Product>> sortProductByStockDesc(Long businessId){
+        return businessDao.sortProductByStockDesc(businessId);
+    }
+
+
 }
