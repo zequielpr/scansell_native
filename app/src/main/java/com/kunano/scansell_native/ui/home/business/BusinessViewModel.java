@@ -12,9 +12,13 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class BusinessViewModel extends DeleteItemsViewModel {
@@ -28,6 +32,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private   List<Product> productList;
     private ProductRepository productRepository;
     private boolean searchModeActive;
+    ExecutorService executorService;
 
 
     public BusinessViewModel(@NonNull Application application) {
@@ -128,6 +133,27 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     }
 
+
+    public void binSingleBusiness(ViewModelListener viewModelListener){
+
+        executorService = Executors.newSingleThreadExecutor();
+
+        executorService.execute(()->{
+            Long result;
+            try {
+                result = super.binsRepository.sendBusinessTobin(currentBusinessId).get();
+                viewModelListener.result(result > 0);
+
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+
+    }
 
 
 

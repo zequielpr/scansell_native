@@ -2,11 +2,14 @@ package com.kunano.scansell_native.ui.home.business;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,15 +30,12 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
-import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
-
-import java.util.LinkedHashSet;
 
 
 public class BusinessFragment extends Fragment {
@@ -138,9 +138,11 @@ public class BusinessFragment extends Fragment {
     }
 
     public void navigateBAck(){
-        NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
-        Navigation.findNavController(getView()).navigate(action);
-        mainActivityViewModel.setHandleBackPress(null);
+        getActivity().runOnUiThread(()->{
+            NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+            Navigation.findNavController(getView()).navigate(action);
+            mainActivityViewModel.setHandleBackPress(null);
+        });
     }
 
 
@@ -498,15 +500,35 @@ public class BusinessFragment extends Fragment {
 
 
 
+    private AskWhetherDeleteDialog askWhetherDeleteDialogBinBusiness;
     private void sendCurrentBusinessTobin(){
-        sendingBusinessToBin = true;
-        Business business = businessViewModel.getCurrentBusiness();
-        System.out.println("Business name: " +business.getBusinessName());
-        LinkedHashSet businessList = new LinkedHashSet<>();
+        askWhetherDeleteDialogBinBusiness = new AskWhetherDeleteDialog(getLayoutInflater(),
+                this::handleCancelOrBinBusiness, getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
+    }
 
-        businessList.add(((Object) business));
-        businessViewModel.setItemsToDelete(businessList);
-        askToSendProductsBin();
+    public void handleCancelOrBinBusiness(boolean result){
+        if (result){
+            businessViewModel.binSingleBusiness(this::processResult);
+        }else {
+            askWhetherDeleteDialogBinBusiness.dismiss();
+        }
+    }
+
+    private void processResult(Object result){
+        boolean r = (Boolean) result;
+
+        if (r){
+           showToast(getString(R.string.business_binned_successfuly), Toast.LENGTH_SHORT);
+           navigateBAck();
+        }else {
+            showToast(getString(R.string.error_to_bin_business), Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void showToast(String message, Integer lenght){
+         new Handler(Looper.getMainLooper()).post(()->Toast.makeText(getContext(), message, lenght).show());
+
     }
 
 

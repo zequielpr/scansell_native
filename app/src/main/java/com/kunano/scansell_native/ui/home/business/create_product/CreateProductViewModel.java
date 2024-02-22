@@ -17,7 +17,7 @@ import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.BinsRepository;
 import com.kunano.scansell_native.repository.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
-import com.kunano.scansell_native.ui.components.FragmentListener;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -44,7 +44,7 @@ public class CreateProductViewModel extends AndroidViewModel {
     private ProductRepository productRepository;
     private MutableLiveData<String> buttonSaveTitle;
     private BinsRepository binsRepository;
-    private FragmentListener fragmentListener;
+    private ViewModelListener viewModelListener;
     public CreateProductViewModel(@NonNull Application application){
         super(application);
         productRepository = new ProductRepository(application);
@@ -126,13 +126,13 @@ public class CreateProductViewModel extends AndroidViewModel {
 
 
     ExecutorService executor;
-    public void sendProductToBin(FragmentListener fragmentListener){
+    public void sendProductToBin(ViewModelListener viewModelListener){
         executor = Executors.newSingleThreadExecutor();
         executor.execute(()->{
             try {
                Long result = binsRepository.sendProductTobin(businessId, productId).get();
 
-                fragmentListener.result(result > 0);
+                viewModelListener.result(result > 0);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
@@ -278,11 +278,11 @@ public class CreateProductViewModel extends AndroidViewModel {
         this.buttonSaveTitle = buttonSaveTitle;
     }
 
-    public FragmentListener getFragmentListener() {
-        return fragmentListener;
+    public ViewModelListener getFragmentListener() {
+        return viewModelListener;
     }
 
-    public void setFragmentListener(FragmentListener fragmentListener) {
-        this.fragmentListener = fragmentListener;
+    public void setFragmentListener(ViewModelListener viewModelListener) {
+        this.viewModelListener = viewModelListener;
     }
 }
