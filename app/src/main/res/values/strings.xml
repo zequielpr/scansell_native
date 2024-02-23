@@ -64,5 +64,8 @@
     <string name="error_to_bin_business">error to bin business</string>
     <string name="business_binned_successfuly">business binned successfuly</string>
     <string name="finish">Finish</string>
+    <string name="pay">pay</string>
+    <string name="cash">cash</string>
+    <string name="card">card</string>
 
 </resources>

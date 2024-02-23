@@ -120,7 +120,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onRestore(getItem(position));
+                        listener.onCancel(getItem(position));
                     }
                 }
             });
@@ -171,7 +171,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
         abstract void onLongTap(Product  product, View cardHolder);
         abstract void getCardHolderOnBind(View cardHolder, Product  prod);
         abstract void reciveCardHol(View cardHolder);
-        abstract void onRestore(Product product);
+        abstract void onCancel(Product product);
 
     }
 

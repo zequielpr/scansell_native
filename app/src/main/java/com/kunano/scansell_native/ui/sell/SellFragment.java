@@ -27,6 +27,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
+import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
 import java.util.ArrayList;
 
@@ -141,6 +142,7 @@ public class SellFragment extends Fragment {
 
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
+        finishButton.setOnClickListener(this::finish);
 
         return root;
     }
@@ -154,6 +156,11 @@ public class SellFragment extends Fragment {
     }
 
 
+    private void finish(View view){
+        CollectPaymentMethodFragment collectPaymentMethodFragment;
+        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel);
+        collectPaymentMethodFragment.show(getParentFragmentManager(), "collect_payment_method");
+    }
 
 
     public void processProductRequest(Object result){
@@ -205,8 +212,8 @@ public class SellFragment extends Fragment {
             }
 
             @Override
-            public void onRestore(Product product) {
-
+            public void onCancel(Product product) {
+                sellViewModel.deleteProductToSellMutableLiveData(product);
             }
         });
     }

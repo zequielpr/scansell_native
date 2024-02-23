@@ -51,6 +51,7 @@ public class ScannProductCreateFragment extends Fragment {
         customCamera = new CustomCamera(previewView,this, imageButtonFlash);
 
         customCamera.startCamera(true);
+        customCamera.setNewProductInCamera(true);
 
         customCamera.setCustomCameraListener(new CustomCamera.CustomCameraListener() {
             @Override
