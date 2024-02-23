@@ -15,10 +15,17 @@ import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
     BarcodeScannerCustomListenner barcodeScannerCustomListenner;
+    private Set<Integer> currentlyDetectedObjectIds = new HashSet<>();
+    boolean newObjectInCamera = true;
+    private Integer objectId;
+
+
 
     public BarcodeScannerCustom() {
 
@@ -37,10 +44,9 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
                             Barcode.FORMAT_CODE_39, Barcode.FORMAT_CODE_128, Barcode.FORMAT_EAN_8 ). enableAllPotentialBarcodes().build();
 
 
-            BarcodeScanner scanner = BarcodeScanning.getClient(barcodeScannerOptions);
 
-
-
+          //Scanner____________________________________________________________________________
+         BarcodeScanner scanner = BarcodeScanning.getClient(barcodeScannerOptions);
           Task<List<Barcode>> result =  scanner.process(inputImage).
                   addOnSuccessListener(barcodes -> {
 
@@ -48,20 +54,23 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
                           barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
 
-                          //System.out.println("Resultado: " + barcode.getFormat());
+
+                          System.out.println("Resultado: " + barcode.getFormat());
+
                       }
+                      imageProxy.close();
                   }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     //System.out.println("Fallo: " + e.getCause().getMessage());
+                    imageProxy.close();
                 }
             });
 
         }
 
-        imageProxy.close();
-    }
 
+    }
 
 
 
