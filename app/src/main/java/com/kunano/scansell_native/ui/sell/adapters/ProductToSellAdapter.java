@@ -2,7 +2,6 @@ package com.kunano.scansell_native.ui.sell.adapters;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.ContentResolver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdapter.CardHolder> {
     OnclickProductCardListener listener;
-    ContentResolver contentResolver;
     ProductRepository productRepository;
     LifecycleOwner lifecycleOwner;
     private Activity activityParent;
@@ -33,12 +31,13 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
     private static DiffUtil.ItemCallback<Product> DIFF_CALLBACK = new DiffUtil.ItemCallback<Product>() {
         @Override
         public boolean areItemsTheSame(@NonNull Product oldItem, @NonNull Product newItem) {
-            return oldItem.getProductId().equals(newItem.getProductId());
+            return oldItem.getProductId().equalsIgnoreCase(newItem.getProductId());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Product oldItem, @NonNull Product newItem) {
-            return oldItem.getProductName().equals(newItem.getProductName()) &&
+            return  oldItem.getProductId().equalsIgnoreCase(newItem.getProductId()) &&
+                    oldItem.getProductName().equalsIgnoreCase(newItem.getProductName()) &&
                     oldItem.getCratingDate().equals(newItem.getCratingDate()) &&
                     oldItem.getBuying_price() == newItem.getBuying_price() &&
                     oldItem.getSelling_price() == newItem.getSelling_price() &&
@@ -55,7 +54,6 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
     @Override
     public ProductToSellAdapter.CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         productRepository = new ProductRepository((Application) parent.getContext().getApplicationContext());
-        contentResolver = parent.getContext().getContentResolver();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.product_sell_design_card, parent, false);
 
@@ -87,7 +85,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
             }
         });
         holder.card.setTag(String.valueOf(product.getProductId()));
-        System.out.println("it is on bind");
+       // System.out.println("it is on bind");
 
         listener.getCardHolderOnBind(holder.itemView, product);
     }
@@ -177,7 +175,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
 
     }
 
-    @FunctionalInterface
+
     public interface LisnedProductImage{
         abstract void recieveProducImage(ProductImg productWithImage);
     }

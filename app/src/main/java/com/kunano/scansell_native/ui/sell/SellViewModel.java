@@ -69,9 +69,15 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void addProductToSellMutableLiveData(Product product) {
+        sumPrice(product);
         productList.add(product);
         this.productToSellMutableLiveData.postValue(productList);
     }
+
+    private void sumPrice(Product product){
+        totalToPay.postValue(totalToPay.getValue() + product.getSelling_price());
+    }
+
     public void deleteProductToSellMutableLiveData(Product product) {
         productList.remove(product);
         this.productToSellMutableLiveData.postValue(productList);

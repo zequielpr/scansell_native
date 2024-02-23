@@ -48,6 +48,7 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
 
         // Set the name of the business in the TextView
         TextView nameTextView = view.findViewById(android.R.id.text1);
+        //nameTextView.setLinkTextColor(parent.getContext().getResources().getColor(R.color.white));
         nameTextView.setText(business.getBusinessName());
 
         return view;

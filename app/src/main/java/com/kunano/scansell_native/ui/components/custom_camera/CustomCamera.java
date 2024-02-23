@@ -111,6 +111,8 @@ public class CustomCamera {
 
             BarcodeScannerCustom barcodeScannerCustom = new BarcodeScannerCustom();
             barcodeScannerCustom.setBarcodeScannerCustomListenner(customCameraListener::receiveBarCodeData);
+            customCameraviewModel.getNewProductInCamera().observe(fragment.getViewLifecycleOwner(),
+                    barcodeScannerCustom::setNewObjectInCamera);
             imageAnalysis.setAnalyzer(cameraExecutor, barcodeScannerCustom);
         }else {
             imageAnalysis = new ImageAnalysis.Builder().
@@ -214,6 +216,9 @@ public class CustomCamera {
     }
 
 
+    public void setNewProductInCamera(Boolean isNewProductInCamera){
+        customCameraviewModel.setNewProductInCamera(isNewProductInCamera);
+    }
 
 
 

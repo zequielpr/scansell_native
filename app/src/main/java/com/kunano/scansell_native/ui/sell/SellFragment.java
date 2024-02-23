@@ -44,6 +44,8 @@ public class SellFragment extends Fragment {
     private SellViewModel sellViewModel;
     private ProductToSellAdapter productToSellAdapter;
     BusinessSpinnerAdapter spinerAdapter;
+    private ImageButton imageButtonScan;
+
 
 
 
@@ -65,8 +67,9 @@ public class SellFragment extends Fragment {
         finishButton = binding.finishButton;
         recyclerViewProducts = binding.recycleViewProductsToSell;
         torchButton = binding.torchButton;
+        imageButtonScan = binding.imageButtonScanProduct;
 
-        recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewProducts.setHasFixedSize(true);
         productToSellAdapter = new ProductToSellAdapter();
         recyclerViewProducts.setAdapter(productToSellAdapter);
@@ -74,6 +77,9 @@ public class SellFragment extends Fragment {
         sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(), (l)->{
             productToSellAdapter.submitList(l);
             productToSellAdapter.notifyDataSetChanged();
+        });
+        sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->{
+            totalTextView.setText(String.valueOf(t));
         });
 
 
@@ -133,8 +139,21 @@ public class SellFragment extends Fragment {
             }
         });
 
+        //Buttons linkings
+        imageButtonScan.setOnClickListener(this::scanNewProduct);
+
         return root;
     }
+
+
+
+
+
+    private void scanNewProduct(View v){
+        customCamera.setNewProductInCamera(true);
+    }
+
+
 
 
     public void processProductRequest(Object result){

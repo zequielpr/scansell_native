@@ -52,7 +52,11 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
                       for (Barcode barcode : barcodes) {
 
-                          barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
+                          if(newObjectInCamera && !barcode.getRawValue().isBlank()){
+                              barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
+                              newObjectInCamera = false;
+                          }
+
 
 
                           System.out.println("Resultado: " + barcode.getFormat());
@@ -87,5 +91,13 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
     public void setBarcodeScannerCustomListenner(BarcodeScannerCustomListenner barcodeScannerCustomListenner) {
         this.barcodeScannerCustomListenner = barcodeScannerCustomListenner;
+    }
+
+    public boolean isNewObjectInCamera() {
+        return newObjectInCamera;
+    }
+
+    public void setNewObjectInCamera(boolean newObjectInCamera) {
+        this.newObjectInCamera = newObjectInCamera;
     }
 }
