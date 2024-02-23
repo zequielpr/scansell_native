@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.notifications;
+package com.kunano.scansell_native.ui.profile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

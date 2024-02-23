@@ -108,21 +108,16 @@ public class CustomCamera {
                     setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).
                     setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888).
                     setTargetResolution(new Size(1600, 1200)).build();
+
+            BarcodeScannerCustom barcodeScannerCustom = new BarcodeScannerCustom();
+            barcodeScannerCustom.setBarcodeScannerCustomListenner(customCameraListener::receiveBarCodeData);
+            imageAnalysis.setAnalyzer(cameraExecutor, barcodeScannerCustom);
         }else {
             imageAnalysis = new ImageAnalysis.Builder().
                     setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build();
         }
 
 
-
-
-
-
-        if(scanBarCode){
-            BarcodeScannerCustom barcodeScannerCustom = new BarcodeScannerCustom();
-            barcodeScannerCustom.setBarcodeScannerCustomListenner(customCameraListener::receiveBarCodeData);
-            imageAnalysis.setAnalyzer(cameraExecutor, barcodeScannerCustom);
-        };
 
         ImageCapture.Builder builder = new ImageCapture.Builder();
 
