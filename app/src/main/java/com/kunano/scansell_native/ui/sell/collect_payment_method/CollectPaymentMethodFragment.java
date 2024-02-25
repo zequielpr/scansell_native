@@ -21,6 +21,9 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private Button cancelButton;
     private Button payButton;
 
+    /** 0 = cash, 1 = card**/
+    private byte paymentMethod;
+
     private SellViewModel sellViewModel;
 
     public CollectPaymentMethodFragment(SellViewModel sellViewModel) {
@@ -37,11 +40,18 @@ public class CollectPaymentMethodFragment extends DialogFragment {
         radioGroup = binding.paymentMethod;
         cancelButton = binding.cancelButton;
         payButton = binding.payButton;
+        paymentMethod = 0;
 
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->totalToPay.setText(String.valueOf(t)));
 
         cancelButton.setOnClickListener(this::cancelPayment);
         payButton.setOnClickListener(this::pay);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+               paymentMethod = Byte.parseByte(radioGroup.findViewById(i).getTag().toString());
+            }
+        });
 
         return binding.getRoot();
     }
@@ -51,7 +61,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        sellViewModel.finishSell();
+        sellViewModel.finishSell(paymentMethod);
         this.dismiss();
         sellViewModel.clearProductsToSell();
     }

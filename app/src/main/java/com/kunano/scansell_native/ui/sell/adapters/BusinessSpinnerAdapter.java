@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.sell.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,32 +16,31 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
 
     private LayoutInflater inflater;
     private List<Business> businesses;
-    private OnBusinessSelectedListener listener;
+
+    private int mResource;
 
     public BusinessSpinnerAdapter(Context context, int resource, List<Business> businesses) {
         super(context, resource, businesses);
         inflater = LayoutInflater.from(context);
         this.businesses = businesses;
+        this.mResource = resource;
     }
 
-    public void setOnBusinessSelectedListener(OnBusinessSelectedListener listener) {
-        this.listener = listener;
-    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, convertView, parent, false);
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, convertView, parent, true);
     }
 
-    private View createItemView(int position, View convertView, ViewGroup parent) {
+    private View createItemView(int position, View convertView, ViewGroup parent, boolean isDropDownView) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+            view = inflater.inflate(mResource, parent, false);
         }
 
         // Get the current business object
@@ -48,6 +48,14 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
 
         // Set the name of the business in the TextView
         TextView nameTextView = view.findViewById(android.R.id.text1);
+
+        if (isDropDownView){
+            nameTextView.setTextColor(Color.BLACK);
+        }else{
+            nameTextView.setTextColor(Color.WHITE);
+        }
+
+
         //nameTextView.setLinkTextColor(parent.getContext().getResources().getColor(R.color.white));
         nameTextView.setText(business.getBusinessName());
 
@@ -58,12 +66,4 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
         void onBusinessSelected(Business business);
     }
 
-
-    public OnBusinessSelectedListener getListener() {
-        return listener;
-    }
-
-    public void setListener(OnBusinessSelectedListener listener) {
-        this.listener = listener;
-    }
 }

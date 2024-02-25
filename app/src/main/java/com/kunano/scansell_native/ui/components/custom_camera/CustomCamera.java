@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
+import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
@@ -46,7 +47,9 @@ public class CustomCamera {
     private PorterDuffColorFilter colorFilterWhite;
     private ImageButton imageButtonFlash;
     private CustomCameraListener customCameraListener;
+    boolean scanBarCode;
 
+    Camera camera;
 
     public CustomCamera(PreviewView previewView, Fragment fragment, ImageButton imageButtonFlash) {
         this.previewView = previewView;
@@ -56,13 +59,14 @@ public class CustomCamera {
         customCameraviewModel = new ViewModelProvider(fragment).get(CustomCameraviewModel.class);
         colorFilterWhite = new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         this.imageButtonFlash = imageButtonFlash;
+        boolean scanBarCode = false;
 
 
         imageButtonFlash.setOnClickListener(this::handleFlash);
 
 
         customCameraviewModel.getFlashMode().observe(fragment.getViewLifecycleOwner(), this::handleFlashIconButton);
-
+        customCameraviewModel.getTorchState().observe(fragment.getViewLifecycleOwner(), this::handleTorchconButton);
 
 
 
@@ -75,8 +79,10 @@ public class CustomCamera {
 
 
     public void startCamera(boolean scanBarCode) {
+        this.scanBarCode = scanBarCode;
         cameraExecutor = Executors.newSingleThreadExecutor();
         cameraProviderFuture = ProcessCameraProvider.getInstance(context);
+
 
 
         cameraProviderFuture.addListener(() -> {
@@ -100,7 +106,6 @@ public class CustomCamera {
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
-
 
         ImageAnalysis imageAnalysis;
         if(scanBarCode){
@@ -130,13 +135,18 @@ public class CustomCamera {
 
       try {
           cameraProvider.unbindAll();
-          cameraProvider.
+          camera = cameraProvider.
                   bindToLifecycle(fragment.getViewLifecycleOwner(), cameraSelector, preview, imageCapture, imageAnalysis);
 
+
+          customCameraviewModel.getTorchState().observe(fragment.getViewLifecycleOwner(),
+                  (torchState)->{
+              System.out.println("Torch state: " + torchState);
+                      camera.getCameraControl().enableTorch(torchState);
+                  });
       }catch (Exception e){
           e.printStackTrace();
       }
-
         customCameraviewModel.getFlashMode().observe(fragment.getViewLifecycleOwner(), imageCapture::setFlashMode);
 
     }
@@ -179,7 +189,8 @@ public class CustomCamera {
 
     private void handleFlash(View view) {
         Integer flashMode = customCameraviewModel.getFlashMode().getValue();
-        if (flashMode == ImageCapture.FLASH_MODE_ON) {
+        boolean torchState = customCameraviewModel.getTorchState().getValue();
+        if (flashMode == ImageCapture.FLASH_MODE_ON | torchState) {
             flashOff();
         } else {
             flashOn();
@@ -198,11 +209,30 @@ public class CustomCamera {
         imageButtonFlash.getDrawable().setColorFilter(colorFilterWhite);
     }
 
+    private void handleTorchconButton(Boolean torchState) {
+        if (torchState) {
+            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.torch_off_24));
+
+        } else {
+            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.torch_24));
+        }
+
+        imageButtonFlash.getDrawable().setColorFilter(colorFilterWhite);
+    }
+
     private void flashOn() {
+        if (scanBarCode){
+            customCameraviewModel.setTorchState(true);
+            return;
+        }
         customCameraviewModel.setFlashMode(ImageCapture.FLASH_MODE_ON);
     }
 
     private void flashOff() {
+        if (scanBarCode && camera.getCameraInfo().hasFlashUnit()){
+            customCameraviewModel.setTorchState(false);
+            return;
+        }
         customCameraviewModel.setFlashMode(ImageCapture.FLASH_MODE_OFF);
     }
 

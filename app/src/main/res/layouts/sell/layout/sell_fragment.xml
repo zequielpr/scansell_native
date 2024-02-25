@@ -12,15 +12,17 @@
         android:id="@+id/sellToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@color/black_transparent"
         android:elevation="1dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
         <Spinner
+            style="@style/Spinner"
             android:id="@+id/spinnerPickBusiness"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
     </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout

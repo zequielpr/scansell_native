@@ -52,14 +52,15 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
                       for (Barcode barcode : barcodes) {
 
-                          if(newObjectInCamera && !barcode.getRawValue().isBlank()){
+                          if(newObjectInCamera && barcode.getRawValue().length() > 3){
                               barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
                               newObjectInCamera = false;
+                             // System.out.println("Resultado: " + barcode.getRawValue());
                           }
 
 
 
-                          System.out.println("Resultado: " + barcode.getFormat());
+
 
                       }
                       imageProxy.close();

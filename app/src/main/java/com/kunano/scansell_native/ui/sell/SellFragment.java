@@ -2,6 +2,8 @@ package com.kunano.scansell_native.ui.sell;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -77,6 +79,7 @@ public class SellFragment extends Fragment {
         torchButton = binding.torchButton;
         imageButtonScan = binding.imageButtonScanProduct;
 
+
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewProducts.setHasFixedSize(true);
         productToSellAdapter = new ProductToSellAdapter();
@@ -99,14 +102,21 @@ public class SellFragment extends Fragment {
 
 
         spinerAdapter = new BusinessSpinnerAdapter(getContext(),
-                android.R.layout.simple_spinner_dropdown_item, new ArrayList<>());
+                R.layout.custom_item_spinner, new ArrayList<>());
 
 
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(), (listB)->{
             spinerAdapter.clear();
             spinerAdapter.addAll(listB);
-            sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
+            try {
+                sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
+            }catch (Exception e){
+                System.out.println(e.fillInStackTrace());
+                sellViewModel.setCurrentBusinessId(null);
+            }
+
         });
+
 
         spinerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -115,6 +125,7 @@ public class SellFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Business selectedBusiness = (Business) parent.getItemAtPosition(position);
                 sellViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
+                sellViewModel.setSelectedIndexSpinner(position);
             }
 
             @Override
@@ -124,9 +135,8 @@ public class SellFragment extends Fragment {
         });
 
 
+
         spinner.setAdapter(spinerAdapter);
-
-
 
         customCamera = new CustomCamera(previewView, this, torchButton);
 
@@ -149,8 +159,15 @@ public class SellFragment extends Fragment {
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
+        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), finishButton::setClickable);
+        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), (s)->spinner.setEnabled(!s));
+        sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
 
         return root;
+    }
+
+    private void activateOrDesactFinishButton(boolean activate){
+        finishButton.setClickable(activate);
     }
 
 
@@ -174,20 +191,22 @@ public class SellFragment extends Fragment {
 
 
     public void processProductRequest(Object result){
-        if(result == null){
+        if(result == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
             businessViewModel.setCurrentBusinessId(sellViewModel.getCurrentBusinessId());
 
             getActivity().runOnUiThread(()->navigateToCreateProduct());
-        }else {
-            Product p = (Product) result;
-            sellViewModel.addProductToSellMutableLiveData(p);
-            Vibrator vibrator = (Vibrator) this.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            return;
+        }else if(sellViewModel.getCurrentBusinessId() == null){
+            return;
+        }
+        Product p = (Product) result;
+        sellViewModel.addProductToSellMutableLiveData(p);
+        Vibrator vibrator = (Vibrator) this.getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-            // Vibrate for 500 milliseconds
-            if (vibrator != null) {
-                vibrator.vibrate(250);
-            }
+        // Vibrate for 500 milliseconds
+        if (vibrator != null) {
+            vibrator.vibrate(250);
         }
 
 
@@ -239,7 +258,9 @@ public class SellFragment extends Fragment {
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
+
         toolbar.inflateMenu(R.menu.sell_tool_bar);
+        toolbar.getMenu().findItem(R.id.got_to_receipt).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

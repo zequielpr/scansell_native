@@ -36,8 +36,9 @@ public class SellViewModel extends AndroidViewModel {
     private SellRepository sellRepository;
     private LiveData<List<Receipt>> liveDataReceipts;
     private LiveData<List<Product>> liveDataSoldProducts;
-
+    private MutableLiveData<Boolean> finishButtonState;
     private String currentReceiptId;
+    private MutableLiveData<Integer> selectedIndexSpinner;
 
     public SellViewModel(@NonNull Application application) {
         super(application);
@@ -50,6 +51,8 @@ public class SellViewModel extends AndroidViewModel {
         totalToPay = new MutableLiveData<>(0.0);
         productList = new ArrayList<>();
         liveDataReceipts = new MutableLiveData<>();
+        finishButtonState = new MutableLiveData<>(false);
+        selectedIndexSpinner = new MutableLiveData<>(0);
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
@@ -86,6 +89,7 @@ public class SellViewModel extends AndroidViewModel {
         sumPrice(product);
         productList.add(product);
         this.productToSellMutableLiveData.postValue(productList);
+        finishButtonState.postValue(true);
     }
 
     private void sumPrice(Product product){
@@ -96,12 +100,14 @@ public class SellViewModel extends AndroidViewModel {
         productList.remove(product);
         decreasePrice(product);
         this.productToSellMutableLiveData.postValue(productList);
+        finishButtonState.postValue(productList.size()>0);
     }
 
     public void clearProductsToSell(){
         productList.clear();
         productToSellMutableLiveData.postValue(productList);
         totalToPay.postValue(0.0);
+        finishButtonState.postValue(false);
     }
 
     private void decreasePrice(Product product){
@@ -115,13 +121,13 @@ public class SellViewModel extends AndroidViewModel {
 
 
     /**Finish sell and create receipt**/
-    public void finishSell(){
+    public void finishSell(byte paymentMethod){
         String receiptId = UUID.randomUUID().toString();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDateTime actualDate = LocalDateTime.now();
             double totalPay = totalToPay.getValue();
             Receipt receipt = new Receipt (receiptId, currentBusinessId, "", actualDate,
-                    totalPay, (byte) 1);
+                    totalPay,  paymentMethod);
 
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(()->{
@@ -224,5 +230,21 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCurrentReceiptId(String currentReceiptId) {
         this.currentReceiptId = currentReceiptId;
+    }
+
+    public MutableLiveData<Boolean> getFinishButtonState() {
+        return finishButtonState;
+    }
+
+    public void setFinishButtonState(Boolean finishButtonState) {
+        this.finishButtonState.postValue(finishButtonState);
+    }
+
+    public MutableLiveData<Integer> getSelectedIndexSpinner() {
+        return selectedIndexSpinner;
+    }
+
+    public void setSelectedIndexSpinner(Integer selectedIndexSpinner) {
+        this.selectedIndexSpinner.postValue(selectedIndexSpinner);
     }
 }
