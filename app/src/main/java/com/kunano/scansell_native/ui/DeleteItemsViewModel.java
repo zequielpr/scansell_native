@@ -11,9 +11,9 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.repository.BinsRepository;
-import com.kunano.scansell_native.repository.BusinessRepository;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.repository.home.BusinessRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;

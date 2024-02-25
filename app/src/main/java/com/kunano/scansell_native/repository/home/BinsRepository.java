@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.repository;
+package com.kunano.scansell_native.repository.home;
 
 import android.app.Application;
 

@@ -51,7 +51,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        showToast("succcess");
+        sellViewModel.finishSell();
         this.dismiss();
         sellViewModel.clearProductsToSell();
     }

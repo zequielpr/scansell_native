@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,17 +15,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.camera.view.PreviewView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.SellFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
@@ -43,6 +49,7 @@ public class SellFragment extends Fragment {
     private RecyclerView recyclerViewProducts;
     private CustomCamera customCamera;
     private SellViewModel sellViewModel;
+    private BusinessViewModel businessViewModel;
     private ProductToSellAdapter productToSellAdapter;
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
@@ -53,9 +60,9 @@ public class SellFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
          sellViewModel =
-                new ViewModelProvider(this).get(SellViewModel.class);
-
+                new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -85,7 +92,6 @@ public class SellFragment extends Fragment {
 
 
         productToSellAdapter.setActivityParent(getActivity());
-        productToSellAdapter.setLifecycleOwner(getViewLifecycleOwner());
         setCardListener();
 
 
@@ -148,6 +154,10 @@ public class SellFragment extends Fragment {
     }
 
 
+    private void navigateToReceipt(){
+        NavDirections navDirections = SellFragmentDirections.actionNavigationDashboardToReceiptsFragment();
+        Navigation.findNavController(getView()).navigate(navDirections);
+    }
 
 
 
@@ -166,7 +176,9 @@ public class SellFragment extends Fragment {
     public void processProductRequest(Object result){
         if(result == null){
             //Ask to add product
-            return;
+            businessViewModel.setCurrentBusinessId(sellViewModel.getCurrentBusinessId());
+
+            getActivity().runOnUiThread(()->navigateToCreateProduct());
         }else {
             Product p = (Product) result;
             sellViewModel.addProductToSellMutableLiveData(p);
@@ -179,6 +191,11 @@ public class SellFragment extends Fragment {
         }
 
 
+    }
+
+    private void navigateToCreateProduct(){
+        NavDirections navigation = SellFragmentDirections.actionNavigationDashboardToCreateProductFragment();
+        Navigation.findNavController(getView()).navigate(navigation);
     }
 
     public void onDestroy(){
@@ -219,6 +236,21 @@ public class SellFragment extends Fragment {
     }
 
 
+    public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        toolbar.inflateMenu(R.menu.sell_tool_bar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.got_to_receipt){
+                    navigateToReceipt();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
 
     @Override

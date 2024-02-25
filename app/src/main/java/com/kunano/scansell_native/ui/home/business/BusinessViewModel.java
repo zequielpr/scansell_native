@@ -10,7 +10,7 @@ import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 

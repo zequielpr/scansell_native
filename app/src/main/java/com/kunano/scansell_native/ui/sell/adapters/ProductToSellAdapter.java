@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,14 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdapter.CardHolder> {
     OnclickProductCardListener listener;
     ProductRepository productRepository;
-    LifecycleOwner lifecycleOwner;
+
     private Activity activityParent;
 
     private static DiffUtil.ItemCallback<Product> DIFF_CALLBACK = new DiffUtil.ItemCallback<Product>() {
@@ -158,9 +157,6 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
     }
 
 
-    public void setLifecycleOwner(LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
-    }
 
     public void setActivityParent(Activity activityParent) {
         this.activityParent = activityParent;

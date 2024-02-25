@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "43ba9f5d4b91c430c5789fbe7b3a3e35",
+    "identityHash": "dbd96d6c0e6e11c26e188bc6ba902ecf",
     "entities": [
       {
         "tableName": "Business",
@@ -137,13 +137,13 @@
       },
       {
         "tableName": "productImg",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imgId` INTEGER PRIMARY KEY AUTOINCREMENT, `productIdFk` TEXT, `img` BLOB, FOREIGN KEY(`productIdFk`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imgId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productIdFk` TEXT, `img` BLOB, FOREIGN KEY(`productIdFk`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "imgId",
             "columnName": "imgId",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "productIdFk",
@@ -322,12 +322,173 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "Receipt",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptId` TEXT NOT NULL, `businessIdFK` INTEGER, `userEmail` TEXT, `sellingDate` INTEGER, `spentAmount` REAL NOT NULL, `paymentMethod` INTEGER NOT NULL, PRIMARY KEY(`receiptId`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "receiptId",
+            "columnName": "receiptId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "businessIdFK",
+            "columnName": "businessIdFK",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userEmail",
+            "columnName": "userEmail",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sellingDate",
+            "columnName": "sellingDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "spentAmount",
+            "columnName": "spentAmount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentMethod",
+            "columnName": "paymentMethod",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "receiptId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Receipt_businessIdFK",
+            "unique": false,
+            "columnNames": [
+              "businessIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Receipt_businessIdFK` ON `${TABLE_NAME}` (`businessIdFK`)"
+          },
+          {
+            "name": "index_Receipt_receiptId",
+            "unique": false,
+            "columnNames": [
+              "receiptId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Receipt_receiptId` ON `${TABLE_NAME}` (`receiptId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdFK"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SoldProduct",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`soldProductId` INTEGER PRIMARY KEY AUTOINCREMENT, `productIdFK` TEXT, `receiptIdFK` TEXT, `itemsQuantity` INTEGER, FOREIGN KEY(`productIdFK`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`receiptIdFK`) REFERENCES `Receipt`(`receiptId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "soldProductId",
+            "columnName": "soldProductId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "productIdFK",
+            "columnName": "productIdFK",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "receiptIdFK",
+            "columnName": "receiptIdFK",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "itemsQuantity",
+            "columnName": "itemsQuantity",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "soldProductId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_SoldProduct_productIdFK",
+            "unique": false,
+            "columnNames": [
+              "productIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SoldProduct_productIdFK` ON `${TABLE_NAME}` (`productIdFK`)"
+          },
+          {
+            "name": "index_SoldProduct_receiptIdFK",
+            "unique": false,
+            "columnNames": [
+              "receiptIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SoldProduct_receiptIdFK` ON `${TABLE_NAME}` (`receiptIdFK`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "product",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "productIdFK"
+            ],
+            "referencedColumns": [
+              "productId"
+            ]
+          },
+          {
+            "table": "Receipt",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "receiptIdFK"
+            ],
+            "referencedColumns": [
+              "receiptId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '43ba9f5d4b91c430c5789fbe7b3a3e35')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dbd96d6c0e6e11c26e188bc6ba902ecf')"
     ]
   }
 }

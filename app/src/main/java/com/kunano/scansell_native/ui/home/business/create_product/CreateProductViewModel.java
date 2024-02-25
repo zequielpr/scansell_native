@@ -14,8 +14,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
-import com.kunano.scansell_native.repository.BinsRepository;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 

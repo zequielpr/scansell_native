@@ -67,5 +67,6 @@
     <string name="pay">pay</string>
     <string name="cash">cash</string>
     <string name="card">card</string>
+    <string name="receipts">receipts</string>
 
 </resources>

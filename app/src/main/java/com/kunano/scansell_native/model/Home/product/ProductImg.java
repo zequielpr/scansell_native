@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.model.Home.product;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -14,6 +15,7 @@ import androidx.room.PrimaryKey;
         indices = {@Index("productIdFk")})
 public class ProductImg {
     @PrimaryKey(autoGenerate = true)
+    @NonNull
     private Long imgId;
 
     private String productIdFk;

@@ -9,12 +9,18 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.repository.BusinessRepository;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
+import com.kunano.scansell_native.repository.home.BusinessRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
+import com.kunano.scansell_native.repository.sell.SellRepository;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,15 +33,23 @@ public class SellViewModel extends AndroidViewModel {
     private LiveData<List<Business>> businessesListLiveData;
     private Long currentBusinessId;
     private List<Product> productList;
+    private SellRepository sellRepository;
+    private LiveData<List<Receipt>> liveDataReceipts;
+    private LiveData<List<Product>> liveDataSoldProducts;
+
+    private String currentReceiptId;
 
     public SellViewModel(@NonNull Application application) {
         super(application);
         productRepository = new ProductRepository(application);
         businessRepository = new BusinessRepository(application);
+        sellRepository = new SellRepository(application);
+
         businessesListLiveData = businessRepository.getAllBusinesses();
         productToSellMutableLiveData = new MutableLiveData<>();
         totalToPay = new MutableLiveData<>(0.0);
         productList = new ArrayList<>();
+        liveDataReceipts = new MutableLiveData<>();
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
@@ -98,6 +112,91 @@ public class SellViewModel extends AndroidViewModel {
         return totalToPay;
     }
 
+
+
+    /**Finish sell and create receipt**/
+    public void finishSell(){
+        String receiptId = UUID.randomUUID().toString();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDateTime actualDate = LocalDateTime.now();
+            double totalPay = totalToPay.getValue();
+            Receipt receipt = new Receipt (receiptId, currentBusinessId, "", actualDate,
+                    totalPay, (byte) 1);
+
+            executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(()->{
+                try {
+                  Long result =  sellRepository.insertReceipt(receipt).get();
+                  if (result > 0)insertSoldProducts(receipt.getReceiptId());
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    }
+
+    private void insertSoldProducts(String receiptID){
+        List<SoldProduct> soldProductList = new ArrayList<>();
+        SoldProduct soldProduct = new SoldProduct();
+
+        for (Product p:productList){
+            soldProduct = new SoldProduct(p.getProductId(), receiptID);
+            soldProductList.add(soldProduct);
+        }
+
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(()->{
+            try {
+                List<Long> result;
+                result = sellRepository.inertSoldProductsList(soldProductList).get();
+                if(result.size() > 0){
+                    System.out.println("Sell has been successful");
+                }
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+
+
+
+    public LiveData<List<Receipt>> getReceipts(){
+        liveDataReceipts = sellRepository.getReceiptList(currentBusinessId);
+        return liveDataReceipts;
+    }
+
+    public void deleteReceipt(Receipt receipt){
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(()->{
+            try {
+                sellRepository.deleteReceipt(receipt).get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    public LiveData<List<Product>> getSoldProducts(){
+        liveDataSoldProducts = sellRepository.getSoldProductList(currentReceiptId);
+        return liveDataSoldProducts;
+    }
+
+
+
+
+
+
+
+
     public void setTotalToPay(MutableLiveData<Double> totalToPay) {
         this.totalToPay = totalToPay;
     }
@@ -117,5 +216,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCurrentBusinessId(Long currentBusinessId) {
         this.currentBusinessId = currentBusinessId;
+    }
+
+    public String getCurrentReceiptId() {
+        return currentReceiptId;
+    }
+
+    public void setCurrentReceiptId(String currentReceiptId) {
+        this.currentReceiptId = currentReceiptId;
     }
 }

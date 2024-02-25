@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
-import com.kunano.scansell_native.repository.ProductRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.ImageProcessor;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {

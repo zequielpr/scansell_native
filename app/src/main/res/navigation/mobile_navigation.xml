@@ -25,7 +25,14 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.kunano.scansell_native.ui.sell.SellFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/sell_fragment" />
+        tools:layout="@layout/sell_fragment" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_createProductFragment"
+            app:destination="@id/createProductFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_receiptsFragment"
+            app:destination="@id/receiptsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
@@ -121,5 +128,26 @@
         <action
             android:id="@+id/action_scannProductCreateFragment_to_businessFragment"
             app:destination="@id/businessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/receiptsFragment"
+        android:name="com.kunano.scansell_native.ui.sell.receipts.ReceiptsFragment"
+        android:label="fragment_receipts"
+        tools:layout="@layout/fragment_receipts" >
+        <action
+            android:id="@+id/action_receiptsFragment_to_soldProductFragment"
+            app:destination="@id/soldProductFragment" />
+        <action
+            android:id="@+id/action_receiptsFragment_to_navigation_dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
+    <fragment
+        android:id="@+id/soldProductFragment"
+        android:name="com.kunano.scansell_native.ui.sell.receipts.sold_products.SoldProductFragment"
+        android:label="fragment_sold_product"
+        tools:layout="@layout/fragment_sold_product" >
+        <action
+            android:id="@+id/action_soldProductFragment_to_receiptsFragment"
+            app:destination="@id/receiptsFragment" />
     </fragment>
 </navigation>
