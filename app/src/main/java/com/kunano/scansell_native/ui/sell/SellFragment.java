@@ -33,6 +33,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
+import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
@@ -55,6 +56,7 @@ public class SellFragment extends Fragment {
     private ProductToSellAdapter productToSellAdapter;
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
+    private CreateProductViewModel createProductViewModel;
 
 
 
@@ -66,6 +68,7 @@ public class SellFragment extends Fragment {
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
+         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -156,7 +159,7 @@ public class SellFragment extends Fragment {
             @Override
             public void receiveBarCodeData(String barCodeData) {
                 if(!barCodeData.isBlank()){
-                    sellViewModel.requestProduct(barCodeData, SellFragment.this::processProductRequest);
+                    sellViewModel.requestProduct(barCodeData, (r)->processProductRequest(r, barCodeData));
                 }
             }
         });
@@ -195,10 +198,11 @@ public class SellFragment extends Fragment {
     }
 
 
-    public void processProductRequest(Object result){
+    public void processProductRequest(Object result, String barcode){
         if(result == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
             businessViewModel.setCurrentBusinessId(sellViewModel.getCurrentBusinessId());
+            createProductViewModel.setProductId(barcode);
 
             getActivity().runOnUiThread(()->navigateToCreateProduct());
             return;

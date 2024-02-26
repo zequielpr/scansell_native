@@ -25,6 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
@@ -67,6 +69,7 @@ public class CreateProductFragment extends Fragment {
     private  ImageSourceFragment imageSourceFragment;
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     NavDirections takePictureFragmenttNavDirections;
+    private NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -144,9 +147,29 @@ public class CreateProductFragment extends Fragment {
     }
 
     public void navigateBack(){
-        NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
+        /*NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
         Navigation.findNavController(getView()).navigate(action);
-        mainActivityViewModel.setHandleBackPress(null);
+        mainActivityViewModel.setHandleBackPress(null);*/
+
+        navController = Navigation.findNavController(getView());
+
+        // Retrieve the previous destination ID
+        int previousDestinationId = navController.getPreviousBackStackEntry().getDestination().getId();
+
+        // Initialize NavController
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
+
+        // Get the top-level destination ID
+        int topLevelDestinationId = navController.getGraph().getStartDestination();
+
+        // Get the NavDestination object for the top-level destination
+        NavDestination topLevelDestination = navController.getGraph().findNode(topLevelDestinationId);
+
+        // You can now use topLevelDestination as needed
+        System.out.println("Current destination: " + topLevelDestination.getDisplayName());
+
+
+
 
     }
 
