@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_dashboard">
+    app:startDestination="@+id/navigation_sell">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -22,7 +22,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_sell"
         android:name="com.kunano.scansell_native.ui.sell.SellFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/sell_fragment" >
@@ -74,7 +74,7 @@
             app:destination="@id/captureImageFragment" />
         <action
             android:id="@+id/action_createProductFragment_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            app:destination="@id/navigation_sell" />
     </fragment>
     <fragment
         android:id="@+id/userBinFragment"
@@ -142,7 +142,7 @@
             app:destination="@id/soldProductFragment" />
         <action
             android:id="@+id/action_receiptsFragment_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            app:destination="@id/navigation_sell" />
     </fragment>
     <fragment
         android:id="@+id/soldProductFragment"

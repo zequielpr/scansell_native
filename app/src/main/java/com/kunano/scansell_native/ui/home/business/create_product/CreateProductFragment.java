@@ -71,6 +71,8 @@ public class CreateProductFragment extends Fragment {
     NavDirections takePictureFragmenttNavDirections;
     private NavController navController;
 
+    final int TOP_LEVEL_NAV_SELL = 2131296920;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -140,6 +142,9 @@ public class CreateProductFragment extends Fragment {
         });
 
 
+        // This callback will only be called when MyFragment is at least Started.
+
+
         mainActivityViewModel.setHandleBackPress(this::navigateBack);
 
 
@@ -147,30 +152,43 @@ public class CreateProductFragment extends Fragment {
     }
 
     public void navigateBack(){
-        /*NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
-        Navigation.findNavController(getView()).navigate(action);
-        mainActivityViewModel.setHandleBackPress(null);*/
 
         navController = Navigation.findNavController(getView());
-
-        // Retrieve the previous destination ID
-        int previousDestinationId = navController.getPreviousBackStackEntry().getDestination().getId();
 
         // Initialize NavController
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
 
-        // Get the top-level destination ID
-        int topLevelDestinationId = navController.getGraph().getStartDestination();
 
-        // Get the NavDestination object for the top-level destination
-        NavDestination topLevelDestination = navController.getGraph().findNode(topLevelDestinationId);
+        NavDestination currentDestination = navController.getCurrentDestination();
+        NavDestination topLevelDestination = findTopLevelDestination(navController, currentDestination);
+
+
+        /*if (topLevelDestination.getId() == TOP_LEVEL_NAV_SELL){
+            navController.navigate(topLevelDestinationId);
+        }else {
+            NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
+           navController.navigate(action);
+        }
+        mainActivityViewModel.setHandleBackPress(null);*/
+
 
         // You can now use topLevelDestination as needed
-        System.out.println("Current destination: " + topLevelDestination.getDisplayName());
+       System.out.println("Current destination: " +navController.getCurrentDestination().getParent().getDisplayName());
 
 
 
 
+    }
+
+    private NavDestination findTopLevelDestination(NavController navController, NavDestination destination) {
+        while (destination != null) {
+            NavDestination parent = destination.getParent();
+            if (parent == null) {
+                return destination;
+            }
+            destination = parent;
+        }
+        return null;
     }
 
 
