@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
@@ -37,6 +36,7 @@ import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
 import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
@@ -71,6 +71,7 @@ public class CreateProductFragment extends Fragment {
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     NavDirections takePictureFragmenttNavDirections;
     private NavController navController;
+    private HomeViewModel homeViewModel;
 
     final int TOP_LEVEL_NAV_SELL = 2131296920;
 
@@ -80,9 +81,10 @@ public class CreateProductFragment extends Fragment {
 
 
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
-
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
-        createProductViewModel.setBusinessId(businessViewModel.getCurrentBusinessId());
+        //createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
+
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
 
@@ -154,7 +156,7 @@ public class CreateProductFragment extends Fragment {
 
     public void navigateBack(){
 
-        navController = Navigation.findNavController(getView());
+      /*  navController = Navigation.findNavController(getView());
 
         // Initialize NavController
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
@@ -173,8 +175,8 @@ public class CreateProductFragment extends Fragment {
             navController.navigate(navDestinationParent.getId());
         }
 
-        mainActivityViewModel.setHandleBackPress(null);
-       System.out.println("Current destination: " +navController.getCurrentDestination().getParent());
+        mainActivityViewModel.setHandleBackPress(null);*/
+       System.out.println("Current destination: " +createProductViewModel.getProductId());
 
 
 

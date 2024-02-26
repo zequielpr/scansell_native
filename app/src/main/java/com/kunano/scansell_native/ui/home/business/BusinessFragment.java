@@ -78,7 +78,8 @@ public class BusinessFragment extends Fragment {
         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
 
         businessKey = homeViewModel.getCurrentBusinessId();
-                binding = FragmentBusinessBinding.inflate(inflater, container, false);
+        binding = FragmentBusinessBinding.inflate(inflater, container, false);
+
 
         toolbar = binding.toolbarProducts;
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);

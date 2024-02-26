@@ -267,6 +267,7 @@ public class CreateProductViewModel extends AndroidViewModel {
     }
 
     public void setBusinessId(Long businessId) {
+        if (businessId == null)return;
         this.businessId = businessId;
     }
 

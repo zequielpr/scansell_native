@@ -1,5 +1,7 @@
 package com.kunano.scansell_native.ui.sell;
 
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -22,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.camera.view.PreviewView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +35,7 @@ import com.kunano.scansell_native.databinding.SellFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
 import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
@@ -57,6 +61,7 @@ public class SellFragment extends Fragment {
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
     private CreateProductViewModel createProductViewModel;
+    private HomeViewModel homeViewModel;
 
 
 
@@ -65,9 +70,9 @@ public class SellFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
          createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -201,10 +206,7 @@ public class SellFragment extends Fragment {
     public void processProductRequest(Object result, String barcode){
         if(result == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
-            businessViewModel.setCurrentBusinessId(sellViewModel.getCurrentBusinessId());
-            createProductViewModel.setProductId(barcode);
-
-            getActivity().runOnUiThread(()->navigateToCreateProduct());
+            getActivity().runOnUiThread(()->navigateToCreateProduct(barcode));
             return;
         }else if(sellViewModel.getCurrentBusinessId() == null){
             return;
@@ -221,9 +223,23 @@ public class SellFragment extends Fragment {
 
     }
 
-    private void navigateToCreateProduct(){
-       /* NavDirections navigation = SellFragmentDirections.actionSellFragmentToHomeNavigationGraph();
-        Navigation.findNavController(getView()).navigate(navigation);*/
+    @SuppressLint("ResourceType")
+    private void navigateToCreateProduct(String barcode){
+       //NavDirections navigation = SellFragmentDirections.actionSellFragmentToHomeNavigationGraph();
+        //Navigation.findNavController(getView()).navigate(navigation);
+        createProductViewModel.setBusinessId(sellViewModel.getCurrentBusinessId());
+        createProductViewModel.setProductId(barcode);
+
+        PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
+                .setGraph(R.navigation.mobile_navigation)
+                .setDestination(R.id.createProductFragment2)
+                .createPendingIntent();
+
+        try {
+            pendingIntent.send();
+        }catch (Exception e){
+            e.fillInStackTrace();
+        }
     }
 
     public void onDestroy(){

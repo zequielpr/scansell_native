@@ -66,6 +66,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     //prueba
     public LiveData<List<Product>> queryAllProducts(long currentBusinessId){
+        System.out.println("New businessID: " + currentBusinessId);
         if(this.currentBusinessId != currentBusinessId){
             System.out.println("New businessID: " + currentBusinessId);
             this.currentBusinessId = currentBusinessId;

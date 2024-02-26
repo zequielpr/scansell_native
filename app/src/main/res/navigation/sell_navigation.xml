@@ -6,6 +6,8 @@
     app:startDestination="@id/sellFragment">
 
 
+
+
     <fragment
         android:id="@+id/sellFragment"
         android:name="com.kunano.scansell_native.ui.sell.SellFragment"
@@ -36,4 +38,7 @@
             android:id="@+id/action_soldProductFragment2_to_receiptsFragment2"
             app:destination="@id/receiptsFragment2" />
     </fragment>
+
+
+
 </navigation>
