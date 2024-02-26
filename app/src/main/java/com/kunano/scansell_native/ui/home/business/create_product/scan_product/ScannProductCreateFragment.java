@@ -83,7 +83,7 @@ public class ScannProductCreateFragment extends Fragment {
     }
 
     public void navigateBack(View view){
-        NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragmentToBusinessFragment();
+        NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragment2ToBusinessFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 
@@ -93,7 +93,7 @@ public class ScannProductCreateFragment extends Fragment {
            if(!data.isBlank()){
                //System.out.println("Result at scan: " + data);
                createProductViewModel.checkIfProductExists(data.trim());
-               NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragmentToCreateProductFragment();
+               NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragment2ToCreateProductFragment2();
                Navigation.findNavController(getView()).navigate(navDirections);
            }
         }catch (Exception e){

@@ -101,7 +101,7 @@ public class BusinessBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragmentToBusinessFragment();
+                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2();
                 Navigation.findNavController(getView()).navigate(action);
             }
         });
@@ -181,7 +181,7 @@ public class BusinessBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragmentToBusinessFragment();
+                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2();
                 Navigation.findNavController(getView()).navigate(action);
                 mainActivityViewModel.setHandleBackPress(null);
             }

@@ -3,154 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_sell">
+    app:startDestination="@id/sell_navigation_graph">
 
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.kunano.scansell_native.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/home_fragment" >
-        <action
-            android:id="@+id/action_navigation_home_to_productsFragment22"
-            app:destination="@id/businessFragment"
-            app:enterAnim="@android:anim/slide_in_left" />
-        <action
-            android:id="@+id/action_navigation_home_to_userBinFragment"
-            app:destination="@id/userBinFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
-    </fragment>
 
-    <fragment
-        android:id="@+id/navigation_sell"
-        android:name="com.kunano.scansell_native.ui.sell.SellFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/sell_fragment" >
-        <action
-            android:id="@+id/action_navigation_dashboard_to_createProductFragment"
-            app:destination="@id/createProductFragment" />
-        <action
-            android:id="@+id/action_navigation_dashboard_to_receiptsFragment"
-            app:destination="@id/receiptsFragment" />
-    </fragment>
+    <include app:graph="@navigation/sell_navigation" />
+    <include app:graph="@navigation/home_navigation" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.kunano.scansell_native.ui.profile.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/profile_fragment" />
-    <fragment
-        android:id="@+id/businessFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.BusinessFragment"
-        android:label="fragment_products"
-        tools:layout="@layout/fragment_business" >
-        <action
-            android:id="@+id/action_productsFragment2_to_navigation_home"
-            app:destination="@id/navigation_home" />
-        <argument
-            android:name="business_key"
-            app:argType="string"
-            android:defaultValue="business_key" />
-        <action
-            android:id="@+id/action_productsFragment2_to_createProductFragment"
-            app:destination="@id/createProductFragment" />
-        <action
-            android:id="@+id/action_businessFragment_to_businessBinFragment"
-            app:destination="@id/businessBinFragment" />
-        <action
-            android:id="@+id/action_businessFragment_to_scannProductCreateFragment"
-            app:destination="@id/scannProductCreateFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/createProductFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.create_product.CreateProductFragment"
-        android:label="fragment_create_product"
-        tools:layout="@layout/fragment_create_product" >
-        <action
-            android:id="@+id/action_createProductFragment_to_businessFragment"
-            app:destination="@id/businessFragment" />
-        <action
-            android:id="@+id/action_createProductFragment_to_captureImageFragment"
-            app:destination="@id/captureImageFragment" />
-        <action
-            android:id="@+id/action_createProductFragment_to_navigation_dashboard"
-            app:destination="@id/navigation_sell" />
-    </fragment>
-    <fragment
-        android:id="@+id/userBinFragment"
-        android:name="com.kunano.scansell_native.ui.home.bin.UserBinFragment"
-        android:label="fragment_user_bin"
-        tools:layout="@layout/fragment_user_bin" >
-        <action
-            android:id="@+id/action_userBinFragment_to_navigation_home"
-            app:destination="@id/navigation_home"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/businessBinFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.business_bin.BusinessBinFragment"
-        android:label="fragment_business_bin"
-        tools:layout="@layout/fragment_business_bin" >
-        <action
-            android:id="@+id/action_businessBinFragment_to_businessFragment"
-            app:destination="@id/businessFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/captureImageFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.CaptureImageFragment"
-        android:label="fragment_capture_image"
-        tools:layout="@layout/fragment_capture_image" >
-        <action
-            android:id="@+id/action_captureImageFragment_to_createProductFragment"
-            app:destination="@id/createProductFragment" />
-        <action
-            android:id="@+id/action_captureImageFragment_to_imagePreviewFragment"
-            app:destination="@id/imagePreviewFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/imagePreviewFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImagePreviewFragment"
-        android:label="fragment_image_preview"
-        tools:layout="@layout/fragment_image_preview" >
-        <action
-            android:id="@+id/action_imagePreviewFragment_to_captureImageFragment"
-            app:destination="@id/captureImageFragment" />
-        <action
-            android:id="@+id/action_imagePreviewFragment_to_createProductFragment"
-            app:destination="@id/createProductFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/scannProductCreateFragment"
-        android:name="com.kunano.scansell_native.ui.home.business.create_product.scan_product.ScannProductCreateFragment"
-        android:label="fragment_scann_product_create"
-        tools:layout="@layout/fragment_scann_product_create" >
-        <action
-            android:id="@+id/action_scannProductCreateFragment_to_createProductFragment"
-            app:destination="@id/createProductFragment" />
-        <action
-            android:id="@+id/action_scannProductCreateFragment_to_businessFragment"
-            app:destination="@id/businessFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/receiptsFragment"
-        android:name="com.kunano.scansell_native.ui.sell.receipts.ReceiptsFragment"
-        android:label="fragment_receipts"
-        tools:layout="@layout/fragment_receipts" >
-        <action
-            android:id="@+id/action_receiptsFragment_to_soldProductFragment"
-            app:destination="@id/soldProductFragment" />
-        <action
-            android:id="@+id/action_receiptsFragment_to_navigation_dashboard"
-            app:destination="@id/navigation_sell" />
-    </fragment>
-    <fragment
-        android:id="@+id/soldProductFragment"
-        android:name="com.kunano.scansell_native.ui.sell.receipts.sold_products.SoldProductFragment"
-        android:label="fragment_sold_product"
-        tools:layout="@layout/fragment_sold_product" >
-        <action
-            android:id="@+id/action_soldProductFragment_to_receiptsFragment"
-            app:destination="@id/receiptsFragment" />
-    </fragment>
 </navigation>

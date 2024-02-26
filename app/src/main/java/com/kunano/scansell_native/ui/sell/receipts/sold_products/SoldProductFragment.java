@@ -58,7 +58,7 @@ public class SoldProductFragment extends Fragment {
     }
 
     private void navigateBack(View view){
-        NavDirections navDirections = SoldProductFragmentDirections.actionSoldProductFragmentToReceiptsFragment();
+        NavDirections navDirections = SoldProductFragmentDirections.actionSoldProductFragment2ToReceiptsFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
         mainActivityViewModel.setHandleBackPress(null);
     }

@@ -63,12 +63,12 @@ public class ReceiptsFragment extends Fragment {
     }
 
     private void naVigateBack(View view){
-        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragmentToNavigationDashboard();
+        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragment2ToSellFragment();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 
     private void navigateToSoldProducts(){
-        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragmentToSoldProductFragment();
+        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragment2ToSoldProductFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 

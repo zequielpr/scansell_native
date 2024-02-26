@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_navigation_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.kunano.scansell_native.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/home_fragment">
+        <action
+            android:id="@+id/action_navigation_home_to_businessFragment2"
+            app:destination="@id/businessFragment2" />
+        <action
+            android:id="@+id/action_navigation_home_to_userBinFragment"
+            app:destination="@id/userBinFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/businessBinFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.business_bin.BusinessBinFragment"
+        android:label="fragment_business_bin"
+        tools:layout="@layout/fragment_business_bin" >
+        <action
+            android:id="@+id/action_businessBinFragment2_to_businessFragment2"
+            app:destination="@id/businessFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/businessFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.BusinessFragment"
+        android:label="fragment_business"
+        tools:layout="@layout/fragment_business" >
+        <action
+            android:id="@+id/action_businessFragment2_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_businessFragment2_to_scannProductCreateFragment2"
+            app:destination="@id/scannProductCreateFragment2" />
+        <action
+            android:id="@+id/action_businessFragment2_to_businessBinFragment2"
+            app:destination="@id/businessBinFragment2" />
+        <action
+            android:id="@+id/action_businessFragment2_to_createProductFragment2"
+            app:destination="@id/createProductFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/createProductFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.CreateProductFragment"
+        android:label="fragment_create_product"
+        tools:layout="@layout/fragment_create_product" >
+        <action
+            android:id="@+id/action_createProductFragment2_to_businessFragment2"
+            app:destination="@id/businessFragment2" />
+        <action
+            android:id="@+id/action_createProductFragment2_to_captureImageFragment2"
+            app:destination="@id/captureImageFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/scannProductCreateFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.scan_product.ScannProductCreateFragment"
+        android:label="fragment_scann_product_create"
+        tools:layout="@layout/fragment_scann_product_create" >
+        <action
+            android:id="@+id/action_scannProductCreateFragment2_to_businessFragment2"
+            app:destination="@id/businessFragment2" />
+        <action
+            android:id="@+id/action_scannProductCreateFragment2_to_createProductFragment2"
+            app:destination="@id/createProductFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/captureImageFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.CaptureImageFragment"
+        android:label="fragment_capture_image"
+        tools:layout="@layout/fragment_capture_image" >
+        <action
+            android:id="@+id/action_captureImageFragment2_to_createProductFragment2"
+            app:destination="@id/createProductFragment2" />
+        <action
+            android:id="@+id/action_captureImageFragment2_to_imagePreviewFragment2"
+            app:destination="@id/imagePreviewFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/imagePreviewFragment2"
+        android:name="com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImagePreviewFragment"
+        android:label="fragment_image_preview"
+        tools:layout="@layout/fragment_image_preview" >
+        <action
+            android:id="@+id/action_imagePreviewFragment2_to_captureImageFragment2"
+            app:destination="@id/captureImageFragment2" />
+        <action
+            android:id="@+id/action_imagePreviewFragment2_to_createProductFragment2"
+            app:destination="@id/createProductFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/userBinFragment"
+        android:name="com.kunano.scansell_native.ui.home.bin.UserBinFragment"
+        android:label="fragment_user_bin"
+        tools:layout="@layout/fragment_user_bin" >
+        <action
+            android:id="@+id/action_userBinFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+</navigation>

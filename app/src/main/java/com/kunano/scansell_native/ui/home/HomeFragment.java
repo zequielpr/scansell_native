@@ -274,8 +274,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void navigateToProducts(String businessId) {
-        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action = HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
-        action.setBusinessKey(businessId);
+        NavDirections action = HomeFragmentDirections.actionNavigationHomeToBusinessFragment2();
         Navigation.findNavController(getView()).navigate(action);
     }
 

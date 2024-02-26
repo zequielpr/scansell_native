@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
@@ -102,7 +103,7 @@ public class CreateProductFragment extends Fragment {
         createProductToolbar = binding.createProductToolbar;
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
-        takePictureFragmenttNavDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
+
 
         requestCameraPermissionLauncher = registerForActivityResult(new
                 ActivityResultContracts.RequestPermission(), this::resultCameraPermission);
@@ -163,17 +164,17 @@ public class CreateProductFragment extends Fragment {
         NavDestination topLevelDestination = findTopLevelDestination(navController, currentDestination);
 
 
-        /*if (topLevelDestination.getId() == TOP_LEVEL_NAV_SELL){
-            navController.navigate(topLevelDestinationId);
+        NavGraph navDestinationParent = navController.getCurrentDestination().getParent();
+
+        if(navDestinationParent.getId() == R.id.home_navigation_graph){
+            NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragment2ToBusinessFragment2();
+            navController.navigate(navDirections);
         }else {
-            NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
-           navController.navigate(action);
+            navController.navigate(navDestinationParent.getId());
         }
-        mainActivityViewModel.setHandleBackPress(null);*/
 
-
-        // You can now use topLevelDestination as needed
-       System.out.println("Current destination: " +navController.getCurrentDestination().getParent().getDisplayName());
+        mainActivityViewModel.setHandleBackPress(null);
+       System.out.println("Current destination: " +navController.getCurrentDestination().getParent());
 
 
 
@@ -320,8 +321,8 @@ public class CreateProductFragment extends Fragment {
         if (!adminPermissions.verifyCameraPermission()) return;
 
         //Navigate to camera fragment
-        NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
-        Navigation.findNavController(getView()).navigate(navDirections);
+        takePictureFragmenttNavDirections = CreateProductFragmentDirections.actionCreateProductFragment2ToCaptureImageFragment2();
+        Navigation.findNavController(getView()).navigate(takePictureFragmenttNavDirections);
     }
 
 

@@ -57,7 +57,7 @@ public class ImagePreviewFragment extends Fragment {
 
 
     private void navigateBack(View view){
-        NavDirections navDirections = ImagePreviewFragmentDirections.actionImagePreviewFragmentToCaptureImageFragment();
+        NavDirections navDirections = ImagePreviewFragmentDirections.actionImagePreviewFragment2ToCaptureImageFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
 
         mainActivityViewModel.setHandleBackPress(null);
@@ -65,7 +65,7 @@ public class ImagePreviewFragment extends Fragment {
 
     private void saveImage(View view){
 
-        NavDirections navDirections = ImagePreviewFragmentDirections.actionImagePreviewFragmentToCreateProductFragment();
+        NavDirections navDirections = ImagePreviewFragmentDirections.actionImagePreviewFragment2ToCreateProductFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
 
         createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(),

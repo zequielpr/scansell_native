@@ -139,7 +139,7 @@ public class BusinessFragment extends Fragment {
 
     public void navigateBAck(){
         getActivity().runOnUiThread(()->{
-            NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+            NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToNavigationHome();
             Navigation.findNavController(getView()).navigate(action);
             mainActivityViewModel.setHandleBackPress(null);
         });
@@ -197,7 +197,7 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view ) {
-        NavDirections action = BusinessFragmentDirections.actionBusinessFragmentToScannProductCreateFragment();
+        NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToScannProductCreateFragment2();
         Navigation.findNavController(getView()).navigate(action);
     }
 
@@ -212,7 +212,7 @@ public class BusinessFragment extends Fragment {
     }
 
     public void navigateBusinessBin(){
-        NavDirections directions = BusinessFragmentDirections.actionBusinessFragmentToBusinessBinFragment();
+        NavDirections directions = BusinessFragmentDirections.actionBusinessFragment2ToBusinessBinFragment2();
 
         Navigation.findNavController(getView()).navigate(directions);
     }
@@ -536,7 +536,7 @@ public class BusinessFragment extends Fragment {
     private void showProductDetails(String productId){
         createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
         createProductViewModel.checkIfProductExists(productId);
-        NavDirections navDirections = BusinessFragmentDirections.actionProductsFragment2ToCreateProductFragment();
+        NavDirections navDirections = BusinessFragmentDirections.actionBusinessFragment2ToCreateProductFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 

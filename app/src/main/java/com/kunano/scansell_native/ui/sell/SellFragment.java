@@ -180,7 +180,7 @@ public class SellFragment extends Fragment {
 
 
     private void navigateToReceipt(){
-        NavDirections navDirections = SellFragmentDirections.actionNavigationDashboardToReceiptsFragment();
+        NavDirections navDirections = SellFragmentDirections.actionSellFragmentToReceiptsFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 
@@ -222,8 +222,8 @@ public class SellFragment extends Fragment {
     }
 
     private void navigateToCreateProduct(){
-        NavDirections navigation = SellFragmentDirections.actionNavigationDashboardToCreateProductFragment();
-        Navigation.findNavController(getView()).navigate(navigation);
+       /* NavDirections navigation = SellFragmentDirections.actionSellFragmentToHomeNavigationGraph();
+        Navigation.findNavController(getView()).navigate(navigation);*/
     }
 
     public void onDestroy(){

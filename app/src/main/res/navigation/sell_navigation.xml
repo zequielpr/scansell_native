@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sell_navigation_graph"
+    app:startDestination="@id/sellFragment">
+
+
+    <fragment
+        android:id="@+id/sellFragment"
+        android:name="com.kunano.scansell_native.ui.sell.SellFragment"
+        android:label="sell_fragment"
+        tools:layout="@layout/sell_fragment" >
+        <action
+            android:id="@+id/action_sellFragment_to_receiptsFragment2"
+            app:destination="@id/receiptsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/receiptsFragment2"
+        android:name="com.kunano.scansell_native.ui.sell.receipts.ReceiptsFragment"
+        android:label="fragment_receipts"
+        tools:layout="@layout/fragment_receipts" >
+        <action
+            android:id="@+id/action_receiptsFragment2_to_sellFragment"
+            app:destination="@id/sellFragment" />
+        <action
+            android:id="@+id/action_receiptsFragment2_to_soldProductFragment2"
+            app:destination="@id/soldProductFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/soldProductFragment2"
+        android:name="com.kunano.scansell_native.ui.sell.receipts.sold_products.SoldProductFragment"
+        android:label="fragment_sold_product"
+        tools:layout="@layout/fragment_sold_product" >
+        <action
+            android:id="@+id/action_soldProductFragment2_to_receiptsFragment2"
+            app:destination="@id/receiptsFragment2" />
+    </fragment>
+</navigation>
