@@ -3,7 +3,7 @@ package com.kunano.scansell_native.repository.home;
 import android.app.Application;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImg;

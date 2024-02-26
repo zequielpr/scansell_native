@@ -26,7 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.components.BarcodeScannerCustom;
 
 import java.io.File;

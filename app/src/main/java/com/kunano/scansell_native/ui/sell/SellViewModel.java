@@ -16,6 +16,7 @@ import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,12 @@ public class SellViewModel extends AndroidViewModel {
     private String currentReceiptId;
     private MutableLiveData<Integer> selectedIndexSpinner;
 
+    private double cashTendered;
+    private MutableLiveData<Double> cashDue;
+    private MutableLiveData<Integer> cashTenderedAndDueVisibility;
+    Integer radioButtonChecked;
+    DecimalFormat df;
+
     public SellViewModel(@NonNull Application application) {
         super(application);
         productRepository = new ProductRepository(application);
@@ -53,6 +60,10 @@ public class SellViewModel extends AndroidViewModel {
         liveDataReceipts = new MutableLiveData<>();
         finishButtonState = new MutableLiveData<>(false);
         selectedIndexSpinner = new MutableLiveData<>(0);
+        cashDue  = new MutableLiveData<>();
+        totalToPay.observeForever(v->cashDue.postValue(0-v));
+        df = new DecimalFormat("#.##");
+        cashTenderedAndDueVisibility = new MutableLiveData<>();
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
@@ -93,7 +104,9 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     private void sumPrice(Product product){
-        totalToPay.postValue(totalToPay.getValue() + product.getSelling_price());
+        Double summedPrice =  Double.
+                valueOf(df.format(totalToPay.getValue() + product.getSelling_price()));
+        totalToPay.postValue(summedPrice);
     }
 
     public void deleteProductToSellMutableLiveData(Product product) {
@@ -108,10 +121,14 @@ public class SellViewModel extends AndroidViewModel {
         productToSellMutableLiveData.postValue(productList);
         totalToPay.postValue(0.0);
         finishButtonState.postValue(false);
+        cashTendered = 0.0;
+        cashDue.postValue(0.0);
     }
 
     private void decreasePrice(Product product){
-        totalToPay.postValue(totalToPay.getValue() - product.getSelling_price());
+        Double decreasedPrice =  Double.
+                valueOf(df.format(totalToPay.getValue() - product.getSelling_price()));
+        totalToPay.postValue(decreasedPrice);
     }
 
     public MutableLiveData<Double> getTotalToPay() {
@@ -246,5 +263,38 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setSelectedIndexSpinner(Integer selectedIndexSpinner) {
         this.selectedIndexSpinner.postValue(selectedIndexSpinner);
+    }
+
+    public double getCashTendered() {
+        return Double.valueOf(df.format(cashTendered));
+    }
+
+    public void setCashTendered(double cashTendered) {
+        this.cashTendered = Double.valueOf(df.format(cashTendered));;
+        cashDue.postValue(Double.valueOf(df.format((cashTendered-totalToPay.getValue()))));
+    }
+
+    public MutableLiveData<Double> getCashDue() {
+        return cashDue;
+    }
+
+    public void setCashDue(Double cashDue) {
+        this.cashDue.postValue(cashDue);
+    }
+
+    public MutableLiveData<Integer> getCashTenderedAndDueVisibility() {
+        return cashTenderedAndDueVisibility;
+    }
+
+    public void setCashTenderedAndDueVisibility(Integer cashTenderedAndDueVisibility) {
+        this.cashTenderedAndDueVisibility.postValue(cashTenderedAndDueVisibility);
+    }
+
+    public Integer getRadioButtonChecked() {
+        return radioButtonChecked;
+    }
+
+    public void setRadioButtonChecked(Integer radioButtonChecked) {
+        this.radioButtonChecked = radioButtonChecked;
     }
 }

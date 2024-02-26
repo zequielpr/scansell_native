@@ -13,6 +13,7 @@
 
 
         <LinearLayout
+            android:elevation="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -71,8 +72,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/productCard"
-        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@id/productCardToSell"
+        android:elevation="3dp"
         android:background="@color/teal_700" />
 
 

@@ -20,14 +20,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.ProgressBarDialog;
-import com.kunano.scansell_native.ui.SpinningWheel;
+import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
-import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;

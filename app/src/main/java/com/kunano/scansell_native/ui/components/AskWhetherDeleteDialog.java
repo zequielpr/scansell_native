@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui;
+package com.kunano.scansell_native.ui.components;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 
 public class AskWhetherDeleteDialog extends DialogFragment {

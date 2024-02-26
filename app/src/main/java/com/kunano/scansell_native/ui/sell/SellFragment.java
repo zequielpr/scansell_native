@@ -60,6 +60,7 @@ public class SellFragment extends Fragment {
 
 
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
@@ -105,6 +106,7 @@ public class SellFragment extends Fragment {
                 R.layout.custom_item_spinner, new ArrayList<>());
 
 
+        //Set business in adapter and get the current business id
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(), (listB)->{
             spinerAdapter.clear();
             spinerAdapter.addAll(listB);
@@ -116,6 +118,9 @@ public class SellFragment extends Fragment {
             }
 
         });
+
+
+
 
 
         spinerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -260,12 +265,14 @@ public class SellFragment extends Fragment {
 
 
         toolbar.inflateMenu(R.menu.sell_tool_bar);
-        toolbar.getMenu().findItem(R.id.got_to_receipt).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
+        menuItem.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.got_to_receipt){
-                    navigateToReceipt();
+                    if (sellViewModel.getCurrentBusinessId() != null)navigateToReceipt();
                     return true;
                 }
                 return false;

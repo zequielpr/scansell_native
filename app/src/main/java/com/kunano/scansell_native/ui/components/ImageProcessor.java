@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui;
+package com.kunano.scansell_native.ui.components;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;

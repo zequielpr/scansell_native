@@ -68,5 +68,10 @@
     <string name="cash">cash</string>
     <string name="card">card</string>
     <string name="receipts">receipts</string>
+    <string name="balance_to_pay">balance to pay: </string>
+    <string name="chash_tendered">cash tendered</string>
+    <string name="balance_tendered">balance to pay</string>
+    <string name="cash_due">cash due:</string>
+    <string name="price">price</string>
 
 </resources>

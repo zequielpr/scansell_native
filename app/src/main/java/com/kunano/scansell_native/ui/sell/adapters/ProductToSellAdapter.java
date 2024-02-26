@@ -18,7 +18,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.home.ProductRepository;
-import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdapter.CardHolder> {
@@ -66,7 +66,8 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
     public void onBindViewHolder(ProductToSellAdapter.CardHolder holder, final int position) {
         Product product = getItem(position);
         holder.title.setText(product.getProductName());
-        holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
+        holder.sellingPrice.setText(activityParent.getString(R.string.price)+" ".
+                concat(Double.toString(product.getSelling_price())));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
         productRepository.getProdductImage(product.getProductId(), new ProductCardAdapter.LisnedProductImage() {
             @Override
