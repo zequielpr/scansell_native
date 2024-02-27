@@ -24,8 +24,9 @@ public interface ProductToSellDraftDao {
     void empryDraft(Long businessID);
 
 
-    @Query("DELETE  FROM producttoselldraft WHERE businessIdIdFK = (:businessID)" +
-            "AND productIdFK = (:productId)")
+    //With not limit, it would delete al the product  with the given id
+    @Query("DELETE FROM producttoselldraft WHERE businessIdIdFK = (:businessID) AND productIdFK = (:productId) AND" +
+            " ROWID IN (SELECT ROWID FROM producttoselldraft WHERE businessIdIdFK = (:businessID) AND productIdFK = (:productId) LIMIT 1)")
     void deleteProductFromDraft(Long businessID, String productId);;
 
 
