@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
@@ -33,7 +34,6 @@ public class SellViewModel extends AndroidViewModel {
     private ExecutorService executorService;
     private LiveData<List<Business>> businessesListLiveData;
     private Long currentBusinessId;
-    private List<Product> productList;
     private SellRepository sellRepository;
     private LiveData<List<Receipt>> liveDataReceipts;
     private LiveData<List<Product>> liveDataSoldProducts;
@@ -47,6 +47,8 @@ public class SellViewModel extends AndroidViewModel {
     Integer radioButtonChecked;
     DecimalFormat df;
 
+
+
     public SellViewModel(@NonNull Application application) {
         super(application);
         productRepository = new ProductRepository(application);
@@ -56,7 +58,6 @@ public class SellViewModel extends AndroidViewModel {
         businessesListLiveData = businessRepository.getAllBusinesses();
         productToSellMutableLiveData = new MutableLiveData<>();
         totalToPay = new MutableLiveData<>(0.0);
-        productList = new ArrayList<>();
         liveDataReceipts = new MutableLiveData<>();
         finishButtonState = new MutableLiveData<>(false);
         selectedIndexSpinner = new MutableLiveData<>(0);
@@ -64,6 +65,11 @@ public class SellViewModel extends AndroidViewModel {
         totalToPay.observeForever(v->cashDue.postValue(0-v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
+        productToSellMutableLiveData.observeForever(pl->{
+            Double t = pl.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
+            totalToPay.postValue(t);
+            finishButtonState.postValue(pl.size()>0);});
+
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
@@ -97,10 +103,26 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void addProductToSellMutableLiveData(Product product) {
-        sumPrice(product);
-        productList.add(product);
-        this.productToSellMutableLiveData.postValue(productList);
-        finishButtonState.postValue(true);
+
+        ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId);
+
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(()->{
+            try {
+                Long result = sellRepository.insertProductInDraft(productToSellDraft).get();
+                if (result>0){
+                    //sumPrice(product);
+                    finishButtonState.postValue(true);
+                }
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+
     }
 
     private void sumPrice(Product product){
@@ -110,25 +132,46 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void deleteProductToSellMutableLiveData(Product product) {
-        productList.remove(product);
-        decreasePrice(product);
-        this.productToSellMutableLiveData.postValue(productList);
-        finishButtonState.postValue(productList.size()>0);
+
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(()->{
+            try {
+                sellRepository.removeProductFromDraft(currentBusinessId, product.getProductId());;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+
+
+
+
+
+
     }
 
     public void clearProductsToSell(){
-        productList.clear();
-        productToSellMutableLiveData.postValue(productList);
-        totalToPay.postValue(0.0);
-        finishButtonState.postValue(false);
-        cashTendered = 0.0;
-        cashDue.postValue(0.0);
+
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(()->{
+            try {
+                sellRepository.clearDraft(currentBusinessId);
+                //totalToPay.postValue(0.0);
+                finishButtonState.postValue(false);
+                cashTendered = 0.0;
+                cashDue.postValue(0.0);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void decreasePrice(Product product){
         Double decreasedPrice =  Double.
                 valueOf(df.format(totalToPay.getValue() - product.getSelling_price()));
-        totalToPay.postValue(decreasedPrice);
+        //totalToPay.postValue(decreasedPrice);
     }
 
     public MutableLiveData<Double> getTotalToPay() {
@@ -162,9 +205,9 @@ public class SellViewModel extends AndroidViewModel {
 
     private void insertSoldProducts(String receiptID){
         List<SoldProduct> soldProductList = new ArrayList<>();
-        SoldProduct soldProduct = new SoldProduct();
+        SoldProduct soldProduct;
 
-        for (Product p:productList){
+        for (Product p:productToSellMutableLiveData.getValue()){
             soldProduct = new SoldProduct(p.getProductId(), receiptID);
             soldProductList.add(soldProduct);
         }
@@ -213,6 +256,9 @@ public class SellViewModel extends AndroidViewModel {
         return liveDataSoldProducts;
     }
 
+    //Save products to sell with bundle
+
+
 
 
 
@@ -238,6 +284,9 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void setCurrentBusinessId(Long currentBusinessId) {
+        sellRepository.getProductToSellDraft(currentBusinessId).observeForever((pl)->{
+            productToSellMutableLiveData.postValue(pl);
+        });
         this.currentBusinessId = currentBusinessId;
     }
 

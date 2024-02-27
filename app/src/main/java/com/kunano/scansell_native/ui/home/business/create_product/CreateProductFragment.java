@@ -383,6 +383,7 @@ public class CreateProductFragment extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        if (createProductViewModel == null)return;
         createProductViewModel.shotDownExecutors();
     }
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "dbd96d6c0e6e11c26e188bc6ba902ecf",
+    "identityHash": "bcd1013010d5497d5534811d74024e5a",
     "entities": [
       {
         "tableName": "Business",
@@ -483,12 +483,86 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "ProductToSellDraft",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`draftId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productIdFK` TEXT, `businessIdIdFK` INTEGER, FOREIGN KEY(`productIdFK`) REFERENCES `product`(`productId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`businessIdIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "draftId",
+            "columnName": "draftId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productIdFK",
+            "columnName": "productIdFK",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "businessIdIdFK",
+            "columnName": "businessIdIdFK",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "draftId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ProductToSellDraft_productIdFK",
+            "unique": false,
+            "columnNames": [
+              "productIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProductToSellDraft_productIdFK` ON `${TABLE_NAME}` (`productIdFK`)"
+          },
+          {
+            "name": "index_ProductToSellDraft_businessIdIdFK",
+            "unique": false,
+            "columnNames": [
+              "businessIdIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProductToSellDraft_businessIdIdFK` ON `${TABLE_NAME}` (`businessIdIdFK`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "product",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "productIdFK"
+            ],
+            "referencedColumns": [
+              "productId"
+            ]
+          },
+          {
+            "table": "Business",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "businessIdIdFK"
+            ],
+            "referencedColumns": [
+              "businessId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dbd96d6c0e6e11c26e188bc6ba902ecf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bcd1013010d5497d5534811d74024e5a')"
     ]
   }
 }

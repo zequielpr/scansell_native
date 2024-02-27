@@ -59,16 +59,19 @@ public class SellFragment extends Fragment {
     private MainActivityViewModel mainActivityViewModel;
 
 
+    // Invoked when the activity might be temporarily destroyed; save the instance state here.
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
+
+
          mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-
-
         spinner = binding.spinnerPickBusiness;
         totalTextView = binding.totalTextView;
         toolbar = binding.sellToolbar;
@@ -245,14 +248,6 @@ public class SellFragment extends Fragment {
         }
     }
 
-    public void onDestroy(){
-        super.onDestroy();
-        System.out.println("Activity on destroy");
-    }
-
-
-
-
     private void setCardListener(){
         productToSellAdapter.setListener(new ProductToSellAdapter.OnclickProductCardListener() {
             @Override
@@ -285,7 +280,6 @@ public class SellFragment extends Fragment {
 
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-
 
         toolbar.inflateMenu(R.menu.sell_tool_bar);
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
