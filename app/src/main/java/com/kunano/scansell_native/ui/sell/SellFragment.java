@@ -1,6 +1,5 @@
 package com.kunano.scansell_native.ui.sell;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -30,14 +29,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.SellFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
-import com.kunano.scansell_native.ui.home.HomeViewModel;
-import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
-import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
@@ -56,24 +53,17 @@ public class SellFragment extends Fragment {
     private RecyclerView recyclerViewProducts;
     private CustomCamera customCamera;
     private SellViewModel sellViewModel;
-    private BusinessViewModel businessViewModel;
     private ProductToSellAdapter productToSellAdapter;
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
-    private CreateProductViewModel createProductViewModel;
-    private HomeViewModel homeViewModel;
-
-
-
-
+    private MainActivityViewModel mainActivityViewModel;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
+         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -176,6 +166,12 @@ public class SellFragment extends Fragment {
         sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), (s)->spinner.setEnabled(!s));
         sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
 
+
+
+        mainActivityViewModel.setHandleBackPress(null);
+
+
+
         return root;
     }
 
@@ -206,7 +202,8 @@ public class SellFragment extends Fragment {
     public void processProductRequest(Object result, String barcode){
         if(result == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
-            getActivity().runOnUiThread(()->navigateToCreateProduct(barcode));
+
+           getActivity().runOnUiThread(()->navigateToCreateProduct(barcode));
             return;
         }else if(sellViewModel.getCurrentBusinessId() == null){
             return;
@@ -223,22 +220,28 @@ public class SellFragment extends Fragment {
 
     }
 
-    @SuppressLint("ResourceType")
+
+
+    //When navigating, the main activity gets destroyed and all the viewModel scooped to it
     private void navigateToCreateProduct(String barcode){
-       //NavDirections navigation = SellFragmentDirections.actionSellFragmentToHomeNavigationGraph();
-        //Navigation.findNavController(getView()).navigate(navigation);
-        createProductViewModel.setBusinessId(sellViewModel.getCurrentBusinessId());
-        createProductViewModel.setProductId(barcode);
+        Bundle args = new Bundle();
+        args.putLong("business_key", sellViewModel.getCurrentBusinessId());
+        args.putString("product_key", barcode);
 
         PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
-                .setGraph(R.navigation.mobile_navigation)
-                .setDestination(R.id.createProductFragment2)
+                .setGraph(R.navigation.mobile_navigation).
+                setDestination(R.id.createProductFragment2)
+                .setArguments(args)
                 .createPendingIntent();
 
         try {
+            // This will execute the PendingIntent
             pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            // Handle error if PendingIntent is canceled
+            e.printStackTrace();
         }catch (Exception e){
-            e.fillInStackTrace();
+
         }
     }
 

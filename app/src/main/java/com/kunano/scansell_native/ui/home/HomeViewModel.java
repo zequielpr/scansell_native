@@ -42,12 +42,6 @@ public class HomeViewModel extends DeleteItemsViewModel {
         listenHomeViewModel.activateWaitingMode();
     }
 
-    public void updateBusiness(String name, String address, String creatingData){
-        Business business = new Business(name, address, creatingData);
-        business.setBusinessId(currentBusinessId);
-        businessRepository.updateBusiness(business, this::notifyUpdateBusinessResult);
-    }
-
 
     public LiveData<List<Business>> getAllBusinesses() {
         return businessListLiveData;
@@ -91,7 +85,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         //currentBusiness = repository.getBusinesById(business.getBusinessId());
 
-        listenHomeViewModel.navigateToProducts(String.valueOf(business.getBusinessId()));
+        listenHomeViewModel.navigateToProducts(business.getBusinessId());
         currentBusinessId = business.getBusinessId();
     }
 

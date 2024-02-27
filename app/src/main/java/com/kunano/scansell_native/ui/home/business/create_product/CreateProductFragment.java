@@ -36,8 +36,6 @@ import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
-import com.kunano.scansell_native.ui.home.HomeViewModel;
-import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
 
@@ -58,8 +56,6 @@ public class CreateProductFragment extends Fragment {
     private Button saveButton;
     private Toolbar createProductToolbar;
     private AskWhetherDeleteDialog askWhetherDeleteDialog;
-
-    private BusinessViewModel businessViewModel;
     private CreateProductViewModel createProductViewModel;
     private ImageProcessor imageProcessor;
     private CreateProductFragment createProductFragment;
@@ -71,8 +67,9 @@ public class CreateProductFragment extends Fragment {
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     NavDirections takePictureFragmenttNavDirections;
     private NavController navController;
-    private HomeViewModel homeViewModel;
 
+    private Long businessKey;
+    private String productId;
     final int TOP_LEVEL_NAV_SELL = 2131296920;
 
     @Override
@@ -80,12 +77,22 @@ public class CreateProductFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
-        //createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
-
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
+        if (getArguments() != null) {
+            businessKey = getArguments().getLong("business_key");
+            productId = getArguments().getString("product_key");
+
+
+            if(businessKey != null && productId != null){
+                createProductViewModel.setBusinessId(businessKey);
+                createProductViewModel.setProductId(productId);
+                createProductViewModel.checkIfProductExists(productId);
+            }
+        }
+
+
 
 
 
@@ -156,27 +163,13 @@ public class CreateProductFragment extends Fragment {
 
     public void navigateBack(){
 
-      /*  navController = Navigation.findNavController(getView());
+      navController = Navigation.findNavController(getView());
+      NavDirections navDirections = CreateProductFragmentDirections.
+              actionCreateProductFragment2ToBusinessFragment2(createProductViewModel.getBusinessId());
 
-        // Initialize NavController
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main);
+      navController.navigate(navDirections);
 
-
-        NavDestination currentDestination = navController.getCurrentDestination();
-        NavDestination topLevelDestination = findTopLevelDestination(navController, currentDestination);
-
-
-        NavGraph navDestinationParent = navController.getCurrentDestination().getParent();
-
-        if(navDestinationParent.getId() == R.id.home_navigation_graph){
-            NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragment2ToBusinessFragment2();
-            navController.navigate(navDirections);
-        }else {
-            navController.navigate(navDestinationParent.getId());
-        }
-
-        mainActivityViewModel.setHandleBackPress(null);*/
-       System.out.println("Current destination: " +createProductViewModel.getProductId());
+       //System.out.println("Current destination: " +createProductViewModel.getBusinessId());
 
 
 
@@ -214,7 +207,7 @@ public class CreateProductFragment extends Fragment {
 
         byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
-        businessViewModel.createProduct(createProductViewModel.getProductId(),
+        createProductViewModel.createProduct(createProductViewModel.getProductId(),
                 name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
     }
 

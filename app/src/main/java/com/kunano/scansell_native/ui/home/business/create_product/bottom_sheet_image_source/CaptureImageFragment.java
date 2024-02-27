@@ -19,6 +19,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCaptureImageBinding;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
@@ -91,7 +92,7 @@ public class CaptureImageFragment extends Fragment {
     }
 
     public void navigateBack(View view){
-        NavDirections navDirections = CaptureImageFragmentDirections.actionCaptureImageFragment2ToCreateProductFragment2();
+        int navDirections = R.id.createProductFragment2;
         Navigation.findNavController(getView()).navigate(navDirections);
         mainActivityViewModel.setHandleBackPress(null);
     }

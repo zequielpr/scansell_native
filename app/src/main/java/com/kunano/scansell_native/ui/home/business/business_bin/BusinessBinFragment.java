@@ -23,14 +23,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.home.HomeViewModel;
 import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
@@ -51,7 +50,6 @@ public class BusinessBinFragment extends Fragment {
     private ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
-    HomeViewModel homeViewModel;
     long currentBusinessId;
     private FragmentBusinessBinBinding binding;
 
@@ -59,13 +57,12 @@ public class BusinessBinFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentBusinessBinBinding.inflate(inflater, container, false);
-
-
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         mViewModel = new ViewModelProvider(this).get(BusinessBinViewModel.class);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
-        currentBusinessId = homeViewModel.getCurrentBusinessId();
+        if (getArguments() != null) {
+            currentBusinessId = getArguments().getLong("business_key");
+        }
 
         toolbar = binding.binToolbar;
         deleteOrRestoreOptions = binding.deleteOrRestoreOption;
@@ -101,7 +98,8 @@ public class BusinessBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2();
+                NavDirections action = BusinessBinFragmentDirections.
+                        actionBusinessBinFragment2ToBusinessFragment2(currentBusinessId);
                 Navigation.findNavController(getView()).navigate(action);
             }
         });
@@ -181,7 +179,7 @@ public class BusinessBinFragment extends Fragment {
 
 
                 mainActivityViewModel.showBottomNavBar();
-                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2();
+                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2(currentBusinessId);
                 Navigation.findNavController(getView()).navigate(action);
                 mainActivityViewModel.setHandleBackPress(null);
             }

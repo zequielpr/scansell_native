@@ -6,12 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.ArrayList;
@@ -171,18 +171,10 @@ public class BusinessViewModel extends DeleteItemsViewModel {
                 .collect(Collectors.toList());
     }
 
-
-
-    public void createProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
-                              String creatingDate, byte[] img, ListenResponse response) {
-
-        double bPrice = Double.parseDouble(buyingPrice);
-        double sPrice = Double.parseDouble(sellingPrice);
-        int stck = Integer.parseInt(stock);
-        Product product = new Product(productId, currentBusinessId, name, bPrice, sPrice, stck,
-                creatingDate);
-
-        productRepository.insertProduct(product, img, response::isSuccessfull);
+    public void updateBusiness(String name, String address, String creatingData, ListenResponse listenResponse){
+        Business business = new Business(name, address, creatingData);
+        business.setBusinessId(currentBusinessId);
+        businessRepository.updateBusiness(business, listenResponse);
     }
 
 
