@@ -106,7 +106,7 @@ public class SellFragment extends Fragment {
             spinerAdapter.clear();
             spinerAdapter.addAll(listB);
             try {
-                //sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
+                sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
             }catch (Exception e){
                 System.out.println(e.fillInStackTrace());
                 sellViewModel.setCurrentBusinessId(null);

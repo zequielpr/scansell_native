@@ -71,13 +71,17 @@ public class SellViewModel extends AndroidViewModel {
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
-        observer = (productsToSellList) -> {
+
+        observer = ( List<Product> productsToSellList) -> {
+
             productToSellMutableLiveData.postValue(productsToSellList);
-        };
-        productToSellMutableLiveData.observeForever(pl->{
-            Double t = pl.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
+
+            Double t =  productsToSellList.stream().reduce(0.0, (partialAgeResult, p) ->
+                    partialAgeResult + p.getSelling_price(), Double::sum);
             totalToPay.postValue(t);
-            finishButtonState.postValue(pl.size()>0);});
+            finishButtonState.postValue(productsToSellList.size()>0);
+        };
+
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
