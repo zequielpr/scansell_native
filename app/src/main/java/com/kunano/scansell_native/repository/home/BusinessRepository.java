@@ -5,14 +5,13 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.business.BusinessDao;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
-import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -30,7 +29,6 @@ public class BusinessRepository {
 
     private ProductImgDao productImgDao;
     private LiveData<List<Business>> allBusiness;
-    private LiveData<List<BusinessWithProduct>> allProductsWithBusiness;
     private LiveData<Product> allProducts;
 
     public BusinessRepository(Application application) {

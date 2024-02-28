@@ -97,15 +97,6 @@ public class SellFragment extends Fragment {
         productToSellAdapter.setActivityParent(getActivity());
         setCardListener();
 
-        sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(), (l)->{
-            productToSellAdapter.submitList(l);
-            //productToSellAdapter.notifyDataSetChanged();
-        });
-
-
-
-
-
         spinerAdapter = new BusinessSpinnerAdapter(getContext(),
                 R.layout.custom_item_spinner, new ArrayList<>());
 
@@ -115,13 +106,15 @@ public class SellFragment extends Fragment {
             spinerAdapter.clear();
             spinerAdapter.addAll(listB);
             try {
-                sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
+                //sellViewModel.setCurrentBusinessId(spinerAdapter.getItem(0).getBusinessId());
             }catch (Exception e){
                 System.out.println(e.fillInStackTrace());
                 sellViewModel.setCurrentBusinessId(null);
             }
 
         });
+
+        sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(),productToSellAdapter::submitList);
 
 
 
@@ -135,6 +128,7 @@ public class SellFragment extends Fragment {
                 Business selectedBusiness = (Business) parent.getItemAtPosition(position);
                 sellViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
                 sellViewModel.setSelectedIndexSpinner(position);
+
             }
 
             @Override

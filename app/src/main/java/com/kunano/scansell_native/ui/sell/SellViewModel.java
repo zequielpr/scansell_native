@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
@@ -44,7 +45,11 @@ public class SellViewModel extends AndroidViewModel {
     private double cashTendered;
     private MutableLiveData<Double> cashDue;
     private MutableLiveData<Integer> cashTenderedAndDueVisibility;
-    Integer radioButtonChecked;
+
+    /** it observes at listProductsToSellLiveData **/
+    private Observer<List<Product>> observer;
+    private LiveData<List<Product>> listProductsToSellLiveData;
+    private Integer radioButtonChecked;
     DecimalFormat df;
 
 
@@ -65,7 +70,10 @@ public class SellViewModel extends AndroidViewModel {
         totalToPay.observeForever(v->cashDue.postValue(0-v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
-
+        listProductsToSellLiveData = new MutableLiveData<>();
+        observer = (productsToSellList) -> {
+            productToSellMutableLiveData.postValue(productsToSellList);
+        };
         productToSellMutableLiveData.observeForever(pl->{
             Double t = pl.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
             totalToPay.postValue(t);
@@ -136,13 +144,6 @@ public class SellViewModel extends AndroidViewModel {
                 throw new RuntimeException(e);
             }
         });
-
-
-
-
-
-
-
 
     }
 
@@ -271,9 +272,17 @@ public class SellViewModel extends AndroidViewModel {
         return currentBusinessId;
     }
 
+
     public void setCurrentBusinessId(Long currentBusinessId) {
-        sellRepository.getProductToSellDraft(currentBusinessId).observeForever(productToSellMutableLiveData ::postValue);
         this.currentBusinessId = currentBusinessId;
+        setObserverOnNewBusiness();
+    }
+
+    /**When a new observer is set the previous one is deleted**/
+    private void setObserverOnNewBusiness(){
+        listProductsToSellLiveData.removeObserver(observer);
+        listProductsToSellLiveData = sellRepository.getProductToSellDraft(currentBusinessId);
+        listProductsToSellLiveData.observeForever(observer);
     }
 
     public String getCurrentReceiptId() {
