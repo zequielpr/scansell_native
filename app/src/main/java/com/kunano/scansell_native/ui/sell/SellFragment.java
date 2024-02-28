@@ -34,6 +34,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.SellFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
@@ -87,17 +89,18 @@ public class SellFragment extends Fragment {
         productToSellAdapter = new ProductToSellAdapter();
         recyclerViewProducts.setAdapter(productToSellAdapter);
 
-        sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(), (l)->{
-            productToSellAdapter.submitList(l);
-            productToSellAdapter.notifyDataSetChanged();
-        });
+
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->{
             totalTextView.setText(String.valueOf(t));
         });
 
-
         productToSellAdapter.setActivityParent(getActivity());
         setCardListener();
+
+        sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(), (l)->{
+            productToSellAdapter.submitList(l);
+            //productToSellAdapter.notifyDataSetChanged();
+        });
 
 
 
@@ -205,14 +208,13 @@ public class SellFragment extends Fragment {
     public void processProductRequest(Object result, String barcode){
         if(result == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
-
-           getActivity().runOnUiThread(()->navigateToCreateProduct(barcode));
+           getActivity().runOnUiThread(()->askCreateNewProdOrTryAgain(barcode));
             return;
         }else if(sellViewModel.getCurrentBusinessId() == null){
             return;
         }
         Product p = (Product) result;
-        sellViewModel.addProductToSellMutableLiveData(p);
+        sellViewModel.addProductToSell(p);
         Vibrator vibrator = (Vibrator) this.getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
         // Vibrate for 500 milliseconds
@@ -220,7 +222,26 @@ public class SellFragment extends Fragment {
             vibrator.vibrate(250);
         }
 
+    }
 
+
+    //Ask to create a new product or try again
+    private void askCreateNewProdOrTryAgain(String barcode){
+        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+                getString(R.string.scanned_product_not_found), getString(R.string.tray_again),
+                getString(R.string.create_new_product));
+        askForActionDialog.setButtonListener(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean resultado) {
+                if (resultado){
+                    navigateToCreateProduct(barcode);
+                }else {
+                    scanNewProduct(getView());
+                }
+            }
+        });
+
+        askForActionDialog.show(getParentFragmentManager(), getString(R.string.scanned_product_not_found));
     }
 
 
@@ -272,7 +293,7 @@ public class SellFragment extends Fragment {
 
             @Override
             public void onCancel(Product product) {
-                sellViewModel.deleteProductToSellMutableLiveData(product);
+                sellViewModel.deleteProductToSell(product);
             }
         });
     }

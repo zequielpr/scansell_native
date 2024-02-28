@@ -12,18 +12,29 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kunano.scansell_native.R;
 
-public class AskWhetherDeleteDialog extends DialogFragment {
+public class AskForActionDialog extends DialogFragment {
 
-    LayoutInflater inflater;
-    ListenResponse buttonAction;
-    String title;
+    private LayoutInflater inflater;
+    private ListenResponse buttonListener;
+    private String title;
 
-    public AskWhetherDeleteDialog(LayoutInflater inflater, ListenResponse buttonAction, String title) {
+    private String buttonLeftText;
+    private String buttonRightText;
+
+    public AskForActionDialog(LayoutInflater inflater, String title) {
         super();
         this.inflater = inflater;
-        this.buttonAction = buttonAction;
         this.title = title;
     }
+    public AskForActionDialog(LayoutInflater inflater, String title,
+                              String buttonLeftText, String buttonRightText) {
+        super();
+        this.inflater = inflater;
+        this.title = title;
+        this.buttonLeftText = buttonLeftText;
+        this.buttonRightText = buttonRightText;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -37,6 +48,10 @@ public class AskWhetherDeleteDialog extends DialogFragment {
 
         customDialogTitle.setText(title);
         customDialogMessage.setText("");
+        if(buttonRightText != null & buttonRightText != null){
+            customDialogOkButton.setText(buttonRightText);
+            customDialogCancelButton.setText(buttonLeftText);
+        }
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -46,7 +61,7 @@ public class AskWhetherDeleteDialog extends DialogFragment {
         customDialogOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonAction.isSuccessfull(true);
+                buttonListener.isSuccessfull(true);
                 dismiss();
             }
         });
@@ -55,7 +70,7 @@ public class AskWhetherDeleteDialog extends DialogFragment {
         customDialogCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonAction.isSuccessfull(false);
+                buttonListener.isSuccessfull(false);
                dismiss();
             }
         });
@@ -63,5 +78,13 @@ public class AskWhetherDeleteDialog extends DialogFragment {
         Dialog customDialog = builder.create();
 
         return customDialog;
+    }
+
+    public ListenResponse getButtonListener() {
+        return buttonListener;
+    }
+
+    public void setButtonListener(ListenResponse buttonListener) {
+        this.buttonListener = buttonListener;
     }
 }

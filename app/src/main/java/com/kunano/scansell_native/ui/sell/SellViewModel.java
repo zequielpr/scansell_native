@@ -54,9 +54,9 @@ public class SellViewModel extends AndroidViewModel {
         productRepository = new ProductRepository(application);
         businessRepository = new BusinessRepository(application);
         sellRepository = new SellRepository(application);
+        productToSellMutableLiveData = new MutableLiveData<>();
 
         businessesListLiveData = businessRepository.getAllBusinesses();
-        productToSellMutableLiveData = new MutableLiveData<>();
         totalToPay = new MutableLiveData<>(0.0);
         liveDataReceipts = new MutableLiveData<>();
         finishButtonState = new MutableLiveData<>(false);
@@ -65,11 +65,11 @@ public class SellViewModel extends AndroidViewModel {
         totalToPay.observeForever(v->cashDue.postValue(0-v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
+
         productToSellMutableLiveData.observeForever(pl->{
             Double t = pl.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
             totalToPay.postValue(t);
             finishButtonState.postValue(pl.size()>0);});
-
     }
 
     public void requestProduct(String productId, ViewModelListener viewModelListener){
@@ -102,7 +102,7 @@ public class SellViewModel extends AndroidViewModel {
         return productToSellMutableLiveData;
     }
 
-    public void addProductToSellMutableLiveData(Product product) {
+    public void addProductToSell(Product product) {
 
         ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId);
 
@@ -125,13 +125,8 @@ public class SellViewModel extends AndroidViewModel {
 
     }
 
-    private void sumPrice(Product product){
-        Double summedPrice =  Double.
-                valueOf(df.format(totalToPay.getValue() + product.getSelling_price()));
-        totalToPay.postValue(summedPrice);
-    }
 
-    public void deleteProductToSellMutableLiveData(Product product) {
+    public void deleteProductToSell(Product product) {
 
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(()->{
@@ -157,8 +152,6 @@ public class SellViewModel extends AndroidViewModel {
         executorService.execute(()->{
             try {
                 sellRepository.clearDraft(currentBusinessId);
-                //totalToPay.postValue(0.0);
-                finishButtonState.postValue(false);
                 cashTendered = 0.0;
                 cashDue.postValue(0.0);
 
@@ -168,11 +161,6 @@ public class SellViewModel extends AndroidViewModel {
         });
     }
 
-    private void decreasePrice(Product product){
-        Double decreasedPrice =  Double.
-                valueOf(df.format(totalToPay.getValue() - product.getSelling_price()));
-        //totalToPay.postValue(decreasedPrice);
-    }
 
     public MutableLiveData<Double> getTotalToPay() {
         return totalToPay;
@@ -284,9 +272,7 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void setCurrentBusinessId(Long currentBusinessId) {
-        sellRepository.getProductToSellDraft(currentBusinessId).observeForever((pl)->{
-            productToSellMutableLiveData.postValue(pl);
-        });
+        sellRepository.getProductToSellDraft(currentBusinessId).observeForever(productToSellMutableLiveData ::postValue);
         this.currentBusinessId = currentBusinessId;
     }
 

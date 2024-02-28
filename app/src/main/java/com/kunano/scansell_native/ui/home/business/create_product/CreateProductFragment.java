@@ -34,7 +34,7 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell_native.ui.components.AdminPermissions;
-import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
@@ -55,7 +55,7 @@ public class CreateProductFragment extends Fragment {
     private ImageView imageViewAddImage;
     private Button saveButton;
     private Toolbar createProductToolbar;
-    private AskWhetherDeleteDialog askWhetherDeleteDialog;
+    private AskForActionDialog askWhetherDeleteDialog;
     private CreateProductViewModel createProductViewModel;
     private ImageProcessor imageProcessor;
     private CreateProductFragment createProductFragment;
@@ -349,8 +349,8 @@ public class CreateProductFragment extends Fragment {
 
     private boolean askTosndBin(MenuItem menuItem){
         askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(), this::deleteOrCancel,
-                getString(R.string.send_bin_product));
+                AskForActionDialog(getLayoutInflater(), getString(R.string.send_bin_product));
+        askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getParentFragmentManager(), "Ask to send item to bin");
         return true;
     }

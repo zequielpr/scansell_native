@@ -30,7 +30,7 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
@@ -415,8 +415,9 @@ public class BusinessFragment extends Fragment {
     public void askToSendProductsBin() {
         System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
-        AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),this::pasToBinOrCancel, title);
+        AskForActionDialog askWhetherDeleteDialog = new
+                AskForActionDialog(getLayoutInflater(), title);
+        askWhetherDeleteDialog.setButtonListener(this::pasToBinOrCancel);
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
     }
@@ -502,10 +503,10 @@ public class BusinessFragment extends Fragment {
 
 
 
-    private AskWhetherDeleteDialog askWhetherDeleteDialogBinBusiness;
+    private AskForActionDialog askWhetherDeleteDialogBinBusiness;
     private void sendCurrentBusinessTobin(){
-        askWhetherDeleteDialogBinBusiness = new AskWhetherDeleteDialog(getLayoutInflater(),
-                this::handleCancelOrBinBusiness, getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getLayoutInflater(), getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness.setButtonListener(this::handleCancelOrBinBusiness);
         askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
     }
 

@@ -28,7 +28,7 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
 
@@ -270,11 +270,10 @@ public class UserBinFragment extends Fragment {
 
 
     public void askDeleteBusiness() {
-        System.out.println("Ask whether delete businiesses");
-        ListenResponse action = this::deleteOrCancel;
         String title = getString(R.string.delete_businesses_warn);
-        AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
+        AskForActionDialog askWhetherDeleteDialog = new
+                AskForActionDialog(getLayoutInflater(), title);
+        askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
 
     }
