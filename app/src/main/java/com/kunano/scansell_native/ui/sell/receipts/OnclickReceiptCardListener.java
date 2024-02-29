@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.kunano.scansell_native.model.sell.Receipt;
 
-public interface OnclickProductCardListener {
+public interface OnclickReceiptCardListener {
     abstract void onShortTap(Receipt receipt, View cardHolder);
 
     abstract void onLongTap(Receipt receipt, View cardHolder);

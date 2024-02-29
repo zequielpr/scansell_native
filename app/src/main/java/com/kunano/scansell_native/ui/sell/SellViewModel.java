@@ -50,6 +50,8 @@ public class SellViewModel extends AndroidViewModel {
     private Observer<List<Product>> observer;
     private LiveData<List<Product>> listProductsToSellLiveData;
     private Integer radioButtonChecked;
+    private MutableLiveData<List<Receipt>> mutableLiveDataReceipt;
+    private Observer<List<Receipt>> receiptObserver;
     DecimalFormat df;
 
 
@@ -71,6 +73,7 @@ public class SellViewModel extends AndroidViewModel {
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
+        mutableLiveDataReceipt = new MutableLiveData<>();
 
         observer = ( List<Product> productsToSellList) -> {
 
@@ -80,6 +83,11 @@ public class SellViewModel extends AndroidViewModel {
                     partialAgeResult + p.getSelling_price(), Double::sum);
             totalToPay.postValue(t);
             finishButtonState.postValue(productsToSellList.size()>0);
+        };
+
+        receiptObserver = (List<Receipt> receiptList)->{
+            System.out.println("Observing: " + receiptList.size());
+            mutableLiveDataReceipt.postValue(receiptList);
         };
 
     }
@@ -221,14 +229,22 @@ public class SellViewModel extends AndroidViewModel {
         });
     }
 
-
-
-
-
+    //Receipt and sold products
     public LiveData<List<Receipt>> getReceipts(){
+        liveDataReceipts.removeObserver(receiptObserver);
         liveDataReceipts = sellRepository.getReceiptList(currentBusinessId);
-        return liveDataReceipts;
+        liveDataReceipts.observeForever(receiptObserver);
+
+
+        return mutableLiveDataReceipt;
     }
+
+    public void searchReceipt(String query){
+        liveDataReceipts.removeObserver(receiptObserver);
+        liveDataReceipts = sellRepository.getReceiptList(currentBusinessId, query);
+        liveDataReceipts.observeForever(receiptObserver);
+    }
+
 
     public void deleteReceipt(Receipt receipt){
         executorService = Executors.newSingleThreadExecutor();

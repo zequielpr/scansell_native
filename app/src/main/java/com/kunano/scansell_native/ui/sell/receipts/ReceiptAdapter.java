@@ -18,7 +18,7 @@ import com.kunano.scansell_native.model.sell.Receipt;
 import java.time.format.DateTimeFormatter;
 
 public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHolder> {
-    OnclickProductCardListener listener;
+    OnclickReceiptCardListener listener;
 
 
     private static DiffUtil.ItemCallback<Receipt> DIFF_CALLBACK = new DiffUtil.ItemCallback<Receipt>() {
@@ -115,11 +115,11 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         }
 
 
-    public OnclickProductCardListener getListener() {
+    public OnclickReceiptCardListener getListener() {
         return listener;
     }
 
-    public void setListener(OnclickProductCardListener listener) {
+    public void setListener(OnclickReceiptCardListener listener) {
         this.listener = listener;
     }
 }

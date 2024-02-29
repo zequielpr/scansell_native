@@ -47,7 +47,8 @@ android {
                             'src/main/res/layouts/sell',
 
                             'src/main/res/menus/home_menus',
-                            'src/main/res/menus/sell'
+                            'src/main/res/menus/sell',
+                            'src/main/res/menus/sell/receipt'
 
                     ]
         }
@@ -65,7 +66,7 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src\\main\\res', 'src\\main\\res\\layouts\\home', 'src\\main\\res\\layouts\\sell', 'src\\main\\res\\layouts\\profile', 'src\\main\\res\\layouts\\main', 'src\\main\\res\\layouts\\home\\layouts\\products', 'src\\main\\res\\layouts\\home\\business', 'src\\main\\res\\layouts\\home\\business\\product', 'src\\main\\res\\menus\\home_menus', 'src\\main\\res\\menus\\sell'
+                srcDirs 'src\\main\\res', 'src\\main\\res\\layouts\\home', 'src\\main\\res\\layouts\\sell', 'src\\main\\res\\layouts\\profile', 'src\\main\\res\\layouts\\main', 'src\\main\\res\\layouts\\home\\layouts\\products', 'src\\main\\res\\layouts\\home\\business', 'src\\main\\res\\layouts\\home\\business\\product', 'src\\main\\res\\menus\\home_menus', 'src\\main\\res\\menus\\sell', 'src\\main\\res\\layouts\\sell\\receipts'
             }
         }
     }

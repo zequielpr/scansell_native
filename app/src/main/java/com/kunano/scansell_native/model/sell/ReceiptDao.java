@@ -15,9 +15,10 @@ import java.util.List;
 public interface ReceiptDao {
 
 
-    @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId)  " +
-            "ORDER BY receipt.sellingDate DESC")
-    LiveData<List<Receipt>> getReceipts(Long businessId);
+    @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId) " +
+            "AND receiptId LIKE (:query) ORDER BY receipt.sellingDate DESC")
+    LiveData<List<Receipt>> getReceipts(Long businessId, String query);
+
 
     @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId)" +
             "AND receipt.receiptId = (:receiptId)")

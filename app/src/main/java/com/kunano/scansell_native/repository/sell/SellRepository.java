@@ -30,7 +30,11 @@ public class SellRepository {
     }
 
     public LiveData<List<Receipt>> getReceiptList(Long businessId){
-        return receiptDao.getReceipts(businessId);
+        return receiptDao.getReceipts(businessId, "%%");
+    }
+    public LiveData<List<Receipt>> getReceiptList(Long businessId, String query){
+        query = "%" + query + "%";
+        return receiptDao.getReceipts(businessId, query);
     }
 
     public LiveData<Receipt> getReceiptById(Long businessId, String receiptId){

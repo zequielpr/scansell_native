@@ -76,5 +76,9 @@
     <string name="scanned_product_not_found"> scanned product not found</string>
     <string name="try_again"> try again</string>
     <string name="create_new_product">new product</string>
+    <string name="delete_after_15_days">delete after 15 days</string>
+    <string name="delete_after_30_days">delete after 30 days</string>
+    <string name="options">options</string>
+
 
 </resources>

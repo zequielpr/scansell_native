@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.sell.receipts.ReceiptsFragment">
 
     <LinearLayout
@@ -11,11 +12,12 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/ReceiptToolbar"
+            android:id="@+id/receiptToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/transparent"
             android:minHeight="?attr/actionBarSize"
+            app:title="@string/receipts"
             android:theme="?attr/actionBarTheme" />
 
         <androidx.recyclerview.widget.RecyclerView
