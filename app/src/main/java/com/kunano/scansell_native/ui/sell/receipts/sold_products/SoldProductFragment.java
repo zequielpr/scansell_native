@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -15,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.MainActivityViewModel;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSoldProductBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
@@ -28,6 +31,7 @@ public class SoldProductFragment extends Fragment {
     private MainActivityViewModel mainActivityViewModel;
     private ProductToSellAdapter soldProductAdapter;
     private RecyclerView soldProductRecycleView;
+    private Toolbar toolbar;
 
     private FragmentSoldProductBinding binding;
     @Override
@@ -39,15 +43,19 @@ public class SoldProductFragment extends Fragment {
 
         binding = FragmentSoldProductBinding.inflate(inflater, container, false);
         soldProductRecycleView = binding.soldProductRecycleView;
+        toolbar = binding.soldToolbar;
         soldProductRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         soldProductRecycleView.setHasFixedSize(true);
         soldProductAdapter = new ProductToSellAdapter();
         soldProductAdapter.setActivityParent(getActivity());
         soldProductRecycleView.setAdapter(soldProductAdapter);
 
+        sellViewModel.getCurrentReceiptId();
+        sellViewModel.getReceiptByid().observe(getViewLifecycleOwner(), this::populateReceipt);
         sellViewModel.getSoldProducts().observe(getViewLifecycleOwner(), soldProductAdapter::submitList);
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         setCardListener();
+
 
         return binding.getRoot();
 
@@ -63,6 +71,12 @@ public class SoldProductFragment extends Fragment {
         mainActivityViewModel.setHandleBackPress(null);
     }
 
+    private void populateReceipt(Receipt receipt){
+        if (receipt != null){
+            toolbar.setTitle(receipt.getReceiptId());
+            toolbar.setSubtitle(String.valueOf(receipt.getSpentAmount()));
+        }
+    }
 
 
     private void setCardListener(){
@@ -96,5 +110,11 @@ public class SoldProductFragment extends Fragment {
         });
     }
 
+
+    public void onViewCreated(@NonNull View view, @NonNull Bundle savedState){
+        super.onViewCreated(view, savedState);
+        toolbar.setNavigationIcon(R.drawable.back_arrow);
+        toolbar.setNavigationOnClickListener(this::navigateBack);
+    }
 
 }

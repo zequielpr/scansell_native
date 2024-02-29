@@ -9,9 +9,9 @@ public interface OnclickReceiptCardListener {
 
     abstract void onLongTap(Receipt receipt, View cardHolder);
 
-    abstract void getCardHolderOnBind(View cardHolder, Receipt receipt);
+    abstract void getCardHolderOnBind(ReceiptAdapter.CardHolder cardHolder, Receipt receipt);
 
-    abstract void reciveCardHol(View cardHolder);
+    abstract void reciveCardHol(View cardHolder, Receipt receipt);
 
     abstract void onDelete(Receipt receipt);
 

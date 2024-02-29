@@ -24,12 +24,14 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
     private static DiffUtil.ItemCallback<Receipt> DIFF_CALLBACK = new DiffUtil.ItemCallback<Receipt>() {
         @Override
         public boolean areItemsTheSame(@NonNull Receipt oldItem, @NonNull Receipt newItem) {
-            return false;
+            return oldItem.getReceiptId().equalsIgnoreCase(newItem.getReceiptId());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Receipt oldItem, @NonNull Receipt newItem) {
-            return false;
+            return oldItem.getSellingDate().equals(newItem.getSellingDate()) &&
+                    oldItem.getSpentAmount() == newItem.getSpentAmount()&&
+                    oldItem.getPaymentMethod() == newItem.getPaymentMethod();
         }
     };
 
@@ -59,6 +61,12 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
             holder.sellDate.setText(String.valueOf(receipt.getSellingDate().format(formatter)));
         }
 
+        if (listener != null){
+            listener.getCardHolderOnBind(holder, receipt);
+
+        }
+
+
     }
 
     public class CardHolder extends RecyclerView.ViewHolder{
@@ -68,6 +76,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         private TextView spentAmount;
         private TextView sellDate;
         private ImageButton imageButtonDeleteReceipt;
+        private TextView daysLeft;
         public CardHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -75,9 +84,13 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
             spentAmount = itemView.findViewById(R.id.spent_amount);
             sellDate = itemView.findViewById(R.id.sell_date);
             imageButtonDeleteReceipt = itemView.findViewById(R.id.deleteReceiptImageButton);
+            daysLeft = itemView.findViewById(R.id.daysLeftTextView);
 
-            if (listener != null && itemView != null){
-                listener.reciveCardHol(itemView);
+
+            int position = getAbsoluteAdapterPosition();
+            if (listener != null && itemView != null && position != RecyclerView.NO_POSITION){
+                listener.reciveCardHol(itemView, getItem(position));
+
             }
 
             imageButtonDeleteReceipt.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +125,13 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
                 }
             });
         }
+
+        public TextView getDaysLeft() {
+            return daysLeft;
         }
+    }
+
+
 
 
     public OnclickReceiptCardListener getListener() {

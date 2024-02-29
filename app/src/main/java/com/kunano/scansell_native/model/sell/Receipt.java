@@ -46,7 +46,7 @@ public class Receipt {
     }
 
     public String getReceiptId() {
-        return receiptId;
+        return receiptId.toUpperCase().substring(0,18);
     }
 
     public void setReceiptId(String receiptId) {

@@ -239,6 +239,13 @@ public class SellViewModel extends AndroidViewModel {
         return mutableLiveDataReceipt;
     }
 
+    public LiveData<Receipt> getReceiptByid(){
+        return sellRepository.getReceiptById(currentBusinessId, currentReceiptId);
+    }
+
+
+
+
     public void searchReceipt(String query){
         liveDataReceipts.removeObserver(receiptObserver);
         liveDataReceipts = sellRepository.getReceiptList(currentBusinessId, query);
