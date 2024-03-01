@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui;
+package com.kunano.scansell_native.ui.components;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
 
 public class ProgressBarDialog extends DialogFragment {

@@ -20,14 +20,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kunano.scansell_native.ListenResponse;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.ProgressBarDialog;
-import com.kunano.scansell_native.ui.SpinningWheel;
+import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
-import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;
@@ -273,9 +273,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
     @Override
-    public void navigateToProducts(String businessId) {
-        HomeFragmentDirections.ActionNavigationHomeToProductsFragment22 action = HomeFragmentDirections.actionNavigationHomeToProductsFragment22();
-        action.setBusinessKey(businessId);
+    public void navigateToProducts(Long businessId) {
+        NavDirections action = HomeFragmentDirections.actionNavigationHomeToBusinessFragment2(businessId);
         Navigation.findNavController(getView()).navigate(action);
     }
 
@@ -314,24 +313,26 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void askDeleteBusiness() {
-        ListenResponse action = (response)->{
-            if(response){
-                homeViewModel.passBusinessToBin();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateToolbar();
-                    }
-                });
-
-            }else {
-                desactivateDeleteMode(null);
-            }
-        };
-
         String title = getString(R.string.send_items_to_bin_warning);
-        AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),action, title);
+        AskForActionDialog askWhetherDeleteDialog = new
+                AskForActionDialog(getLayoutInflater(), title);
+        askWhetherDeleteDialog.setButtonListener(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean resultado) {
+                if(resultado){
+                    homeViewModel.passBusinessToBin();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateToolbar();
+                        }
+                    });
+
+                }else {
+                    desactivateDeleteMode(null);
+                }
+            }
+        });
 
         askWhetherDeleteDialog.show(suportFmanager, "ask to send business to bin");
 

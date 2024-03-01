@@ -8,7 +8,6 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
@@ -16,10 +15,16 @@ import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
     BarcodeScannerCustomListenner barcodeScannerCustomListenner;
+    private Set<Integer> currentlyDetectedObjectIds = new HashSet<>();
+    boolean newObjectInCamera = true;
+    private Integer objectId;
+
 
 
     public BarcodeScannerCustom() {
@@ -39,30 +44,38 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
                             Barcode.FORMAT_CODE_39, Barcode.FORMAT_CODE_128, Barcode.FORMAT_EAN_8 ). enableAllPotentialBarcodes().build();
 
 
-            BarcodeScanner scanner = BarcodeScanning.getClient(barcodeScannerOptions);
 
-
+          //Scanner____________________________________________________________________________
+         BarcodeScanner scanner = BarcodeScanning.getClient(barcodeScannerOptions);
           Task<List<Barcode>> result =  scanner.process(inputImage).
-                  addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
-                @Override
-                public void onSuccess(List<Barcode> barcodes) {
-                    for (Barcode barcode : barcodes) {
-                        barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
-                        //System.out.println("Resultado: " + barcode.getFormat());
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
+                  addOnSuccessListener(barcodes -> {
+
+                      for (Barcode barcode : barcodes) {
+
+                          if(newObjectInCamera && barcode.getRawValue().length() > 3){
+                              barcodeScannerCustomListenner.receiveBarCodeData(barcode.getRawValue());
+                              newObjectInCamera = false;
+                             // System.out.println("Resultado: " + barcode.getRawValue());
+                          }
+
+
+
+
+
+                      }
+                      imageProxy.close();
+                  }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    System.out.println("Fallo: " + e.getCause().getMessage());
+                    //System.out.println("Fallo: " + e.getCause().getMessage());
+                    imageProxy.close();
                 }
             });
 
         }
 
-        imageProxy.close();
-    }
 
+    }
 
 
 
@@ -79,5 +92,13 @@ public class BarcodeScannerCustom implements ImageAnalysis.Analyzer {
 
     public void setBarcodeScannerCustomListenner(BarcodeScannerCustomListenner barcodeScannerCustomListenner) {
         this.barcodeScannerCustomListenner = barcodeScannerCustomListenner;
+    }
+
+    public boolean isNewObjectInCamera() {
+        return newObjectInCamera;
+    }
+
+    public void setNewObjectInCamera(boolean newObjectInCamera) {
+        this.newObjectInCamera = newObjectInCamera;
     }
 }

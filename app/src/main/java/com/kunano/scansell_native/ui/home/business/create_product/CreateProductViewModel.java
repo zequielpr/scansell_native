@@ -14,9 +14,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
-import com.kunano.scansell_native.repository.BinsRepository;
-import com.kunano.scansell_native.repository.ProductRepository;
-import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.repository.home.ProductRepository;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.concurrent.ExecutionException;
@@ -70,7 +71,7 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void checkIfProductExists(String productId){
 
-        if (this.productId != null & this.productId != productId){
+        if (this.productId != null | this.productId != productId){
             clearOlddata();
         }
 
@@ -89,7 +90,7 @@ public class CreateProductViewModel extends AndroidViewModel {
             sellingPriceLiveData.postValue(String.valueOf(product.getSelling_price()));
             stockLiveData.postValue(String.valueOf(product.getStock()));
             buttonSaveTitle.postValue(this.getApplication().getResources().getString(R.string.update));
-            productRepository.getProdductImage(productId, this::showImage );
+            productRepository.getProdductImage(productId, product.getBusinessIdFK(), this::showImage );
 
         }
     }
@@ -145,6 +146,19 @@ public class CreateProductViewModel extends AndroidViewModel {
         if (executor != null){
             executor.shutdown();
         }
+    }
+
+    public void createProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
+                              String creatingDate, byte[] img, ListenResponse response) {
+
+        double bPrice = Double.parseDouble(buyingPrice);
+        double sPrice = Double.parseDouble(sellingPrice);
+        int stck = Integer.parseInt(stock);
+        Product product = new Product(productId, businessId, name, bPrice, sPrice, stck,
+                creatingDate);
+        System.out.println("Business id-: " + businessId);
+
+        productRepository.insertProduct(product, img, response::isSuccessfull);
     }
 
 
@@ -267,6 +281,7 @@ public class CreateProductViewModel extends AndroidViewModel {
     }
 
     public void setBusinessId(Long businessId) {
+        if (businessId == null)return;
         this.businessId = businessId;
     }
 

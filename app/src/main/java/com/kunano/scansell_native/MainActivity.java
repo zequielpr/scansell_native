@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
        mainActivityViewModel.notifyBackPressed();
     }
 
+    @Override
+    public void onDestroy(){
+        System.out.println("main activiti on destroy");
+        super.onDestroy();
+    }
+
 
 
 }

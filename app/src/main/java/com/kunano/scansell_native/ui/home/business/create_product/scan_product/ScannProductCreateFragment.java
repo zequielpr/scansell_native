@@ -33,15 +33,17 @@ public class ScannProductCreateFragment extends Fragment {
     private CreateProductViewModel createProductViewModel;
     private MainActivityViewModel mainActivityViewModel;
     private BusinessViewModel businessViewModel;
+    private Long  businessKey;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            businessKey = getArguments().getLong("business_key");
+        }
         // Inflate the layout for this fragment
         binding = FragmentScannProductCreateBinding.inflate(inflater, container, false);
-        createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
-        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
-        createProductViewModel.setBusinessId(businessViewModel.getCurrentBusinessId());
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
         cancelButton = binding.buttonCancel;
@@ -51,6 +53,7 @@ public class ScannProductCreateFragment extends Fragment {
         customCamera = new CustomCamera(previewView,this, imageButtonFlash);
 
         customCamera.startCamera(true);
+        customCamera.setNewProductInCamera(true);
 
         customCamera.setCustomCameraListener(new CustomCamera.CustomCameraListener() {
             @Override
@@ -82,17 +85,19 @@ public class ScannProductCreateFragment extends Fragment {
     }
 
     public void navigateBack(View view){
-        NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragmentToBusinessFragment();
-        Navigation.findNavController(getView()).navigate(navDirections);
+        NavDirections navDirections = ScannProductCreateFragmentDirections.
+                actionScannProductCreateFragment2ToBusinessFragment2(businessKey);
+        Navigation.findNavController(getView()).navigate(navDirections );
     }
 
     private void receiveBarCodedata(String data){
         try {
 
            if(!data.isBlank()){
-               //System.out.println("Result at scan: " + data);
-               createProductViewModel.checkIfProductExists(data.trim());
-               NavDirections navDirections = ScannProductCreateFragmentDirections.actionScannProductCreateFragmentToCreateProductFragment();
+               System.out.println("Result at scan: " + data);
+               NavDirections navDirections = ScannProductCreateFragmentDirections.
+                       actionScannProductCreateFragment2ToCreateProductFragment2(businessKey, data);
+
                Navigation.findNavController(getView()).navigate(navDirections);
            }
         }catch (Exception e){

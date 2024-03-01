@@ -15,6 +15,6 @@ public interface ProductImgDao {
 
 
     @Transaction
-    @Query("SELECT * FROM productImg  WHERE productIdFk = :productId")
-    public ListenableFuture<ProductImg> getProductImg(String productId);
+    @Query("SELECT * FROM productImg  WHERE productIdFk = :productId AND businessIdFK = (:businessId)")
+    public ListenableFuture<ProductImg> getProductImg(String productId, Long businessId);
 }

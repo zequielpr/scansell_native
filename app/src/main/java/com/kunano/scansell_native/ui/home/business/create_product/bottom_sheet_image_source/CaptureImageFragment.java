@@ -19,6 +19,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCaptureImageBinding;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
@@ -72,7 +73,7 @@ public class CaptureImageFragment extends Fragment {
         });
 
 
-        mainActivityViewModel.setHandleBackPress(this::navigateBack);
+        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         cancelButton.setOnClickListener(this::navigateBack);
 
 
@@ -86,14 +87,12 @@ public class CaptureImageFragment extends Fragment {
         customCamera.takePhoto(getView());
     }
 
-    public void navigateBack(){
-        NavDirections navDirections = CaptureImageFragmentDirections.actionCaptureImageFragmentToCreateProductFragment();
-        Navigation.findNavController(getView()).navigate(navDirections);
-        mainActivityViewModel.setHandleBackPress(null);
+    public void handleBackPress(){
+        navigateBack(getView());
     }
 
     public void navigateBack(View view){
-        NavDirections navDirections = CaptureImageFragmentDirections.actionCaptureImageFragmentToCreateProductFragment();
+        int navDirections = R.id.createProductFragment2;
         Navigation.findNavController(getView()).navigate(navDirections);
         mainActivityViewModel.setHandleBackPress(null);
     }
@@ -107,7 +106,7 @@ public class CaptureImageFragment extends Fragment {
     }
 
     private void navigateToPreviewImage(){
-        NavDirections navDirections = CaptureImageFragmentDirections.actionCaptureImageFragmentToImagePreviewFragment();
+        NavDirections navDirections = CaptureImageFragmentDirections.actionCaptureImageFragment2ToImagePreviewFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 

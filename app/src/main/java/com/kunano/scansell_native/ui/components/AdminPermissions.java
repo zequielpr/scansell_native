@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui;
+package com.kunano.scansell_native.ui.components;
 
 import android.Manifest;
 import android.content.Context;

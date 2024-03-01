@@ -25,16 +25,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
-import com.kunano.scansell_native.ui.AdminPermissions;
-import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
-import com.kunano.scansell_native.ui.ImageProcessor;
-import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
+import com.kunano.scansell_native.ui.components.AdminPermissions;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
 
@@ -54,9 +55,7 @@ public class CreateProductFragment extends Fragment {
     private ImageView imageViewAddImage;
     private Button saveButton;
     private Toolbar createProductToolbar;
-    private AskWhetherDeleteDialog askWhetherDeleteDialog;
-
-    private BusinessViewModel businessViewModel;
+    private AskForActionDialog askWhetherDeleteDialog;
     private CreateProductViewModel createProductViewModel;
     private ImageProcessor imageProcessor;
     private CreateProductFragment createProductFragment;
@@ -67,17 +66,33 @@ public class CreateProductFragment extends Fragment {
     private  ImageSourceFragment imageSourceFragment;
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     NavDirections takePictureFragmenttNavDirections;
+    private NavController navController;
+
+    private Long businessKey;
+    private String productId;
+    final int TOP_LEVEL_NAV_SELL = 2131296920;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
 
-        businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
-
         createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
-        createProductViewModel.setBusinessId(businessViewModel.getCurrentBusinessId());
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
+        if (getArguments() != null) {
+            businessKey = getArguments().getLong("business_key");
+            productId = getArguments().getString("product_key");
+
+
+            if(businessKey != null && productId != null){
+                createProductViewModel.setBusinessId(businessKey);
+                createProductViewModel.setProductId(productId);
+                createProductViewModel.checkIfProductExists(productId);
+            }
+        }
+
+
 
 
 
@@ -97,7 +112,7 @@ public class CreateProductFragment extends Fragment {
         createProductToolbar = binding.createProductToolbar;
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
-        takePictureFragmenttNavDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
+
 
         requestCameraPermissionLauncher = registerForActivityResult(new
                 ActivityResultContracts.RequestPermission(), this::resultCameraPermission);
@@ -137,6 +152,9 @@ public class CreateProductFragment extends Fragment {
         });
 
 
+        // This callback will only be called when MyFragment is at least Started.
+
+
         mainActivityViewModel.setHandleBackPress(this::navigateBack);
 
 
@@ -144,10 +162,29 @@ public class CreateProductFragment extends Fragment {
     }
 
     public void navigateBack(){
-        NavDirections action = CreateProductFragmentDirections.actionCreateProductFragmentToBusinessFragment();
-        Navigation.findNavController(getView()).navigate(action);
-        mainActivityViewModel.setHandleBackPress(null);
 
+      navController = Navigation.findNavController(getView());
+      NavDirections navDirections = CreateProductFragmentDirections.
+              actionCreateProductFragment2ToBusinessFragment2(createProductViewModel.getBusinessId());
+
+      navController.navigate(navDirections);
+
+       //System.out.println("Current destination: " +createProductViewModel.getBusinessId());
+
+
+
+
+    }
+
+    private NavDestination findTopLevelDestination(NavController navController, NavDestination destination) {
+        while (destination != null) {
+            NavDestination parent = destination.getParent();
+            if (parent == null) {
+                return destination;
+            }
+            destination = parent;
+        }
+        return null;
     }
 
 
@@ -170,7 +207,7 @@ public class CreateProductFragment extends Fragment {
 
         byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
-        businessViewModel.createProduct(createProductViewModel.getProductId(),
+        createProductViewModel.createProduct(createProductViewModel.getProductId(),
                 name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
     }
 
@@ -279,8 +316,8 @@ public class CreateProductFragment extends Fragment {
         if (!adminPermissions.verifyCameraPermission()) return;
 
         //Navigate to camera fragment
-        NavDirections navDirections = CreateProductFragmentDirections.actionCreateProductFragmentToCaptureImageFragment();
-        Navigation.findNavController(getView()).navigate(navDirections);
+        takePictureFragmenttNavDirections = CreateProductFragmentDirections.actionCreateProductFragment2ToCaptureImageFragment2();
+        Navigation.findNavController(getView()).navigate(takePictureFragmenttNavDirections);
     }
 
 
@@ -312,8 +349,8 @@ public class CreateProductFragment extends Fragment {
 
     private boolean askTosndBin(MenuItem menuItem){
         askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(), this::deleteOrCancel,
-                getString(R.string.send_bin_product));
+                AskForActionDialog(getLayoutInflater(), getString(R.string.send_bin_product));
+        askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getParentFragmentManager(), "Ask to send item to bin");
         return true;
     }
@@ -346,6 +383,7 @@ public class CreateProductFragment extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        if (createProductViewModel == null)return;
         createProductViewModel.shotDownExecutors();
     }
 

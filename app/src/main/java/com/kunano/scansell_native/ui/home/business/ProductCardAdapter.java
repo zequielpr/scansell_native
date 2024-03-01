@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
-import com.kunano.scansell_native.repository.ProductRepository;
-import com.kunano.scansell_native.ui.ImageProcessor;
+import com.kunano.scansell_native.repository.home.ProductRepository;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -72,7 +72,8 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
         holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
-        productRepository.getProdductImage(product.getProductId(), new LisnedProductImage() {
+        productRepository.getProdductImage(product.getProductId(), product.getBusinessIdFK()
+                , new LisnedProductImage() {
             @Override
             public void recieveProducImage(ProductImg productImg) {
 

@@ -63,5 +63,22 @@
     <string name="bin_business">bin business</string>
     <string name="error_to_bin_business">error to bin business</string>
     <string name="business_binned_successfuly">business binned successfuly</string>
+    <string name="finish">Finish</string>
+    <string name="pay">pay</string>
+    <string name="cash">cash</string>
+    <string name="card">card</string>
+    <string name="receipts">receipts</string>
+    <string name="balance_to_pay">balance to pay: </string>
+    <string name="chash_tendered">cash tendered</string>
+    <string name="balance_tendered">balance to pay</string>
+    <string name="cash_due">cash due:</string>
+    <string name="price">price</string>
+    <string name="scanned_product_not_found"> scanned product not found</string>
+    <string name="try_again"> try again</string>
+    <string name="create_new_product">new product</string>
+    <string name="delete_after_15_days">delete after 15 days</string>
+    <string name="delete_after_30_days">delete after 30 days</string>
+    <string name="options">options</string>
+
 
 </resources>

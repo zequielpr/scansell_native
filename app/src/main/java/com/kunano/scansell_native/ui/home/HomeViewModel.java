@@ -5,11 +5,11 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
-import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class HomeViewModel extends DeleteItemsViewModel {
     private ListenHomeViewModel listenHomeViewModel;
     private LiveData<List<Business>> businessListLiveData;
+    private Long currentBusinessId;
 
 
 
@@ -27,6 +28,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
     public HomeViewModel(@NonNull Application application) {
         super(application);
         this.businessListLiveData = businessRepository.getAllBusinesses();
+        currentBusinessId = null;
     }
 
 
@@ -38,12 +40,6 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         businessRepository.insertBusiness(newBusiness, this::notifyInsertNewBusinessResult);
         listenHomeViewModel.activateWaitingMode();
-    }
-
-    public void updateBusiness(String name, String address, String creatingData){
-        Business business = new Business(name, address, creatingData);
-        business.setBusinessId(currentBusinessId);
-        businessRepository.updateBusiness(business, this::notifyUpdateBusinessResult);
     }
 
 
@@ -89,11 +85,10 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         //currentBusiness = repository.getBusinesById(business.getBusinessId());
 
-        listenHomeViewModel.navigateToProducts(String.valueOf(business.getBusinessId()));
+        listenHomeViewModel.navigateToProducts(business.getBusinessId());
         currentBusinessId = business.getBusinessId();
     }
 
-    private Long currentBusinessId = null;
 
 
     public void longTap(Business business) {
@@ -153,6 +148,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
     }
 
     public Long getCurrentBusinessId() {
+        System.out.println("Current business: " +currentBusinessId);
         return currentBusinessId;
     }
 

@@ -1,42 +1,32 @@
 package com.kunano.scansell_native.model.bins.business;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
-import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 
 import java.time.LocalDate;
 
 @Entity(tableName = "BusinessBin",
-
-        foreignKeys = {
-                @ForeignKey(entity = Business.class,
-                parentColumns = "businessId",
-                childColumns = "businessIdFk",
-                onDelete = ForeignKey.CASCADE),
-
-                @ForeignKey(entity = Product.class,
-                        parentColumns = "productId",
-                        childColumns = "productIdFk",
-                        onDelete = ForeignKey.CASCADE),
-
-        },
-        indices = {@Index("businessIdFk"), @Index("productIdFk")})
+        primaryKeys = {"businessIdFk", "productIdFk"},
+        foreignKeys = @ForeignKey(entity = Product.class,
+                parentColumns = {"productId", "businessIdFK"},
+                childColumns = {"productIdFk", "businessIdFk"},
+                onDelete = ForeignKey.CASCADE))
 public class BusinessBin {
 
-    @PrimaryKey(autoGenerate = true)
-    private long binId;
-
-
+    @NonNull
     private long businessIdFk;
 
+    @NonNull
     private String productIdFk;
 
     LocalDate recyclingDate;
 
+    public BusinessBin(){
+        super();
+    }
 
     public BusinessBin(long businessIdFk, String productIdFk, LocalDate recyclingDate) {
         this.businessIdFk = businessIdFk;
@@ -66,13 +56,5 @@ public class BusinessBin {
 
     public void setRecyclingDate(LocalDate recyclingDate) {
         this.recyclingDate = recyclingDate;
-    }
-
-    public long getBinId() {
-        return binId;
-    }
-
-    public void setBinId(long binId) {
-        this.binId = binId;
     }
 }

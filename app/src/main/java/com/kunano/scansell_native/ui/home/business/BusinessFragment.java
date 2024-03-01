@@ -26,16 +26,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kunano.scansell_native.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.ui.AskWhetherDeleteDialog;
-import com.kunano.scansell_native.ui.ProgressBarDialog;
-import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
-import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 
 public class BusinessFragment extends Fragment {
@@ -60,25 +58,23 @@ public class BusinessFragment extends Fragment {
     private  ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
-    HomeViewModel homeViewModel;
     private boolean sendingBusinessToBin;
-    private CreateProductViewModel createProductViewModel;
     private SearchView searchView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        if (getArguments() != null) {
+            businessKey = getArguments().getLong("business_key");
+            System.out.println("Business id: " + businessKey);
+        }
 
-
-
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        createProductViewModel = new ViewModelProvider(requireActivity()).get(CreateProductViewModel.class);
 
-        businessKey = homeViewModel.getCurrentBusinessId();
-                binding = FragmentBusinessBinding.inflate(inflater, container, false);
+        binding = FragmentBusinessBinding.inflate(inflater, container, false);
+
 
         toolbar = binding.toolbarProducts;
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
@@ -139,7 +135,7 @@ public class BusinessFragment extends Fragment {
 
     public void navigateBAck(){
         getActivity().runOnUiThread(()->{
-            NavDirections action = BusinessFragmentDirections.actionProductsFragment2ToNavigationHome();
+            NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToNavigationHome();
             Navigation.findNavController(getView()).navigate(action);
             mainActivityViewModel.setHandleBackPress(null);
         });
@@ -197,7 +193,7 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view ) {
-        NavDirections action = BusinessFragmentDirections.actionBusinessFragmentToScannProductCreateFragment();
+        NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToScannProductCreateFragment2(businessKey);
         Navigation.findNavController(getView()).navigate(action);
     }
 
@@ -212,7 +208,7 @@ public class BusinessFragment extends Fragment {
     }
 
     public void navigateBusinessBin(){
-        NavDirections directions = BusinessFragmentDirections.actionBusinessFragmentToBusinessBinFragment();
+        NavDirections directions = BusinessFragmentDirections.actionBusinessFragment2ToBusinessBinFragment2(businessKey);
 
         Navigation.findNavController(getView()).navigate(directions);
     }
@@ -419,8 +415,9 @@ public class BusinessFragment extends Fragment {
     public void askToSendProductsBin() {
         System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
-        AskWhetherDeleteDialog askWhetherDeleteDialog = new
-                AskWhetherDeleteDialog(getLayoutInflater(),this::pasToBinOrCancel, title);
+        AskForActionDialog askWhetherDeleteDialog = new
+                AskForActionDialog(getLayoutInflater(), title);
+        askWhetherDeleteDialog.setButtonListener(this::pasToBinOrCancel);
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
     }
@@ -478,32 +475,38 @@ public class BusinessFragment extends Fragment {
 
 
 
+    BottomSheetFragment bottomSheetFragment;
     //Update name and address
     private void upateBusiness(){
         String businessName = businessViewModel.getBusinessName();
         String businessAddress = businessViewModel.getBusinessAddress();
 
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
+        bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
                 getString(R.string.update), businessName, businessAddress);
 
         bottomSheetFragment.setButtomSheetFragmentListener(new BottomSheetFragment.ButtomSheetFragmentListener() {
             @Override
             public void receiveData(String name, String address) {
-                homeViewModel.updateBusiness(name, address, "");
-                //getActivity().runOnUiThread(BusinessFragment.this::navigateBAck);
+                businessViewModel.updateBusiness(name, address, "", BusinessFragment.this::handleResult);
             }
         });
 
         bottomSheetFragment.show(getParentFragmentManager(), "Update business");
+    }
 
+    private void handleResult(Boolean result){
+
+        if(result){
+            showToast(getString(R.string.update), Toast.LENGTH_SHORT);
+        }
     }
 
 
 
-    private AskWhetherDeleteDialog askWhetherDeleteDialogBinBusiness;
+    private AskForActionDialog askWhetherDeleteDialogBinBusiness;
     private void sendCurrentBusinessTobin(){
-        askWhetherDeleteDialogBinBusiness = new AskWhetherDeleteDialog(getLayoutInflater(),
-                this::handleCancelOrBinBusiness, getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getLayoutInflater(), getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness.setButtonListener(this::handleCancelOrBinBusiness);
         askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
     }
 
@@ -534,9 +537,7 @@ public class BusinessFragment extends Fragment {
 
 
     private void showProductDetails(String productId){
-        createProductViewModel.setBusinessId(homeViewModel.getCurrentBusinessId());
-        createProductViewModel.checkIfProductExists(productId);
-        NavDirections navDirections = BusinessFragmentDirections.actionProductsFragment2ToCreateProductFragment();
+        NavDirections navDirections = BusinessFragmentDirections.actionBusinessFragment2ToCreateProductFragment2(businessKey, productId);
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 
