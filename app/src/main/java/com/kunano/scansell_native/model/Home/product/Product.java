@@ -5,21 +5,22 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 
 @Entity(tableName = "product",
+        primaryKeys = {"productId", "businessIdFK"},
         foreignKeys = @ForeignKey(entity = Business.class,
                 parentColumns = "businessId",
                 childColumns = "businessIdFK",
                 onDelete = ForeignKey.CASCADE),
-indices = {@Index("businessIdFK"), @Index("productId")})
+indices = {@Index(value = {"businessIdFK", "productId"}, unique = true), })
 public class Product {
-    @PrimaryKey()
+
     @NonNull
     private String  productId;
 
+    @NonNull
     private  long businessIdFK;
 
     @ColumnInfo(name = "product_name")

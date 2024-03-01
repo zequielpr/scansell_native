@@ -1,28 +1,26 @@
 package com.kunano.scansell_native.model.sell.sold_products;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.sell.Receipt;
 
-@Entity(foreignKeys = {@ForeignKey(entity = Product.class,
-        parentColumns = "productId",
-        childColumns = "productIdFK",
-        onDelete = ForeignKey.CASCADE),
-        @ForeignKey(entity = Receipt.class,
-                parentColumns = "receiptId",
-                childColumns = "receiptIdFK",
-                onDelete = ForeignKey.CASCADE)},
-        indices = {@Index("productIdFK"), @Index("receiptIdFK")})
+@Entity( primaryKeys = {"productIdFK", "businessIdFK", "receiptIdFK"},
+        foreignKeys = @ForeignKey(entity = Product.class,
+                parentColumns = {"productId", "businessIdFK"},
+                childColumns = {"productIdFK", "businessIdFK"},
+                onDelete = ForeignKey.CASCADE))
 public class SoldProduct {
 
-    @PrimaryKey(autoGenerate = true)
-    private Integer soldProductId;
+    @NonNull
     private String productIdFK;
+
+    @NonNull
+    private Long businessIdFK;
+
+    @NonNull
     private String receiptIdFK;
     private Integer itemsQuantity;
 
@@ -31,9 +29,10 @@ public class SoldProduct {
         super();
     }
 
-    public SoldProduct(String productIdFK, String receiptId) {
+    public SoldProduct(String productIdFK, String receiptId, Long businessIdFK) {
         this.productIdFK = productIdFK;
         this.receiptIdFK = receiptId;
+        this.businessIdFK = businessIdFK;
     }
 
 
@@ -62,11 +61,12 @@ public class SoldProduct {
         this.itemsQuantity = itemsQuantity;
     }
 
-    public Integer getSoldProductId() {
-        return soldProductId;
+    @NonNull
+    public Long getBusinessIdFK() {
+        return businessIdFK;
     }
 
-    public void setSoldProductId(Integer soldProductId) {
-        this.soldProductId = soldProductId;
+    public void setBusinessIdFK(@NonNull Long businessIdFK) {
+        this.businessIdFK = businessIdFK;
     }
 }

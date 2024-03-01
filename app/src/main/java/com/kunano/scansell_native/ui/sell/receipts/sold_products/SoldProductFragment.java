@@ -20,10 +20,12 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSoldProductBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
-public class SoldProductFragment extends Fragment {
+public class SoldProductFragment extends Fragment{
 
     private SoldProductViewModel mViewModel;
 
@@ -32,6 +34,8 @@ public class SoldProductFragment extends Fragment {
     private ProductToSellAdapter soldProductAdapter;
     private RecyclerView soldProductRecycleView;
     private Toolbar toolbar;
+    private Receipt receipt;
+    private SoldProductViewModel soldProductViewModel;
 
     private FragmentSoldProductBinding binding;
     @Override
@@ -39,6 +43,7 @@ public class SoldProductFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
+        soldProductViewModel = new ViewModelProvider(this).get(SoldProductViewModel.class);
 
 
         binding = FragmentSoldProductBinding.inflate(inflater, container, false);
@@ -73,6 +78,7 @@ public class SoldProductFragment extends Fragment {
 
     private void populateReceipt(Receipt receipt){
         if (receipt != null){
+            this.receipt = receipt;
             toolbar.setTitle(receipt.getReceiptId());
             toolbar.setSubtitle(String.valueOf(receipt.getSpentAmount()));
         }
@@ -105,9 +111,34 @@ public class SoldProductFragment extends Fragment {
 
             @Override
             public void onCancel(Product product) {
-
+                askTodeleteProduct(product);
             }
         });
+    }
+
+
+
+    private void askTodeleteProduct(Product product){
+        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+                getString(R.string.delete));
+
+        askForActionDialog.setButtonListener(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean resultado) {
+                if (resultado){
+                    deleteSoldProduct(product);
+                }
+            }
+        });
+        askForActionDialog.show(getChildFragmentManager(), getString(R.string.delete));
+    }
+
+    private void deleteSoldProduct(Product product){
+        if (receipt != null && product != null){
+            soldProductViewModel.cancelProductSell(product, receipt, (resulst)->{
+                System.out.println("Product deleted: " + resulst);
+            });
+        }
     }
 
 
@@ -116,5 +147,4 @@ public class SoldProductFragment extends Fragment {
         toolbar.setNavigationIcon(R.drawable.back_arrow);
         toolbar.setNavigationOnClickListener(this::navigateBack);
     }
-
 }

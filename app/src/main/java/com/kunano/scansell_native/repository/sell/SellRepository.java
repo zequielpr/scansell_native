@@ -62,7 +62,8 @@ public class SellRepository {
     }
 
     public ListenableFuture<Integer> deleteSoldProduct(SoldProduct soldProduct){
-       return soldProductDao.deleteSoldProduct(soldProduct);
+       return soldProductDao.deleteSoldProduct(soldProduct.getProductIdFK(),
+               soldProduct.getReceiptIdFK());
     }
 
     public LiveData<List<Product>> getSoldProductList(String receiptId){

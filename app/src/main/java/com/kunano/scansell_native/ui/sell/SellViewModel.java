@@ -123,8 +123,10 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void addProductToSell(Product product) {
+        String draftId = UUID.randomUUID().toString();
 
-        ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId);
+        ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId,
+                draftId);
 
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(()->{
@@ -209,7 +211,7 @@ public class SellViewModel extends AndroidViewModel {
         SoldProduct soldProduct;
 
         for (Product p:productToSellMutableLiveData.getValue()){
-            soldProduct = new SoldProduct(p.getProductId(), receiptID);
+            soldProduct = new SoldProduct(p.getProductId(), receiptID, p.getBusinessIdFK());
             soldProductList.add(soldProduct);
         }
 

@@ -12,8 +12,8 @@ import java.util.List;
 
 @Dao
 public interface ProductToSellDraftDao {
-    @Query("SELECT * FROM product INNER JOIN (SELECT * FROM producttoselldraft" +
-            " WHERE businessIdIdFK = (:businessID)) ON product.productId = productIdFK")
+    @Query("SELECT * FROM product INNER JOIN producttoselldraft ON product.productId = producttoselldraft.productIdFK " +
+            "WHERE product.businessIdFK = (:businessID) AND producttoselldraft.businessIdIdFK = (:businessID);")
     LiveData<List<Product>> getProductsInDraft(Long businessID);
 
     @Insert

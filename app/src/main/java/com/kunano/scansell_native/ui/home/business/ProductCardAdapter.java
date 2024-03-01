@@ -72,7 +72,8 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
         holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
-        productRepository.getProdductImage(product.getProductId(), new LisnedProductImage() {
+        productRepository.getProdductImage(product.getProductId(), product.getBusinessIdFK()
+                , new LisnedProductImage() {
             @Override
             public void recieveProducImage(ProductImg productImg) {
 

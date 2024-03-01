@@ -1,43 +1,35 @@
 package com.kunano.scansell_native.model.sell.product_to_sel_draft;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
-import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 
-@Entity(foreignKeys = {@ForeignKey(entity = Product.class,
-        parentColumns = "productId",
-        childColumns = "productIdFK",
-        onDelete = ForeignKey.CASCADE),
-
-        @ForeignKey(entity = Business.class,
-                parentColumns = "businessId",
-                childColumns = "businessIdIdFK",
-                onDelete = ForeignKey.CASCADE)},
+@Entity(primaryKeys = {"businessIdIdFK", "productIdFK", "id"},
+        foreignKeys = @ForeignKey(entity = Product.class,
+                parentColumns = {"productId", "businessIdFK"},
+                childColumns = {"productIdFK", "businessIdIdFK"},
+                onDelete = ForeignKey.CASCADE),
         indices = {@Index("productIdFK"), @Index("businessIdIdFK")})
 public class ProductToSellDraft {
 
-    @PrimaryKey(autoGenerate = true)
-    private int draftId;
+    @NonNull
+    private String id;
 
+    @NonNull
     private String productIdFK;
+
+    @NonNull
     private Long businessIdIdFK;
 
-    public ProductToSellDraft(String productIdFK, Long businessIdIdFK) {
+    public ProductToSellDraft(String productIdFK, Long businessIdIdFK, String id) {
+        this.id = id;
         this.productIdFK = productIdFK;
         this.businessIdIdFK = businessIdIdFK;
     }
 
-    public int getDraftId() {
-        return draftId;
-    }
-
-    public void setDraftId(int draftId) {
-        this.draftId = draftId;
-    }
 
     public String getProductIdFK() {
         return productIdFK;
@@ -53,5 +45,13 @@ public class ProductToSellDraft {
 
     public void setBusinessIdIdFK(Long businessIdIdFK) {
         this.businessIdIdFK = businessIdIdFK;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

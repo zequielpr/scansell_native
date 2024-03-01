@@ -3,12 +3,12 @@ package com.kunano.scansell_native.repository.home;
 import android.app.Application;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
@@ -46,9 +46,11 @@ public class ProductRepository {
 
                 //product.setProductId(UUID.randomUUID().toString());
                 resultado = productDao.insertProduct(product).get();
-                ProductImg img = new ProductImg(product.getProductId(), productImg);
-                productImgDao.insertProductImg(img).get();
+
+
                 if (resultado > 0) {
+                    ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
+                    productImgDao.insertProductImg(img).get();
                     response.isSuccessfull(true);
                 } else {
                     response.isSuccessfull(false);
@@ -74,14 +76,14 @@ public class ProductRepository {
     }
 
 
-    public void getProdductImage(String productId,
+    public void getProdductImage(String productId, Long businessId,
                                  ProductCardAdapter.LisnedProductImage lisnedProductImage){
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
         executor.execute(() -> {
             try {
-                ProductImg productImg = productImgDao.getProductImg(productId).get();
+                ProductImg productImg = productImgDao.getProductImg(productId, businessId).get();
                 lisnedProductImage.recieveProducImage(productImg);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);

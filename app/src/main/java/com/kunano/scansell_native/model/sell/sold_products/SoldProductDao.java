@@ -2,7 +2,6 @@ package com.kunano.scansell_native.model.sell.sold_products;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -22,8 +21,9 @@ public interface SoldProductDao {
     public ListenableFuture<List<Long>> insertSoldProductList(List<SoldProduct> soldProductList);
 
 
-    @Delete
-    ListenableFuture<Integer> deleteSoldProduct(SoldProduct soldProduct);
+    @Query("DELETE FROM soldproduct WHERE receiptIdFK = (:receiptId) AND productIdFK = (:productId) AND" +
+            " ROWID IN (SELECT ROWID FROM soldproduct WHERE receiptIdFK = (:receiptId) AND productIdFK = (:productId) LIMIT 1)")
+    ListenableFuture<Integer> deleteSoldProduct(String productId, String receiptId);
 
 
     //Stil to be develop

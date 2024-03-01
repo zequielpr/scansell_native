@@ -90,7 +90,7 @@ public class CreateProductViewModel extends AndroidViewModel {
             sellingPriceLiveData.postValue(String.valueOf(product.getSelling_price()));
             stockLiveData.postValue(String.valueOf(product.getStock()));
             buttonSaveTitle.postValue(this.getApplication().getResources().getString(R.string.update));
-            productRepository.getProdductImage(productId, this::showImage );
+            productRepository.getProdductImage(productId, product.getBusinessIdFK(), this::showImage );
 
         }
     }
@@ -156,6 +156,7 @@ public class CreateProductViewModel extends AndroidViewModel {
         int stck = Integer.parseInt(stock);
         Product product = new Product(productId, businessId, name, bPrice, sPrice, stck,
                 creatingDate);
+        System.out.println("Business id-: " + businessId);
 
         productRepository.insertProduct(product, img, response::isSuccessfull);
     }

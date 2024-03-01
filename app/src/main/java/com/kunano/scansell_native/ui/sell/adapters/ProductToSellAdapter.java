@@ -69,7 +69,8 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
         holder.sellingPrice.setText(activityParent.getString(R.string.price)+" ".
                 concat(Double.toString(product.getSelling_price())));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
-        productRepository.getProdductImage(product.getProductId(), new ProductCardAdapter.LisnedProductImage() {
+        productRepository.getProdductImage(product.getProductId(), product.getBusinessIdFK()
+                , new ProductCardAdapter.LisnedProductImage() {
             @Override
             public void recieveProducImage(ProductImg productImg) {
 

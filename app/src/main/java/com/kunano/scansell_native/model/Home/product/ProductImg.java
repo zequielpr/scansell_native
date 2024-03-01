@@ -5,37 +5,30 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 @Entity(tableName = "productImg",
+        primaryKeys = {"businessIdFK", "productIdFk"},
         foreignKeys = @ForeignKey(entity = Product.class,
-                parentColumns = "productId",
-                childColumns = "productIdFk",
+                parentColumns = {"productId", "businessIdFK"},
+                childColumns = {"productIdFk", "businessIdFK"},
                 onDelete = ForeignKey.CASCADE),
-        indices = {@Index("productIdFk")})
+        indices = {@Index(value = {"productIdFk", "businessIdFK"})})
 public class ProductImg {
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    private Long imgId;
 
+    @NonNull
     private String productIdFk;
+
+    @NonNull
+    private Long businessIdFK;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] img;
 
 
-    public ProductImg(String productIdFk, byte[] img) {
-        this.imgId = imgId;
+    public ProductImg(String productIdFk, byte[] img, Long businessIdFK) {
         this.productIdFk = productIdFk;
         this.img = img;
-    }
-
-    public Long getImgId() {
-        return imgId;
-    }
-
-    public void setImgId(long imgId) {
-        this.imgId = imgId;
+        this.businessIdFK = businessIdFK;
     }
 
     public  String getProductIdFk() {
@@ -52,5 +45,13 @@ public class ProductImg {
 
     public void setImg(byte[] img) {
         this.img = img;
+    }
+
+    public Long getBusinessIdFK() {
+        return businessIdFK;
+    }
+
+    public void setBusinessIdFK(Long businessIdFK) {
+        this.businessIdFK = businessIdFK;
     }
 }
