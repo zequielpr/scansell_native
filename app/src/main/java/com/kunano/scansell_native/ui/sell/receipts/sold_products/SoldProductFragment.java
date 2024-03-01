@@ -57,7 +57,12 @@ public class SoldProductFragment extends Fragment{
 
         sellViewModel.getCurrentReceiptId();
         sellViewModel.getReceiptByid().observe(getViewLifecycleOwner(), this::populateReceipt);
-        sellViewModel.getSoldProducts().observe(getViewLifecycleOwner(), soldProductAdapter::submitList);
+        sellViewModel.getSoldProducts().observe(getViewLifecycleOwner(), (soldProductsList)->{
+            soldProductAdapter.submitList(soldProductsList);
+            double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
+                    c + sp.getSelling_price(), Double::sum);
+            toolbar.setSubtitle(String.valueOf(spentAmount));
+        });
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         setCardListener();
 
@@ -80,7 +85,6 @@ public class SoldProductFragment extends Fragment{
         if (receipt != null){
             this.receipt = receipt;
             toolbar.setTitle(receipt.getReceiptId());
-            toolbar.setSubtitle(String.valueOf(receipt.getSpentAmount()));
         }
     }
 

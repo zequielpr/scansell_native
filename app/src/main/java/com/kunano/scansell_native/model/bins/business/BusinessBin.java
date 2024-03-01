@@ -24,6 +24,9 @@ public class BusinessBin {
 
     LocalDate recyclingDate;
 
+    public BusinessBin(){
+        super();
+    }
 
     public BusinessBin(long businessIdFk, String productIdFk, LocalDate recyclingDate) {
         this.businessIdFk = businessIdFk;

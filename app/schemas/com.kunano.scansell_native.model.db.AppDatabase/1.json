@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "98d6a6a067a25c99793bd85817bcff6c",
+    "identityHash": "14a5d96e9f5598ffecdec25099602034",
     "entities": [
       {
         "tableName": "Business",
@@ -370,8 +370,14 @@
       },
       {
         "tableName": "SoldProduct",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productIdFK` TEXT NOT NULL, `businessIdFK` INTEGER NOT NULL, `receiptIdFK` TEXT NOT NULL, `itemsQuantity` INTEGER, PRIMARY KEY(`productIdFK`, `businessIdFK`, `receiptIdFK`), FOREIGN KEY(`productIdFK`, `businessIdFK`) REFERENCES `product`(`productId`, `businessIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tableId` TEXT NOT NULL, `productIdFK` TEXT NOT NULL, `businessIdFK` INTEGER NOT NULL, `receiptIdFK` TEXT NOT NULL, `itemsQuantity` INTEGER, PRIMARY KEY(`productIdFK`, `businessIdFK`, `tableId`), FOREIGN KEY(`productIdFK`, `businessIdFK`) REFERENCES `product`(`productId`, `businessIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`receiptIdFK`) REFERENCES `Receipt`(`receiptId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
+          {
+            "fieldPath": "tableId",
+            "columnName": "tableId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "productIdFK",
             "columnName": "productIdFK",
@@ -402,7 +408,7 @@
           "columnNames": [
             "productIdFK",
             "businessIdFK",
-            "receiptIdFK"
+            "tableId"
           ]
         },
         "indices": [],
@@ -418,6 +424,17 @@
             "referencedColumns": [
               "productId",
               "businessIdFK"
+            ]
+          },
+          {
+            "table": "Receipt",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "receiptIdFK"
+            ],
+            "referencedColumns": [
+              "receiptId"
             ]
           }
         ]
@@ -493,7 +510,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '98d6a6a067a25c99793bd85817bcff6c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14a5d96e9f5598ffecdec25099602034')"
     ]
   }
 }

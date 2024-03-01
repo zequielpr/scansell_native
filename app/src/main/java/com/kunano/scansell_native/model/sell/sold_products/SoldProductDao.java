@@ -21,14 +21,17 @@ public interface SoldProductDao {
     public ListenableFuture<List<Long>> insertSoldProductList(List<SoldProduct> soldProductList);
 
 
-    @Query("DELETE FROM soldproduct WHERE receiptIdFK = (:receiptId) AND productIdFK = (:productId) AND" +
-            " ROWID IN (SELECT ROWID FROM soldproduct WHERE receiptIdFK = (:receiptId) AND productIdFK = (:productId) LIMIT 1)")
-    ListenableFuture<Integer> deleteSoldProduct(String productId, String receiptId);
+    @Query("DELETE FROM soldproduct WHERE receiptIdFK = (:receiptId) AND productIdFK = (:productId) " +
+            "AND businessIdFK = (:businessId) AND ROWID IN (SELECT ROWID FROM soldproduct WHERE " +
+            "receiptIdFK = (:receiptId) AND productIdFK = (:productId) " +
+            "AND businessIdFK = (:businessId) LIMIT 1)")
+    ListenableFuture<Integer> deleteSoldProduct(String productId, Long businessId, String receiptId);
 
 
     //Stil to be develop
     @Query("SELECT * FROM product INNER JOIN (SELECT * FROM soldproduct" +
-            " WHERE receiptIdFK = (:receiptId)) ON product.productId = productIdFK")
-    LiveData<List<Product>> getSoldProducts(String receiptId);
+            " WHERE receiptIdFK = (:receiptId)) ON product.productId = productIdFK " +
+            "AND product.businessIdFK =(:businessId)")
+    LiveData<List<Product>> getSoldProducts(String receiptId, Long businessId);
 
 }

@@ -23,12 +23,16 @@ public class ProductToSellDraft {
 
     @NonNull
     private Long businessIdIdFK;
+    public ProductToSellDraft(){
+    }
 
     public ProductToSellDraft(String productIdFK, Long businessIdIdFK, String id) {
         this.id = id;
         this.productIdFK = productIdFK;
         this.businessIdIdFK = businessIdIdFK;
     }
+
+
 
 
     public String getProductIdFK() {

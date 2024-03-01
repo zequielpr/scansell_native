@@ -6,13 +6,22 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.model.sell.Receipt;
 
-@Entity( primaryKeys = {"productIdFK", "businessIdFK", "receiptIdFK"},
-        foreignKeys = @ForeignKey(entity = Product.class,
+@Entity( primaryKeys = {"productIdFK", "businessIdFK", "tableId"},
+        foreignKeys = {@ForeignKey(entity = Product.class,
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFK", "businessIdFK"},
-                onDelete = ForeignKey.CASCADE))
+                onDelete = ForeignKey.CASCADE),
+                    @ForeignKey(entity = Receipt.class,
+                    parentColumns = "receiptId",
+                    childColumns = "receiptIdFK",
+                    onDelete = ForeignKey.CASCADE),})
 public class SoldProduct {
+
+
+    @NonNull
+    String tableId;
 
     @NonNull
     private String productIdFK;
@@ -26,13 +35,14 @@ public class SoldProduct {
 
 
     public SoldProduct() {
-        super();
+
     }
 
-    public SoldProduct(String productIdFK, String receiptId, Long businessIdFK) {
+    public SoldProduct(String productIdFK, String receiptId, Long businessIdFK, String tableId) {
         this.productIdFK = productIdFK;
         this.receiptIdFK = receiptId;
         this.businessIdFK = businessIdFK;
+        this.tableId = tableId;
     }
 
 
@@ -68,5 +78,13 @@ public class SoldProduct {
 
     public void setBusinessIdFK(@NonNull Long businessIdFK) {
         this.businessIdFK = businessIdFK;
+    }
+
+    public String getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(String tableId) {
+        this.tableId = tableId;
     }
 }

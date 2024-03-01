@@ -25,6 +25,8 @@ public class ProductImg {
     private byte[] img;
 
 
+    public ProductImg(){
+    }
     public ProductImg(String productIdFk, byte[] img, Long businessIdFK) {
         this.productIdFk = productIdFk;
         this.img = img;

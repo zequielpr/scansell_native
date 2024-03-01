@@ -61,13 +61,13 @@ public class SellRepository {
         return soldProductDao.insertSoldProduct(soldProduct);
     }
 
-    public ListenableFuture<Integer> deleteSoldProduct(SoldProduct soldProduct){
-       return soldProductDao.deleteSoldProduct(soldProduct.getProductIdFK(),
-               soldProduct.getReceiptIdFK());
+    public ListenableFuture<Integer> deleteSoldProduct(Product soldProduct, String receiptId){
+       return soldProductDao.deleteSoldProduct(soldProduct.getProductId(),
+               soldProduct.getBusinessIdFK(), receiptId);
     }
 
-    public LiveData<List<Product>> getSoldProductList(String receiptId){
-        return soldProductDao.getSoldProducts(receiptId);
+    public LiveData<List<Product>> getSoldProductList(String receiptId, Long businessId){
+        return soldProductDao.getSoldProducts(receiptId, businessId);
     }
 
 

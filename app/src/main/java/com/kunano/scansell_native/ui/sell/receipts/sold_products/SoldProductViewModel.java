@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.sell.SellRepository;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 
@@ -26,11 +25,10 @@ public class SoldProductViewModel extends AndroidViewModel {
     }
 
     public void cancelProductSell(Product product, Receipt receipt, ListenResponse listenResponse){
-        SoldProduct soldProduct = new SoldProduct(product.getProductId(), receipt.getReceiptId(), product.getBusinessIdFK());
         executorService =  Executors.newSingleThreadExecutor();
         executorService.execute(()->{
             try {
-               Integer result = sellRepository.deleteSoldProduct(soldProduct).get();
+               Integer result = sellRepository.deleteSoldProduct(product, receipt.getReceiptId()).get();
                listenResponse.isSuccessfull(result>0);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);

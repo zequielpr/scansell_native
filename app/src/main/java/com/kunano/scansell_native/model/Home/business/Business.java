@@ -20,6 +20,8 @@ public class Business {
 
     @ColumnInfo(defaultValue = "creating_date")
     private String cratingDate;
+    public Business(){
+    }
 
     public Business(String businessName, String businessAddress, String cratingDate) {
         this.businessName = businessName;

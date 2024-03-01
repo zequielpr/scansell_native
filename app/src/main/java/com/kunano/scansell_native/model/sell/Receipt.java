@@ -33,7 +33,7 @@ public class Receipt {
 
 
     public Receipt(){
-        super();
+
     }
 
     public Receipt(String receiptId, Long businessIdFK, @Unique String userEmail, LocalDateTime sellingDate, double spentAmount, byte paymentMethod) {
