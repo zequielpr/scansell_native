@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
@@ -16,6 +17,7 @@ import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.text.DecimalFormat;
@@ -184,19 +186,21 @@ public class SellViewModel extends AndroidViewModel {
 
 
     /**Finish sell and create receipt**/
-    public void finishSell(byte paymentMethod){
-        String receiptId = UUID.randomUUID().toString();
+    public void finishSell(byte paymentMethod, ListenResponse listenResponse){
+        String generatedReceiptId = UUID.randomUUID().toString();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
             LocalDateTime actualDate = LocalDateTime.now();
             double totalPay = totalToPay.getValue();
-            Receipt receipt = new Receipt (receiptId, currentBusinessId, "", actualDate,
+            Receipt receipt = new Receipt (generatedReceiptId, currentBusinessId, "", actualDate,
                     totalPay,  paymentMethod);
+            currentReceiptId = receipt.getReceiptId();//Return the substring of the given id
 
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(()->{
                 try {
                   Long result =  sellRepository.insertReceipt(receipt).get();
-                  if (result > 0)insertSoldProducts(receipt.getReceiptId());
+                  if (result > 0)listenResponse.isSuccessfull(insertSoldProducts(receipt.getReceiptId()).get().size()>0);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
@@ -206,7 +210,7 @@ public class SellViewModel extends AndroidViewModel {
         }
     }
 
-    private void insertSoldProducts(String receiptID){
+    private ListenableFuture<List<Long>> insertSoldProducts(String receiptID){
         List<SoldProduct> soldProductList = new ArrayList<>();
         String soldProductId;
         SoldProduct soldProduct;
@@ -217,20 +221,7 @@ public class SellViewModel extends AndroidViewModel {
             soldProductList.add(soldProduct);
         }
 
-        executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
-            try {
-                List<Long> result;
-                result = sellRepository.inertSoldProductsList(soldProductList).get();
-                if(result.size() > 0){
-                    System.out.println("Sell has been successful");
-                }
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return sellRepository.inertSoldProductsList(soldProductList);
     }
 
     //Receipt and sold products
@@ -242,12 +233,6 @@ public class SellViewModel extends AndroidViewModel {
 
         return mutableLiveDataReceipt;
     }
-
-    public LiveData<Receipt> getReceiptByid(){
-        return sellRepository.getReceiptById(currentBusinessId, currentReceiptId);
-    }
-
-
 
 
     public void searchReceipt(String query){
@@ -270,19 +255,6 @@ public class SellViewModel extends AndroidViewModel {
         });
 
     }
-
-    public LiveData<List<Product>> getSoldProducts(){
-        liveDataSoldProducts = sellRepository.getSoldProductList(currentReceiptId, currentBusinessId);
-        return liveDataSoldProducts;
-    }
-
-    //Save products to sell with bundle
-
-
-
-
-
-
 
 
 

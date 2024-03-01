@@ -13,8 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.databinding.FragmentCollectPaymentMethodBinding;
+import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.sell.SellFragmentDirections;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 
 public class CollectPaymentMethodFragment extends DialogFragment {
@@ -30,9 +34,11 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private TextView cashDueTextView;
     private TextView cashDueTextViewLabel;
     private SellViewModel sellViewModel;
+    private View parentView;
 
-    public CollectPaymentMethodFragment(SellViewModel sellViewModel) {
+    public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView) {
         this.sellViewModel = sellViewModel;
+        this.parentView = parentView;
     }
 
     @Override
@@ -121,9 +127,26 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        sellViewModel.finishSell(paymentMethod);
+        sellViewModel.finishSell(paymentMethod, new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean resultado) {
+                if(resultado){
+                    getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
+                }else {
+                    // do something else
+                }
+            }
+        });
         this.dismiss();
+
+    }
+
+    private void navigateToReceipt(){
         sellViewModel.clearProductsToSell();
+        NavDirections receiptDirection = SellFragmentDirections.actionSellFragmentToSoldProductFragment22(sellViewModel.getCurrentBusinessId(),
+                sellViewModel.getCurrentReceiptId());
+
+        Navigation.findNavController(parentView).navigate(receiptDirection);
     }
 
 

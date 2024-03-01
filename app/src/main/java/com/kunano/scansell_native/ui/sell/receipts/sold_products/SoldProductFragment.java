@@ -22,14 +22,9 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.sell.SellViewModel;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
 public class SoldProductFragment extends Fragment{
-
-    private SoldProductViewModel mViewModel;
-
-    private SellViewModel sellViewModel;
     private MainActivityViewModel mainActivityViewModel;
     private ProductToSellAdapter soldProductAdapter;
     private RecyclerView soldProductRecycleView;
@@ -38,12 +33,33 @@ public class SoldProductFragment extends Fragment{
     private SoldProductViewModel soldProductViewModel;
 
     private FragmentSoldProductBinding binding;
+    private Long business_key;
+    private String receipt_key;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         soldProductViewModel = new ViewModelProvider(this).get(SoldProductViewModel.class);
+
+        Bundle args = getArguments();
+        if (args != null){
+            business_key = args.getLong("business_key");
+            receipt_key = args.getString("receipt_key");
+
+            soldProductViewModel.getReceiptByid(business_key, receipt_key).observe(getViewLifecycleOwner(), this::populateReceipt);
+            soldProductViewModel.getSoldProducts(business_key, receipt_key).observe(getViewLifecycleOwner(), (soldProductsList)->{
+                soldProductAdapter.submitList(soldProductsList);
+                System.out.println("business: " + business_key + " receipt id: " + receipt_key);
+                double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
+                        c + sp.getSelling_price(), Double::sum);
+                toolbar.setSubtitle(String.valueOf(spentAmount));
+            });
+        }else {
+            business_key = new Long(0);
+            receipt_key = "";
+        }
+
+
 
 
         binding = FragmentSoldProductBinding.inflate(inflater, container, false);
@@ -55,14 +71,7 @@ public class SoldProductFragment extends Fragment{
         soldProductAdapter.setActivityParent(getActivity());
         soldProductRecycleView.setAdapter(soldProductAdapter);
 
-        sellViewModel.getCurrentReceiptId();
-        sellViewModel.getReceiptByid().observe(getViewLifecycleOwner(), this::populateReceipt);
-        sellViewModel.getSoldProducts().observe(getViewLifecycleOwner(), (soldProductsList)->{
-            soldProductAdapter.submitList(soldProductsList);
-            double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
-                    c + sp.getSelling_price(), Double::sum);
-            toolbar.setSubtitle(String.valueOf(spentAmount));
-        });
+
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         setCardListener();
 

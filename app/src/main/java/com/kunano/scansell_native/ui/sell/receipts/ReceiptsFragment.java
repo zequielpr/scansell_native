@@ -87,7 +87,8 @@ public class ReceiptsFragment extends Fragment{
     }
 
     private void navigateToSoldProducts(){
-        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragment2ToSoldProductFragment2();
+        NavDirections navDirections = ReceiptsFragmentDirections.actionReceiptsFragment2ToSoldProductFragment2(
+                sellViewModel.getCurrentBusinessId(), sellViewModel.getCurrentReceiptId());
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 

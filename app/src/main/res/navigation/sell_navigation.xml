@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_sellFragment_to_receiptsFragment2"
             app:destination="@id/receiptsFragment2" />
+        <action
+            android:id="@+id/action_sellFragment_to_collectPaymentMethodFragment"
+            app:destination="@id/collectPaymentMethodFragment" />
+        <action
+            android:id="@+id/action_sellFragment_to_soldProductFragment22"
+            app:destination="@id/soldProductFragment2" />
     </fragment>
     <fragment
         android:id="@+id/receiptsFragment2"
@@ -37,8 +43,18 @@
         <action
             android:id="@+id/action_soldProductFragment2_to_receiptsFragment2"
             app:destination="@id/receiptsFragment2" />
+        <argument
+            android:name="business_key"
+            app:argType="long" />
+        <argument
+            android:name="receipt_key"
+            app:argType="string" />
     </fragment>
-
+    <dialog
+        android:id="@+id/collectPaymentMethodFragment"
+        android:name="com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment"
+        android:label="fragment_collect_payment_method"
+        tools:layout="@layout/fragment_collect_payment_method" />
 
 
 </navigation>
