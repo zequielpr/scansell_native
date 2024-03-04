@@ -38,4 +38,8 @@ public interface ReceiptDao {
             "AND sellingDate >= (:startOfCurrentWeek)")
     LiveData<List<Receipt>> geCurrentWeekSells(Long businessId, LocalDateTime startOfCurrentWeek);
 
+    @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId) " +
+            "AND sellingDate <= (:startOfLastWeek)")
+    LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek);
+
 }

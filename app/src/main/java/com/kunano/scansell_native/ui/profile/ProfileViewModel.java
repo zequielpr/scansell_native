@@ -38,6 +38,13 @@ public class ProfileViewModel extends AndroidViewModel {
     private LiveData<List<Business>> businessListLivedata;
     private MutableLiveData<Integer> seletedBusiness;
     private LiveData<List<Receipt>> receiptListLiveData;
+    private LiveData<List<MostSoldProducts>> soldProductsListLiveData;
+
+    Observer<List<MostSoldProducts>> mostSoldProductsObserver;
+    Observer<List<Receipt>> sellObserver;
+    private LocalDateTime dateToSearch;
+    private LocalDateTime currentDate;
+    private MutableLiveData<String> selectedDateMutableLiveData;
 
     private Long currentBusinessId;
 
@@ -53,50 +60,87 @@ public class ProfileViewModel extends AndroidViewModel {
 
         sellsLineChartDataLive = new MutableLiveData<>();
         mostSoldProductPieChartMLive = new MutableLiveData<>();
+        selectedDateMutableLiveData = new MutableLiveData<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            currentDate = LocalDateTime.now();
+        }
+
+        mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
+            List<PieEntry> pieEntryList = processMostSoldPData(mostSoldProductsList);
+            mostSoldProductPieChartMLive.postValue(pieEntryList);
+        };
+        sellObserver = (List<Receipt> receiptList)->{
+
+            LineChartData lineChartData;
+            lineChartData = processReceiptsGetWeeklySells(receiptList);
+            sellsLineChartDataLive.postValue(lineChartData);
+        };
+    }
+
+
+    Boolean processMonthlySells = false;
+    public void handleDates(Integer spinnerIndex){
+       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            switch (spinnerIndex) {
+                case 0:
+                    dateToSearch = LocalDate.now().
+                            with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
+                    processMonthlySells = false;
+                    fetchSellsCurrentWeek();
+                    break;
+                case 1:
+                    dateToSearch = LocalDate.now()
+                            .with(TemporalAdjusters.previous(DayOfWeek.MONDAY)) // Get the previous Monday
+                            .minusWeeks(1) // Move back one week to get to the previous week
+                            .atStartOfDay();
+                    processMonthlySells = false;
+                    fetchSellsLastWeek();
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
+
+            fetchMostSoldProduct();
+        }
     }
 
 
 
-    private LocalDateTime startOfCurrentWeek;
-    public void getCurrentWeekSells(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startOfCurrentWeek = LocalDate.now().
-                    with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
-
+    public void fetchSellsCurrentWeek(){
+        if (dateToSearch != null && currentBusinessId != null) {
             receiptListLiveData.removeObserver(sellObserver);
-            receiptListLiveData = sellRepository.getCurrentWeekSells(currentBusinessId, startOfCurrentWeek);
+            receiptListLiveData = sellRepository.getCurrentWeekSells(currentBusinessId, dateToSearch);
             receiptListLiveData.observeForever(sellObserver);
         }
     }
 
-
-
-    Observer<List<Receipt>> sellObserver = new Observer<List<Receipt>>() {
-        @Override
-        public void onChanged(List<Receipt> receiptList) {
-           LineChartData lineChartData = processReceipts(receiptList);
-            for (LocalDateTime date : lineChartData.getDates()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    System.out.println("Dates: " + date);
-                }
-            }
-           sellsLineChartDataLive.postValue(lineChartData);
+    public void fetchSellsLastWeek(){
+        if (dateToSearch != null && currentBusinessId != null) {
+            receiptListLiveData.removeObserver(sellObserver);
+            receiptListLiveData = sellRepository.getLastWeekSells(currentBusinessId, dateToSearch);
+            receiptListLiveData.observeForever(sellObserver);
         }
-    };
+    }
 
-
-
-    private LineChartData processReceipts(List<Receipt> receiptList){
+    private LineChartData processReceiptsGetWeeklySells(List<Receipt> receiptList){
+        selectedDateMutableLiveData.postValue("");
         Float sells;
-        LocalDateTime dateTime = startOfCurrentWeek;
+        LocalDateTime dateTime = dateToSearch;
         LineChartData lineChartData = new LineChartData();
         int x = 0;
-        for (DayOfWeek dayOfWeek: DayOfWeek.values()){
+
+
+
+       for (DayOfWeek dayOfWeek: DayOfWeek.values()){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
                 //The date of the current week is already set up on monday
                 if (dayOfWeek != DayOfWeek.MONDAY){
-                    dateTime = startOfCurrentWeek.with(TemporalAdjusters.next(dayOfWeek));
+                    dateTime = dateToSearch.with(TemporalAdjusters.next(dayOfWeek));
                 }
 
                 sells = receiptList.stream().filter((r)-> dayOfWeek == r.getSellingDate().getDayOfWeek()).
@@ -118,13 +162,12 @@ public class ProfileViewModel extends AndroidViewModel {
 
 
     //Get most sold prodcuts
-    private LiveData<List<MostSoldProducts>> soldProductsListLiveData;
-    public void getMostSoldProduct(){
+
+    public void fetchMostSoldProduct(){
         soldProductsListLiveData.removeObserver(mostSoldProductsObserver);
         soldProductsListLiveData = sellRepository.getMostSoldProduct(currentBusinessId);
         soldProductsListLiveData.observeForever(mostSoldProductsObserver);
     }
-
 
     private  List<PieEntry> processMostSoldPData(List<MostSoldProducts> mostSoldProductsList){
         List<PieEntry> entries = new ArrayList<>();
@@ -147,10 +190,7 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
 
-    Observer<List<MostSoldProducts>> mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
-        List<PieEntry> pieEntryList = processMostSoldPData(mostSoldProductsList);
-        mostSoldProductPieChartMLive.postValue(pieEntryList);
-    };
+
 
 
 
@@ -197,7 +237,15 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void setCurrentBusinessId(Long currentBusinessId) {
         this.currentBusinessId = currentBusinessId;
-        getCurrentWeekSells();
-        getMostSoldProduct();
+        fetchSellsCurrentWeek();
+        fetchMostSoldProduct();
+    }
+
+    public MutableLiveData<String> getSelectedDateMutableLiveData() {
+        return selectedDateMutableLiveData;
+    }
+
+    public void setSelectedDateMutableLiveData(String selectedDateMutableLiveData) {
+        this.selectedDateMutableLiveData.postValue(selectedDateMutableLiveData);
     }
 }

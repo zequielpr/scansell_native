@@ -6,14 +6,18 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 public class CustomLineChart {
     LineChart lineChart;
+    LineChartData lineChartData;
+
     public CustomLineChart(LineChart lineChart) {
         this.lineChart = lineChart;
     }
 
-    public void populateChart(LineChartData lineChartData){
+    public void populateChart(LineChartData lineChartData) {
+        this.lineChartData = lineChartData;
         /*ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry(0, 4));
         entries.add(new Entry(1, 8));
@@ -47,7 +51,17 @@ public class CustomLineChart {
         lineChart.setData(lineData); // Set the data and display the chart
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); // Set position of X-axis
         lineChart.getAxisRight().setEnabled(false); // Disable right Y-axis
+        lineChart.getDescription().setText("");
 
         lineChart.invalidate();
+    }
+
+
+    public void setOnChartValueSelectedListener(OnChartValueSelectedListener onChartValueSelectedListener) {
+        lineChart.setOnChartValueSelectedListener(onChartValueSelectedListener);
+    }
+
+    public LineChartData getLineChartData() {
+        return lineChartData;
     }
 }

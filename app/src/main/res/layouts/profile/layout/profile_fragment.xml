@@ -55,6 +55,11 @@
                 android:text="@string/sells_and_revenues"
                 android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/selecteddDateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/lineChart"
                 android:layout_width="match_parent"

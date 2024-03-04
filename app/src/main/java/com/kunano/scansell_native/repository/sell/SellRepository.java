@@ -97,6 +97,9 @@ public class SellRepository {
     public LiveData<List<Receipt>> getCurrentWeekSells(Long businessId, LocalDateTime startOfCurrentWeek){
         return receiptDao.geCurrentWeekSells(businessId, startOfCurrentWeek);
     }
+    public LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek){
+        return receiptDao.getLastWeekSells(businessId, startOfLastWeek);
+    }
 
 
 

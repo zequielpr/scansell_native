@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
@@ -21,6 +25,8 @@ import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +42,7 @@ public class ProfileFragment extends Fragment {
     private Spinner pickBusinessSpinner;
     private Spinner pickPeriodSpinner;
     private CustomPieChart customPieChart;
+    private TextView selectedDateTextView;
 
 
 
@@ -51,6 +58,7 @@ public class ProfileFragment extends Fragment {
         pieChartMostSellProducts = binding.pieChart;
         pickBusinessSpinner = binding.pickBusinessSpinner;
         pickPeriodSpinner = binding.pickPeriodSpinner;
+        selectedDateTextView = binding.selecteddDateTextView;
 
 
         //Select business spinner
@@ -78,6 +86,7 @@ public class ProfileFragment extends Fragment {
 
 
         customLineChart = new CustomLineChart(lineChart);
+        customLineChart.setOnChartValueSelectedListener(getOnChartValueSelectedListener());
         customPieChart = new CustomPieChart(pieChartMostSellProducts);
 
 
@@ -85,10 +94,35 @@ public class ProfileFragment extends Fragment {
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
         profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
-
+        profileViewModel.getSelectedDateMutableLiveData().observe(getViewLifecycleOwner(), selectedDateTextView::setText);
 
 
         return binding.getRoot();
+    }
+
+    public OnChartValueSelectedListener getOnChartValueSelectedListener(){
+
+        OnChartValueSelectedListener onChartValueSelectedListener;
+
+        onChartValueSelectedListener = new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDateTime localDateTime = customLineChart.getLineChartData().getDates().get((int) e.getX());
+                    Float soldAmount = e.getY();
+                    profileViewModel.setSelectedDateMutableLiveData(localDateTime.format(formatter)
+                    + " / " + soldAmount + "€");
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+                profileViewModel.setSelectedDateMutableLiveData("");
+            }
+        };
+
+        return onChartValueSelectedListener;
     }
 
 
@@ -130,8 +164,8 @@ public class ProfileFragment extends Fragment {
     public  AdapterView.OnItemSelectedListener handleOnItemSelectedPeriod(){
         AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int p, long l) {
-
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                profileViewModel.handleDates(i);
             }
 
             @Override
