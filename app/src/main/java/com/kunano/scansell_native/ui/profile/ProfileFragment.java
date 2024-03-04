@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -11,9 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
+import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
+import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -22,6 +31,11 @@ public class ProfileFragment extends Fragment {
     private CustomLineChart customLineChart;
     private ProfileViewModel profileViewModel;
     private PieChart pieChartMostSellProducts;
+    private BusinessSpinnerAdapter pickBusinessSpinnerAdapter;
+    private ArrayAdapter<String> pickPeriodSpinnerAdapter;
+    private Spinner pickBusinessSpinner;
+    private Spinner pickPeriodSpinner;
+    private CustomPieChart customPieChart;
 
 
 
@@ -35,36 +49,100 @@ public class ProfileFragment extends Fragment {
 
         lineChart = binding.lineChart;
         pieChartMostSellProducts = binding.pieChart;
+        pickBusinessSpinner = binding.pickBusinessSpinner;
+        pickPeriodSpinner = binding.pickPeriodSpinner;
+
+
+        //Select business spinner
+        pickBusinessSpinnerAdapter = new BusinessSpinnerAdapter(getContext(),
+                R.layout.custom_item_spinner, new ArrayList<>());
+        pickBusinessSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        pickBusinessSpinner.setAdapter(pickBusinessSpinnerAdapter);
+        profileViewModel.getSeletedBusiness().observe(getViewLifecycleOwner(), pickBusinessSpinner::setSelection);
+        profileViewModel.getBusinessListLivedata().observe(getViewLifecycleOwner(), this::setBusinessListInSpinner);
+        pickBusinessSpinner.setOnItemSelectedListener(handleOnItemSelectedBusiness());
+
+
+
+        //Select period spinner
+        String[] periodList = {getString(R.string.this_week), getString(R.string.last_week),
+                getString(R.string.this_month), getString(R.string.all_time) };
+
+        pickPeriodSpinnerAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, periodList);
+        pickPeriodSpinnerAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+        pickPeriodSpinner.setAdapter(pickPeriodSpinnerAdapter);
+        pickPeriodSpinner.setOnItemSelectedListener(handleOnItemSelectedPeriod());
+
+
+
 
         customLineChart = new CustomLineChart(lineChart);
-
-        CustomPieChart customPieChart = new CustomPieChart(pieChartMostSellProducts);
-
+        customPieChart = new CustomPieChart(pieChartMostSellProducts);
 
 
-        profileViewModel.getCurrentWeekSells();
+
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
-
-
-
-
-
-        // Create data entries for the chart
-       /* ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(18.5f, "Label 1"));
-        entries.add(new PieEntry(26.7f, "Label 2"));
-        entries.add(new PieEntry(24.0f, "Label 3"));
-
-        customPieChart.populatePieChart(entries);*/
-
-        profileViewModel.getMostSoldProduct();
         profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
 
 
 
         return binding.getRoot();
     }
+
+
+
+
+
+
+    private void setBusinessListInSpinner(List<Business> businessList){
+        pickBusinessSpinnerAdapter.clear();
+        pickBusinessSpinnerAdapter.addAll(businessList);
+        try {
+            profileViewModel.setCurrentBusinessId(pickBusinessSpinnerAdapter.getItem(0).getBusinessId());
+        }catch (Exception e){
+            System.out.println(e.getCause());
+            profileViewModel.setCurrentBusinessId(null);
+        }
+    }
+
+
+    public  AdapterView.OnItemSelectedListener handleOnItemSelectedBusiness(){
+        AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int p, long l) {
+                Business selectedBusiness = (Business) adapterView.getItemAtPosition(p);
+                profileViewModel.setSeletedBusiness(p);
+                profileViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        };
+
+        return onItemSelectedListener;
+    }
+
+
+    public  AdapterView.OnItemSelectedListener handleOnItemSelectedPeriod(){
+        AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int p, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        };
+
+        return onItemSelectedListener;
+    }
+
 
     @Override
     public void onDestroyView() {

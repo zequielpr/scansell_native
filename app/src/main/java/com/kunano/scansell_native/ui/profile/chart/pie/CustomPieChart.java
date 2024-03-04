@@ -35,6 +35,7 @@ public class CustomPieChart {
         this.pieChart.setDrawHoleEnabled(true);
         this.pieChart.setHoleColor(Color.WHITE);
         this.pieChart.setTransparentCircleRadius(61f);
+        this.pieChart.setCenterText("%");
         this.pieChart.setHoleRadius(58f);
         this.pieChart.setEntryLabelColor(Color.TRANSPARENT);
 

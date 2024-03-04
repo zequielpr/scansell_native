@@ -40,10 +40,10 @@ public interface SoldProductDao {
 
     @MapColumn(columnName = "a")
     @Query("SELECT COUNT(*) AS soldQuantity, product_name AS productName, " +
-            "(SELECT COUNT(*) FROM soldproduct) AS soldProductsTotal " +
+            "(SELECT COUNT(*) FROM soldproduct WHERE soldproduct.businessIdFK = (:businessId) ) AS soldProductsTotal " +
             "FROM product " +
             "INNER JOIN soldproduct ON productId = productIdFK " +
-            "WHERE product.businessIdFK = :businessId " +
+            "WHERE product.businessIdFK = (:businessId) AND soldproduct.businessIdFK = (:businessId)" +
             "GROUP BY productId, product_name " +
             "ORDER BY soldQuantity DESC LIMIT 3")
     LiveData<List<MostSoldProducts>> getMostSoldProducts(Long businessId);

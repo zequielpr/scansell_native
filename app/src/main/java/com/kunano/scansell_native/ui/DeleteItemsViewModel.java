@@ -366,7 +366,7 @@ public class DeleteItemsViewModel extends AndroidViewModel {
                 updateProgressBar();
                 Thread.sleep(Math.round(1000 / itemsToDelete.size()));
                 String productId = ((Product) item).getProductId();
-                binsRepository.restorageProducts(productId).get();
+                binsRepository.restorageProducts(productId, ((Product) item).getBusinessIdFK()).get();
                 deletedItems.add(item);
 
 

@@ -70,8 +70,8 @@ public class BinsRepository {
         return businessBinDao.getProductsInBin(businessIdFK);
     }
 
-    public ListenableFuture<Integer> restorageProducts(String productId){
-        return businessBinDao.restorageProduct(productId);
+    public ListenableFuture<Integer> restorageProducts(String productId, Long businessId){
+        return businessBinDao.restorageProduct(productId, businessId);
     }
 
 
