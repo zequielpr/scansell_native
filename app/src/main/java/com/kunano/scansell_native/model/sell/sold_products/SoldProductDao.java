@@ -3,6 +3,7 @@ package com.kunano.scansell_native.model.sell.sold_products;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.MapColumn;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
@@ -33,5 +34,18 @@ public interface SoldProductDao {
             " WHERE receiptIdFK = (:receiptId)) ON product.productId = productIdFK " +
             "AND product.businessIdFK =(:businessId)")
     LiveData<List<Product>> getSoldProducts(String receiptId, Long businessId);
+
+
+
+
+    @MapColumn(columnName = "a")
+    @Query("SELECT COUNT(*) AS soldQuantity, product_name AS productName, " +
+            "(SELECT COUNT(*) FROM soldproduct) AS soldProductsTotal " +
+            "FROM product " +
+            "INNER JOIN soldproduct ON productId = productIdFK " +
+            "WHERE product.businessIdFK = :businessId " +
+            "GROUP BY productId, product_name " +
+            "ORDER BY soldQuantity DESC LIMIT 3")
+    LiveData<List<MostSoldProducts>> getMostSoldProducts(Long businessId);
 
 }

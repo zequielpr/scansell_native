@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.kunano.scansell_native.ui.profile.NotificationsFragment"
+        android:name="com.kunano.scansell_native.ui.profile.ProfileFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/profile_fragment" />
 </navigation>
