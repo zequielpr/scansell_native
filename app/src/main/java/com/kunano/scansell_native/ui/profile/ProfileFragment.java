@@ -73,8 +73,7 @@ public class ProfileFragment extends Fragment {
 
 
         //Select period spinner
-        String[] periodList = {getString(R.string.this_week), getString(R.string.last_week),
-                getString(R.string.this_month), getString(R.string.all_time) };
+        String[] periodList = {getString(R.string.this_week), getString(R.string.last_week)};
 
         pickPeriodSpinnerAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_item, periodList);
