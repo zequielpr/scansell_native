@@ -97,16 +97,23 @@ public class SellRepository {
     public LiveData<List<Receipt>> getCurrentWeekSells(Long businessId, LocalDateTime startOfCurrentWeek){
         return receiptDao.geCurrentWeekSells(businessId, startOfCurrentWeek);
     }
-    public LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek){
-        return receiptDao.getLastWeekSells(businessId, startOfLastWeek);
+    public LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek,
+                                                    LocalDateTime currentWeekDate){
+        return receiptDao.getLastWeekSells(businessId, startOfLastWeek, currentWeekDate);
     }
 
 
 
 
     //get most sold products
-    public LiveData<List<MostSoldProducts>> getMostSoldProduct(Long businessId){
-        return soldProductDao.getMostSoldProducts(businessId);
+    public LiveData<List<MostSoldProducts>> getMostSoldProductsInCurrentWeek(Long businessId, LocalDateTime startOfCurrentWeek){
+        return soldProductDao.getMostSoldProductsInCurrentWeek(businessId, startOfCurrentWeek);
+    }
+
+    public LiveData<List<MostSoldProducts>> getMostSoldProductsInLastWeek(Long businessId,
+                                                                          LocalDateTime startOfLastWeek,
+                                                                          LocalDateTime currentWeekDate){
+        return soldProductDao.getMostSoldProductsInLastWeek(businessId, startOfLastWeek, currentWeekDate);
     }
 
 

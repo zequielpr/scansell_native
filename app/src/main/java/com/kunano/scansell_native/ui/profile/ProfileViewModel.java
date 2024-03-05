@@ -44,6 +44,7 @@ public class ProfileViewModel extends AndroidViewModel {
     Observer<List<Receipt>> sellObserver;
     private LocalDateTime dateToSearch;
     private LocalDateTime currentDate;
+    private LocalDateTime currentWeekDate;
     private MutableLiveData<String> selectedDateMutableLiveData;
 
     private Long currentBusinessId;
@@ -63,6 +64,8 @@ public class ProfileViewModel extends AndroidViewModel {
         selectedDateMutableLiveData = new MutableLiveData<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             currentDate = LocalDateTime.now();
+            currentWeekDate =  LocalDate.now().
+                    with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
         }
 
         mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
@@ -85,16 +88,16 @@ public class ProfileViewModel extends AndroidViewModel {
                 case 0:
                     dateToSearch = LocalDate.now().
                             with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
-                    processMonthlySells = false;
                     fetchSellsCurrentWeek();
+                    fetchMostSoldProductsInCurrentWeek();
                     break;
                 case 1:
                     dateToSearch = LocalDate.now()
                             .with(TemporalAdjusters.previous(DayOfWeek.MONDAY)) // Get the previous Monday
                             .minusWeeks(1) // Move back one week to get to the previous week
                             .atStartOfDay();
-                    processMonthlySells = false;
                     fetchSellsLastWeek();
+                    fetchMostSoldProductsInLastWeek();
                     break;
                 case 2:
                     break;
@@ -103,8 +106,6 @@ public class ProfileViewModel extends AndroidViewModel {
                 default:
                     break;
             }
-
-            fetchMostSoldProduct();
         }
     }
 
@@ -121,7 +122,7 @@ public class ProfileViewModel extends AndroidViewModel {
     public void fetchSellsLastWeek(){
         if (dateToSearch != null && currentBusinessId != null) {
             receiptListLiveData.removeObserver(sellObserver);
-            receiptListLiveData = sellRepository.getLastWeekSells(currentBusinessId, dateToSearch);
+            receiptListLiveData = sellRepository.getLastWeekSells(currentBusinessId, dateToSearch, currentWeekDate);
             receiptListLiveData.observeForever(sellObserver);
         }
     }
@@ -163,9 +164,15 @@ public class ProfileViewModel extends AndroidViewModel {
 
     //Get most sold prodcuts
 
-    public void fetchMostSoldProduct(){
+    public void fetchMostSoldProductsInCurrentWeek(){
         soldProductsListLiveData.removeObserver(mostSoldProductsObserver);
-        soldProductsListLiveData = sellRepository.getMostSoldProduct(currentBusinessId);
+        soldProductsListLiveData = sellRepository.getMostSoldProductsInCurrentWeek(currentBusinessId, dateToSearch);
+        soldProductsListLiveData.observeForever(mostSoldProductsObserver);
+    }
+
+    public void fetchMostSoldProductsInLastWeek(){
+        soldProductsListLiveData.removeObserver(mostSoldProductsObserver);
+        soldProductsListLiveData = sellRepository.getMostSoldProductsInLastWeek(currentBusinessId, dateToSearch, currentWeekDate);
         soldProductsListLiveData.observeForever(mostSoldProductsObserver);
     }
 
@@ -238,7 +245,7 @@ public class ProfileViewModel extends AndroidViewModel {
     public void setCurrentBusinessId(Long currentBusinessId) {
         this.currentBusinessId = currentBusinessId;
         fetchSellsCurrentWeek();
-        fetchMostSoldProduct();
+        fetchMostSoldProductsInCurrentWeek();
     }
 
     public MutableLiveData<String> getSelectedDateMutableLiveData() {

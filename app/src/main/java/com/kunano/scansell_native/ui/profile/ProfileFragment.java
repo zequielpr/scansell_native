@@ -101,7 +101,6 @@ public class ProfileFragment extends Fragment {
     }
 
     public OnChartValueSelectedListener getOnChartValueSelectedListener(){
-
         OnChartValueSelectedListener onChartValueSelectedListener;
 
         onChartValueSelectedListener = new OnChartValueSelectedListener() {
