@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.profile.admin.settings.SelectSoundFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titlePickSoundTextView"
+            android:layout_width="wrap_content"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_sound" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupSounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/beep_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="0"
+                android:text="@string/beep" />
+
+            <RadioButton
+                android:id="@+id/vibrateRadioButton"
+                android:layout_width="match_parent"
+                android:tag="1"
+                android:layout_height="wrap_content"
+                android:text="@string/vibrate" />
+        </RadioGroup>
+    </LinearLayout>
+</FrameLayout>

@@ -90,7 +90,18 @@
     <string name="settings">settings</string>
     <string name="account">account</string>
     <string name="back_up">back up</string>
-
+    <string name="sound_after_acanned">sound after scanned</string>
+    <string name="language">language</string>
+    <string name="email_address">email address</string>
+    <string name="name">name</string>
+    <string name="change_password">change password</string>
+    <string name="delete_account">delete account</string>
+    <string name="last_backup"> last back up</string>
+    <string name="create_backup">create back up</string>
+    <string name="restore_back_up">restore back up</string>
+    <string name="vibrate">vibrate</string>
+    <string name="beep">beep</string>
+    <string name="pick_sound">pick a sound</string>
 
 
 </resources>
