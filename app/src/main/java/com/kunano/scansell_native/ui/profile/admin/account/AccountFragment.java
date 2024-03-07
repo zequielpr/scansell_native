@@ -27,6 +27,10 @@ public class AccountFragment extends Fragment {
     private MainActivityViewModel mainActivityViewModel;
     private FragmentAccountBinding binding;
     private Toolbar accountToolbar;
+    private View nameSectionView;
+    private View emailAddressSectionView;
+    private View changePasswordSectionView;
+    private View deleteAccountSectionView;
 
     public AccountFragment() {
         // Required empty public constructor
@@ -38,12 +42,22 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-
         mainActivityViewModel.setHandleBackPress(this::handlePressBack);
+
+
+        nameSectionView = binding.nameSection;
+        emailAddressSectionView = binding.emailAddressSection;
+        changePasswordSectionView = binding.passwordSection;
+        deleteAccountSectionView = binding.deleteAccountSection;
 
         accountToolbar = binding.accountToolbar;
         accountToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         accountToolbar.setNavigationOnClickListener(this::navigateBack);
+
+        nameSectionView.setOnClickListener(this::setNameSectionViewAction);
+        emailAddressSectionView.setOnClickListener(this::emailAddressSectionAction);
+        changePasswordSectionView.setOnClickListener(this::setChangePasswordSectionViewAction);
+        deleteAccountSectionView.setOnClickListener(this::setDeleteAccountSectionViewAction);
 
         return binding.getRoot();
     }
@@ -57,5 +71,23 @@ public class AccountFragment extends Fragment {
         NavDirections profileNavDirections = AccountFragmentDirections.actionAccountFragmentToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
         mainActivityViewModel.setHandleBackPress(null);
+    }
+
+
+
+    private void emailAddressSectionAction(View view){
+
+    }
+
+    private void setNameSectionViewAction(View view){
+
+    }
+
+    private void setChangePasswordSectionViewAction(View view){
+
+    }
+
+    private void setDeleteAccountSectionViewAction(View view){
+
     }
 }

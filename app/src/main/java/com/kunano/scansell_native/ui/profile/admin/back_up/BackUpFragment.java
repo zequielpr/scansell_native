@@ -16,15 +16,12 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBackUpBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BackUpFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BackUpFragment extends Fragment {
     private FragmentBackUpBinding binding;
     private MainActivityViewModel mainActivityViewModel;
     private Toolbar backupToolbar;
+    private View createBackupSection;
+    private View restoreBackUpSection;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,11 +32,17 @@ public class BackUpFragment extends Fragment {
         binding = FragmentBackUpBinding.inflate(inflater, container, false);
 
         backupToolbar = binding.backupToolbar;
+        createBackupSection = binding.createBackupSection;
+        restoreBackUpSection = binding.restoreBackupSection;
 
         backupToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         backupToolbar.setNavigationOnClickListener(this::navigateBack);
 
         mainActivityViewModel.setHandleBackPress(this::handlePressBack);
+
+
+        restoreBackUpSection.setOnClickListener(this::setRestoreBackUpSection);
+        createBackupSection.setOnClickListener(this::setCreateBackupSectionAction);
 
 
         return binding.getRoot();
@@ -55,5 +58,14 @@ public class BackUpFragment extends Fragment {
         NavDirections profileNavDirections = BackUpFragmentDirections.actionBackUpFragmentToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
         mainActivityViewModel.setHandleBackPress(null);
+    }
+
+
+    private void setCreateBackupSectionAction(View view){
+
+    }
+
+    private void setRestoreBackUpSection(View view){
+
     }
 }
