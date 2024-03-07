@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieEntry;
-import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
@@ -81,17 +80,19 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
 
-    Boolean processMonthlySells = false;
+    private Boolean searchCurrentWeek = true;
     public void handleDates(Integer spinnerIndex){
        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
             switch (spinnerIndex) {
                 case 0:
+                    searchCurrentWeek = true;
                     dateToSearch = LocalDate.now().
                             with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
                     fetchSellsCurrentWeek();
                     fetchMostSoldProductsInCurrentWeek();
                     break;
                 case 1:
+                    searchCurrentWeek = false;
                     dateToSearch = LocalDate.now()
                             .with(TemporalAdjusters.previous(DayOfWeek.MONDAY)) // Get the previous Monday
                             .minusWeeks(1) // Move back one week to get to the previous week
@@ -183,7 +184,6 @@ public class ProfileViewModel extends AndroidViewModel {
 
         for (MostSoldProducts mostSoldProducts : mostSoldProductsList) {
             if (mostSoldProducts.getSoldProductsTotal() == 0){
-                entries.add(new PieEntry(0, this.getApplication().getString(R.string.not_sold_product)));
                 break;
             }
             soldPercentage = (double)mostSoldProducts.getSoldQuantity() * 100.0 / (double)mostSoldProducts.getSoldProductsTotal();
@@ -244,8 +244,13 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void setCurrentBusinessId(Long currentBusinessId) {
         this.currentBusinessId = currentBusinessId;
-        fetchSellsCurrentWeek();
-        fetchMostSoldProductsInCurrentWeek();
+        if (searchCurrentWeek){
+            fetchSellsCurrentWeek();
+            fetchMostSoldProductsInCurrentWeek();
+            return;
+        }
+        fetchSellsLastWeek();
+        fetchMostSoldProductsInLastWeek();
     }
 
     public MutableLiveData<String> getSelectedDateMutableLiveData() {

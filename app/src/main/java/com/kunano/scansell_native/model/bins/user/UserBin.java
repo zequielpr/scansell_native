@@ -3,6 +3,7 @@ package com.kunano.scansell_native.model.bins.user;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -24,6 +25,7 @@ public class UserBin {
     LocalDate recyclingDate;
 
 
+    @Ignore
     public UserBin(){
         super();
     }

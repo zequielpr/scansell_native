@@ -3,6 +3,8 @@ package com.kunano.scansell_native.model.bins.business;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
 
 import com.kunano.scansell_native.model.Home.product.Product;
 
@@ -13,7 +15,8 @@ import java.time.LocalDate;
         foreignKeys = @ForeignKey(entity = Product.class,
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFk", "businessIdFk"},
-                onDelete = ForeignKey.CASCADE))
+                onDelete = ForeignKey.CASCADE),
+indices = {@Index(value = {"businessIdFk", "productIdFk"})})
 public class BusinessBin {
 
     @NonNull
@@ -24,6 +27,7 @@ public class BusinessBin {
 
     LocalDate recyclingDate;
 
+    @Ignore
     public BusinessBin(){
         super();
     }

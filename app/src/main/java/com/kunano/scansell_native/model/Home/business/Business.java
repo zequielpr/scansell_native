@@ -2,6 +2,7 @@ package com.kunano.scansell_native.model.Home.business;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
@@ -20,6 +21,7 @@ public class Business {
 
     @ColumnInfo(defaultValue = "creating_date")
     private String cratingDate;
+    @Ignore
     public Business(){
     }
 

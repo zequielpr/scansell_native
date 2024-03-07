@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "14a5d96e9f5598ffecdec25099602034",
+    "identityHash": "16189b22c7ae9efef907b0dbdeb1214b",
     "entities": [
       {
         "tableName": "Business",
@@ -270,7 +270,18 @@
             "productIdFk"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_BusinessBin_businessIdFk_productIdFk",
+            "unique": false,
+            "columnNames": [
+              "businessIdFk",
+              "productIdFk"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BusinessBin_businessIdFk_productIdFk` ON `${TABLE_NAME}` (`businessIdFk`, `productIdFk`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "product",
@@ -411,7 +422,19 @@
             "tableId"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_SoldProduct_receiptIdFK_productIdFK_businessIdFK",
+            "unique": false,
+            "columnNames": [
+              "receiptIdFK",
+              "productIdFK",
+              "businessIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SoldProduct_receiptIdFK_productIdFK_businessIdFK` ON `${TABLE_NAME}` (`receiptIdFK`, `productIdFK`, `businessIdFK`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "product",
@@ -472,22 +495,14 @@
         },
         "indices": [
           {
-            "name": "index_ProductToSellDraft_productIdFK",
+            "name": "index_ProductToSellDraft_productIdFK_businessIdIdFK",
             "unique": false,
             "columnNames": [
-              "productIdFK"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProductToSellDraft_productIdFK` ON `${TABLE_NAME}` (`productIdFK`)"
-          },
-          {
-            "name": "index_ProductToSellDraft_businessIdIdFK",
-            "unique": false,
-            "columnNames": [
+              "productIdFK",
               "businessIdIdFK"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProductToSellDraft_businessIdIdFK` ON `${TABLE_NAME}` (`businessIdIdFK`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProductToSellDraft_productIdFK_businessIdIdFK` ON `${TABLE_NAME}` (`productIdFK`, `businessIdIdFK`)"
           }
         ],
         "foreignKeys": [
@@ -510,7 +525,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14a5d96e9f5598ffecdec25099602034')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16189b22c7ae9efef907b0dbdeb1214b')"
     ]
   }
 }

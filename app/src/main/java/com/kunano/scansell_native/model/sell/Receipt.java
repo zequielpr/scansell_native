@@ -3,6 +3,7 @@ package com.kunano.scansell_native.model.sell;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -32,6 +33,7 @@ public class Receipt {
     private byte paymentMethod;
 
 
+    @Ignore
     public Receipt(){
 
     }

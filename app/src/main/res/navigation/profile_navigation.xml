@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_navigation_graph"
+    app:startDestination="@id/profileFragment">
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.kunano.scansell_native.ui.profile.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_backUpFragment"
+            app:destination="@id/backUpFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment23"
+            app:destination="@id/settingsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/backUpFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.back_up.BackUpFragment"
+        android:label="fragment_back_up"
+        tools:layout="@layout/fragment_back_up" >
+        <action
+            android:id="@+id/action_backUpFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment2"
+        android:name="com.kunano.scansell_native.ui.profile.admin.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment2_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+</navigation>

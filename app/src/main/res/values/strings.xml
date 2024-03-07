@@ -86,6 +86,11 @@
     <string name="last_week">last week</string>
     <string name="this_month">this month</string>
     <string name="all_time">all time</string>
+    <string name="admin"></string>
+    <string name="settings">settings</string>
+    <string name="account">account</string>
+    <string name="back_up">back up</string>
+
 
 
 </resources>

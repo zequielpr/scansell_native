@@ -2,6 +2,9 @@ package com.kunano.scansell_native.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -10,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +26,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
 import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
@@ -30,7 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements MenuProvider {
 
     private ProfileFragmentBinding binding;
     private LineChart lineChart;
@@ -43,6 +49,7 @@ public class ProfileFragment extends Fragment {
     private Spinner pickPeriodSpinner;
     private CustomPieChart customPieChart;
     private TextView selectedDateTextView;
+    private Toolbar profileToolbar;
 
 
 
@@ -59,6 +66,10 @@ public class ProfileFragment extends Fragment {
         pickBusinessSpinner = binding.pickBusinessSpinner;
         pickPeriodSpinner = binding.pickPeriodSpinner;
         selectedDateTextView = binding.selecteddDateTextView;
+        profileToolbar = binding.profileToolbar;
+
+        profileToolbar.addMenuProvider(this);
+
 
 
         //Select business spinner
@@ -180,5 +191,29 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.profile_tool_bar, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+
+
+        switch(menuItem.getItemId()){
+            case R.id.admin_options:
+                showAdminOptions();
+                return true;
+        }
+
+        return false;
+    }
+
+
+    private void showAdminOptions(){
+        AdminFragment adminFragment = new AdminFragment(getView());
+        adminFragment.show(getChildFragmentManager(), "AdminOptions");
     }
 }

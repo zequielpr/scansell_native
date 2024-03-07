@@ -1,10 +1,13 @@
 package com.kunano.scansell_native.model.sell.sold_products;
 
+import androidx.room.Ignore;
+
 public class MostSoldProducts {
     private String productName;
     private int soldQuantity;
     private int soldProductsTotal;
 
+    @Ignore
     public MostSoldProducts() {
     }
 

@@ -30,7 +30,9 @@ public interface SoldProductDao {
 
 
     //Stil to be develop
-    @Query("SELECT * FROM product INNER JOIN (SELECT * FROM soldproduct" +
+    @Query("SELECT productId, product.businessIdFK, product_name, buying_price," +
+            "selling_price, stock, cratingDate" +
+            " FROM product INNER JOIN (SELECT * FROM soldproduct" +
             " WHERE receiptIdFK = (:receiptId)) ON product.productId = productIdFK " +
             "AND product.businessIdFK =(:businessId)")
     LiveData<List<Product>> getSoldProducts(String receiptId, Long businessId);
