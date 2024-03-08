@@ -1,5 +1,11 @@
 package com.kunano.scansell_native.ui.components;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.widget.Toast;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -19,4 +25,27 @@ public class Utils {
         }
         return timeInMilliseconds;
     }
+
+    public static void restartApp(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Bundle extras = new Bundle();
+            // Add any extra data you want to pass to the activity upon restart
+            // For example:
+            // extras.putString("key", "value");
+            intent.putExtras(extras);
+            context.startActivity(intent);
+            System.exit(0); // This might be necessary to fully restart the app, but it's generally not recommended
+        }
+    }
+
+    public static void showToast(Context context, String message, Integer duration) {
+        Toast.makeText(context, message, duration).show();
+    }
+
+
+
 }

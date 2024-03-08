@@ -102,6 +102,8 @@
     <string name="vibrate">vibrate</string>
     <string name="beep">beep</string>
     <string name="pick_sound">pick a sound</string>
+    <string name="data_restored_success">data restored successfuly</string>
+    <string name="thera_has_been_an_error">There has been an error</string>
 
 
 </resources>

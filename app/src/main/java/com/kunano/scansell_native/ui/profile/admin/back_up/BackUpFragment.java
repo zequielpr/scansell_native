@@ -25,7 +25,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBackUpBinding;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 
 public class BackUpFragment extends Fragment {
@@ -46,7 +46,7 @@ public class BackUpFragment extends Fragment {
 
         // Inflate the layout for this fragment
         binding = FragmentBackUpBinding.inflate(inflater, container, false);
-        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadFilePath);
+        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadBackUpFilePath);
         customMediaPicker = new CustomMediaPicker(pickMedia);
 
         backupToolbar = binding.backupToolbar;
@@ -82,18 +82,10 @@ public class BackUpFragment extends Fragment {
     }
 
 
+    //Generate backup
     private void setCreateBackupSectionAction(View view){
         chooseDir();
-       //AppDatabase.exportDatabase(getContext());
     }
-
-    private void setRestoreBackUpSection(View view){
-        //AppDatabase.importDatabase(getContext());
-        customMediaPicker.lunchImagePicker(new
-                ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
-    }
-
-
     private void chooseDir(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         directoryPickerLauncher.launch(intent);
@@ -104,16 +96,12 @@ public class BackUpFragment extends Fragment {
             Intent data = result.getData();
             if (data != null) {
                 Uri treeUri = data.getData();
-                inTroduceFileName(treeUri);
-                // Use the selected URI to save your file
-                Toast.makeText(getContext(), "Directory picked: " + treeUri.toString(), Toast.LENGTH_SHORT).show();
-                // You can use this treeUri to create new files or directories within the selected directory
+                createBackUp(treeUri);
             }
         }
     }
 
-    private void inTroduceFileName(Uri dirTosaveBackUp){
-        System.out.println("Directory: " + dirTosaveBackUp.getPath());
+    private void createBackUp(Uri dirTosaveBackUp){
         AppDatabase.exportDatabase(getContext(), dirTosaveBackUp);
     }
 
@@ -121,23 +109,51 @@ public class BackUpFragment extends Fragment {
 
 
 
-    private void loadFilePath(Uri fileUri){
-        String fileName = fileUri.getLastPathSegment();
-        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+    //Restore database___________________________________________________________
+    private void setRestoreBackUpSection(View view){
+        //AppDatabase.importDatabase(getContext());
+        customMediaPicker.lunchImagePicker(new
+                ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+    }
+
+
+    private void loadBackUpFilePath(Uri backUpFileUri){
+       askToRestore(backUpFileUri);
+
+    }
+
+    private AskForActionDialog askForActionDialog;
+    private void askToRestore(Uri backUpFileUri){
+        String fileName = backUpFileUri.getLastPathSegment();
+        askForActionDialog = new AskForActionDialog(getLayoutInflater(),
                 getString(R.string.restore_back_up), fileName,
                 getString(R.string.cancel), getString(R.string.restore));
 
         askForActionDialog.show(getParentFragmentManager(), "RestoreBAckUk");
 
-        askForActionDialog.setButtonListener(new ListenResponse() {
-            @Override
-            public void isSuccessfull(boolean resultado) {
-                if (resultado){
-                    AppDatabase.importDatabase(getContext(), fileUri);
-                    askForActionDialog.dismiss();
-                }
-            }
-        });
+        askForActionDialog.setButtonListener((resultado)->restore(resultado, backUpFileUri));
+    }
+
+
+
+    private void restore(Boolean isToRestore, Uri BackUpFileUri){
+        if (isToRestore){
+           if (  askForActionDialog != null)askForActionDialog.dismiss();
+
+           boolean restult = AppDatabase.importDatabase(getContext(), BackUpFileUri);
+           processResult(restult);
+        }
+    }
+
+    private void processResult(boolean result){
+        if (result){
+            Utils.showToast(getContext(), getString(R.string.data_restored_success), Toast.LENGTH_SHORT);
+            Utils.restartApp(getContext());
+            return;
+        }
+        Utils.showToast(getContext(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
+
+
 
     }
 

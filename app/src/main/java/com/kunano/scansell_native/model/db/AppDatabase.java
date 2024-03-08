@@ -139,7 +139,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     }
 
-    public static void importDatabase(Context context, Uri sourceUri) {
+    public static boolean importDatabase(Context context, Uri sourceUri) {
         instance.close();
         DocumentFile backup = DocumentFile.fromSingleUri(context, sourceUri);
         File dbFile = context.getDatabasePath(DATABASE_NAME);
@@ -151,8 +151,9 @@ public abstract class AppDatabase extends RoomDatabase {
                 //Read content
                 InputStream inputStream = context.getContentResolver().openInputStream(backup.getUri());
 
+                //Write content
                 OutputStream outputStream = new FileOutputStream(dbFile);
-                // Write your content to outputStream
+
 
 
                 // Transfer content from input stream to output stream
@@ -162,20 +163,25 @@ public abstract class AppDatabase extends RoomDatabase {
                     outputStream.write(buffer, 0, length);
                 }
 
-                Log.d(TAG, "Database path " + dbFile);
-                Log.d(TAG, "Database imported from " + backup.getUri().getPath());
+                /*Log.d(TAG, "Database path " + dbFile);
+                Log.d(TAG, "Database imported from " + backup.getUri().getPath());*/
+
                 outputStream.close();
                 inputStream.close();
-                // File saved successfully
+                return true;
+
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
                 // Handle error
             }catch (Exception e){
                 Log.d(TAG, "Failure" + e.getCause());
+                return false;
             }
 
         } else {
             Log.e(TAG, "Backup file not found!");
+            return false;
         }
     }
 
