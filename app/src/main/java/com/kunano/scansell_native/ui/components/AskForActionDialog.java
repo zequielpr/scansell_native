@@ -20,6 +20,7 @@ public class AskForActionDialog extends DialogFragment {
 
     private String buttonLeftText;
     private String buttonRightText;
+    private  String content;
 
     public AskForActionDialog(LayoutInflater inflater, String title) {
         super();
@@ -31,6 +32,16 @@ public class AskForActionDialog extends DialogFragment {
         super();
         this.inflater = inflater;
         this.title = title;
+        this.buttonLeftText = buttonLeftText;
+        this.buttonRightText = buttonRightText;
+    }
+
+    public AskForActionDialog(LayoutInflater inflater, String title, String content,
+                              String buttonLeftText, String buttonRightText) {
+        super();
+        this.inflater = inflater;
+        this.title = title;
+        this.content = content;
         this.buttonLeftText = buttonLeftText;
         this.buttonRightText = buttonRightText;
     }
@@ -47,7 +58,7 @@ public class AskForActionDialog extends DialogFragment {
         Button customDialogCancelButton = dialogView.findViewById(R.id.customDialogCancelButton);
 
         customDialogTitle.setText(title);
-        customDialogMessage.setText("");
+        customDialogMessage.setText(content!=null?content:"");
         if(buttonRightText != null & buttonRightText != null){
             customDialogOkButton.setText(buttonRightText);
             customDialogCancelButton.setText(buttonLeftText);
