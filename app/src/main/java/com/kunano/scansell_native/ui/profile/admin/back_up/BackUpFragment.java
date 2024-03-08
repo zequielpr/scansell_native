@@ -1,11 +1,15 @@
 package com.kunano.scansell_native.ui.profile.admin.back_up;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -26,11 +30,13 @@ import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 
 public class BackUpFragment extends Fragment {
     private FragmentBackUpBinding binding;
+    private static final int REQUEST_CODE_PICK_DIRECTORY = 123;
     private MainActivityViewModel mainActivityViewModel;
     private Toolbar backupToolbar;
     private View createBackupSection;
     private View restoreBackUpSection;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private ActivityResultLauncher<Intent> directoryPickerLauncher;
     private CustomMediaPicker customMediaPicker;
 
     @Override
@@ -56,6 +62,9 @@ public class BackUpFragment extends Fragment {
         restoreBackUpSection.setOnClickListener(this::setRestoreBackUpSection);
         createBackupSection.setOnClickListener(this::setCreateBackupSectionAction);
 
+        directoryPickerLauncher = registerForActivityResult(new
+                ActivityResultContracts.StartActivityForResult(),this::receiveDirSelcted);
+
 
         return binding.getRoot();
     }
@@ -74,13 +83,42 @@ public class BackUpFragment extends Fragment {
 
 
     private void setCreateBackupSectionAction(View view){
-       AppDatabase.exportDatabase(getContext());
+        chooseDir();
+       //AppDatabase.exportDatabase(getContext());
     }
 
     private void setRestoreBackUpSection(View view){
-        AppDatabase.importDatabase(getContext());
-        //customMediaPicker.lunchImagePicker(new ActivityResultContracts.PickVisualMedia.SingleMimeType("*/.db*"));
+        //AppDatabase.importDatabase(getContext());
+        customMediaPicker.lunchImagePicker(new
+                ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
     }
+
+
+    private void chooseDir(){
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        directoryPickerLauncher.launch(intent);
+    }
+
+    private void receiveDirSelcted(ActivityResult result){
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                Uri treeUri = data.getData();
+                inTroduceFileName(treeUri);
+                // Use the selected URI to save your file
+                Toast.makeText(getContext(), "Directory picked: " + treeUri.toString(), Toast.LENGTH_SHORT).show();
+                // You can use this treeUri to create new files or directories within the selected directory
+            }
+        }
+    }
+
+    private void inTroduceFileName(Uri dirTosaveBackUp){
+        System.out.println("Directory: " + dirTosaveBackUp.getPath());
+        AppDatabase.exportDatabase(getContext(), dirTosaveBackUp);
+    }
+
+
+
 
 
     private void loadFilePath(Uri fileUri){
@@ -94,9 +132,15 @@ public class BackUpFragment extends Fragment {
         askForActionDialog.setButtonListener(new ListenResponse() {
             @Override
             public void isSuccessfull(boolean resultado) {
-
+                if (resultado){
+                    AppDatabase.importDatabase(getContext(), fileUri);
+                    askForActionDialog.dismiss();
+                }
             }
         });
 
     }
+
+
+
 }

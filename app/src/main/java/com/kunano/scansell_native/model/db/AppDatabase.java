@@ -1,10 +1,11 @@
 package com.kunano.scansell_native.model.db;
 
 import android.content.Context;
-import android.os.Environment;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -33,7 +34,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Database(entities = {Business.class, Product.class, ProductImg.class,
         UserBin.class, BusinessBin.class, Receipt.class, SoldProduct.class,
@@ -41,7 +45,7 @@ import java.nio.channels.FileChannel;
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static final String TAG = "DatabaseManager";
-    private static final String EXPORT_FILE_NAME = "backup.db";
+    private static String EXPORT_FILE_NAME = "backup";
 
     public static String DATABASE_NAME = "kunano";
     public static AppDatabase  instance;
@@ -86,49 +90,96 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
 
-    public static void exportDatabase(Context context) {
-        try {
-            instance.close();
-            File dbFile = context.getDatabasePath(DATABASE_NAME);
-            File exportDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-            if (!exportDir.exists()) {
-                exportDir.mkdirs();
+    public static void exportDatabase(Context context, Uri uriToSaveBackUp) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            String pattern = "yyyy-MM-dd HH:mm:ss";
+
+            // Create a DateTimeFormatter object with the desired pattern
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            EXPORT_FILE_NAME = EXPORT_FILE_NAME.concat(localDateTime.format(formatter).toString()).concat(".db");
+        }
+
+        instance.close();
+        File dbFile = context.getDatabasePath(DATABASE_NAME);
+        DocumentFile directory = DocumentFile.fromTreeUri(context, uriToSaveBackUp);
+        DocumentFile backUpFile = directory.createFile("application/octet-stream", EXPORT_FILE_NAME);
+
+
+        if (backUpFile != null) {
+            try {
+                //read
+                InputStream inputStream = new FileInputStream(dbFile);
+
+                // Write your content to outputStream
+                OutputStream outputStream = context.getContentResolver().openOutputStream(backUpFile.getUri());
+
+
+
+                // Transfer content from input stream to output stream
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+
+                Log.d(TAG, "Database path " + dbFile);
+                Log.d(TAG, "Database exported to " + backUpFile.getUri().getPath());
+                outputStream.close();
+                inputStream.close();
+                // File saved successfully
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle error
             }
-            File backup = new File(exportDir, EXPORT_FILE_NAME);
-            FileChannel src = new FileInputStream(dbFile).getChannel();
-            FileChannel dst = new FileOutputStream(backup).getChannel();
-            dst.transferFrom(src, 0, src.size());
-            src.close();
-            dst.close();
-            Log.d(TAG, "Database path " + dbFile);
-            Log.d(TAG, "Database exported to " + backup.getAbsolutePath());
-        } catch (IOException e) {
-            Log.e(TAG, "Error exporting database: " + e.getCause());
+        } else {
+            // Failed to create the file
+        }
+
+
+    }
+
+    public static void importDatabase(Context context, Uri sourceUri) {
+        instance.close();
+        DocumentFile backup = DocumentFile.fromSingleUri(context, sourceUri);
+        File dbFile = context.getDatabasePath(DATABASE_NAME);
+
+        if (backup.exists()) {
+
+            try {
+
+                //Read content
+                InputStream inputStream = context.getContentResolver().openInputStream(backup.getUri());
+
+                OutputStream outputStream = new FileOutputStream(dbFile);
+                // Write your content to outputStream
+
+
+                // Transfer content from input stream to output stream
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+
+                Log.d(TAG, "Database path " + dbFile);
+                Log.d(TAG, "Database imported from " + backup.getUri().getPath());
+                outputStream.close();
+                inputStream.close();
+                // File saved successfully
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle error
+            }catch (Exception e){
+                Log.d(TAG, "Failure" + e.getCause());
+            }
+
+        } else {
+            Log.e(TAG, "Backup file not found!");
         }
     }
 
-    public static void importDatabase(Context context) {
-        try {
-            instance.close();
-            File exportDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-            if (!exportDir.exists()){
-                exportDir.mkdirs();
-            }
-            File backup = new File(exportDir, EXPORT_FILE_NAME);
-            if (backup.exists()) {
-                File dbFile = context.getDatabasePath(DATABASE_NAME);
-                FileChannel src = new FileInputStream(backup).getChannel();
-                FileChannel dst = new FileOutputStream(dbFile).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                Log.d(TAG, "Database imported from " + backup.getAbsolutePath());
-            } else {
-                Log.e(TAG, "Backup file not found!");
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Error importing database: " + e.getMessage());
-        }
-    }
+
+
 
 }
