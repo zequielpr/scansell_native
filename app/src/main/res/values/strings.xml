@@ -1,4 +1,7 @@
 <resources>
+    <string name="default_web_client_id">88525641549-aag73eulao2lncjg990thm5jn8cdjnhi.apps.googleusercontent.com</string>
+    <string name="default_android_client_id">88525641549-jcsb347tt4bpeltdmoqtg7co53b5ii7h.apps.googleusercontent.com</string>
+
     <string name="app_name">scansell_native</string>
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Vender</string>
@@ -102,8 +105,24 @@
     <string name="vibrate">vibrate</string>
     <string name="beep">beep</string>
     <string name="pick_sound">pick a sound</string>
-    <string name="data_restored_success">data restored successfuly</string>
+    <string name="data_restored_success">data restored successfully</string>
     <string name="thera_has_been_an_error">There has been an error</string>
+    <string name="backup_destination">Save backup at</string>
+    <string name="device">device</string>
+    <string name="drive">drive</string>
+    <string name="log_in">log in</string>
+    <string name="continue_google">continue with google</string>
+    <string name="forgotten_pass">password forgotten</string>
+    <string name="sign_up">sign up</string>
+    <string name="title_activity_log_in">LogInActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="scan_sell_backup">scansell backups</string>
+    <string name="faile_to_create_backup">failed to create backup</string>
+    <string name="backup_created_success">backup created successfully</string>
 
 
 </resources>

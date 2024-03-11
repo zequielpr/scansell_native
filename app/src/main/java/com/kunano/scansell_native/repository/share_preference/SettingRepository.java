@@ -33,4 +33,12 @@ public class SettingRepository {
         return  sharePreferenceHelper.isSoundactive();
     }
 
+    public void setDriveFolderId(String folderId){
+        sharePreferenceHelper.setDriveFolderId(folderId);
+    }
+
+    public String getDriveFolderId(){
+        return sharePreferenceHelper.getDriveFolderId();
+    }
+
 }

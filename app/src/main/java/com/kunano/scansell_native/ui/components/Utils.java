@@ -3,6 +3,7 @@ package com.kunano.scansell_native.ui.components;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -45,6 +46,18 @@ public class Utils {
     public static void showToast(Context context, String message, Integer duration) {
         Toast.makeText(context, message, duration).show();
     }
+
+    public static String  getFileNameFromUri(Uri uri){
+        String path = uri.getPath();
+        String[] segments = path.split("/");
+        String name = segments[segments.length - 1];
+
+        return name;
+    }
+
+
+
+
 
 
 

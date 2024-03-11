@@ -1,5 +1,7 @@
 package com.kunano.scansell_native;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,7 +12,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
+import com.kunano.scansell_native.ui.profile.login.LogInActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,9 +24,16 @@ public class MainActivity extends AppCompatActivity {
     MainActivityViewModel mainActivityViewModel;
 
     BottomNavigationView navView;
+    FirebaseUser currentUser;
+    FirebaseAuth firebaseAuth;
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser == null)navigateToLogIn();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -54,9 +66,15 @@ public class MainActivity extends AppCompatActivity {
         navController.getContext();
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
     }
     NavController navController;
 
+
+    private void navigateToLogIn(){
+        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+        startActivity(intent);
+    }
     @Override
     public void onBackPressed() {
        mainActivityViewModel.notifyBackPressed();
