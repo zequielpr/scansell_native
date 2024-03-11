@@ -439,20 +439,22 @@ public class BusinessFragment extends Fragment {
 
 
     public void showProgressBar() {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                businessViewModel.cancelDeleteProcess();
-            }
-
-        };
 
 
         String title =  getString(R.string.send_items_to_bin_warning);
         MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 
-        progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+        progressBarDialog = new ProgressBarDialog(
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
+        progressBarDialog.setAction(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean cancelDeleteProcess) {
+                if(cancelDeleteProcess){
+                    businessViewModel.cancelDeleteProcess();
+                }
+            }
+        });
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 

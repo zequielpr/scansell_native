@@ -39,6 +39,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <service android:name=".repository.home.DriveServices"/>
         <activity android:name ="com.kunano.scansell_native.ui.profile.login.LogInActivity"
             android:exported="true"
             android:label = "@string/title_activity_log_in"

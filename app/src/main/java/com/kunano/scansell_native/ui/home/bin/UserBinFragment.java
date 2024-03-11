@@ -301,7 +301,7 @@ public class UserBinFragment extends Fragment {
         MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
 
-        progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+        progressBarDialog = new ProgressBarDialog(
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");

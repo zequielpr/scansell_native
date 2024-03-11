@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.databinding.FragmentBackupDestinationBinding;
@@ -15,9 +16,12 @@ public class BackupDestinationFragment extends BottomSheetDialogFragment {
     private FragmentBackupDestinationBinding binding;
     private ImageButton deviceImageButton;
     private ImageButton driveImageButton;
+    private TextView optionsTitleTextView;
+    private String title;
 
-    public BackupDestinationFragment() {
+    public BackupDestinationFragment(String title) {
         // Required empty public constructor
+        this.title = title;
     }
 
     @Override
@@ -28,7 +32,9 @@ public class BackupDestinationFragment extends BottomSheetDialogFragment {
         binding = FragmentBackupDestinationBinding.inflate(inflater, container, false);
         deviceImageButton = binding.deviceImageButton;
         driveImageButton = binding.driveImageButton;
+        optionsTitleTextView = binding.optionsTitleTextView;
 
+        optionsTitleTextView.setText(title);
         deviceImageButton.setOnClickListener(backUpDestinationListener::onDevice);
         driveImageButton.setOnClickListener(backUpDestinationListener::onDrive);
 
