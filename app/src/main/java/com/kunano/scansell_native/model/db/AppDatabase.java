@@ -113,10 +113,19 @@ public abstract class AppDatabase extends RoomDatabase {
                     System.out.println("Tiramisu");
                 }else {
                     byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = inputStream.read(buffer)) > 0) {
+                    int totalBytesRead = 0;
+                    Long totalBytes = backup.length();
+                    int bytesRead;
 
-                        outputStream.write(buffer, 0, length);
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        if (bytesRead > 0) {
+                            totalBytesRead += bytesRead;
+                            outputStream.write(buffer, 0, bytesRead);
+
+                            // Calculate progress
+                            double progress = (double) totalBytesRead * 100 /totalBytes;
+                            System.out.println("Progress: " + progress + "%");
+                        }
                     }
                 }
 

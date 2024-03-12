@@ -224,23 +224,8 @@ public class BackUpFragment extends Fragment {
 
     //Restore database___________________________________________________________
     private void setRestoreBackUpSection(View view){
-
-        backupDestinationFragment = new BackupDestinationFragment(getString(R.string.restore_from));
-        backupDestinationFragment.setBackUpDestinationListener(new BackupDestinationFragment.BackUpDestinationListener() {
-            @Override
-            public void onDevice(View view) {
-                backupDestinationFragment.dismiss();
-                customMediaPicker.lunchImagePicker(new
-                        ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
-            }
-
-            @Override
-            public void onDrive(View view) {
-                backupDestinationFragment.dismiss();
-            }
-        });
-        backupDestinationFragment.show(getParentFragmentManager(), "Select fragment destination");
-
+        customMediaPicker.lunchImagePicker(new
+                ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
 
     }
 
@@ -268,19 +253,26 @@ public class BackUpFragment extends Fragment {
     private void restore(Boolean isToRestore, Uri BackUpFileUri){
         if (isToRestore){
            if (  askForActionDialog != null)askForActionDialog.dismiss();
+            progressBarDialog = new
+                    ProgressBarDialog(getString(R.string.uploading_file_to_drive), getViewLifecycleOwner(),
+                    backUpViewModel.getRestoreProgress());
+            progressBarDialog.show(getParentFragmentManager(), "restore progress");
 
-           boolean restult = AppDatabase.importDatabase(getContext(), BackUpFileUri);
-           processResult(restult);
+
+
+           backUpViewModel.importDatabase(getContext(), BackUpFileUri, this::processResult);
         }
     }
 
     private void processResult(boolean result){
-        if (result){
-            Utils.showToast(getContext(), getString(R.string.data_restored_success), Toast.LENGTH_SHORT);
-            Utils.restartApp(getContext());
-            return;
-        }
-        Utils.showToast(getContext(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
+        getActivity().runOnUiThread(()->{
+            if (result){
+                Utils.showToast(getContext(), getString(R.string.data_restored_success), Toast.LENGTH_SHORT);
+                Utils.restartApp(getContext());
+                return;
+            }
+            Utils.showToast(getContext(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
+        });
 
 
 

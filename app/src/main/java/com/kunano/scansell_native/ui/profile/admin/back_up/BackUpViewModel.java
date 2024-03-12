@@ -3,6 +3,7 @@ package com.kunano.scansell_native.ui.profile.admin.back_up;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,23 +17,30 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.DriveScopes;
 import com.kunano.scansell_native.model.db.AppDatabase;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class BackUpViewModel extends AndroidViewModel {
     private static String EXPORT_FILE_NAME = "backup";
     private static final String TAG = "backups";
 
     private MutableLiveData<Integer> uploadFileToDriveProgress;
+    private MutableLiveData<Integer> restoreProgress;
     public BackUpViewModel(@NonNull Application application) {
         super(application);
 
         uploadFileToDriveProgress = new MutableLiveData<>(0);
+        restoreProgress = new MutableLiveData<>(0);
     }
 
     public static GoogleSignInClient getGoogleSignInClientForDrive(Context context){
@@ -50,6 +58,82 @@ public class BackUpViewModel extends AndroidViewModel {
 
     public void setUploadFileToDriveProgress(Integer uploadFileToDriveProgress) {
         this.uploadFileToDriveProgress.postValue(uploadFileToDriveProgress);
+    }
+
+    public MutableLiveData<Integer> getRestoreProgress() {
+        return restoreProgress;
+    }
+
+    public void setRestoreProgress(Integer restoreProgress) {
+        this.restoreProgress.postValue(restoreProgress);
+    }
+
+    Executor executor;
+
+    public void importDatabase(Context context, Uri sourceUri, ListenResponse listenResponse) {
+        executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(()->{
+            AppDatabase.closeDatabase();
+            DocumentFile backup = DocumentFile.fromSingleUri(context, sourceUri);
+            File dbFile = context.getDatabasePath(AppDatabase.DATABASE_NAME);
+
+            if (backup.exists()) {
+
+                try {
+
+                    //Read content
+                    InputStream inputStream = context.getContentResolver().openInputStream(backup.getUri());
+
+                    //Write content
+                    OutputStream outputStream = new FileOutputStream(dbFile);
+
+                    // Transfer content from input stream to output stream
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        inputStream.transferTo(outputStream);
+                        System.out.println("Tiramisu");
+                    }else {
+                        byte[] buffer = new byte[1024];
+                        int totalBytesRead = 0;
+                        Long totalBytes = backup.length();
+                        int bytesRead;
+
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            if (bytesRead > 0) {
+                                totalBytesRead += bytesRead;
+                                outputStream.write(buffer, 0, bytesRead);
+
+                                // Calculate progress
+                                double progress = (double) totalBytesRead * 100 /totalBytes;;
+                                restoreProgress.postValue((int)progress);
+                                System.out.println("Progress: " + progress + "%");
+                                if (progress == 100)listenResponse.isSuccessfull(true);
+                            }
+
+                        }
+                    }
+
+
+                    // Transfer content from input stream to output stream
+
+                    outputStream.close();
+                    inputStream.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    listenResponse.isSuccessfull(false);
+                    // Handle error
+                }catch (Exception e){
+                    Log.d(TAG, "Failure" + e.getCause());
+                    listenResponse.isSuccessfull(false);
+                }
+
+            } else {
+                Log.e(TAG, "Backup file not found!");
+                listenResponse.isSuccessfull(false);
+            }
+        });
     }
 
 
