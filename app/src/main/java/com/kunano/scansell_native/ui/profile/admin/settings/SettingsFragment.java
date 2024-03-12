@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -21,6 +24,7 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSettingsBinding;
+import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 
 
@@ -31,12 +35,16 @@ public class SettingsFragment extends Fragment {
     private Toolbar settingsToolBar;
     private View languageSetcion;
     private Switch soundAfterScanSectionSwitch;
-    private TextView curretnSoundTextView;
     private ImageView soundStateImageView;
     private TextView currentLanguageTextView;
     private SettingViewModel settingViewModel;
     private SettingRepository settingRepository;
+    Spinner currentSoundSpinner;
+    ArrayAdapter<String> soundsArrayAdapter;
+    SharePreferenceHelper sharePreferenceHelper;
+
     private boolean soudState;
+    private Integer currentSound;
 
 
     @Override
@@ -46,6 +54,7 @@ public class SettingsFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
         settingRepository = new SettingRepository(getActivity(), Context.MODE_PRIVATE);
+        sharePreferenceHelper = new SharePreferenceHelper(getActivity(), Context.MODE_PRIVATE);
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
 
         settingsToolBar = binding.settingsToolbar;
@@ -53,25 +62,49 @@ public class SettingsFragment extends Fragment {
         soundAfterScanSectionSwitch = binding.soundSection;
         soundStateImageView = binding.soundStateImageView;
         currentLanguageTextView = binding.actualLanguageTextView;
-        curretnSoundTextView = binding.currentSoundTextView;
+        currentSoundSpinner = binding.currentSoundSpinner;
 
         settingsToolBar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         settingsToolBar.setNavigationOnClickListener(this::navigateBack);
 
         mainActivityViewModel.setHandleBackPress(this::handlePressBack);
         settingViewModel.getSoundState().observe(getViewLifecycleOwner(), this::handleSoundState);
-        settingViewModel.getCurrentSound().observe(getViewLifecycleOwner(), this::handleCurrentSound);
+        settingViewModel.getCurrentSound().observe(getViewLifecycleOwner(), currentSoundSpinner::setSelection);
 
         languageSetcion.setOnClickListener(this::pressLanguageAction);
         soundAfterScanSectionSwitch.setOnCheckedChangeListener(this::adminSound);
-        curretnSoundTextView.setOnClickListener(this::selectCurrentSound);
+
+        String [] soundsOption ={getString(R.string.beep), getString(R.string.vibrate)};
+
+        soundsArrayAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, soundsOption);
+
+        soundsArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        currentSoundSpinner.setAdapter(soundsArrayAdapter);
+
+
+
+        currentSoundSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                settingViewModel.setCurrentSound(i);
+                sharePreferenceHelper.setSound(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
 
         return binding.getRoot();
     }
 
 
 
-    Integer currentSound;
+
     public void onViewCreated(@NonNull View view, @NonNull Bundle savedState){
         super.onViewCreated(view, savedState);
         soudState = settingRepository.isSoundActive();
@@ -96,13 +129,6 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void handleCurrentSound(Integer currentSound){
-        if (currentSound == SettingRepository.BEEP_SOUND){
-            curretnSoundTextView.setText(getString(R.string.beep));
-        }else {
-            curretnSoundTextView.setText(getString(R.string.vibrate));
-        }
-    }
 
 
     private void navigateBack(View view){
@@ -112,14 +138,12 @@ public class SettingsFragment extends Fragment {
     }
 
 
+
+
     private void pressLanguageAction(View view){
 
     }
 
-    private void selectCurrentSound(View view){
-        SelectSoundFragment selectSoundFragment = new SelectSoundFragment(settingViewModel);
-        selectSoundFragment.show(getChildFragmentManager(), "Select sound");
-    }
 
 
     //Activate or desactivate sound

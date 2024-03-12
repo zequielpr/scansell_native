@@ -88,12 +88,12 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:text="@string/sound_after_acanned" />
-                <TextView
-                    android:id="@+id/currentSoundTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="currentSound" />
+
+                <Spinner
+                    android:id="@+id/currentSoundSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
         </LinearLayout>

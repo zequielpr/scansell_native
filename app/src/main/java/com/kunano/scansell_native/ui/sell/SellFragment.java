@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -34,6 +35,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.SellFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.model.db.SharePreferenceHelper;
+import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
@@ -59,9 +62,8 @@ public class SellFragment extends Fragment {
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
     private MainActivityViewModel mainActivityViewModel;
+    private MediaPlayer mediaPlayer;
 
-
-    // Invoked when the activity might be temporarily destroyed; save the instance state here.
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -209,13 +211,52 @@ public class SellFragment extends Fragment {
         }
         Product p = (Product) result;
         sellViewModel.addProductToSell(p);
+        makeSound();
+
+
+    }
+
+    private void makeSound(){
+
+        SharePreferenceHelper sharePreferenceHelper =
+                new SharePreferenceHelper(getActivity(), Context.MODE_PRIVATE);
+        boolean isSoundActive = sharePreferenceHelper.isSoundactive();
+
+        if (!isSoundActive)return;
+
+        Integer sound = sharePreferenceHelper.getSound();
+
+        if (sound == SettingRepository.VIBRATION_SOUND){
+            vibrate();
+
+        }else {
+            beep();
+        }
+
+    }
+
+    private void vibrate(){
         Vibrator vibrator = (Vibrator) this.getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-        // Vibrate for 500 milliseconds
         if (vibrator != null) {
             vibrator.vibrate(250);
         }
+    }
 
+
+    private void beep(){
+       mediaPlayer = MediaPlayer.create(getContext(), R.raw.beep);
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        // Release the MediaPlayer resources
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
 
