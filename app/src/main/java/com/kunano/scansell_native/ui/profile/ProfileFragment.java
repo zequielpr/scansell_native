@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
+import com.kunano.scansell_native.ui.profile.admin.account.AccountHelper;
 import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
@@ -50,8 +52,14 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private CustomPieChart customPieChart;
     private TextView selectedDateTextView;
     private Toolbar profileToolbar;
+    private AccountHelper accountHelper;
 
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        accountHelper = new AccountHelper();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -108,6 +116,12 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        profileToolbar.setTitle(accountHelper.getUserName());
     }
 
     public OnChartValueSelectedListener getOnChartValueSelectedListener(){

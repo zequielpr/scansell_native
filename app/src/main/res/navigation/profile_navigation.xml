@@ -28,6 +28,15 @@
         <action
             android:id="@+id/action_accountFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changeNameFragment"
+            app:destination="@id/changeNameFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changeEmailAddressFragment"
+            app:destination="@id/changeEmailAddressFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/backUpFragment"
@@ -46,5 +55,32 @@
         <action
             android:id="@+id/action_settingsFragment2_to_profileFragment"
             app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeNameFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.name.ChangeNameFragment"
+        android:label="fragment_change_name"
+        tools:layout="@layout/fragment_change_name" >
+        <action
+            android:id="@+id/action_changeNameFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeEmailAddressFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.email.ChangeEmailAddressFragment"
+        android:label="fragment_change_email_address"
+        tools:layout="@layout/fragment_change_email_address" >
+        <action
+            android:id="@+id/action_changeEmailAddressFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.password.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" >
+        <action
+            android:id="@+id/action_changePasswordFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
 </navigation>

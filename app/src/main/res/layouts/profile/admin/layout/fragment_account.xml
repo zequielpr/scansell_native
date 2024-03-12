@@ -40,11 +40,12 @@
                 android:src="@drawable/profile_icon" />
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/email_address" />
+                android:text="@string/name"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -67,11 +68,12 @@
                 android:src="@drawable/email_address" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/emailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/email_address" />
+                android:text="@string/email_address"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -96,7 +98,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/change_password" />
+                android:text="@string/change_password"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -121,7 +124,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/delete_account"  />
+                android:text="@string/delete_account"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
