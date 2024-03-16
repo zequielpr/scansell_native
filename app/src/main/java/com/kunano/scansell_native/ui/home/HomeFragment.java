@@ -26,6 +26,7 @@ import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 
@@ -262,7 +263,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void activateWaitingMode() {
-        spinningWheelDialog = new SpinningWheel(getLayoutInflater());
+        spinningWheelDialog = new SpinningWheel();
         spinningWheelDialog.show(getParentFragmentManager(), "spinning_wheel");
     }
 
@@ -315,11 +316,11 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void askDeleteBusiness() {
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
-        askWhetherDeleteDialog.setButtonListener(new ListenResponse() {
+                AskForActionDialog( title);
+        askWhetherDeleteDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if(resultado){
+            public void result(Boolean object) {
+                if(object){
                     homeViewModel.passBusinessToBin();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

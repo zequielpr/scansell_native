@@ -1,44 +1,36 @@
 package com.kunano.scansell_native.ui.components;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.databinding.SpinningWheelBinding;
 
 
 public class SpinningWheel extends DialogFragment {
+    public static String TAG = "wait";
 
-    private LayoutInflater inflater;
-    public SpinningWheel(LayoutInflater inflater) {
-        this.inflater = inflater;
+    private SpinningWheelBinding binding;
+    public SpinningWheel() {
+
     }
 
-
-
-
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View customView = inflater.inflate(R.layout.spinning_wheel, null);
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        binding = SpinningWheelBinding.inflate(inflater, container, false);
 
+        getDialog().setCanceledOnTouchOutside(false);
+        setCancelable(false);
+        getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-
-
-        builder.setView(customView);
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-        // Create the AlertDialog object and return it
-        return dialog;
+        return binding.getRoot();
     }
 
 }

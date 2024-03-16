@@ -272,7 +272,7 @@ public class UserBinFragment extends Fragment {
     public void askDeleteBusiness() {
         String title = getString(R.string.delete_businesses_warn);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
+                AskForActionDialog( title);
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
 

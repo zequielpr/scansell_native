@@ -1,6 +1,9 @@
-package com.kunano.scansell_native.ui.profile.admin.account;
+package com.kunano.scansell_native.ui.profile.auth;
+
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -8,27 +11,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.profile.login.LogInActivity;
 
-public class AccountHelper {
-    private FirebaseAuth firebaseAuth;
+public class AccountHelper extends UserData {
+    public static String SIG_IN_AGAIN = "Log in again";
+    public static String SUCCESS = "SUCCESS";
+    public static String NETWORK_ERROR = "network error";
     private FirebaseUser currentUser;
-    private String userName;
-    private String userEmail;
+    private static FirebaseAuth firebaseAuth;
     private UserProfileChangeRequest userProfileChangeRequest;
 
 
     public AccountHelper() {
-        firebaseAuth = FirebaseAuth.getInstance();
+        super();
+        if (firebaseAuth == null) {
+            firebaseAuth = FirebaseAuth.getInstance();
+        }
+
         currentUser = firebaseAuth.getCurrentUser();
     }
 
 
+    @Override
     public String getUserEmail() {
         if (currentUser != null) userEmail = currentUser.getEmail();
         return userEmail;
     }
 
-    public boolean isEmailVerified(){
+    public boolean isEmailVerified() {
         return currentUser.isEmailVerified();
     }
 
@@ -38,13 +49,18 @@ public class AccountHelper {
         return userName;
     }
 
-    public void signOut() {
+    public void signOut(Fragment fragment) {
         firebaseAuth.signOut();
+        Intent intent = new Intent(fragment.getContext(), LogInActivity.class);
+
+        fragment.startActivity(intent);
+        fragment.getActivity().finish();
+
     }
 
 
-    public void sendEmailVerification(ListenResponse listenResponse){
-        if (!currentUser.isEmailVerified()){
+    public void sendEmailVerification(ListenResponse listenResponse) {
+        if (!currentUser.isEmailVerified()) {
             currentUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
@@ -60,7 +76,7 @@ public class AccountHelper {
     }
 
 
-    public void setUserName(String userName, ListenResponse listenResponse) {
+    public void setUserName(String userName, ViewModelListener<String> listenResponse) {
         userProfileChangeRequest = new UserProfileChangeRequest.
                 Builder().setDisplayName(userName).build();
 
@@ -69,60 +85,68 @@ public class AccountHelper {
                     @Override
                     public void onSuccess(Void unused) {
                         AccountHelper.this.userName = userName;
-                        listenResponse.isSuccessfull(true);
+                        listenResponse.result(SUCCESS);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        listenResponse.isSuccessfull(false);
+                        listenResponse.result(e.getMessage());
                     }
                 });
 
     }
 
 
-    public void setUserEmail(String userEmail, ListenResponse listenResponse) {
+
+    public void setUserEmail(String userEmail, ViewModelListener<String> listener) {
         if (currentUser == null) return;
-        currentUser.verifyBeforeUpdateEmail(userEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                AccountHelper.this.userEmail = userEmail;
-                listenResponse.isSuccessfull(true);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                listenResponse.isSuccessfull(false);
-            }
-        });
+
+
+
+
+        currentUser.verifyBeforeUpdateEmail(userEmail)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        listener.result(SUCCESS);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.result(e.getMessage());
+                    }
+                });
+
+
+        // Prompt the user to re-provide their sign-in credentials
 
     }
 
-    private void changePassword(String passwd, ListenResponse listenResponse) {
+    public void setPassword(String passwd, ViewModelListener<String> listener) {
         currentUser.updatePassword(passwd).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                listenResponse.isSuccessfull(true);
+                listener.result(SUCCESS);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                listenResponse.isSuccessfull(false);
+                listener.result(e.getMessage());
             }
         });
 
     }
 
-    public void deleteAccount(ListenResponse listenResponse) {
+    public void deleteAccount(ViewModelListener<String> listener) {
         currentUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                listenResponse.isSuccessfull(true);
+                listener.result(SUCCESS);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                listenResponse.isSuccessfull(false);
+                listener.result(e.getMessage());
             }
         });
     }

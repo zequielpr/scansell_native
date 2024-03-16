@@ -38,7 +38,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
@@ -262,13 +262,13 @@ public class SellFragment extends Fragment {
 
     //Ask to create a new product or try again
     private void askCreateNewProdOrTryAgain(String barcode){
-        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+        AskForActionDialog askForActionDialog = new AskForActionDialog(
                 getString(R.string.scanned_product_not_found), getString(R.string.tray_again),
                 getString(R.string.create_new_product));
-        askForActionDialog.setButtonListener(new ListenResponse() {
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if (resultado){
+            public void result(Boolean object) {
+                if (object){
                     navigateToCreateProduct(barcode);
                 }else {
                     scanNewProduct(getView());

@@ -1,65 +1,211 @@
 package com.kunano.scansell_native.ui.profile.admin.account.email;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
+import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.databinding.FragmentChangeEmailAddressBinding;
+import com.kunano.scansell_native.model.ValidateData;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
+import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChangeEmailAddressFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChangeEmailAddressFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private MainActivityViewModel mainActivityViewModel;
+    private AccountHelper accountHelper;
+    private EditText emailEditText;
+    private EditText emailEditTextConfirm;
+    private Button saveButton;
+    private FragmentChangeEmailAddressBinding binding;
+    private Toolbar changeEmailToolbar;
+    private TextView emailWarnTextView;
+    private TextView emailToConfirmWarnTextView;
+    private ChangeEmailviewModel changeEmailviewModel;
+    private SpinningWheel spinningWheel;
+
+
+   private enum EmailWarns{
+        EMAIL_VALID,
+        EMAIL_NO_VALID,
+        EMAIL_EMPTY,
+        EMAIL_TO_CONFIRM_EMPTY,
+        EMAILS_NOT_MATCHES
+    }
+
 
     public ChangeEmailAddressFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChangeEmailAddressFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChangeEmailAddressFragment newInstance(String param1, String param2) {
-        ChangeEmailAddressFragment fragment = new ChangeEmailAddressFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        changeEmailviewModel = new ViewModelProvider(this).get(ChangeEmailviewModel.class);
+
+        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
+
+        accountHelper = new AccountHelper();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_email_address, container, false);
+        binding = FragmentChangeEmailAddressBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        emailEditText = binding.editTextEmail;
+        emailEditTextConfirm = binding.editTextConfirmEmail;
+        saveButton = binding.buttonSaveEmail;
+        changeEmailToolbar = binding.changeEmailToolbar;
+        saveButton.setOnClickListener(this::setSaveButtonAction);
+        emailWarnTextView = binding.emailWarnTextView;
+        emailToConfirmWarnTextView = binding.emailToConfirmTextView;
+
+        changeEmailToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
+        changeEmailToolbar.setNavigationOnClickListener(this::navigateBack);
+
+        changeEmailviewModel.getEmailWarnMessage().observe(getViewLifecycleOwner(), emailWarnTextView::setText);
+        changeEmailviewModel.getEmailToConfirmWarnMessage().observe(getViewLifecycleOwner(), emailToConfirmWarnTextView::setText);
+
+
+    }
+
+
+    private void handleBackPress(){
+        navigateBack(getView());
+        mainActivityViewModel.setHandleBackPress(null);
+    }
+
+
+    private void navigateBack(View view){
+        NavDirections navDirectionsBack = ChangeEmailAddressFragmentDirections.
+                actionChangeEmailAddressFragmentToAccountFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionsBack);
+
+    }
+
+
+    private void setSaveButtonAction(View view){
+        String email = emailEditText.getText().toString();
+        String emailConfirm = emailEditTextConfirm.getText().toString();
+        if (!validateEmail(email, emailConfirm)) return;
+        shoWSpinningWheel();
+
+        accountHelper.setUserEmail(email, this::processEmailRequest);
+    }
+    private void shoWSpinningWheel(){
+       spinningWheel = new SpinningWheel();
+       spinningWheel.show(getParentFragmentManager(), "wait");
+    }
+
+
+
+    private boolean validateEmail(String email,  String emailToConfirm ){
+
+        EmailWarns emailWarns = EmailWarns.EMAIL_VALID;
+
+        if (email.isEmpty()) emailWarns = EmailWarns.EMAIL_EMPTY;
+        else if (!ValidateData.validateEmailAddress(email))emailWarns = EmailWarns.EMAIL_NO_VALID;
+        else if (emailToConfirm.isEmpty()) emailWarns = EmailWarns.EMAIL_TO_CONFIRM_EMPTY;
+        else if (!email.equals(emailToConfirm))emailWarns = EmailWarns.EMAILS_NOT_MATCHES;
+
+        return isEmailValid(emailWarns);
+    }
+
+    private boolean isEmailValid(EmailWarns emailWarns){
+
+        changeEmailviewModel.setEmailWarnMessage("");
+        changeEmailviewModel.setEmailToConfirmWarnMessage("");
+
+        String message;
+        switch (emailWarns){
+            case EMAIL_EMPTY:
+                 message = getString(R.string.introduce_an_email);
+                 changeEmailviewModel.setEmailWarnMessage(message);
+                 return false;
+            case EMAIL_NO_VALID:
+                message = getString(R.string.email_not_valid);
+                changeEmailviewModel.setEmailWarnMessage(message);
+                return false;
+            case EMAIL_TO_CONFIRM_EMPTY:
+                message = getString(R.string.introduce_an_email_to_confirm);
+                changeEmailviewModel.setEmailToConfirmWarnMessage(message);
+                return false;
+            case EMAILS_NOT_MATCHES:
+                message = getString(R.string.emails_not_matches);
+                changeEmailviewModel.setEmailToConfirmWarnMessage(message);
+                return false;
+            default:
+                return true;
+
+        }
+    }
+
+    private void processEmailRequest(String  result){
+       spinningWheel.dismiss();
+        String message  = "";
+
+       if (result.contains(AccountHelper.SIG_IN_AGAIN)){
+           message = getString(R.string.sign_in_again);
+
+       } else if (result.contains(AccountHelper.NETWORK_ERROR)) {
+           message = getString(R.string.network_error);
+       }
+       else if(result.equalsIgnoreCase(AccountHelper.SUCCESS)){
+           showLinkSentLinkAlert();
+           return;
+       }
+        showResult(message);
+
+    }
+
+
+    private void showResult(String message){
+        getActivity().runOnUiThread(()->{
+            Utils.showToast(getContext(),message , Toast.LENGTH_SHORT);
+        });
+    }
+
+
+    private void showLinkSentLinkAlert(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+        alertDialogBuilder.setTitle(getString(R.string.update_request_sent)).
+                setMessage(getString(R.string.click_link_email_address)).
+                setPositiveButton(getString(R.string.ok),this::dismissLinkSentLinkAlert);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void dismissLinkSentLinkAlert(DialogInterface dialogInterface, int i){
+       dialogInterface.dismiss();
     }
 }

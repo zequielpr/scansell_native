@@ -239,7 +239,7 @@ public class BackUpFragment extends Fragment {
         System.out.println("File uri: " + backUpFileUri);
         String fileName = backUpFileUri.toString().
                 contains("externalstorage")?Utils.getFileNameFromUri(backUpFileUri):"From drive";
-        askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+        askForActionDialog = new AskForActionDialog(
                 getString(R.string.restore_back_up), fileName,
                 getString(R.string.cancel), getString(R.string.restore));
 

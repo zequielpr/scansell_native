@@ -416,7 +416,7 @@ public class BusinessFragment extends Fragment {
         System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
+                AskForActionDialog(title);
         askWhetherDeleteDialog.setButtonListener(this::pasToBinOrCancel);
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
@@ -507,7 +507,7 @@ public class BusinessFragment extends Fragment {
 
     private AskForActionDialog askWhetherDeleteDialogBinBusiness;
     private void sendCurrentBusinessTobin(){
-        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getLayoutInflater(), getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getString(R.string.bin_business) );
         askWhetherDeleteDialogBinBusiness.setButtonListener(this::handleCancelOrBinBusiness);
         askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
     }

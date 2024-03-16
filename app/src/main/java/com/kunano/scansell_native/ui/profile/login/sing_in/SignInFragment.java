@@ -29,6 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.kunano.scansell_native.MainActivity;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentLogInBinding;
 
@@ -142,6 +143,8 @@ public class SignInFragment extends Fragment {
     }
 
     public void navigateToMainActivity(){
+        Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
+        startActivity(intent);
         getActivity().finish();
     }
 

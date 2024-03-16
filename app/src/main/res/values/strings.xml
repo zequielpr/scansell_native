@@ -126,6 +126,32 @@
     <string name="faile_to_create_backup_verify_network">failed to create backup. Verify your network connection</string>
     <string name="backup_created_success">backup created successfully</string>
     <string name="uploading_file_to_drive">uploading file to drive. Do not close this app</string>
+    <string name="update_email">update email</string>
+    <string name="introduce_an_email">introduce an email</string>
+    <string name="introduce_an_email_to_confirm">introduce email to confirm</string>
+    <string name="email_not_valid">email not valid(example@example.com</string>
+    <string name="emails_not_matches">email does not match</string>
+    <string name="email_updated_successfully">Email updated successfully</string>
+    <string name="sign_in_again">Sign in again to make this operation</string>
+    <string name="network_error">verify your internet connection</string>
+    <string name="update_request_sent">Update request sent</string>
+    <string name="click_link_email_address">click the link sent to
+        your current email address to update your email</string>
+    <string name="sign_out">sign out</string>
+    <string name="enter_new_email_address">enter new email address</string>
+    <string name="confirm_new_email_address">confirm new email address</string>
+    <string name="enter_new_name">enter new name</string>
+    <string name="change_name">Change name</string>
+    <string name="name_updated_success">name updated successfully</string>
+    <string name="update_password">update password</string>
+    <string name="show_password">show password</string>
+    <string name="enter_new_password">enter new password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="upper_and_lower_case">At lest one upper and lower case letter</string>
+    <string name="at_least_one_digit">At least one digit</string>
+    <string name="at_least_eight_characters">At least 8 characters</string>
+    <string name="passwords_do_not_match">passwords do not match</string>
+    <string name="passwd_updated_success">Password updated successfully</string>
 
 
 </resources>

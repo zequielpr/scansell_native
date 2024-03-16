@@ -28,7 +28,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
-import com.kunano.scansell_native.ui.profile.admin.account.AccountHelper;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;

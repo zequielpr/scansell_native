@@ -331,7 +331,7 @@ public class CreateProductFragment extends Fragment {
 
     private boolean askTosndBin(MenuItem menuItem){
         askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), getString(R.string.send_bin_product));
+                AskForActionDialog(getString(R.string.send_bin_product));
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getParentFragmentManager(), "Ask to send item to bin");
         return true;

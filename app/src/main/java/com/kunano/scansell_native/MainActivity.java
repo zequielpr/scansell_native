@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private void navigateToLogIn(){
         Intent intent = new Intent(MainActivity.this, LogInActivity.class);
         startActivity(intent);
+        finish();
     }
     @Override
     public void onBackPressed() {

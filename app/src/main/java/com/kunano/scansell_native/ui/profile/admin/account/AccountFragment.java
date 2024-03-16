@@ -18,6 +18,8 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentAccountBinding;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +36,7 @@ public class AccountFragment extends Fragment {
     private View emailAddressSectionView;
     private View changePasswordSectionView;
     private View deleteAccountSectionView;
+    private View logOutSectionView;
     private AccountHelper accountHelper;
     private TextView nameTextView;
     private TextView emailTextView;
@@ -51,22 +54,19 @@ public class AccountFragment extends Fragment {
         mainActivityViewModel.setHandleBackPress(this::handlePressBack);
         accountHelper = new AccountHelper();
 
-
         nameSectionView = binding.nameSection;
         emailAddressSectionView = binding.emailAddressSection;
         changePasswordSectionView = binding.passwordSection;
         deleteAccountSectionView = binding.deleteAccountSection;
+        logOutSectionView = binding.logOutSection;
+
+
         nameTextView = binding.nameTextView;
         emailTextView = binding.emailTextView;
 
         accountToolbar = binding.accountToolbar;
-        accountToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
-        accountToolbar.setNavigationOnClickListener(this::navigateBack);
 
-        nameSectionView.setOnClickListener(this::setNameSectionViewAction);
-        emailAddressSectionView.setOnClickListener(this::emailAddressSectionAction);
-        changePasswordSectionView.setOnClickListener(this::setChangePasswordSectionViewAction);
-        deleteAccountSectionView.setOnClickListener(this::setDeleteAccountSectionViewAction);
+
 
         return binding.getRoot();
     }
@@ -75,6 +75,19 @@ public class AccountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        accountToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
+        accountToolbar.setNavigationOnClickListener(this::navigateBack);
+
+        nameSectionView.setOnClickListener(this::setNameSectionViewAction);
+        emailAddressSectionView.setOnClickListener(this::emailAddressSectionAction);
+        changePasswordSectionView.setOnClickListener(this::setChangePasswordSectionViewAction);
+        logOutSectionView.setOnClickListener(this::setSignOutSectionViewAction);
+        deleteAccountSectionView.setOnClickListener(this::setDeleteAccountSectionViewAction);
+
+
+
+
         nameTextView.setText(accountHelper.getUserName());
         emailTextView.setText(accountHelper.getUserEmail());
     }
@@ -107,6 +120,19 @@ public class AccountFragment extends Fragment {
         NavDirections navDirectionToPasswd = AccountFragmentDirections.actionAccountFragmentToChangePasswordFragment();
         Navigation.findNavController(getView()).navigate(navDirectionToPasswd);
     }
+
+    private void setSignOutSectionViewAction(View view){
+        String title = getString(R.string.sign_out).toString().concat("?");
+        AskForActionDialog askToSignOut = new AskForActionDialog(title);
+        askToSignOut.show(getParentFragmentManager(), "Sign out?");
+
+        askToSignOut.setButtonListener(this::SignOut);
+    }
+
+    private void SignOut(boolean isToSignOut){
+        if (isToSignOut)accountHelper.signOut(AccountFragment.this);
+    }
+
 
     private void setDeleteAccountSectionViewAction(View view){
 
