@@ -135,6 +135,7 @@ public class AccountFragment extends Fragment {
 
 
     private void setDeleteAccountSectionViewAction(View view){
-
+        NavDirections navDirectionToDeleteAccount = AccountFragmentDirections.actionAccountFragmentToDeleteAccountFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionToDeleteAccount);
     }
 }

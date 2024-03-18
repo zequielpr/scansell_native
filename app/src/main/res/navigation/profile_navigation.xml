@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_accountFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_deleteAccountFragment"
+            app:destination="@id/deleteAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/backUpFragment"
@@ -81,6 +84,15 @@
         tools:layout="@layout/fragment_change_password" >
         <action
             android:id="@+id/action_changePasswordFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deleteAccountFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.delete_account.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" >
+        <action
+            android:id="@+id/action_deleteAccountFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
     </fragment>
 </navigation>

@@ -32,12 +32,18 @@ public class AskForActionDialog extends DialogFragment {
         super();
         this.title = title;
     }
+
     public AskForActionDialog(String title,
                               String buttonLeftText, String buttonRightText) {
         super();
         this.title = title;
         this.buttonLeftText = buttonLeftText;
         this.buttonRightText = buttonRightText;
+    }
+    public AskForActionDialog(String title, String content) {
+        super();
+        this.title = title;
+        this.content = content;
     }
 
     public AskForActionDialog(String title, String content,
@@ -75,6 +81,7 @@ public class AskForActionDialog extends DialogFragment {
 
         customDialogTitle.setText(title);
         customDialogMessage.setText(content!=null?content:"");
+        customDialogMessage.setVisibility(content==null?View.GONE:View.VISIBLE);
         if(buttonRightText != null & buttonRightText != null){
             customDialogOkButton.setText(buttonRightText);
             customDialogCancelButton.setText(buttonLeftText);

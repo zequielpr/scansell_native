@@ -152,6 +152,10 @@
     <string name="at_least_eight_characters">At least 8 characters</string>
     <string name="passwords_do_not_match">passwords do not match</string>
     <string name="passwd_updated_success">Password updated successfully</string>
+    <string name="intro_account_email">Introduce your account email</string>
+    <string name="deleted_account_not_retrievable">Delete accounts can not be retrieved</string>
+    <string name="introduced_email_incorrect">Email incorrect. Introduce the email account</string>
+    <string name="account_deleted_success">Account deleted successfully</string>
 
 
 </resources>
