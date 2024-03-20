@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.profile.login;
+package com.kunano.scansell_native.ui.login;
 
 import android.os.Bundle;
 
@@ -24,7 +24,9 @@ private ActivityLogInBinding binding;
      binding = ActivityLogInBinding.inflate(getLayoutInflater());
      setContentView(binding.getRoot());
 
+        binding.toolbar.setTitle(null);
         setSupportActionBar(binding.toolbar);
+
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_log_in);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();

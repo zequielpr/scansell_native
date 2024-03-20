@@ -21,7 +21,6 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentChangeNameBinding;
-import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -36,7 +35,7 @@ public class ChangeNameFragment extends Fragment {
     private AccountHelper accountHelper;
     private TextView newNameWarnTextView;
     private Button saveButton;
-    private ChangeNameViewModel changeNameViewModel;
+    private NameViewModel nameViewModel;
     private Toolbar changeNameToolbar;
 
 
@@ -54,7 +53,7 @@ public class ChangeNameFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
-        changeNameViewModel = new ViewModelProvider(this).get(ChangeNameViewModel.class);
+        nameViewModel = new ViewModelProvider(this).get(NameViewModel.class);
 
         binding = FragmentChangeNameBinding.inflate(inflater, container, false);
 
@@ -71,7 +70,7 @@ public class ChangeNameFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         saveButton.setOnClickListener(this::changeNameRequest);
-        changeNameViewModel.getNewNameWarnMutableData().observe(getViewLifecycleOwner(), newNameWarnTextView::setText);
+        nameViewModel.getNewNameWarnMutableData().observe(getViewLifecycleOwner(), newNameWarnTextView::setText);
         changeNameToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         changeNameToolbar.setNavigationOnClickListener(this::navigateBack);
 
@@ -91,7 +90,7 @@ public class ChangeNameFragment extends Fragment {
         if (accountHelper == null) return;
         String newName = editTextNewName.getText().toString().trim();
 
-        if (!validateName(newName))return;
+        if (!nameViewModel.validateName(newName))return;
 
         spinningWheel = new SpinningWheel();
         spinningWheel.show(getParentFragmentManager(), "wait");
@@ -121,19 +120,7 @@ public class ChangeNameFragment extends Fragment {
         getActivity().runOnUiThread(()->Utils.showToast(getContext(), message, Toast.LENGTH_SHORT));
     }
 
-    private boolean validateName(String  newName){
 
-         if (newName.isEmpty()){
-             changeNameViewModel.setNewNameWarnMutableData(getString(R.string.advert_introduce_name));
-             return false;
-         }else if(!ValidateData.validateName(newName)) {
-             changeNameViewModel.setNewNameWarnMutableData(getString(R.string.advert_invalid_name));
-             return false;
-         }else {
-             changeNameViewModel.setNewNameWarnMutableData(null);
-             return true;
-         }
-    }
 
 
 }

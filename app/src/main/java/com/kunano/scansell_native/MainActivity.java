@@ -15,7 +15,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
-import com.kunano.scansell_native.ui.profile.login.LogInActivity;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
+import com.kunano.scansell_native.ui.login.LogInActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,9 +32,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser == null)navigateToLogIn();
+        AccountHelper accountHelper = new AccountHelper();
+
+
+        if (accountHelper.getCurrentUser()== null){
+            navigateToLogIn();
+        }else {
+           if(!accountHelper.isEmailVerified()) accountHelper.signOut(this);
+        };
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

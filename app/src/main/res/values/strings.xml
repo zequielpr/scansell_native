@@ -113,8 +113,8 @@
     <string name="drive">drive</string>
     <string name="log_in">log in</string>
     <string name="continue_google">continue with google</string>
-    <string name="forgotten_pass">password forgotten</string>
-    <string name="sign_up">sign up</string>
+    <string name="forgotten_pass">Password forgotten?</string>
+    <string name="sign_up">Sign up</string>
     <string name="title_activity_log_in">LogInActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -156,6 +156,26 @@
     <string name="deleted_account_not_retrievable">Delete accounts can not be retrieved</string>
     <string name="introduced_email_incorrect">Email incorrect. Introduce the email account</string>
     <string name="account_deleted_success">Account deleted successfully</string>
+    <string name="continue_action">Continue</string>
+    <string name="introduce_name">Introduce your name</string>
+    <string name="email_in_use">The email introduced is in use</string>
+    <string name="email_verification_sent">A verification email has been sent. Verify your email to log in</string>
+    <string name="verify_email">Verify email</string>
+    <string name="verification_sent">Verification link sent</string>
+    <string name="sign_in_success">Signed in successfully</string>
+    <string name="email_or_passwd_incorrect">Email or password incorrect</string>
+    <string name="introduce_account_passwd">Introduce your account password</string>
+    <string name="email_verification_sent_several_times">Email verification sent several times.
+    try again later</string>
+    <string name="accept_terms_and_policies">Accept terms of service and privacy policy
+    to sign up</string>
+    <string name="i_agree">I agree to the</string>
+    <string name="terms_of_service">\u00A0Terms of Service\u00A0</string>
+    <string name="and">\u00A0and\u00A0</string>
+    <string name="privacy_policy">\u00A0Privacy Policy\u00A0</string>
+    <string name="o">O</string>
+    <string name="recover_password">Recover password</string>
+    <string name="try_again_later">Tray again later</string>
 
 
 </resources>

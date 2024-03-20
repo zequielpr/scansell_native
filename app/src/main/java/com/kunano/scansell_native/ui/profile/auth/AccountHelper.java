@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.profile.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -10,18 +11,25 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.profile.login.LogInActivity;
+import com.kunano.scansell_native.ui.login.LogInActivity;
 
 public class AccountHelper extends UserData {
     public static String SIG_IN_AGAIN = "Log in again";
     public static String SUCCESS = "SUCCESS";
     public static String NETWORK_ERROR = "network error";
+    private static String UNUSUAL_ACTIVITY = "unusual activity";
     private FirebaseUser currentUser;
     private static FirebaseAuth firebaseAuth;
     private UserProfileChangeRequest userProfileChangeRequest;
 
+
+    public enum SEND_EMAIL_VERIFY_RESULT {
+        SUCCESS,
+        NETWORK_ERROR,
+        UNKNOWN_ERROR,
+        UNUSUAL_ACTIVITY
+    }
 
     public AccountHelper() {
         super();
@@ -33,6 +41,14 @@ public class AccountHelper extends UserData {
     }
 
 
+    public FirebaseUser getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(FirebaseUser currentUser) {
+        this.currentUser = currentUser;
+    }
+
     @Override
     public String getUserEmail() {
         if (currentUser != null) userEmail = currentUser.getEmail();
@@ -40,8 +56,9 @@ public class AccountHelper extends UserData {
     }
 
     public boolean isEmailVerified() {
-        return currentUser.isEmailVerified();
+        return currentUser == null?false:currentUser.isEmailVerified();
     }
+
 
 
     public String getUserName() {
@@ -58,18 +75,35 @@ public class AccountHelper extends UserData {
 
     }
 
+    public void signOut(Activity activity) {
+        firebaseAuth.signOut();
+        Intent intent = new Intent(activity, LogInActivity.class);
 
-    public void sendEmailVerification(ListenResponse listenResponse) {
+        activity.startActivity(intent);
+        activity.finish();
+
+    }
+
+
+
+    public void sendEmailVerification(ViewModelListener<SEND_EMAIL_VERIFY_RESULT> listener) {
         if (!currentUser.isEmailVerified()) {
             currentUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    listenResponse.isSuccessfull(true);
+                    listener.result(SEND_EMAIL_VERIFY_RESULT.SUCCESS);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    listenResponse.isSuccessfull(false);
+                    System.out.println("result: " + e.getMessage());
+                    if (e.getMessage().contains(NETWORK_ERROR)){
+                        listener.result(SEND_EMAIL_VERIFY_RESULT.NETWORK_ERROR);
+                    } else if (e.getMessage().contains(UNUSUAL_ACTIVITY)) {
+                        listener.result(SEND_EMAIL_VERIFY_RESULT.UNUSUAL_ACTIVITY);
+                    } else {
+                        listener.result(SEND_EMAIL_VERIFY_RESULT.UNKNOWN_ERROR);
+                    }
                 }
             });
         }

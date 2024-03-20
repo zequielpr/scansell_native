@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.profile.login;
+package com.kunano.scansell_native.ui.login;
 
 import androidx.lifecycle.ViewModel;
 
