@@ -1,5 +1,8 @@
 package com.kunano.scansell_native.model.db;
 
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.LANGUAGE_AUTOMATIC;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.LANGUAGE_KEY;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 
@@ -11,6 +14,7 @@ public class SharePreferenceHelper {
     private SharedPreferences.Editor editor;
 
     private static String FOLDER_ID_KEY = "FOLDER_ID_KEY";
+
     public SharePreferenceHelper(Activity activity, Integer mode) {
         sharedPref = activity.getPreferences(mode);
     }
@@ -45,6 +49,16 @@ public class SharePreferenceHelper {
 
     public String getDriveFolderId(){
         return sharedPref.getString(FOLDER_ID_KEY, null);
+    }
+
+
+    public String getLanguage(){
+       return sharedPref.getString(LANGUAGE_KEY, LANGUAGE_AUTOMATIC);
+    }
+    public void setLanguage(String language){
+        editor = sharedPref.edit();
+        editor.putString(LANGUAGE_KEY, language);
+        editor.apply();
     }
 
 

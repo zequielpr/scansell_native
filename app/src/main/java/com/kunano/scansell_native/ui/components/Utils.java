@@ -1,11 +1,20 @@
 package com.kunano.scansell_native.ui.components;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.ENGLISH;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.SPANISH;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,6 +62,50 @@ public class Utils {
         String name = segments[segments.length - 1];
 
         return name;
+    }
+
+
+    public static void setLanguage(String languageCode, Activity activity) {
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+
+        Resources resources = activity.getResources();
+
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+
+        activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+    }
+
+    public static void saveLanguage(String languageCode, Activity activity){
+        SettingRepository settingRepository = new SettingRepository(activity,  MODE_PRIVATE);
+        settingRepository.setLanguage(languageCode);
+    }
+
+    public static String getDeviceLanguage(Activity activity){
+        Locale locale;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            locale = activity.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            // For older versions
+            locale = activity.getResources().getConfiguration().locale;
+        }
+
+        return locale.getLanguage();
+    }
+
+    public static void setLanguageAutomatic(Activity activity){
+        String language = getDeviceLanguage(activity);
+
+
+        if (language.equals(ENGLISH)){
+            setLanguage(ENGLISH, activity);
+        } else if (language.equals(SPANISH)) {
+            setLanguage(SPANISH, activity);
+        }else {
+            setLanguage(ENGLISH, activity);
+        }
+
     }
 
 

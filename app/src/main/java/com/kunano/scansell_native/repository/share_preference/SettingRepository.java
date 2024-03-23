@@ -9,6 +9,11 @@ public class SettingRepository {
     public static Integer VIBRATION_SOUND = 1;
     public static String SOUND_KEY = "SOUND_KEY";
     public static String SOUND_STATUS_KEY = "SOUND_STATUS_KEY";
+    public static String LANGUAGE_KEY = "language";
+
+    public static String LANGUAGE_AUTOMATIC = "default";
+    public static String ENGLISH = "en";
+    public static String SPANISH = "es";
     SharePreferenceHelper sharePreferenceHelper;
 
     public SettingRepository(Activity activity, Integer mode){
@@ -39,6 +44,14 @@ public class SettingRepository {
 
     public String getDriveFolderId(){
         return sharePreferenceHelper.getDriveFolderId();
+    }
+
+    public void setLanguage(String language){
+        sharePreferenceHelper.setLanguage(language);
+    }
+
+    public String  getLanguage(){
+        return sharePreferenceHelper.getLanguage();
     }
 
 }

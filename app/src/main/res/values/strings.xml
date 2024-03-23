@@ -178,6 +178,9 @@
     <string name="try_again_later">Tray again later</string>
     <string name="click_link_to_reset_passwd">Click on the link sent to the provided email to
     reset your account password</string>
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+    <string name="automatic">Automatic</string>
 
 
 </resources>

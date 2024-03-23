@@ -1,5 +1,10 @@
 package com.kunano.scansell_native.ui.profile.admin.settings;
 
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.ENGLISH;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.LANGUAGE_AUTOMATIC;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.SPANISH;
+
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +31,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSettingsBinding;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.profile.admin.settings.language.SelectLanguageFragment;
 
 
 public class SettingsFragment extends Fragment {
@@ -113,6 +120,18 @@ public class SettingsFragment extends Fragment {
         soundAfterScanSectionSwitch.setChecked(soudState);
         settingViewModel.setSoundState(soudState);
         settingViewModel.setCurrentSound(currentSound);
+
+        String currentLanguage = sharePreferenceHelper.getLanguage();
+        if (currentLanguage.equals(ENGLISH)){
+            currentLanguageTextView.setText(getString(R.string.english));
+        } else if (currentLanguage.equals(SPANISH)) {
+            currentLanguageTextView.setText(getString(R.string.spanish));
+        }else {
+            currentLanguageTextView.setText(getString(R.string.automatic).concat(
+                    " (" + Utils.getDeviceLanguage(getActivity()) + ")"
+            ));
+        }
+
     }
 
 
@@ -141,7 +160,20 @@ public class SettingsFragment extends Fragment {
 
 
     private void pressLanguageAction(View view){
+        SelectLanguageFragment selectLanguageFragment = new SelectLanguageFragment();
+        selectLanguageFragment.setLanguageListener(this::setLanguage);
 
+        selectLanguageFragment.show(getChildFragmentManager(),SelectLanguageFragment.TAG);
+    }
+
+    private void setLanguage(String language){
+        if (language.equals(LANGUAGE_AUTOMATIC)){
+            Utils.setLanguageAutomatic(getActivity());
+        }else {
+            Utils.setLanguage(language, getActivity());
+        }
+        Utils.saveLanguage(language, getActivity());
+        navigateBack(getView());
     }
 
 

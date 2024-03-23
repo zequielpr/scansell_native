@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.profile.admin.settings;
+package com.kunano.scansell_native.ui.profile.admin.settings.sound;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kunano.scansell_native.databinding.FragmentSelectSoundBinding;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.ui.profile.admin.settings.SettingViewModel;
 
 public class SelectSoundFragment extends DialogFragment {
 
