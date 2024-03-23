@@ -20,6 +20,8 @@ public class AskForActionDialog extends DialogFragment {
     private String buttonLeftText;
     private String buttonRightText;
     private  String content;
+    boolean leftButtonVisibility;
+    boolean rightButtonVisibility;
     private AskForActionDialogBinding binding;
 
 
@@ -31,6 +33,8 @@ public class AskForActionDialog extends DialogFragment {
     public AskForActionDialog(String title) {
         super();
         this.title = title;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
     }
 
     public AskForActionDialog(String title,
@@ -39,12 +43,17 @@ public class AskForActionDialog extends DialogFragment {
         this.title = title;
         this.buttonLeftText = buttonLeftText;
         this.buttonRightText = buttonRightText;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
     }
     public AskForActionDialog(String title, String content) {
         super();
         this.title = title;
         this.content = content;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
     }
+
 
     public AskForActionDialog(String title, String content,
                               String buttonLeftText, String buttonRightText) {
@@ -53,6 +62,17 @@ public class AskForActionDialog extends DialogFragment {
         this.content = content;
         this.buttonLeftText = buttonLeftText;
         this.buttonRightText = buttonRightText;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+    }
+
+    public AskForActionDialog(String title, String content, boolean leftButtonVisibility,
+                              boolean rightButtonVisibility) {
+        super();
+        this.title = title;
+        this.content = content;
+        this.leftButtonVisibility = leftButtonVisibility;
+        this.rightButtonVisibility = rightButtonVisibility;
     }
 
 
@@ -86,6 +106,8 @@ public class AskForActionDialog extends DialogFragment {
             customDialogOkButton.setText(buttonRightText);
             customDialogCancelButton.setText(buttonLeftText);
         }
+        customDialogOkButton.setVisibility(rightButtonVisibility?View.VISIBLE:View.GONE);
+        customDialogCancelButton.setVisibility(leftButtonVisibility?View.VISIBLE:View.GONE);
 
 
         //Button ok action

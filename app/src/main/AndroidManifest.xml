@@ -40,7 +40,7 @@
                 android:value="" />
         </activity>
         <service android:name=".repository.home.DriveServices"/>
-        <activity android:name ="com.kunano.scansell_native.ui.profile.login.LogInActivity"
+        <activity android:name ="com.kunano.scansell_native.ui.login.LogInActivity"
             android:exported="true"
             android:label = "@string/title_activity_log_in"
             android:theme = "@style/Theme.Scansell_native"

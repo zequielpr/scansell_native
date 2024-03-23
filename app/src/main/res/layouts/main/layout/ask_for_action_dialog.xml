@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.components.AskForActionDialog">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -17,10 +17,11 @@
             android:id="@+id/customDialogTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="Custom Title"
-            android:textStyle="bold"
             android:textSize="18sp"
-            android:gravity="center"/>
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/customDialogMesage"
@@ -32,32 +33,34 @@
             android:textAlignment="center"
             android:textSize="18sp" />
 
-        <RelativeLayout
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/customDialogCancelButton"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/transparent"
                 android:elevation="0dp"
                 android:text="@string/cancel"
-                android:textColor="@color/purple_500" />
+                android:textColor="@color/purple_500"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/customDialogOkButton"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_weight="1"
                 android:background="@color/transparent"
                 android:elevation="0dp"
                 android:text="@string/ok"
-                android:textColor="@color/purple_500" />
-        </RelativeLayout>
+                android:textColor="@color/purple_500"
+                tools:visibility="visible" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

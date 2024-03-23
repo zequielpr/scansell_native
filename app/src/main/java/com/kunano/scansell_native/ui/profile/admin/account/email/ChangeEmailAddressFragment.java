@@ -23,34 +23,26 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentChangeEmailAddressBinding;
-import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
+import com.kunano.scansell_native.ui.profile.auth.UserData;
 
 public class ChangeEmailAddressFragment extends Fragment {
 
 
     private MainActivityViewModel mainActivityViewModel;
     private AccountHelper accountHelper;
-    private EditText emailEditText;
+    protected EditText emailEditText;
     private EditText emailEditTextConfirm;
-    private Button saveButton;
+    protected Button saveButton;
     private FragmentChangeEmailAddressBinding binding;
     private Toolbar changeEmailToolbar;
-    private TextView emailWarnTextView;
-    private TextView emailToConfirmWarnTextView;
-    private ChangeEmailviewModel changeEmailviewModel;
+    protected TextView emailWarnTextView;
+    protected TextView emailToConfirmWarnTextView;
+    private EmailViewModel emailViewModel;
     private SpinningWheel spinningWheel;
 
-
-   private enum EmailWarns{
-        EMAIL_VALID,
-        EMAIL_NO_VALID,
-        EMAIL_EMPTY,
-        EMAIL_TO_CONFIRM_EMPTY,
-        EMAILS_NOT_MATCHES
-    }
 
 
     public ChangeEmailAddressFragment() {
@@ -62,7 +54,7 @@ public class ChangeEmailAddressFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        changeEmailviewModel = new ViewModelProvider(this).get(ChangeEmailviewModel.class);
+        emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
 
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
 
@@ -92,8 +84,8 @@ public class ChangeEmailAddressFragment extends Fragment {
         changeEmailToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         changeEmailToolbar.setNavigationOnClickListener(this::navigateBack);
 
-        changeEmailviewModel.getEmailWarnMessage().observe(getViewLifecycleOwner(), emailWarnTextView::setText);
-        changeEmailviewModel.getEmailToConfirmWarnMessage().observe(getViewLifecycleOwner(), emailToConfirmWarnTextView::setText);
+        emailViewModel.getEmailWarnMessage().observe(getViewLifecycleOwner(), emailWarnTextView::setText);
+        emailViewModel.getEmailToConfirmWarnMessage().observe(getViewLifecycleOwner(), emailToConfirmWarnTextView::setText);
 
 
     }
@@ -113,7 +105,7 @@ public class ChangeEmailAddressFragment extends Fragment {
     }
 
 
-    private void setSaveButtonAction(View view){
+    protected void setSaveButtonAction(View view){
         String email = emailEditText.getText().toString();
         String emailConfirm = emailEditTextConfirm.getText().toString();
         if (!validateEmail(email, emailConfirm)) return;
@@ -129,45 +121,10 @@ public class ChangeEmailAddressFragment extends Fragment {
 
 
     private boolean validateEmail(String email,  String emailToConfirm ){
-
-        EmailWarns emailWarns = EmailWarns.EMAIL_VALID;
-
-        if (email.isEmpty()) emailWarns = EmailWarns.EMAIL_EMPTY;
-        else if (!ValidateData.validateEmailAddress(email))emailWarns = EmailWarns.EMAIL_NO_VALID;
-        else if (emailToConfirm.isEmpty()) emailWarns = EmailWarns.EMAIL_TO_CONFIRM_EMPTY;
-        else if (!email.equals(emailToConfirm))emailWarns = EmailWarns.EMAILS_NOT_MATCHES;
-
-        return isEmailValid(emailWarns);
+        UserData.EmailWarns result = accountHelper.validateEmail(email, emailToConfirm);
+        return emailViewModel.isEmailValid(result);
     }
 
-    private boolean isEmailValid(EmailWarns emailWarns){
-
-        changeEmailviewModel.setEmailWarnMessage("");
-        changeEmailviewModel.setEmailToConfirmWarnMessage("");
-
-        String message;
-        switch (emailWarns){
-            case EMAIL_EMPTY:
-                 message = getString(R.string.introduce_an_email);
-                 changeEmailviewModel.setEmailWarnMessage(message);
-                 return false;
-            case EMAIL_NO_VALID:
-                message = getString(R.string.email_not_valid);
-                changeEmailviewModel.setEmailWarnMessage(message);
-                return false;
-            case EMAIL_TO_CONFIRM_EMPTY:
-                message = getString(R.string.introduce_an_email_to_confirm);
-                changeEmailviewModel.setEmailToConfirmWarnMessage(message);
-                return false;
-            case EMAILS_NOT_MATCHES:
-                message = getString(R.string.emails_not_matches);
-                changeEmailviewModel.setEmailToConfirmWarnMessage(message);
-                return false;
-            default:
-                return true;
-
-        }
-    }
 
     private void processEmailRequest(String  result){
        spinningWheel.dismiss();
