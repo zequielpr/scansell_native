@@ -13,18 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentRecoverPasswdBinding;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.login.sing_in.SignInViewModel;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RecoverPasswdFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RecoverPasswdFragment extends Fragment {
     private EditText emailAddressEditText;
     private Button recoverPasswdButton;
@@ -32,6 +32,7 @@ public class RecoverPasswdFragment extends Fragment {
     private Auth auth;
     private FragmentRecoverPasswdBinding binding;
     private SignInViewModel signInViewModel;
+    private LogInViewModel logInViewModel;
 
     public RecoverPasswdFragment() {
         // Required empty public constructor
@@ -43,7 +44,10 @@ public class RecoverPasswdFragment extends Fragment {
         super.onCreate(savedInstanceState);
         auth = new Auth();
         signInViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
+        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
+        logInViewModel.setLogInViewModelListener(this::backPress);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,22 +67,36 @@ public class RecoverPasswdFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         signInViewModel.getEmailWarn().observe(getViewLifecycleOwner(), emailWarnTextView::setText);
         recoverPasswdButton.setOnClickListener(this::recoverPasswdRequest);
+
+    }
+
+    private void backPress(){
+        NavDirections navDirectionsToLogIn = RecoverPasswdFragmentDirections.actionRecoverPasswdFragmentToLogInFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
+        logInViewModel.setLogInViewModelListener(null);
+    }
+    public void onDestroy(){
+        super.onDestroy();
+        logInViewModel.setLogInViewModelListener(null);
     }
 
 
+    private SpinningWheel wait = new SpinningWheel();
     private void recoverPasswdRequest(View view){
-
         String email = emailAddressEditText.getText().toString();
 
         if (!signInViewModel.validateEmail(email)) return;
         auth.recoverPassword(email, this::processRequest);
+        wait.show(getChildFragmentManager(), "wait");
 
     }
 
     private void processRequest(Auth.RESET_PASSWORD_REQUEST result){
+        wait.dismiss();
         String message;
         switch (result){
             case SUCCESS:
+                linkToResetPasswdSent();
                 break;
             case NETWORK_ERROR:
                 message = getString(R.string.network_error);
@@ -100,4 +118,12 @@ public class RecoverPasswdFragment extends Fragment {
             Utils.showToast(getContext(), message, Toast.LENGTH_SHORT);
         });
     }
+
+
+    private void linkToResetPasswdSent(){
+        AskForActionDialog linkHasBeenSent = new AskForActionDialog(getString(R.string.recover_password),
+                getString(R.string.click_link_to_reset_passwd), false, true);
+        linkHasBeenSent.show(getChildFragmentManager(), getString(R.string.recover_password));
+    }
+
 }

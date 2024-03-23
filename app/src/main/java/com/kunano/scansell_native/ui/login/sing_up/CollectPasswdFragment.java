@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
 
 
@@ -37,6 +38,7 @@ public class CollectPasswdFragment extends Fragment {
     private TextView atLeastEightCharacters;
     private Toolbar updatePasswordToolbar;
     private SignUpViewModel signUpViewModel;
+    private LogInViewModel logInViewModel;
 
 
     public CollectPasswdFragment() {
@@ -60,6 +62,9 @@ public class CollectPasswdFragment extends Fragment {
         passwordViewModel = new ViewModelProvider(this).get(PasswordViewModel.class);
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
 
+        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
+
     }
 
     @Override
@@ -82,6 +87,24 @@ public class CollectPasswdFragment extends Fragment {
 
         return view;
     }
+
+    private void navigateBack(){
+        NavDirections navDirectionToCollectName = CollectPasswdFragmentDirections.
+                actionCollectPasswdFragment2ToCollectNameAndSurnameFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionToCollectName);
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
+    public void onResume(){
+        super.onResume();
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
 
 
     @Override

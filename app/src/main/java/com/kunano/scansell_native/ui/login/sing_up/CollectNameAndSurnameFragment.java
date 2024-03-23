@@ -17,6 +17,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.name.NameViewModel;
 
 
@@ -27,6 +28,7 @@ public class CollectNameAndSurnameFragment extends Fragment {
     private Toolbar nameToolbar;
     private Button continueButton;
     private SignUpViewModel signUpViewModel;
+    private LogInViewModel logInViewModel;
 
 
     public CollectNameAndSurnameFragment() {
@@ -48,6 +50,12 @@ public class CollectNameAndSurnameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         nameViewModel = new ViewModelProvider(this).get(NameViewModel.class);
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
+        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
+    }
+
+    public void onResume(){
+        super.onResume();
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
     }
 
     @Override
@@ -62,6 +70,18 @@ public class CollectNameAndSurnameFragment extends Fragment {
         nameToolbar = view.findViewById(R.id.changeNameToolbar);
 
         return  view;
+    }
+
+    private void navigateBack(){
+        NavDirections navDirectionsToLogIn = CollectNameAndSurnameFragmentDirections.
+                actionCollectNameAndSurnameFragmentToLogInFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        logInViewModel.setLogInViewModelListener(null);
     }
 
     @Override

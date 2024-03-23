@@ -1,6 +1,5 @@
 package com.kunano.scansell_native.ui.login.sing_up;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +10,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
-import com.kunano.scansell_native.MainActivity;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentVerifyEmailBinding;
 import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class VerifyEmailFragment extends Fragment {
     private Button resendEmailVerificationButton;
     private FragmentVerifyEmailBinding binding;
-    AccountHelper accountHelper = new AccountHelper();
+    private LogInViewModel logInViewModel;
+    private AccountHelper accountHelper = new AccountHelper();
 
 
     public VerifyEmailFragment() {
@@ -33,20 +36,25 @@ public class VerifyEmailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         accountHelper = new AccountHelper();
         setResendEmailVerificationButtonAction(getView());
+        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
     }
     public void onResume(){
         super.onResume();
-        System.out.println("Verify on resume");
-        accountHelper = new AccountHelper();
-        if (accountHelper == null)return;
-
-        System.out.println("email verified" + accountHelper.isEmailVerified());
-        if(accountHelper.isEmailVerified()){
-            Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-        }
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
     }
+
+    private void navigateBack(){
+        NavDirections navDirectionsToLogIn = VerifyEmailFragmentDirections.actionVerifyEmailFragmentToLogInFragment();
+        Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
+
 
     public void signOut(){
         accountHelper.signOut(this);

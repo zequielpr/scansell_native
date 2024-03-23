@@ -25,7 +25,8 @@ public class Auth {
         UNKNOWN_ERROR
     }
 
-    public static String OPERATION_EXCEEDED = "unusual activity";
+    public static String UNUSUAL_ACTIVITY = "unusual activity";
+    private static String OPERATION_EXCEEDED = "operation has been exceeded";
 
     public static enum RESET_PASSWORD_REQUEST {
         SUCCESS,
@@ -107,7 +108,7 @@ public class Auth {
 
                 if (error.contains(AccountHelper.NETWORK_ERROR)) {
                     listener.result(RESET_PASSWORD_REQUEST.NETWORK_ERROR);
-                } else if (error.contains(OPERATION_EXCEEDED)) {
+                } else if (error.contains(UNUSUAL_ACTIVITY) || error.contains(OPERATION_EXCEEDED)) {
                     listener.result(RESET_PASSWORD_REQUEST.OPERATION_EXCEEDED );
                 } else {
                     listener.result(RESET_PASSWORD_REQUEST.UNKNOWN_ERROR);

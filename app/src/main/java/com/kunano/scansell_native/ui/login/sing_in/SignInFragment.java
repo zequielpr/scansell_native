@@ -141,8 +141,11 @@ public class SignInFragment extends Fragment {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = (GoogleSignInAccount) ((Task<?>) task).getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+
+
                 firebaseAuthWithGoogle(account.getIdToken());
+                spinningWheel = new SpinningWheel();
+                spinningWheel.show(getChildFragmentManager(), SpinningWheel.TAG);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -168,6 +171,7 @@ public class SignInFragment extends Fragment {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             //updateUI(null);
                         }
+                        spinningWheel.dismiss();
                     }
                 });
     }

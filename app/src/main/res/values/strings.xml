@@ -72,7 +72,7 @@
     <string name="card">card</string>
     <string name="receipts">receipts</string>
     <string name="balance_to_pay">balance to pay: </string>
-    <string name="chash_tendered">cash tendered</string>
+    <string name="cash_tendered">cash tendered</string>
     <string name="balance_tendered">balance to pay</string>
     <string name="cash_due">cash due:</string>
     <string name="price">price</string>
@@ -127,7 +127,7 @@
     <string name="backup_created_success">backup created successfully</string>
     <string name="uploading_file_to_drive">uploading file to drive. Do not close this app</string>
     <string name="update_email">update email</string>
-    <string name="introduce_an_email">introduce an email</string>
+    <string name="introduce_an_email">introduce email</string>
     <string name="introduce_an_email_to_confirm">introduce email to confirm</string>
     <string name="email_not_valid">email not valid(example@example.com</string>
     <string name="emails_not_matches">email does not match</string>
@@ -176,6 +176,8 @@
     <string name="o">O</string>
     <string name="recover_password">Recover password</string>
     <string name="try_again_later">Tray again later</string>
+    <string name="click_link_to_reset_passwd">Click on the link sent to the provided email to
+    reset your account password</string>
 
 
 </resources>

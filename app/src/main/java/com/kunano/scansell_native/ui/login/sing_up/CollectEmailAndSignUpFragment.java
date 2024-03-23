@@ -23,6 +23,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.CollectEmailAndSignedUpBinding;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.email.EmailViewModel;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
 import com.kunano.scansell_native.ui.profile.auth.UserData;
@@ -42,6 +43,7 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     private TextView termOfServicesTextView;
     private TextView privacyPolicyTextView;
     private CheckBox acceptTermAndPolicies;
+    private LogInViewModel logInViewModel;
 
     public CollectEmailAndSignUpFragment() {
         // Required empty public constructor
@@ -55,6 +57,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         userData = new UserData();
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
+
+        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
 
     }
 
@@ -73,6 +77,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
        termOfServicesTextView = binding.termsAndPrivacyView.termsOfServiceText;
        privacyPolicyTextView = binding.termsAndPrivacyView.privacyPolicyText;
        acceptTermAndPolicies = binding.termsAndPrivacyView.checkBox;
+
+
 
 
        return binding.getRoot();
@@ -95,6 +101,27 @@ public class CollectEmailAndSignUpFragment extends Fragment {
         termOfServicesTextView.setOnClickListener(this::showTermsOfService);
         privacyPolicyTextView.setOnClickListener(this::showPrivacyPolicy);
         acceptTermAndPolicies.setChecked(signUpViewModel.getTermsAndPoliciesStateCondition());
+
+        emailEditText.setHint(getText(R.string.introduce_an_email));
+        confirmEmailEditText.setHint(getText(R.string.introduce_an_email_to_confirm));
+    }
+
+    private void navigateBack(){
+        NavDirections navDirectionToCollectPasswd = CollectEmailAndSignUpFragmentDirections.
+                actionCollectEmailToCollectPasswdFragment2();
+
+        Navigation.findNavController(getView()).navigate(navDirectionToCollectPasswd);
+        logInViewModel.setLogInViewModelListener(null);
+    }
+
+    public void onResume(){
+        super.onResume();
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        logInViewModel.setLogInViewModelListener(null);
     }
 
 
@@ -109,6 +136,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
 
 
     }
+
+
 
     private boolean validateEmail(String email,  String emailToConfirm ){
         UserData.EmailWarns result = userData.validateEmail(email, emailToConfirm);
