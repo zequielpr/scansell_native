@@ -82,7 +82,7 @@ public class DriveServices{
             } catch (IOException e) {
                 if (e.getLocalizedMessage().contains("Unable to resolve host")){
                     fragment.getActivity().runOnUiThread(()->{
-                        Utils.showToast(fragment.getContext(),
+                        Utils.showToast(fragment.getActivity(),
                                 fragment.getContext().
                                         getString(R.string.faile_to_create_backup_verify_network),
                                 Toast.LENGTH_LONG);
@@ -96,7 +96,7 @@ public class DriveServices{
             }catch (Exception e){
                 e.printStackTrace();
                 fragment.getActivity().runOnUiThread(()->{
-                    Utils.showToast(fragment.getContext(),
+                    Utils.showToast(fragment.getActivity(),
                             fragment.getContext().
                                     getString(R.string.faile_to_create_backup),
                             Toast.LENGTH_LONG);

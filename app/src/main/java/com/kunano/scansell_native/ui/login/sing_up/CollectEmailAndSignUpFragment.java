@@ -190,7 +190,7 @@ public class CollectEmailAndSignUpFragment extends Fragment {
 
     private void showResult(String message){
         getActivity().runOnUiThread(()->{
-            Utils.showToast(getContext(), message, Toast.LENGTH_LONG);
+            Utils.showToast(getActivity(), message, Toast.LENGTH_LONG);
         });
     }
 

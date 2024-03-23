@@ -117,7 +117,7 @@ public class ChangeNameFragment extends Fragment {
     }
 
     private void showToast(String message){
-        getActivity().runOnUiThread(()->Utils.showToast(getContext(), message, Toast.LENGTH_SHORT));
+        Utils.showToast(getActivity(), message, Toast.LENGTH_SHORT);
     }
 
 

@@ -37,6 +37,7 @@ import com.kunano.scansell_native.repository.home.DriveServices;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class BackUpFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentBackUpBinding.inflate(inflater, container, false);
 
-        signInForDriveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),this::receiveSignInForDriveResult);
+        signInForDriveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::receiveSignInForDriveResult);
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadBackUpFilePath);
         customMediaPicker = new CustomMediaPicker(pickMedia);
 
@@ -82,19 +83,19 @@ public class BackUpFragment extends Fragment {
         createBackupSection.setOnClickListener(this::setCreateBackupSectionAction);
 
         directoryPickerLauncher = registerForActivityResult(new
-                ActivityResultContracts.StartActivityForResult(),this::receiveDirSelcted);
+                ActivityResultContracts.StartActivityForResult(), this::receiveDirSelcted);
 
 
         return binding.getRoot();
     }
 
 
-    private void handlePressBack(){
+    private void handlePressBack() {
         navigateBack(getView());
     }
 
 
-    private void navigateBack(View view){
+    private void navigateBack(View view) {
         NavDirections profileNavDirections = BackUpFragmentDirections.actionBackUpFragmentToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
         mainActivityViewModel.setHandleBackPress(null);
@@ -102,8 +103,9 @@ public class BackUpFragment extends Fragment {
 
 
     //Generate backup___________________________________________________________
-    private  BackupDestinationFragment backupDestinationFragment;
-    private void setCreateBackupSectionAction(View view){
+    private BackupDestinationFragment backupDestinationFragment;
+
+    private void setCreateBackupSectionAction(View view) {
         backupDestinationFragment = new BackupDestinationFragment(getString(R.string.backup_destination));
         backupDestinationFragment.setBackUpDestinationListener(new BackupDestinationFragment.BackUpDestinationListener() {
             @Override
@@ -120,43 +122,65 @@ public class BackUpFragment extends Fragment {
         });
         backupDestinationFragment.show(getParentFragmentManager(), "Select fragment destination");
     }
-    private void chooseDir(){
+
+
+    //Generate backup in local___________________________________________________________
+    private void chooseDir() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         directoryPickerLauncher.launch(intent);
     }
 
-    private void receiveDirSelcted(ActivityResult result){
+    private void receiveDirSelcted(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
             if (data != null) {
                 Uri treeUri = data.getData();
                 createBackUp(treeUri);
+            } else {
+                showResults(getString(R.string.thera_has_been_an_error));
             }
         }
     }
 
-    private void createBackUp(Uri dirTosaveBackUp){
+    private void createBackUp(Uri dirTosaveBackUp) {
+        progressBarDialog = new
+                ProgressBarDialog(getString(R.string.saving_file_in_local), getViewLifecycleOwner(),
+                backUpViewModel.getExportProgress());
+        progressBarDialog.show(getParentFragmentManager(), "restore progress");
+
         AppDatabase.closeDatabase();
-        backUpViewModel.exportDatabaseToLocalFile(getContext(), dirTosaveBackUp);
+        backUpViewModel.exportDatabaseToLocalFile(getContext(), dirTosaveBackUp, new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                progressBarDialog.dismiss();
+                if (object) {
+                    showResults(getString(R.string.backup_created_success));
+                } else {
+                    showResults(getString(R.string.thera_has_been_an_error));
+                }
+            }
+        });
+    }
+
+    private void showResults(String message) {
+        Utils.showToast(getActivity(), message, Toast.LENGTH_LONG);
     }
 
 
-
-
     //Upload backup to drive_______________________________-
-    private void uploadBackUpToDrive(){
+    private void uploadBackUpToDrive() {
         GoogleSignInClient googleSignInClient = BackUpViewModel.getGoogleSignInClientForDrive(getContext());
 
         signInForDriveResult.launch(googleSignInClient.getSignInIntent());
 
     }
 
-    private void receiveSignInForDriveResult(ActivityResult activityResult){
+    private void receiveSignInForDriveResult(ActivityResult activityResult) {
         if (activityResult.getResultCode() == Activity.RESULT_OK) {
 
             if (activityResult.getData() != null) {
                 Task<GoogleSignInAccount> task =
-                GoogleSignIn.getSignedInAccountFromIntent(activityResult.getData());
+                        GoogleSignIn.getSignedInAccountFromIntent(activityResult.getData());
                 task.addOnSuccessListener(this::saveBackUpInDrive);
 
             } else {
@@ -165,23 +189,24 @@ public class BackUpFragment extends Fragment {
         }
     }
 
-    private void saveBackUpInDrive(GoogleSignInAccount googleSignInAccount){
+    private void saveBackUpInDrive(GoogleSignInAccount googleSignInAccount) {
         SharePreferenceHelper sharePreferenceHelper =
                 new SharePreferenceHelper(getActivity(), Context.MODE_PRIVATE);
 
         DriveServices driveInstance = new DriveServices(BackUpFragment.this,
                 googleSignInAccount, sharePreferenceHelper);
         AppDatabase.closeDatabase();
-       driveInstance.saveBAckUpInFolderDrive(resultOfsaveBackUpInDrive());
+        driveInstance.saveBAckUpInFolderDrive(resultOfsaveBackUpInDrive());
 
     }
 
     ProgressBarDialog progressBarDialog;
-    private MediaHttpUploaderProgressListener resultOfsaveBackUpInDrive(){
+
+    private MediaHttpUploaderProgressListener resultOfsaveBackUpInDrive() {
         progressBarDialog = new
                 ProgressBarDialog(getString(R.string.uploading_file_to_drive), getViewLifecycleOwner(),
                 backUpViewModel.getUploadFileToDriveProgress());
-        MediaHttpUploaderProgressListener mediaHttpUploaderProgressListener = new   MediaHttpUploaderProgressListener() {
+        MediaHttpUploaderProgressListener mediaHttpUploaderProgressListener = new MediaHttpUploaderProgressListener() {
 
             public void progressChanged(MediaHttpUploader uploader) throws IOException {
                 System.out.println();
@@ -190,19 +215,20 @@ public class BackUpFragment extends Fragment {
                     case INITIATION_STARTED:
                         break;
                     case INITIATION_COMPLETE:
-                        if(!progressBarDialog.isAdded()){
+                        if (!progressBarDialog.isAdded()) {
                             progressBarDialog.show(getParentFragmentManager(), "uploading progress");
                         }
 
                         break;
                     case MEDIA_IN_PROGRESS:
-                        Integer progress = (int)(uploader.getProgress() * 100);
+                        Integer progress = (int) (uploader.getProgress() * 100);
                         backUpViewModel.setUploadFileToDriveProgress(progress);
                         break;
                     case MEDIA_COMPLETE:
-                        getActivity().runOnUiThread(()->{
+                        Utils.showToast(getActivity(), getString(R.string.backup_created_success), Toast.LENGTH_LONG);
+                        getActivity().runOnUiThread(() -> {
                             progressBarDialog.dismiss();
-                            Utils.showToast(getContext(), getString(R.string.backup_created_success), Toast.LENGTH_LONG);
+                            Utils.restartApp(getContext());
                         });
 
 
@@ -216,68 +242,55 @@ public class BackUpFragment extends Fragment {
     }
 
 
-
-
-
-
-
-
     //Restore database___________________________________________________________
-    private void setRestoreBackUpSection(View view){
+    private void setRestoreBackUpSection(View view) {
         customMediaPicker.lunchImagePicker(new
                 ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
 
     }
 
 
-    private void loadBackUpFilePath(Uri backUpFileUri){
-        if (backUpFileUri != null)askToRestore(backUpFileUri);
+    private void loadBackUpFilePath(Uri backUpFileUri) {
+        if (backUpFileUri != null) askToRestore(backUpFileUri);
 
     }
 
-    private void askToRestore(@NonNull Uri backUpFileUri){
+    private void askToRestore(@NonNull Uri backUpFileUri) {
         System.out.println("File uri: " + backUpFileUri);
         String fileName = backUpFileUri.toString().
-                contains("externalstorage")?Utils.getFileNameFromUri(backUpFileUri):"From drive";
+                contains("externalstorage") ? Utils.getFileNameFromUri(backUpFileUri) : "From drive";
         askForActionDialog = new AskForActionDialog(
                 getString(R.string.restore_back_up), fileName,
                 getString(R.string.cancel), getString(R.string.restore));
 
         askForActionDialog.show(getParentFragmentManager(), "RestoreBAckUk");
 
-        askForActionDialog.setButtonListener((resultado)->restore(resultado, backUpFileUri));
+        askForActionDialog.setButtonListener((resultado) -> restore(resultado, backUpFileUri));
     }
 
 
-
-    private void restore(Boolean isToRestore, Uri BackUpFileUri){
-        if (isToRestore){
-           if (  askForActionDialog != null)askForActionDialog.dismiss();
+    private void restore(Boolean isToRestore, Uri BackUpFileUri) {
+        if (isToRestore) {
+            if (askForActionDialog != null) askForActionDialog.dismiss();
             progressBarDialog = new
                     ProgressBarDialog(getString(R.string.uploading_file_to_drive), getViewLifecycleOwner(),
                     backUpViewModel.getRestoreProgress());
             progressBarDialog.show(getParentFragmentManager(), "restore progress");
 
 
-
-           backUpViewModel.importDatabase(getContext(), BackUpFileUri, this::processResult);
+            backUpViewModel.importDatabase(getContext(), BackUpFileUri, this::processResult);
         }
     }
 
-    private void processResult(boolean result){
-        getActivity().runOnUiThread(()->{
-            if (result){
-                Utils.showToast(getContext(), getString(R.string.data_restored_success), Toast.LENGTH_SHORT);
-                Utils.restartApp(getContext());
-                return;
-            }
-            Utils.showToast(getContext(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
-        });
-
-
+    private void processResult(boolean result) {
+        if (result) {
+            showResults(getString(R.string.data_restored_success));
+            Utils.restartApp(getContext());
+            return;
+        }
+        showResults(getString(R.string.thera_has_been_an_error));
 
     }
-
 
 
 }

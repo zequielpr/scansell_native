@@ -160,8 +160,6 @@ public class ChangePasswordFragment extends Fragment {
 
     }
     private void showResult(String message){
-        getActivity().runOnUiThread(()->{
-            Utils.showToast(getContext(),message , Toast.LENGTH_SHORT);
-        });
+        Utils.showToast(getActivity(),message , Toast.LENGTH_SHORT);
     }
 }

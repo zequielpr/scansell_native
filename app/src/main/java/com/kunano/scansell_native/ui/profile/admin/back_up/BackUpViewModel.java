@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.DriveScopes;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,11 +37,13 @@ public class BackUpViewModel extends AndroidViewModel {
 
     private MutableLiveData<Integer> uploadFileToDriveProgress;
     private MutableLiveData<Integer> restoreProgress;
+    private MutableLiveData<Integer> exportProgress;
     public BackUpViewModel(@NonNull Application application) {
         super(application);
 
         uploadFileToDriveProgress = new MutableLiveData<>(0);
         restoreProgress = new MutableLiveData<>(0);
+        exportProgress = new MutableLiveData<>(0);
     }
 
     public static GoogleSignInClient getGoogleSignInClientForDrive(Context context){
@@ -66,6 +69,14 @@ public class BackUpViewModel extends AndroidViewModel {
 
     public void setRestoreProgress(Integer restoreProgress) {
         this.restoreProgress.postValue(restoreProgress);
+    }
+
+    public MutableLiveData<Integer> getExportProgress() {
+        return exportProgress;
+    }
+
+    public void setExportProgress(MutableLiveData<Integer> exportProgress) {
+        this.exportProgress = exportProgress;
     }
 
     Executor executor;
@@ -139,59 +150,71 @@ public class BackUpViewModel extends AndroidViewModel {
 
 
 
+    public void exportDatabaseToLocalFile(Context context, Uri uriToSaveBackUp,
+                                          ViewModelListener<Boolean> listener) {
+        executor = Executors.newSingleThreadExecutor();
 
+        executor.execute(()->{
+            String fullName = EXPORT_FILE_NAME;
 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                String pattern = "yyyy-MM-dd HH:mm:ss";
 
-
-
-    public void exportDatabaseToLocalFile(Context context, Uri uriToSaveBackUp) {
-
-
-        String fullName = EXPORT_FILE_NAME;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            String pattern = "yyyy-MM-dd HH:mm:ss";
-
-            // Create a DateTimeFormatter object with the desired pattern
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-            LocalDateTime localDateTime = LocalDateTime.now();
-           fullName = EXPORT_FILE_NAME.concat(localDateTime.format(formatter).toString()).concat(".db");
-        }
-
-        java.io.File dbFile = context.getDatabasePath(AppDatabase.DATABASE_NAME);
-        DocumentFile directory = DocumentFile.fromTreeUri(context, uriToSaveBackUp);
-        DocumentFile backUpFile = directory.createFile("application/octet-stream", fullName);
-
-
-        if (backUpFile != null) {
-            try {
-                //read
-                InputStream inputStream = new FileInputStream(dbFile);
-
-                // Write your content to outputStream
-                OutputStream outputStream = context.getContentResolver().openOutputStream(backUpFile.getUri());
-
-
-
-                // Transfer content from input stream to output stream
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
-                }
-
-                Log.d(TAG, "Database path " + dbFile);
-                Log.d(TAG, "Database exported to " + backUpFile.getUri().getPath());
-                outputStream.close();
-                inputStream.close();
-                // File saved successfully
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Handle error
+                // Create a DateTimeFormatter object with the desired pattern
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+                LocalDateTime localDateTime = LocalDateTime.now();
+                fullName = EXPORT_FILE_NAME.concat(localDateTime.format(formatter).toString()).concat(".db");
             }
-        } else {
-            // Failed to create the file
-        }
+
+            java.io.File dbFile = context.getDatabasePath(AppDatabase.DATABASE_NAME);
+            DocumentFile directory = DocumentFile.fromTreeUri(context, uriToSaveBackUp);
+            DocumentFile backUpFile = directory.createFile("application/octet-stream", fullName);
+
+
+            if (backUpFile != null) {
+                try {
+                    //read
+                    InputStream inputStream = new FileInputStream(dbFile);
+
+                    // Write your content to outputStream
+                    OutputStream outputStream = context.getContentResolver().openOutputStream(backUpFile.getUri());
+
+
+
+                    // Transfer content from input stream to output stream
+
+                    byte[] buffer = new byte[1024];
+                    int totalBytesRead = 0;
+                    Long totalBytes = dbFile.length();
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        if (bytesRead > 0) {
+                            totalBytesRead += bytesRead;
+                            outputStream.write(buffer, 0, bytesRead);
+
+                            // Calculate progress
+                            double progress = (double) totalBytesRead * 100 /totalBytes;;
+                            exportProgress.postValue((int)progress);
+                            System.out.println("Progress: " + progress + "%");
+                            if (progress == 100)listener.result(true);
+                        }
+
+                    }
+
+                    Log.d(TAG, "Database path " + dbFile);
+                    Log.d(TAG, "Database exported to " + backUpFile.getUri().getPath());
+                    outputStream.close();
+                    inputStream.close();
+                    // File saved successfully
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Handle error
+                }
+            } else {
+                // Failed to create the file
+            }
+
+        });
 
 
     }

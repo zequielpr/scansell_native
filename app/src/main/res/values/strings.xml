@@ -181,6 +181,7 @@
     <string name="spanish">Spanish</string>
     <string name="english">English</string>
     <string name="automatic">Automatic</string>
+    <string name="saving_file_in_local">Saving copy. Do not close the app</string>
 
 
 </resources>

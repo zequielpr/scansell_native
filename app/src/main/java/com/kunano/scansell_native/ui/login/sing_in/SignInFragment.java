@@ -240,7 +240,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void showResult(String message){
-        Utils.showToast(getContext(), message, Toast.LENGTH_SHORT);
+        Utils.showToast(getActivity(), message, Toast.LENGTH_SHORT);
     }
 
 

@@ -52,8 +52,8 @@ public class Utils {
         }
     }
 
-    public static void showToast(Context context, String message, Integer duration) {
-        Toast.makeText(context, message, duration).show();
+    public static void showToast(Activity activity, String message, Integer duration) {
+        activity.runOnUiThread(()-> Toast.makeText(activity, message, duration).show());
     }
 
     public static String  getFileNameFromUri(Uri uri){

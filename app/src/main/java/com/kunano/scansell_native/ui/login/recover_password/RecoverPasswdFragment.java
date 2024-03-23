@@ -115,7 +115,7 @@ public class RecoverPasswdFragment extends Fragment {
 
     private void showError(String message){
         getActivity().runOnUiThread(()->{
-            Utils.showToast(getContext(), message, Toast.LENGTH_SHORT);
+            Utils.showToast(getActivity(), message, Toast.LENGTH_SHORT);
         });
     }
 

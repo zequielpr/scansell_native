@@ -126,7 +126,7 @@ public class DeleteAccountFragment extends Fragment {
     }
 
     private void showResult(String message){
-        Utils.showToast(getContext(), message, Toast.LENGTH_LONG);
+        Utils.showToast(getActivity(), message, Toast.LENGTH_LONG);
     }
 
     private boolean validateEmail(String email){

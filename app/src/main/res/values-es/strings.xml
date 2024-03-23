@@ -182,4 +182,5 @@
     <string name="spanish">Español</string>
     <string name="english">Ingles</string>
     <string name="automatic">Automatico</string>
+    <string name="saving_file_in_local"></string>
 </resources>
