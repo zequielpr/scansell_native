@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.profile;
 
 import android.app.Application;
 import android.os.Build;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -45,6 +46,8 @@ public class ProfileViewModel extends AndroidViewModel {
     private LocalDateTime currentDate;
     private LocalDateTime currentWeekDate;
     private MutableLiveData<String> selectedDateMutableLiveData;
+    private MutableLiveData<Integer> mostSoldProductsTxtViewVisibility;
+    private MutableLiveData<Integer> linearChartVisibilityMutableData;
 
     private Long currentBusinessId;
 
@@ -61,6 +64,9 @@ public class ProfileViewModel extends AndroidViewModel {
         sellsLineChartDataLive = new MutableLiveData<>();
         mostSoldProductPieChartMLive = new MutableLiveData<>();
         selectedDateMutableLiveData = new MutableLiveData<>();
+        mostSoldProductsTxtViewVisibility = new MutableLiveData<>();
+        linearChartVisibilityMutableData = new MutableLiveData<>();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             currentDate = LocalDateTime.now();
             currentWeekDate =  LocalDate.now().
@@ -68,10 +74,13 @@ public class ProfileViewModel extends AndroidViewModel {
         }
 
         mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
+            mostSoldProductsTxtViewVisibility.postValue(mostSoldProductsList.size()>0? View.VISIBLE:View.GONE);
             List<PieEntry> pieEntryList = processMostSoldPData(mostSoldProductsList);
             mostSoldProductPieChartMLive.postValue(pieEntryList);
         };
         sellObserver = (List<Receipt> receiptList)->{
+
+            System.out.println("receipts: " + receiptList.size());
 
             LineChartData lineChartData;
             lineChartData = processReceiptsGetWeeklySells(receiptList);
@@ -187,7 +196,6 @@ public class ProfileViewModel extends AndroidViewModel {
                 break;
             }
             soldPercentage = (double)mostSoldProducts.getSoldQuantity() * 100.0 / (double)mostSoldProducts.getSoldProductsTotal();
-            System.out.println("Sold percentage: " + soldPercentage);
             productName = mostSoldProducts.getProductName();
             entries.add(new PieEntry(soldPercentage.floatValue(), productName));
 
@@ -243,14 +251,19 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     public void setCurrentBusinessId(Long currentBusinessId) {
+        System.out.println("business Id: " + currentBusinessId);
+        linearChartVisibilityMutableData.postValue(currentBusinessId == null?View.GONE:View.VISIBLE);
+
         this.currentBusinessId = currentBusinessId;
         if (searchCurrentWeek){
             fetchSellsCurrentWeek();
             fetchMostSoldProductsInCurrentWeek();
             return;
         }
+
         fetchSellsLastWeek();
         fetchMostSoldProductsInLastWeek();
+
     }
 
     public MutableLiveData<String> getSelectedDateMutableLiveData() {
@@ -259,5 +272,21 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void setSelectedDateMutableLiveData(String selectedDateMutableLiveData) {
         this.selectedDateMutableLiveData.postValue(selectedDateMutableLiveData);
+    }
+
+    public MutableLiveData<Integer> getMostSoldProductsTxtViewVisibility() {
+        return mostSoldProductsTxtViewVisibility;
+    }
+
+    public void setMostSoldProductsTxtViewVisibility(Integer mostSoldProductsTxtViewVisibility) {
+        this.mostSoldProductsTxtViewVisibility.postValue(mostSoldProductsTxtViewVisibility);
+    }
+
+    public MutableLiveData<Integer> getLinearChartVisibilityMutableData() {
+        return linearChartVisibilityMutableData;
+    }
+
+    public void setLinearChartVisibilityMutableData(Integer linearChartVisibilityMutableData) {
+        this.linearChartVisibilityMutableData.postValue(linearChartVisibilityMutableData);
     }
 }

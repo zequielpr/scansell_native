@@ -53,6 +53,8 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private TextView selectedDateTextView;
     private Toolbar profileToolbar;
     private AccountHelper accountHelper;
+    private TextView mostSoldProductsTxtView;
+    private TextView sellsTxtView;
 
 
     @Override
@@ -75,6 +77,8 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         pickPeriodSpinner = binding.pickPeriodSpinner;
         selectedDateTextView = binding.selecteddDateTextView;
         profileToolbar = binding.profileToolbar;
+        mostSoldProductsTxtView = binding.mostSoldPTextView;
+        sellsTxtView = binding.sellsAndRevenuesTextView;
 
         profileToolbar.addMenuProvider(this);
 
@@ -113,15 +117,30 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
         profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
         profileViewModel.getSelectedDateMutableLiveData().observe(getViewLifecycleOwner(), selectedDateTextView::setText);
+        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
+                mostSoldProductsTxtView::setVisibility);
+        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
+                pieChartMostSellProducts::setVisibility);
+        profileViewModel.getLinearChartVisibilityMutableData().observe(getViewLifecycleOwner(),
+                this::setSellsVisibility);
 
 
         return binding.getRoot();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         profileToolbar.setTitle(accountHelper.getUserName());
+    }
+
+    private void setSellsVisibility(Integer visibility){
+        pickPeriodSpinner.setVisibility(visibility);
+        pickBusinessSpinner.setVisibility(visibility);
+        lineChart.setVisibility(visibility);
+        sellsTxtView.setVisibility(visibility);
+
     }
 
     public OnChartValueSelectedListener getOnChartValueSelectedListener(){
@@ -172,11 +191,12 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                 Business selectedBusiness = (Business) adapterView.getItemAtPosition(p);
                 profileViewModel.setSeletedBusiness(p);
                 profileViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                profileViewModel.setCurrentBusinessId(null);
             }
         };
 
