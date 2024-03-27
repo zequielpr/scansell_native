@@ -4,10 +4,10 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 
@@ -22,6 +22,8 @@ public class HomeViewModel extends DeleteItemsViewModel {
     private LiveData<List<Business>> businessListLiveData;
     private Long currentBusinessId;
 
+    private MutableLiveData<Integer> createNewBusinessVisibilityMD;
+
 
 
 
@@ -29,40 +31,23 @@ public class HomeViewModel extends DeleteItemsViewModel {
         super(application);
         this.businessListLiveData = businessRepository.getAllBusinesses();
         currentBusinessId = null;
+
+        createNewBusinessVisibilityMD = new MutableLiveData<>();
     }
 
-
-
-
-    public void insertNewBusiness(String name, String address) {
-
-        Business newBusiness = new Business(name, address, "");
-
-        businessRepository.insertBusiness(newBusiness, this::notifyInsertNewBusinessResult);
-        listenHomeViewModel.activateWaitingMode();
-    }
 
 
     public LiveData<List<Business>> getAllBusinesses() {
         return businessListLiveData;
     }
 
-    private void notifyInsertNewBusinessResult(boolean result) {
+    public void notifyInsertNewBusinessResult(boolean result) {
         listenHomeViewModel.desactivateWaitingMode();
     }
     private void notifyUpdateBusinessResult(boolean result) {
         //listenHomeViewModel.desactivateWaitingMode();
     }
 
-
-    //Validate data
-    public boolean validateName(String name) {
-        return ValidateData.validateName(name);
-    }
-
-    public boolean validateAddress(String address) {
-        return ValidateData.validateAddress(address);
-    }
 
 
     //BusinessCard------------------------------------------------------------------------
@@ -154,5 +139,13 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setCurrentBusinessId(Long currentBusinessId) {
         this.currentBusinessId = currentBusinessId;
+    }
+
+    public MutableLiveData<Integer> getCreateNewBusinessVisibilityMD() {
+        return createNewBusinessVisibilityMD;
+    }
+
+    public void setCreateNewBusinessVisibilityMD(Integer createNewBusinessVisibilityMD) {
+        this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
     }
 }

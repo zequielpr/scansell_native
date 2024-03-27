@@ -47,7 +47,8 @@ public class ProfileViewModel extends AndroidViewModel {
     private LocalDateTime currentWeekDate;
     private MutableLiveData<String> selectedDateMutableLiveData;
     private MutableLiveData<Integer> mostSoldProductsTxtViewVisibility;
-    private MutableLiveData<Integer> linearChartVisibilityMutableData;
+    private MutableLiveData<Integer> businessStatsVisibilityMutableData;
+    private MutableLiveData<Integer> createBusinessButtonVisibility;
 
     private Long currentBusinessId;
 
@@ -65,7 +66,8 @@ public class ProfileViewModel extends AndroidViewModel {
         mostSoldProductPieChartMLive = new MutableLiveData<>();
         selectedDateMutableLiveData = new MutableLiveData<>();
         mostSoldProductsTxtViewVisibility = new MutableLiveData<>();
-        linearChartVisibilityMutableData = new MutableLiveData<>();
+        businessStatsVisibilityMutableData = new MutableLiveData<>();
+        createBusinessButtonVisibility = new MutableLiveData<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             currentDate = LocalDateTime.now();
@@ -252,7 +254,8 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void setCurrentBusinessId(Long currentBusinessId) {
         System.out.println("business Id: " + currentBusinessId);
-        linearChartVisibilityMutableData.postValue(currentBusinessId == null?View.GONE:View.VISIBLE);
+        businessStatsVisibilityMutableData.postValue(currentBusinessId == null?View.GONE:View.VISIBLE);
+        createBusinessButtonVisibility.postValue(currentBusinessId != null?View.GONE:View.VISIBLE);
 
         this.currentBusinessId = currentBusinessId;
         if (searchCurrentWeek){
@@ -282,11 +285,19 @@ public class ProfileViewModel extends AndroidViewModel {
         this.mostSoldProductsTxtViewVisibility.postValue(mostSoldProductsTxtViewVisibility);
     }
 
-    public MutableLiveData<Integer> getLinearChartVisibilityMutableData() {
-        return linearChartVisibilityMutableData;
+    public MutableLiveData<Integer> getBusinessStatsVisibilityMutableData() {
+        return businessStatsVisibilityMutableData;
     }
 
-    public void setLinearChartVisibilityMutableData(Integer linearChartVisibilityMutableData) {
-        this.linearChartVisibilityMutableData.postValue(linearChartVisibilityMutableData);
+    public void setBusinessStatsVisibilityMutableData(Integer businessStatsVisibilityMutableData) {
+        this.businessStatsVisibilityMutableData.postValue(businessStatsVisibilityMutableData);
+    }
+
+    public MutableLiveData<Integer> getCreateBusinessButtonVisibility() {
+        return createBusinessButtonVisibility;
+    }
+
+    public void setCreateBusinessButtonVisibility(Integer createBusinessButtonVisibility) {
+        this.createBusinessButtonVisibility.postValue(createBusinessButtonVisibility);
     }
 }

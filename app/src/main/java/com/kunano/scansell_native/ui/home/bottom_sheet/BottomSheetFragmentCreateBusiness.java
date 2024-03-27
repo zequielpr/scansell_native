@@ -16,12 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeBottomSheetCreateBusinessFragmentBinding;
-import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 ;
 
 
-public class BottomSheetFragment extends BottomSheetDialogFragment{
+public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment{
+    public static String TAG = "Create business";
     private EditText editTextBusinessName;
     private EditText editTextBusinessAddress;
     private TextView textViewAdvertName;
@@ -29,8 +31,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
     private Button saveBusinessButton;
     private ImageButton cancelBtn;
     private HomeBottomSheetCreateBusinessFragmentBinding binding;
-    private  ButtomSheetFragmentListener buttomSheetFragmentListener;
-    HomeViewModel viewModel;
+    private ViewModelListener<Boolean> requestRestult;
+    BottomSheetCreateBusinessViewModel viewModel;
 
     boolean isBusinessNameValid;
     boolean isBusinessAddressValid;
@@ -40,19 +42,26 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
 
     private String businessName;
     private String businessAddress;
+    boolean toUpdate;
+    private Long currentBusinessId;
 
 
-    public BottomSheetFragment(String title, String buttonTitle, String businessName,
-                               String businessAddress) {
-        this.title = title;
-        this.buttonTitle = buttonTitle;
+    public BottomSheetFragmentCreateBusiness(String businessName,
+                                             String businessAddress,  boolean toUpdate, Long currentBusinessId) {
         this.businessName = businessName;
         this.businessAddress = businessAddress;
+        this.toUpdate = toUpdate;
+        this.currentBusinessId = currentBusinessId;
+    }
+    public BottomSheetFragmentCreateBusiness() {
+        this.title = title;
+        this.buttonTitle = buttonTitle;
+        this.toUpdate = false;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(BottomSheetCreateBusinessViewModel.class);
         binding = HomeBottomSheetCreateBusinessFragmentBinding.inflate(inflater, container, false);
         editTextBusinessName = binding.businessName;
         editTextBusinessAddress = binding.businessAddress;
@@ -61,7 +70,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
         saveBusinessButton = binding.savingButton;
         cancelBtn = binding.cancelButton;
 
-        if (!businessName.isBlank() & !businessAddress.isBlank()){
+        if (businessName != null & businessAddress != null){
             isBusinessAddressValid = true;
             isBusinessNameValid = true;
         }else {
@@ -69,8 +78,10 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
             isBusinessNameValid = false;
         }
 
-        binding.createBusinessTitle.setText(title);
-        saveBusinessButton.setText(buttonTitle);
+        binding.createBusinessTitle.setText(toUpdate?
+                getString(R.string.update):getString(R.string.create_new_business));
+        saveBusinessButton.setText(toUpdate?
+                getString(R.string.update):getString(R.string.save));
         editTextBusinessName.setText(businessName);
         editTextBusinessAddress.setText(businessAddress);
 
@@ -90,7 +101,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
                 if (isBusinessNameValid && isBusinessAddressValid){
 
                     hideBottomSheet();
-                    provideBusinessDataToHomeViewModel();
+                    if(toUpdate){
+                        updateBusinessRequest();
+                    }else {
+                        createBusinessRequest();
+
+                    }
                     return;
                 }
                 showWarningName(getString(R.string.advert_introduce_name));
@@ -108,6 +124,30 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
             }
         });
     }
+
+
+    public void createBusinessRequest(){
+        String name = editTextBusinessName.getText().toString();
+        String address = editTextBusinessAddress.getText().toString();
+
+        Business newBusiness = new Business(name, address, "");
+        viewModel.createBusiness(newBusiness, requestRestult::result);
+
+    }
+
+    public void updateBusinessRequest(){
+        if (currentBusinessId == null){
+            requestRestult.result(false);
+            return;
+        }
+        String name = editTextBusinessName.getText().toString();
+        String address = editTextBusinessAddress.getText().toString();
+
+        Business business = new Business(name, address, "");
+        business.setBusinessId(currentBusinessId);
+        viewModel.updateBusiness(business, requestRestult::result);
+    }
+
 
 
 
@@ -210,13 +250,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
         saveBusinessButton.setClickable(true);
     }
 
-    public void provideBusinessDataToHomeViewModel(){
-        String name = editTextBusinessName.getText().toString();
-        String address = editTextBusinessAddress.getText().toString();
 
-        buttomSheetFragmentListener.receiveData(name, address);
-
-    }
 
 
 
@@ -248,8 +282,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment{
         textViewAdvertAddress.setText("");
     }
 
-    public void setButtomSheetFragmentListener(ButtomSheetFragmentListener buttomSheetFragmentListener) {
-        this.buttomSheetFragmentListener = buttomSheetFragmentListener;
+    public void setRequestResult(ViewModelListener<Boolean> requestRestult) {
+        this.requestRestult = requestRestult;
     }
 
     public interface ButtomSheetFragmentListener{

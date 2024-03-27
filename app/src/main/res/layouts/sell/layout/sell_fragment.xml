@@ -4,106 +4,115 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.sell.SellFragment"
-    android:orientation="vertical">
-
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/sellToolbar"
+    tools:context=".ui.sell.SellFragment">
+    <RelativeLayout
+        android:id="@+id/sell_products_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black_transparent"
-        android:elevation="1dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme">
+        android:layout_height="match_parent">
 
-        <Spinner
-            style="@style/Spinner"
-            android:id="@+id/spinnerPickBusiness"
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/sellToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
-    </androidx.appcompat.widget.Toolbar>
+            android:background="@color/black_transparent"
+            android:elevation="1dp"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+            <Spinner
+                android:id="@+id/spinnerPickBusiness"
+                style="@style/Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/torchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/sell_camera_preview"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="120dp"
+                android:background="@color/transparent"
+                android:elevation="1dp"
+                android:src="@drawable/torch_24" />
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/sell_camera_preview"
+                android:layout_width="match_parent"
+                android:layout_height="320dp">
+
+            </androidx.camera.view.PreviewView>
+        </RelativeLayout>
 
         <ImageButton
-            android:id="@+id/torchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/sell_camera_preview"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="120dp"
-            android:background="@color/transparent"
-            android:elevation="1dp"
-            android:src="@drawable/torch_24" />
-
-        <androidx.camera.view.PreviewView
-            android:id="@+id/sell_camera_preview"
-            android:layout_width="match_parent"
-            android:layout_height="320dp">
-
-        </androidx.camera.view.PreviewView>
-    </RelativeLayout>
-
-    <ImageButton
-        android:id="@+id/imageButtonScanProduct"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="70dp"
-        android:elevation="2dp"
-        android:src="@drawable/bar_code_scanner_24" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"
-        android:gravity="center"
-        android:background="@color/white">
+            android:id="@+id/imageButtonScanProduct"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="70dp"
+            android:elevation="2dp"
+            android:src="@drawable/bar_code_scanner_24" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="80dp"
+            android:background="@color/white"
             android:gravity="center"
-            android:padding="10dp"
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/totalTextView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="total"
-                android:textSize="25sp" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp">
 
-            <Button
-                android:id="@+id/finishButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/finish" />
+                <TextView
+                    android:id="@+id/totalTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="total"
+                    android:textSize="25sp" />
+
+                <Button
+                    android:id="@+id/finishButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/finish" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleViewProductsToSell"
+                android:layout_width="330dp"
+                android:layout_height="300dp" />
+
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/teal_700" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleViewProductsToSell"
-            android:layout_width="330dp"
-            android:layout_height="300dp" />
+    </RelativeLayout>
 
-    </LinearLayout>
-
+    <include
+        android:id="@+id/createNewBusinessView"
+        layout="@layout/create_new_business_button"
+        tools:visibility="gone" />
 
 </RelativeLayout>

@@ -33,7 +33,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 
 
 public class BusinessFragment extends Fragment {
@@ -477,23 +477,18 @@ public class BusinessFragment extends Fragment {
 
 
 
-    BottomSheetFragment bottomSheetFragment;
+    BottomSheetFragmentCreateBusiness bottomSheetFragmentCreateBusiness;
     //Update name and address
     private void upateBusiness(){
         String businessName = businessViewModel.getBusinessName();
         String businessAddress = businessViewModel.getBusinessAddress();
 
-        bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
-                getString(R.string.update), businessName, businessAddress);
+        bottomSheetFragmentCreateBusiness = new BottomSheetFragmentCreateBusiness(
+                businessName, businessAddress, true, businessViewModel.getCurrentBusinessId());
 
-        bottomSheetFragment.setButtomSheetFragmentListener(new BottomSheetFragment.ButtomSheetFragmentListener() {
-            @Override
-            public void receiveData(String name, String address) {
-                businessViewModel.updateBusiness(name, address, "", BusinessFragment.this::handleResult);
-            }
-        });
+        bottomSheetFragmentCreateBusiness.setRequestResult(this::handleResult);
 
-        bottomSheetFragment.show(getParentFragmentManager(), "Update business");
+        bottomSheetFragmentCreateBusiness.show(getParentFragmentManager(), "Update business");
     }
 
     private void handleResult(Boolean result){

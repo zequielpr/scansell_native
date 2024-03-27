@@ -40,11 +40,13 @@ import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SellFragment extends Fragment {
 
@@ -63,6 +65,9 @@ public class SellFragment extends Fragment {
     private ImageButton imageButtonScan;
     private MainActivityViewModel mainActivityViewModel;
     private MediaPlayer mediaPlayer;
+    private View sellProductView;
+    private View createBusinessView;
+    private ImageButton createNewBusinessImgButton;
 
 
 
@@ -84,6 +89,9 @@ public class SellFragment extends Fragment {
         recyclerViewProducts = binding.recycleViewProductsToSell;
         torchButton = binding.torchButton;
         imageButtonScan = binding.imageButtonScanProduct;
+        sellProductView = binding.sellProductsView;
+        createBusinessView = binding.createNewBusinessView.createNewBusinessView;
+        createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
 
 
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -127,9 +135,13 @@ public class SellFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Business selectedBusiness = (Business) parent.getItemAtPosition(position);
-                sellViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
-                sellViewModel.setSelectedIndexSpinner(position);
+                try {
+                    Business selectedBusiness = (Business) parent.getItemAtPosition(position);
+                    sellViewModel.setCurrentBusinessId(selectedBusiness.getBusinessId());
+                    sellViewModel.setSelectedIndexSpinner(position);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
 
@@ -161,6 +173,16 @@ public class SellFragment extends Fragment {
             }
         });
 
+
+
+
+
+        return root;
+    }
+
+    public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
@@ -168,17 +190,56 @@ public class SellFragment extends Fragment {
         sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), (s)->spinner.setEnabled(!s));
         sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
 
+        createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
+        sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
+                sellProductView::setVisibility);
+        sellViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
+                createBusinessView::setVisibility);
+        sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(),this::handleViewsVisibilities);
 
         mainActivityViewModel.setHandleBackPress(null);
 
+        toolbar.inflateMenu(R.menu.sell_tool_bar);
+        MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
+        menuItem.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
-
-        return root;
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.got_to_receipt){
+                    if (sellViewModel.getCurrentBusinessId() != null)navigateToReceipt();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
+
 
     private void activateOrDesactFinishButton(boolean activate){
         finishButton.setClickable(activate);
+    }
+
+    private void createNewBusiness(View view){
+        BottomSheetFragmentCreateBusiness createBusiness = new BottomSheetFragmentCreateBusiness();
+        createBusiness.setRequestResult(this::processCreateBusinessRequest);
+        createBusiness.show(getParentFragmentManager(), BottomSheetFragmentCreateBusiness.TAG);
+    }
+
+    private void processCreateBusinessRequest(boolean result){
+
+    }
+
+    private void handleViewsVisibilities(List<Business> l){
+        System.out.println("business list: " + l.size());
+        if (l.size() > 0){
+            sellViewModel.setSellProductsVisibilityMD(View.VISIBLE);
+            sellViewModel.setCreateNewBusinessVisibilityMD(View.GONE);
+        }else {
+            sellViewModel.setSellProductsVisibilityMD(View.GONE);
+            sellViewModel.setCreateNewBusinessVisibilityMD(View.VISIBLE);
+        }
     }
 
 
@@ -334,24 +395,7 @@ public class SellFragment extends Fragment {
     }
 
 
-    public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
-        super.onViewCreated(view, savedInstanceState);
 
-        toolbar.inflateMenu(R.menu.sell_tool_bar);
-        MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
-        menuItem.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.got_to_receipt){
-                    if (sellViewModel.getCurrentBusinessId() != null)navigateToReceipt();
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
 
 
     @Override

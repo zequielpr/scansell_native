@@ -7,7 +7,7 @@
     <string name="title_dashboard">Vender</string>
     <string name="title_notifications">Perfil</string>
     <string name="businesses_title">businesses</string>
-    <string name="create_new_business">New business</string>
+    <string name="create_new_business">Create new business</string>
     <string name="business_name">Business name</string>
     <string name="business_address">Business address</string>
     <string name="save">Save</string>

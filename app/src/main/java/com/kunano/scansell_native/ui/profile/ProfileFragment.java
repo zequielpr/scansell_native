@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
@@ -55,6 +58,9 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private AccountHelper accountHelper;
     private TextView mostSoldProductsTxtView;
     private TextView sellsTxtView;
+    private View createNewBusinessView;
+    private ImageButton createNewBusinessImgButton;
+    private ScrollView businessStatsView;
 
 
     @Override
@@ -79,6 +85,9 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         profileToolbar = binding.profileToolbar;
         mostSoldProductsTxtView = binding.mostSoldPTextView;
         sellsTxtView = binding.sellsAndRevenuesTextView;
+        createNewBusinessView = binding.createNewBusinessView.createNewBusinessView;
+        createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
+        businessStatsView = binding.businessStatsView;
 
         profileToolbar.addMenuProvider(this);
 
@@ -113,16 +122,6 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
 
 
-        profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
-
-        profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
-        profileViewModel.getSelectedDateMutableLiveData().observe(getViewLifecycleOwner(), selectedDateTextView::setText);
-        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
-                mostSoldProductsTxtView::setVisibility);
-        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
-                pieChartMostSellProducts::setVisibility);
-        profileViewModel.getLinearChartVisibilityMutableData().observe(getViewLifecycleOwner(),
-                this::setSellsVisibility);
 
 
         return binding.getRoot();
@@ -133,13 +132,37 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         profileToolbar.setTitle(accountHelper.getUserName());
+        profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
+
+        profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
+        profileViewModel.getSelectedDateMutableLiveData().observe(getViewLifecycleOwner(), selectedDateTextView::setText);
+        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
+                mostSoldProductsTxtView::setVisibility);
+        profileViewModel.getMostSoldProductsTxtViewVisibility().observe(getViewLifecycleOwner(),
+                pieChartMostSellProducts::setVisibility);
+        profileViewModel.getBusinessStatsVisibilityMutableData().observe(getViewLifecycleOwner(),
+                businessStatsView::setVisibility);
+        profileViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
+                createNewBusinessView::setVisibility);
+
+
+        createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
+
+
+
+
+
     }
 
-    private void setSellsVisibility(Integer visibility){
-        pickPeriodSpinner.setVisibility(visibility);
-        pickBusinessSpinner.setVisibility(visibility);
-        lineChart.setVisibility(visibility);
-        sellsTxtView.setVisibility(visibility);
+
+    private void createNewBusiness(View view){
+
+        BottomSheetFragmentCreateBusiness createBusiness = new BottomSheetFragmentCreateBusiness();
+        createBusiness.setRequestResult(this::processCreateBusinessRequest);
+        createBusiness.show(getParentFragmentManager(), BottomSheetFragmentCreateBusiness.TAG);
+    }
+
+    private void processCreateBusinessRequest(boolean result){
 
     }
 

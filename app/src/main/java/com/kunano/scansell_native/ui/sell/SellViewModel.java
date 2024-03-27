@@ -54,7 +54,9 @@ public class SellViewModel extends AndroidViewModel {
     private Integer radioButtonChecked;
     private MutableLiveData<List<Receipt>> mutableLiveDataReceipt;
     private Observer<List<Receipt>> receiptObserver;
-    DecimalFormat df;
+    private MutableLiveData<Integer> sellProductsVisibilityMD;
+    private MutableLiveData<Integer> createNewBusinessVisibilityMD;
+    private DecimalFormat df;
 
 
 
@@ -76,6 +78,8 @@ public class SellViewModel extends AndroidViewModel {
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
         mutableLiveDataReceipt = new MutableLiveData<>();
+        sellProductsVisibilityMD = new MutableLiveData<>();
+        createNewBusinessVisibilityMD = new MutableLiveData<>();
 
         observer = ( List<Product> productsToSellList) -> {
 
@@ -343,5 +347,21 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setRadioButtonChecked(Integer radioButtonChecked) {
         this.radioButtonChecked = radioButtonChecked;
+    }
+
+    public MutableLiveData<Integer> getSellProductsVisibilityMD() {
+        return sellProductsVisibilityMD;
+    }
+
+    public void setSellProductsVisibilityMD(Integer sellProductsVisibilityMD) {
+        this.sellProductsVisibilityMD.postValue(sellProductsVisibilityMD);
+    }
+
+    public MutableLiveData<Integer> getCreateNewBusinessVisibilityMD() {
+        return createNewBusinessVisibilityMD;
+    }
+
+    public void setCreateNewBusinessVisibilityMD(Integer createNewBusinessVisibilityMD) {
+        this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
     }
 }
