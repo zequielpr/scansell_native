@@ -33,7 +33,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 
 
 public class BusinessFragment extends Fragment {
@@ -416,7 +416,7 @@ public class BusinessFragment extends Fragment {
         System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
+                AskForActionDialog(title);
         askWhetherDeleteDialog.setButtonListener(this::pasToBinOrCancel);
         askWhetherDeleteDialog.show(suportFmanager, "ask to delete product");
 
@@ -439,20 +439,22 @@ public class BusinessFragment extends Fragment {
 
 
     public void showProgressBar() {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                businessViewModel.cancelDeleteProcess();
-            }
-
-        };
 
 
         String title =  getString(R.string.send_items_to_bin_warning);
         MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 
-        progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+        progressBarDialog = new ProgressBarDialog(
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
+        progressBarDialog.setAction(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean cancelDeleteProcess) {
+                if(cancelDeleteProcess){
+                    businessViewModel.cancelDeleteProcess();
+                }
+            }
+        });
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 
@@ -475,23 +477,18 @@ public class BusinessFragment extends Fragment {
 
 
 
-    BottomSheetFragment bottomSheetFragment;
+    BottomSheetFragmentCreateBusiness bottomSheetFragmentCreateBusiness;
     //Update name and address
     private void upateBusiness(){
         String businessName = businessViewModel.getBusinessName();
         String businessAddress = businessViewModel.getBusinessAddress();
 
-        bottomSheetFragment = new BottomSheetFragment(getString(R.string.update),
-                getString(R.string.update), businessName, businessAddress);
+        bottomSheetFragmentCreateBusiness = new BottomSheetFragmentCreateBusiness(
+                businessName, businessAddress, true, businessViewModel.getCurrentBusinessId());
 
-        bottomSheetFragment.setButtomSheetFragmentListener(new BottomSheetFragment.ButtomSheetFragmentListener() {
-            @Override
-            public void receiveData(String name, String address) {
-                businessViewModel.updateBusiness(name, address, "", BusinessFragment.this::handleResult);
-            }
-        });
+        bottomSheetFragmentCreateBusiness.setRequestResult(this::handleResult);
 
-        bottomSheetFragment.show(getParentFragmentManager(), "Update business");
+        bottomSheetFragmentCreateBusiness.show(getParentFragmentManager(), "Update business");
     }
 
     private void handleResult(Boolean result){
@@ -505,7 +502,7 @@ public class BusinessFragment extends Fragment {
 
     private AskForActionDialog askWhetherDeleteDialogBinBusiness;
     private void sendCurrentBusinessTobin(){
-        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getLayoutInflater(), getString(R.string.bin_business) );
+        askWhetherDeleteDialogBinBusiness = new AskForActionDialog(getString(R.string.bin_business) );
         askWhetherDeleteDialogBinBusiness.setButtonListener(this::handleCancelOrBinBusiness);
         askWhetherDeleteDialogBinBusiness.show(getParentFragmentManager(), getString(R.string.bin_business));
     }

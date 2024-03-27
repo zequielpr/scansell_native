@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,48 +10,33 @@ tools:context=".ui.home.HomeFragment">
 <LinearLayout
 
     android:id="@+id/modalBottomSheetContainer"
-
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
-
-    android:background="@color/white"
-
-    android:foregroundTint="@color/white"
-
-    android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="15dp"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/create_business_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme">
-
-            <TextView
-                android:id="@+id/create_business_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/create_new_business"
-                android:textSize="25sp" />
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_centerInParent="true"
+            android:text="@string/create_new_business"
+            android:textSize="25sp" />
 
         <ImageButton
             android:id="@+id/cancel_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignEnd="@id/toolbar"
+            android:layout_marginStart="20dp"
+            android:layout_toRightOf="@id/create_business_title"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/save"
+            android:contentDescription="@string/cancel"
             android:src="@drawable/close_24" />
-
     </RelativeLayout>
 
     <LinearLayout
@@ -97,12 +82,10 @@ tools:context=".ui.home.HomeFragment">
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:textColor="@color/white"
-            android:backgroundTint="#3F51B5"
             android:text="@string/save" />
 
     </LinearLayout>
 
 </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

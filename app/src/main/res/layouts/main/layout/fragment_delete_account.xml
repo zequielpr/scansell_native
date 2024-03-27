@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.profile.admin.account.delete_account.DeleteAccountFragment">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/confirmDeleteAccountToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:minHeight="?attr/actionBarSize"
+        app:title="@string/delete_account"
+        android:theme="?attr/actionBarTheme" />
+
+    <EditText
+        android:id="@+id/editTextTextEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/intro_account_email"
+        android:layout_below="@id/confirmDeleteAccountToolbar"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/warnEmailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:layout_below="@id/editTextTextEmailAddress"
+        android:text="@string/introduced_email_incorrect" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/editTextTextEmailAddress"
+        android:text="@string/delete" />
+</RelativeLayout>

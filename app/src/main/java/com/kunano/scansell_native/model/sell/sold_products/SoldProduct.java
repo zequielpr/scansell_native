@@ -4,6 +4,7 @@ package com.kunano.scansell_native.model.sell.sold_products;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
@@ -16,7 +17,8 @@ import com.kunano.scansell_native.model.sell.Receipt;
                     @ForeignKey(entity = Receipt.class,
                     parentColumns = "receiptId",
                     childColumns = "receiptIdFK",
-                    onDelete = ForeignKey.CASCADE),})
+                    onDelete = ForeignKey.CASCADE),},
+indices = {@Index(value = {"receiptIdFK", "productIdFK", "businessIdFK"})})
 public class SoldProduct {
 
 
@@ -32,6 +34,7 @@ public class SoldProduct {
     @NonNull
     private String receiptIdFK;
     private Integer itemsQuantity;
+
 
 
     public SoldProduct() {

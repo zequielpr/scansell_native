@@ -26,5 +26,9 @@ tools:context=".ui.home.HomeFragment">
         android:layout_centerInParent="true"
         android:layout_marginBottom="-58dp" />
 
+    <include
+        android:id="@+id/createNewBusinessView"
+        layout="@layout/create_new_business_button"
+        tools:visibility="gone" />
 
 </RelativeLayout>

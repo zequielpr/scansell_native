@@ -9,6 +9,7 @@ import androidx.room.Query;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.model.Home.product.Product;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Dao
@@ -29,9 +30,43 @@ public interface SoldProductDao {
 
 
     //Stil to be develop
-    @Query("SELECT * FROM product INNER JOIN (SELECT * FROM soldproduct" +
+    @Query("SELECT productId, product.businessIdFK, product_name, buying_price," +
+            "selling_price, stock, cratingDate" +
+            " FROM product INNER JOIN (SELECT * FROM soldproduct" +
             " WHERE receiptIdFK = (:receiptId)) ON product.productId = productIdFK " +
             "AND product.businessIdFK =(:businessId)")
     LiveData<List<Product>> getSoldProducts(String receiptId, Long businessId);
+
+
+
+
+
+    @Query("SELECT COUNT(*) AS soldQuantity, product_name AS productName, " +
+            "(SELECT COUNT(*) FROM soldproduct INNER JOIN receipt on soldproduct.receiptIdFK = receipt.receiptId " +
+            "WHERE soldproduct.businessIdFK = (:businessId) AND sellingDate >= (:startOfCurrentWeek)) AS soldProductsTotal " +
+            "FROM product " +
+            "INNER JOIN soldproduct ON productId = productIdFK " +
+            "INNER JOIN receipt ON soldproduct.receiptIdFK = receipt.receiptId " +
+            "WHERE product.businessIdFK = (:businessId) AND soldproduct.businessIdFK " +
+            "AND sellingDate >= (:startOfCurrentWeek)" +
+            "GROUP BY productId, product_name " +
+            "ORDER BY soldQuantity DESC LIMIT 3")
+    LiveData<List<MostSoldProducts>> getMostSoldProductsInCurrentWeek(Long businessId, LocalDateTime startOfCurrentWeek);
+
+
+    @Query("SELECT COUNT(*) AS soldQuantity, product_name AS productName, " +
+            "(SELECT COUNT(*) FROM soldproduct " +
+            "INNER JOIN receipt on soldproduct.receiptIdFK = receipt.receiptId WHERE soldproduct.businessIdFK = (:businessId) " +
+            "AND sellingDate >= (:startOfCurrentWeek) AND sellingDate < (:currentWeekDate)) AS soldProductsTotal " +
+            "FROM product " +
+            "INNER JOIN soldproduct ON productId = productIdFK " +
+            "INNER JOIN receipt on soldproduct.receiptIdFK = receipt.receiptId " +
+            "WHERE product.businessIdFK = (:businessId) AND soldproduct.businessIdFK " +
+            "AND sellingDate >= (:startOfCurrentWeek) AND sellingDate < (:currentWeekDate)" +
+            "GROUP BY productId, product_name " +
+            "ORDER BY soldQuantity DESC LIMIT 3")
+    LiveData<List<MostSoldProducts>> getMostSoldProductsInLastWeek(Long businessId,
+                                                                   LocalDateTime startOfCurrentWeek,
+                                                                   LocalDateTime currentWeekDate);
 
 }

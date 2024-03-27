@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_navigation_graph"
+    app:startDestination="@id/profileFragment">
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.kunano.scansell_native.ui.profile.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_backUpFragment"
+            app:destination="@id/backUpFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment23"
+            app:destination="@id/settingsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changeNameFragment"
+            app:destination="@id/changeNameFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changeEmailAddressFragment"
+            app:destination="@id/changeEmailAddressFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_deleteAccountFragment"
+            app:destination="@id/deleteAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/backUpFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.back_up.BackUpFragment"
+        android:label="fragment_back_up"
+        tools:layout="@layout/fragment_back_up" >
+        <action
+            android:id="@+id/action_backUpFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment2"
+        android:name="com.kunano.scansell_native.ui.profile.admin.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment2_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeNameFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.name.ChangeNameFragment"
+        android:label="fragment_change_name"
+        tools:layout="@layout/fragment_change_name" >
+        <action
+            android:id="@+id/action_changeNameFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeEmailAddressFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.email.ChangeEmailAddressFragment"
+        android:label="fragment_change_email_address"
+        tools:layout="@layout/fragment_change_email_address" >
+        <action
+            android:id="@+id/action_changeEmailAddressFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.password.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" >
+        <action
+            android:id="@+id/action_changePasswordFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deleteAccountFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.account.delete_account.DeleteAccountFragment"
+        android:label="fragment_delete_account"
+        tools:layout="@layout/fragment_delete_account" >
+        <action
+            android:id="@+id/action_deleteAccountFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
+</navigation>

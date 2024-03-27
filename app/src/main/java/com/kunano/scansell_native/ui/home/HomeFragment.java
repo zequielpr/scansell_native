@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,8 +27,11 @@ import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragment;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+
+import java.util.List;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;
@@ -42,11 +46,18 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private Drawable checkedCircle;
     private  Drawable uncheckedCircle;
 
+    private View createBusinessView;
+    private ImageButton createNewBusinessImgButton;
+
     Toolbar toolbar;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = HomeFragmentBinding.inflate(inflater, container, false);
+
+        createBusinessView = binding.createNewBusinessView.createNewBusinessView;
+        createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
+
 
         recyclerViewBusinessList = binding.businessList;
         recyclerViewBusinessList.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -54,7 +65,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         businessCardAdepter = new BusinessCardAdepter();
         recyclerViewBusinessList.setAdapter(businessCardAdepter);
-
 
 
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
@@ -69,10 +79,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
         homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(),toolbar::setTitle);
-
-
-
-
 
         setBusinessCardOncliListener();
 
@@ -98,6 +104,12 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         addIcon = toolbar.getMenu().findItem(R.id.add);
         deleteIcon = toolbar.getMenu().findItem(R.id.delete);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
+
+        homeViewModel.getAllBusinesses().observe(getViewLifecycleOwner(),this::handleCreateBusinessVisibility);
+        createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
+
+        homeViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
+                createBusinessView::setVisibility);
 
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -131,14 +143,32 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     }
 
+    private void handleCreateBusinessVisibility(List<Business> l){
+        if (l.size() > 0) {
+            homeViewModel.setCreateNewBusinessVisibilityMD(View.GONE);
+        } else {
+            homeViewModel.setCreateNewBusinessVisibilityMD(View.VISIBLE);
+        }
+    }
+
+    private void createNewBusiness(View view){
+        BottomSheetFragmentCreateBusiness createBusiness = new BottomSheetFragmentCreateBusiness();
+        createBusiness.setRequestResult(this::processCreateBusinessRequest);
+        createBusiness.show(getParentFragmentManager(), BottomSheetFragmentCreateBusiness.TAG);
+    }
+
+    private void processCreateBusinessRequest(boolean result){
+
+    }
+
 
     public void showBottomSheet() {
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(getString(R.string.create_new_business),
-                getString(R.string.save), "", "");
+        BottomSheetFragmentCreateBusiness bottomSheetFragmentCreateBusiness =
+                new BottomSheetFragmentCreateBusiness();
 
-        bottomSheetFragment.setButtomSheetFragmentListener(homeViewModel::insertNewBusiness);
+        bottomSheetFragmentCreateBusiness.setRequestResult(homeViewModel::notifyInsertNewBusinessResult);
 
-        bottomSheetFragment.show(suportFmanager, bottomSheetFragment.getTag());
+        bottomSheetFragmentCreateBusiness.show(suportFmanager, bottomSheetFragmentCreateBusiness.getTag());
     }
 
     public void navigateToBin(){
@@ -262,7 +292,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void activateWaitingMode() {
-        spinningWheelDialog = new SpinningWheel(getLayoutInflater());
+        spinningWheelDialog = new SpinningWheel();
         spinningWheelDialog.show(getParentFragmentManager(), "spinning_wheel");
     }
 
@@ -291,7 +321,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
 
-         progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+         progressBarDialog = new ProgressBarDialog(
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
@@ -315,11 +345,11 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void askDeleteBusiness() {
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
-        askWhetherDeleteDialog.setButtonListener(new ListenResponse() {
+                AskForActionDialog( title);
+        askWhetherDeleteDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if(resultado){
+            public void result(Boolean object) {
+                if(object){
                     homeViewModel.passBusinessToBin();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

@@ -37,13 +37,13 @@ public class ProductRepository {
         executor.execute(() -> {
             Long resultado = null;
             try {
-              /*  for (int i = 0; i < 10000; i++){
+                /*for (int i = 0; i < 600; i++){
                     product.setProductId(UUID.randomUUID().toString());
                     resultado = productDao.insertProduct(product).get();
-                    ProductImg img = new ProductImg(product.getProductId(), productImg);
+                    ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
                     productImgDao.insertProductImg(img).get();
-                }*/
-
+                }
+*/
                 //product.setProductId(UUID.randomUUID().toString());
                 resultado = productDao.insertProduct(product).get();
 

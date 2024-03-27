@@ -45,7 +45,7 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
 
         executor.execute(()->{
             try {
-                Integer resultado = binsRepository.restorageProducts(product.getProductId()).get();
+                Integer resultado = binsRepository.restorageProducts(product.getProductId(), currentBusinessId).get();
                 if (resultado > 0){
                     listenBusinessBinViewMode.requestResult("exitoso");
                 }else {

@@ -12,9 +12,11 @@ import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.ReceiptDao;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraftDao;
+import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProductDao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SellRepository {
@@ -86,10 +88,32 @@ public class SellRepository {
         productToSellDraftDao.deleteProductFromDraft(businessId, productId);
     }
 
-
-
     public void clearDraft(Long businessId){
         productToSellDraftDao.empryDraft(businessId);
+    }
+
+
+    //Get sell info
+    public LiveData<List<Receipt>> getCurrentWeekSells(Long businessId, LocalDateTime startOfCurrentWeek){
+        return receiptDao.geCurrentWeekSells(businessId, startOfCurrentWeek);
+    }
+    public LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek,
+                                                    LocalDateTime currentWeekDate){
+        return receiptDao.getLastWeekSells(businessId, startOfLastWeek, currentWeekDate);
+    }
+
+
+
+
+    //get most sold products
+    public LiveData<List<MostSoldProducts>> getMostSoldProductsInCurrentWeek(Long businessId, LocalDateTime startOfCurrentWeek){
+        return soldProductDao.getMostSoldProductsInCurrentWeek(businessId, startOfCurrentWeek);
+    }
+
+    public LiveData<List<MostSoldProducts>> getMostSoldProductsInLastWeek(Long businessId,
+                                                                          LocalDateTime startOfLastWeek,
+                                                                          LocalDateTime currentWeekDate){
+        return soldProductDao.getMostSoldProductsInLastWeek(businessId, startOfLastWeek, currentWeekDate);
     }
 
 

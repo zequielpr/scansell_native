@@ -21,7 +21,7 @@ import com.kunano.scansell_native.databinding.FragmentSoldProductBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
 public class SoldProductFragment extends Fragment{
@@ -132,13 +132,13 @@ public class SoldProductFragment extends Fragment{
 
 
     private void askTodeleteProduct(Product product){
-        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(),
+        AskForActionDialog askForActionDialog = new AskForActionDialog(
                 getString(R.string.delete));
 
-        askForActionDialog.setButtonListener(new ListenResponse() {
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if (resultado){
+            public void result(Boolean object) {
+                if (object){
                     deleteSoldProduct(product);
                 }
             }

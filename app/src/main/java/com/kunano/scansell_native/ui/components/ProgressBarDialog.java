@@ -1,22 +1,25 @@
 package com.kunano.scansell_native.ui.components;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.databinding.DeletingProgressBarBinding;
 
 public class ProgressBarDialog extends DialogFragment {
-    private LayoutInflater layoutInflater;
+
+    DeletingProgressBarBinding binding;
+
 
 
     private TextView customDialogTitle;
@@ -32,10 +35,9 @@ public class ProgressBarDialog extends DialogFragment {
     String title;
     ListenResponse action;
 
-    public ProgressBarDialog( ListenResponse action, LayoutInflater layoutInflater, String title,  LifecycleOwner lifecycleOwner,
+
+    public ProgressBarDialog( String title,  LifecycleOwner lifecycleOwner,
                              MutableLiveData<Integer> progress, MutableLiveData<String> deletedItems) {
-        this.action = action;
-        this.layoutInflater = layoutInflater;
         this.title = title;
         this.lifecycleOwner = lifecycleOwner;
         this.progress = progress;
@@ -43,43 +45,53 @@ public class ProgressBarDialog extends DialogFragment {
 
     }
 
+    public ProgressBarDialog( String title,  LifecycleOwner lifecycleOwner,
+                              MutableLiveData<Integer> progress) {
+        this.title = title;
+        this.lifecycleOwner = lifecycleOwner;
+        this.progress = progress;
+    }
+
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        customView = layoutInflater.inflate(R.layout.deleting_progress_bar, null);
-        customDialogTitle = customView.findViewById(R.id.progress_bar_title);
-        progressBar = customView.findViewById(R.id.progress_bar);
-        textViewItemsToDelete = customView.findViewById(R.id.progress_bar_items);
-        percentage = customView.findViewById(R.id.progress_bar_percentage);
-        cancelButton = customView.findViewById(R.id.progress_bar_cancel_button);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DeletingProgressBarBinding.inflate(inflater, container, false);
+
+        customDialogTitle = binding.progressBarTitle;
+        progressBar = binding.progressBar;
+        textViewItemsToDelete = binding.progressBarItems;
+        percentage = binding.progressBarPercentage;
+        cancelButton = binding.progressBarCancelButton;
 
         progress.observe(lifecycleOwner, (p)-> percentage.setText(Integer.toString(p).concat("%")));
         progress.observe(lifecycleOwner, progressBar::setProgress);
-        deletedItems.observe(lifecycleOwner, textViewItemsToDelete::setText);
+
+
+        if (deletedItems != null){
+            deletedItems.observe(lifecycleOwner, textViewItemsToDelete::setText);
+        }else {
+            textViewItemsToDelete.setVisibility(View.GONE);
+            cancelButton.setVisibility(View.GONE);
+        }
+
 
         customDialogTitle.setText(title);
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setView(customView);
-        AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-
+        setCancelable(false);
+        getDialog().setCanceledOnTouchOutside(false);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                action.isSuccessfull(true
-                );
+                if (action != null){
+                    action.isSuccessfull(true);
+                }
             }
         });
 
-        return dialog;
 
-
-
+        return binding.getRoot();
     }
+
 
 
     public View getCustomView() {
@@ -96,5 +108,9 @@ public class ProgressBarDialog extends DialogFragment {
 
     public void setCancelButton(Button cancelButton) {
         this.cancelButton = cancelButton;
+    }
+
+    public void setAction(ListenResponse action) {
+        this.action = action;
     }
 }

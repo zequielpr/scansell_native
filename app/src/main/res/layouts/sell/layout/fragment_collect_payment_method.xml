@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:maxLength="9"
-            android:hint="@string/chash_tendered"
+            android:hint="@string/cash_tendered"
             android:inputType="numberDecimal" />
 
         <LinearLayout

@@ -52,7 +52,7 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
         if (isDropDownView){
             nameTextView.setTextColor(Color.BLACK);
         }else{
-            nameTextView.setTextColor(Color.WHITE);
+            nameTextView.setTextColor(Color.BLACK);
         }
 
 

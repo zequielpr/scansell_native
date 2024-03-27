@@ -26,7 +26,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
@@ -36,6 +35,7 @@ import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
 
@@ -70,7 +70,7 @@ public class CreateProductFragment extends Fragment {
 
     private Long businessKey;
     private String productId;
-    final int TOP_LEVEL_NAV_SELL = 2131296920;
+    private CustomMediaPicker customMediaPicker;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -112,7 +112,7 @@ public class CreateProductFragment extends Fragment {
         createProductToolbar = binding.createProductToolbar;
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
-
+        customMediaPicker = new CustomMediaPicker(pickMedia);
 
         requestCameraPermissionLauncher = registerForActivityResult(new
                 ActivityResultContracts.RequestPermission(), this::resultCameraPermission);
@@ -168,24 +168,8 @@ public class CreateProductFragment extends Fragment {
               actionCreateProductFragment2ToBusinessFragment2(createProductViewModel.getBusinessId());
 
       navController.navigate(navDirections);
-
-       //System.out.println("Current destination: " +createProductViewModel.getBusinessId());
-
-
-
-
     }
 
-    private NavDestination findTopLevelDestination(NavController navController, NavDestination destination) {
-        while (destination != null) {
-            NavDestination parent = destination.getParent();
-            if (parent == null) {
-                return destination;
-            }
-            destination = parent;
-        }
-        return null;
-    }
 
 
     //Show option to pick image
@@ -226,9 +210,7 @@ public class CreateProductFragment extends Fragment {
 
 
     public void lunchImagePicker(){
-        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+        customMediaPicker.lunchImagePicker(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE);
     }
 
 
@@ -349,7 +331,7 @@ public class CreateProductFragment extends Fragment {
 
     private boolean askTosndBin(MenuItem menuItem){
         askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), getString(R.string.send_bin_product));
+                AskForActionDialog(getString(R.string.send_bin_product));
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getParentFragmentManager(), "Ask to send item to bin");
         return true;

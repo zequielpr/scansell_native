@@ -283,7 +283,7 @@ public class BusinessBinFragment extends Fragment {
         System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.delete_businesses_warn);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(getLayoutInflater(), title);
+                AskForActionDialog(title);
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
 
@@ -301,19 +301,22 @@ public class BusinessBinFragment extends Fragment {
 
 
     public void showProgressBar(String title) {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                mViewModel.cancelDeleteProcess();
-                desactivateDeleteMode();
-            }
-        };
 
 
         MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
 
-        progressBarDialog = new ProgressBarDialog(action, getLayoutInflater(),
+        progressBarDialog = new ProgressBarDialog(
                 title, getViewLifecycleOwner(), progress, deletedBusiness);
+        progressBarDialog.setAction(new ListenResponse() {
+            @Override
+            public void isSuccessfull(boolean cancelDeleteProcess) {
+                if(cancelDeleteProcess){
+                    mViewModel.cancelDeleteProcess();
+                    desactivateDeleteMode();
+                }
+            }
+        });
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 

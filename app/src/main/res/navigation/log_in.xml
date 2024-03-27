@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/log_in_graph"
+    app:startDestination="@id/logInFragment">
+
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.kunano.scansell_native.ui.login.sing_in.SignInFragment"
+        android:label=""
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_logInFragment_to_collectNameAndSurnameFragment"
+            app:destination="@id/collectNameAndSurnameFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_recoverPasswdFragment"
+            app:destination="@id/recoverPasswdFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectEmail"
+        android:name="com.kunano.scansell_native.ui.login.sing_up.CollectEmailAndSignUpFragment"
+        android:label="@string/sign_up"  >
+        <action
+            android:id="@+id/action_collectEmail_to_collectPasswdFragment2"
+            app:destination="@id/collectPasswdFragment2" />
+        <action
+            android:id="@+id/action_collectEmail_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectPasswdFragment2"
+        android:name="com.kunano.scansell_native.ui.login.sing_up.CollectPasswdFragment"
+        android:label="@string/sign_up"  >
+        <action
+            android:id="@+id/action_collectPasswdFragment2_to_collectNameAndSurnameFragment"
+            app:destination="@id/collectNameAndSurnameFragment" />
+        <action
+            android:id="@+id/action_collectPasswdFragment2_to_collectEmail"
+            app:destination="@id/collectEmail" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectNameAndSurnameFragment"
+        android:name="com.kunano.scansell_native.ui.login.sing_up.CollectNameAndSurnameFragment"
+        android:label="@string/sign_up" >
+        <action
+            android:id="@+id/action_collectNameAndSurnameFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_collectNameAndSurnameFragment_to_collectPasswdFragment2"
+            app:destination="@id/collectPasswdFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.kunano.scansell_native.ui.login.sing_up.VerifyEmailFragment"
+        android:label="@string/verify_email"
+        tools:layout="@layout/fragment_verify_email" >
+        <action
+            android:id="@+id/action_verifyEmailFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recoverPasswdFragment"
+        android:name="com.kunano.scansell_native.ui.login.recover_password.RecoverPasswdFragment"
+        android:label="@string/recover_password"
+        tools:layout="@layout/fragment_recover_passwd" >
+        <action
+            android:id="@+id/action_recoverPasswdFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+    </fragment>
+</navigation>

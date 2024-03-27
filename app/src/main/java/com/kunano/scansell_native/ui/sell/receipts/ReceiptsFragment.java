@@ -24,7 +24,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentReceiptsBinding;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 
 public class ReceiptsFragment extends Fragment{
@@ -130,11 +130,11 @@ public class ReceiptsFragment extends Fragment{
 
 
     public void askToDelete(Receipt receipt){
-        AskForActionDialog askForActionDialog = new AskForActionDialog(getLayoutInflater(), getString(R.string.delete));
-        askForActionDialog.setButtonListener(new ListenResponse() {
+        AskForActionDialog askForActionDialog = new AskForActionDialog( getString(R.string.delete));
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if (resultado){
+            public void result(Boolean object) {
+                if (object){
                     sellViewModel.deleteReceipt(receipt);
                 }
             }

@@ -1,67 +1,122 @@
 package com.kunano.scansell_native.ui.components;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.databinding.AskForActionDialogBinding;
 
 public class AskForActionDialog extends DialogFragment {
 
-    private LayoutInflater inflater;
-    private ListenResponse buttonListener;
+    private ViewModelListener<Boolean> buttonListener;
     private String title;
-
     private String buttonLeftText;
     private String buttonRightText;
+    private  String content;
+    boolean leftButtonVisibility;
+    boolean rightButtonVisibility;
+    private AskForActionDialogBinding binding;
 
-    public AskForActionDialog(LayoutInflater inflater, String title) {
+
+    TextView customDialogTitle;
+    TextView customDialogMessage;
+    Button customDialogOkButton;
+    Button customDialogCancelButton;
+
+    public AskForActionDialog(String title) {
         super();
-        this.inflater = inflater;
         this.title = title;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
     }
-    public AskForActionDialog(LayoutInflater inflater, String title,
+
+    public AskForActionDialog(String title,
                               String buttonLeftText, String buttonRightText) {
         super();
-        this.inflater = inflater;
         this.title = title;
         this.buttonLeftText = buttonLeftText;
         this.buttonRightText = buttonRightText;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+    }
+    public AskForActionDialog(String title, String content) {
+        super();
+        this.title = title;
+        this.content = content;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+    }
+
+
+    public AskForActionDialog(String title, String content,
+                              String buttonLeftText, String buttonRightText) {
+        super();
+        this.title = title;
+        this.content = content;
+        this.buttonLeftText = buttonLeftText;
+        this.buttonRightText = buttonRightText;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+    }
+
+    public AskForActionDialog(String title, String content, boolean leftButtonVisibility,
+                              boolean rightButtonVisibility) {
+        super();
+        this.title = title;
+        this.content = content;
+        this.leftButtonVisibility = leftButtonVisibility;
+        this.rightButtonVisibility = rightButtonVisibility;
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = AskForActionDialogBinding.inflate(inflater, container, false);
+
+
+
+        customDialogTitle = binding.customDialogTitle;
+        customDialogMessage = binding.customDialogMesage;
+        customDialogOkButton = binding.customDialogOkButton;
+        customDialogCancelButton = binding.customDialogCancelButton;
+
+
+
+        return binding.getRoot();
     }
 
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
-        View dialogView = inflater.inflate(R.layout.custom_alert_dialog, null);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // Reference views in the custom layout
-        TextView customDialogTitle = dialogView.findViewById(R.id.customDialogTitle);
-        TextView customDialogMessage = dialogView.findViewById(R.id.customDialogMesage);
-        Button customDialogOkButton = dialogView.findViewById(R.id.customDialogOkButton);
-        Button customDialogCancelButton = dialogView.findViewById(R.id.customDialogCancelButton);
 
         customDialogTitle.setText(title);
-        customDialogMessage.setText("");
+        customDialogMessage.setText(content!=null?content:"");
+        customDialogMessage.setVisibility(content==null?View.GONE:View.VISIBLE);
         if(buttonRightText != null & buttonRightText != null){
             customDialogOkButton.setText(buttonRightText);
             customDialogCancelButton.setText(buttonLeftText);
         }
+        customDialogOkButton.setVisibility(rightButtonVisibility?View.VISIBLE:View.GONE);
+        customDialogCancelButton.setVisibility(leftButtonVisibility?View.VISIBLE:View.GONE);
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setView(dialogView);
         //Button ok action
         customDialogOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonListener.isSuccessfull(true);
+                if (buttonListener != null){
+                    buttonListener.result(true);
+                }
                 dismiss();
             }
         });
@@ -70,21 +125,15 @@ public class AskForActionDialog extends DialogFragment {
         customDialogCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonListener.isSuccessfull(false);
-               dismiss();
+                if (buttonListener != null){
+                    buttonListener.result(false);
+                }
+                dismiss();
             }
         });
-
-        Dialog customDialog = builder.create();
-
-        return customDialog;
     }
 
-    public ListenResponse getButtonListener() {
-        return buttonListener;
-    }
-
-    public void setButtonListener(ListenResponse buttonListener) {
+    public void setButtonListener(ViewModelListener<Boolean> buttonListener) {
         this.buttonListener = buttonListener;
     }
 }

@@ -3,6 +3,7 @@ package com.kunano.scansell_native.model.sell.product_to_sel_draft;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 
 import com.kunano.scansell_native.model.Home.product.Product;
@@ -12,7 +13,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFK", "businessIdIdFK"},
                 onDelete = ForeignKey.CASCADE),
-        indices = {@Index("productIdFK"), @Index("businessIdIdFK")})
+        indices = {@Index({"productIdFK", "businessIdIdFK"})})
 public class ProductToSellDraft {
 
     @NonNull
@@ -23,6 +24,8 @@ public class ProductToSellDraft {
 
     @NonNull
     private Long businessIdIdFK;
+
+    @Ignore
     public ProductToSellDraft(){
     }
 

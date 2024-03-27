@@ -10,10 +10,6 @@
 
     <include app:graph="@navigation/sell_navigation" />
     <include app:graph="@navigation/home_navigation" />
+    <include app:graph="@navigation/profile_navigation"/>
 
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.kunano.scansell_native.ui.profile.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/profile_fragment" />
 </navigation>

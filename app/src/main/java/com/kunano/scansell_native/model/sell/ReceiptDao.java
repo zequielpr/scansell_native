@@ -9,6 +9,7 @@ import androidx.room.Query;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Dao
@@ -30,5 +31,16 @@ public interface ReceiptDao {
 
     @Delete
     ListenableFuture<Integer> deleteReceipt(Receipt receipt);
+
+
+
+    @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId) " +
+            "AND sellingDate >= (:startOfCurrentWeek)")
+    LiveData<List<Receipt>> geCurrentWeekSells(Long businessId, LocalDateTime startOfCurrentWeek);
+
+    @Query("SELECT * FROM receipt WHERE receipt.businessIdFK = (:businessId) " +
+            "AND sellingDate >= (:startOfLastWeek) AND sellingDate < (:currentWeekDate)")
+    LiveData<List<Receipt>> getLastWeekSells(Long businessId, LocalDateTime startOfLastWeek,
+                                             LocalDateTime currentWeekDate);
 
 }

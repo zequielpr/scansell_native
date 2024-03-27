@@ -1,5 +1,10 @@
 package com.kunano.scansell_native;
 
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.ENGLISH;
+import static com.kunano.scansell_native.repository.share_preference.SettingRepository.SPANISH;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,7 +15,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
+import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.login.LogInActivity;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,9 +30,23 @@ public class MainActivity extends AppCompatActivity {
     MainActivityViewModel mainActivityViewModel;
 
     BottomNavigationView navView;
+    FirebaseUser currentUser;
+    FirebaseAuth firebaseAuth;
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AccountHelper accountHelper = new AccountHelper();
+
+        handleLanguage();
+
+        if (accountHelper.getCurrentUser()== null){
+            navigateToLogIn();
+        }else {
+           if(!accountHelper.isEmailVerified()) accountHelper.signOut(this);
+        };
+
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -54,9 +79,16 @@ public class MainActivity extends AppCompatActivity {
         navController.getContext();
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
     }
     NavController navController;
 
+
+    private void navigateToLogIn(){
+        Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+        startActivity(intent);
+        finish();
+    }
     @Override
     public void onBackPressed() {
        mainActivityViewModel.notifyBackPressed();
@@ -66,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy(){
         System.out.println("main activiti on destroy");
         super.onDestroy();
+    }
+
+    public void handleLanguage(){
+        SettingRepository settingRepository = new SettingRepository(this, MODE_PRIVATE);
+        String language = settingRepository.getLanguage();
+
+        if (language.equals(ENGLISH)) {
+            Utils.setLanguage(ENGLISH, this);
+        } else if (language.equals(SPANISH)) {
+            Utils.setLanguage(SPANISH, this);
+        }else {
+            Utils.setLanguageAutomatic(this);
+        }
     }
 
 

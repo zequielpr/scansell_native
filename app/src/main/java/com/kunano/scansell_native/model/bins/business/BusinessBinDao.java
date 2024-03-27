@@ -19,14 +19,15 @@ public interface BusinessBinDao {
 
     //Restorage product
 
-    @Query("DELETE FROM BusinessBin WHERE productIdFk IN (:productId)")
-    public  ListenableFuture<Integer> restorageProduct(String productId);
+    @Query("DELETE FROM BusinessBin WHERE productIdFk IN (:productId) AND businessIdFk IN (:businessId)")
+    public  ListenableFuture<Integer> restorageProduct(String productId, Long businessId);
 
 
 
     //Get products in the bind
     @Query("SELECT * FROM product WHERE EXISTS (SELECT 1 FROM BusinessBin" +
-            " WHERE BusinessBin.productIdFk  = product.productId AND BusinessBin.businessIdFk = (:businessId)) " )
+            " WHERE BusinessBin.productIdFk  = product.productId AND product.businessIdFK = (:businessId)" +
+            " AND BusinessBin.businessIdFk = (:businessId)) " )
     public LiveData<List<Product>> getProductsInBin(long businessId);
 
 
