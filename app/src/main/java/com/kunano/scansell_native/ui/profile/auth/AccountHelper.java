@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.profile.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -183,6 +184,10 @@ public class AccountHelper extends UserData {
                 listener.result(e.getMessage());
             }
         });
+    }
+
+    public Uri getProfilePic(){
+        return currentUser.getPhotoUrl();
     }
 
 

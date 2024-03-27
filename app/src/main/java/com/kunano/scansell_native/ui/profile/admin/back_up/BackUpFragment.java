@@ -158,6 +158,7 @@ public class BackUpFragment extends Fragment {
                 } else {
                     showResults(getString(R.string.thera_has_been_an_error));
                 }
+                Utils.restartApp(getContext());
             }
         });
     }
@@ -273,7 +274,7 @@ public class BackUpFragment extends Fragment {
         if (isToRestore) {
             if (askForActionDialog != null) askForActionDialog.dismiss();
             progressBarDialog = new
-                    ProgressBarDialog(getString(R.string.uploading_file_to_drive), getViewLifecycleOwner(),
+                    ProgressBarDialog(getString(R.string.restoring), getViewLifecycleOwner(),
                     backUpViewModel.getRestoreProgress());
             progressBarDialog.show(getParentFragmentManager(), "restore progress");
 

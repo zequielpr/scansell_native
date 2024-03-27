@@ -1,5 +1,7 @@
 package com.kunano.scansell_native.ui.profile;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -61,6 +64,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private View createNewBusinessView;
     private ImageButton createNewBusinessImgButton;
     private ScrollView businessStatsView;
+    private Drawable userImage;
 
 
     @Override
@@ -119,11 +123,6 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         customLineChart = new CustomLineChart(lineChart);
         customLineChart.setOnChartValueSelectedListener(getOnChartValueSelectedListener());
         customPieChart = new CustomPieChart(pieChartMostSellProducts);
-
-
-
-
-
         return binding.getRoot();
     }
 
@@ -149,11 +148,18 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
 
-
-
+        ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
 
     }
 
+    private void setUserImage(Bitmap userImage){
+        getActivity().runOnUiThread(()->{
+            Bitmap roundImg = ImageProcessor.getRoundedBitmap(userImage);
+            this.userImage = ImageProcessor.bitmapToDrawable(ProfileFragment.this.getContext(),
+                    roundImg);
+            profileToolbar.setNavigationIcon(this.userImage);
+        });
+    }
 
     private void createNewBusiness(View view){
 
