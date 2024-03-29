@@ -41,16 +41,19 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
     @Override
     public CardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.home_card_view_business, parent, false);
         return new CardHolder(view);
     }
     @Override
     public void onBindViewHolder(CardHolder holder, final int position) {
+
         Business businessData = getItem(position);
         holder.title.setText(businessData.getBusinessName());
         holder.address.setText(businessData.getBusinessAddress());
         holder.card.setTag(String.valueOf(businessData.getBusinessId()));
+
         listener.getCardHolderOnBind(holder.itemView, businessData);
     }
 

@@ -161,6 +161,15 @@ public class CreateProductFragment extends Fragment {
         return binding.getRoot();
     }
 
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(), createProductToolbar::setTitle);
+        createProductToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
+        createProductToolbar.setNavigationOnClickListener((v)->navigateBack());
+        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(),this::inflateToolbar);
+
+    }
+
+
     public void navigateBack(){
 
       navController = Navigation.findNavController(getView());
@@ -311,13 +320,7 @@ public class CreateProductFragment extends Fragment {
     }
 
 
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(), createProductToolbar::setTitle);
-        createProductToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
-        createProductToolbar.setNavigationOnClickListener((v)->navigateBack());
-        createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(),this::inflateToolbar);
 
-    }
 
     private void inflateToolbar(String productName){
         if(!productName.isBlank()){
@@ -363,10 +366,31 @@ public class CreateProductFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (createProductViewModel == null)return;
+        productName.setText(createProductViewModel.getProductName());
+        buyingPrice.setText(createProductViewModel.getBuyPrice());
+        sellingPrice.setText(createProductViewModel.getSellPrice());
+        stock.setText(createProductViewModel.getStock());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (createProductViewModel == null)return;
+        createProductViewModel.setProductName(productName.getText().toString());
+        createProductViewModel.setSellPrice(sellingPrice.getText().toString());
+        createProductViewModel.setBuyPrice(buyingPrice.getText().toString());
+        createProductViewModel.setStock(stock.getText().toString());
+    }
+
+    @Override
     public void onDestroy(){
         super.onDestroy();
         if (createProductViewModel == null)return;
         createProductViewModel.shotDownExecutors();
+        System.out.println("on destroy");
     }
 
 

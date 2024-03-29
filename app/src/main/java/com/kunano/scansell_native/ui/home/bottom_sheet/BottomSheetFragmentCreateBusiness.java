@@ -127,8 +127,8 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
 
 
     public void createBusinessRequest(){
-        String name = editTextBusinessName.getText().toString();
-        String address = editTextBusinessAddress.getText().toString();
+        String name = editTextBusinessName.getText().toString().trim();
+        String address = editTextBusinessAddress.getText().toString().trim();
 
         Business newBusiness = new Business(name, address, "");
         viewModel.createBusiness(newBusiness, requestRestult::result);
@@ -140,8 +140,8 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
             requestRestult.result(false);
             return;
         }
-        String name = editTextBusinessName.getText().toString();
-        String address = editTextBusinessAddress.getText().toString();
+        String name = editTextBusinessName.getText().toString().trim();
+        String address = editTextBusinessAddress.getText().toString().trim();
 
         Business business = new Business(name, address, "");
         business.setBusinessId(currentBusinessId);
@@ -166,10 +166,11 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
             @Override
             public void onTextChanged(CharSequence name, int i, int i1, int i2) {
 
-                if(name.length() == 0){
+                if(name.toString().trim().isEmpty()){
                     isBusinessNameValid = false;
                     showWarningName(getString(R.string.advert_introduce_name));
                     desactivateSaveButton();
+                    return;
                 }
 
                 else if(!viewModel.validateName(name.toString())){
@@ -205,10 +206,11 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
             @Override
             public void onTextChanged(CharSequence address, int i, int i1, int i2) {
 
-                if(address.toString().isEmpty()){
+                if(address.toString().trim().isEmpty()){
                     isBusinessAddressValid = false;
                     showWarningAddress(getString(R.string.advert_introduce_address));
                     desactivateSaveButton();
+                    return;
                 }
 
 

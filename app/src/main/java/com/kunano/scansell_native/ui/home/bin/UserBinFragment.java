@@ -31,6 +31,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
+import com.kunano.scansell_native.ui.home.HomeViewModel;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class UserBinFragment extends Fragment {
     private  ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
+    HomeViewModel homeViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -58,6 +60,7 @@ public class UserBinFragment extends Fragment {
 
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
 
         toolbar = binding.binToolbar;
@@ -83,20 +86,7 @@ public class UserBinFragment extends Fragment {
         toolbar.setNavigationIcon(R.drawable.back_arrow);
         deleteOrRestoreOptions.setVisibility(View.GONE);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mViewModel.isDeleteModeActive()) {
-                    desactivateDeleteMode();
-                    return;
-                }
 
-
-                mainActivityViewModel.showBottomNavBar();
-                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
-                Navigation.findNavController(getView()).navigate(action);
-            }
-        });
         mViewModel.setListenUserBinViewModel(new UserBinViewModel.ListenUserBinViewModel() {
             @Override
             public void requestResult(String message) {
@@ -129,6 +119,12 @@ public class UserBinFragment extends Fragment {
             @Override
             public void getCardHolderOnBind(View cardHolder, Business business) {
                 mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
+                TextView quantity =  cardHolder.findViewById(R.id.textViewNumProducts);
+
+                homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
+                        getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
+                                concat(": ").concat(String.valueOf(q)))
+                );
             }
 
             @Override
@@ -344,6 +340,23 @@ public class UserBinFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("Delete active: " + mViewModel.isDeleteModeActive());
+                if (mViewModel.isDeleteModeActive()) {
+                    desactivateDeleteMode();
+                    return;
+                }
+
+
+                mainActivityViewModel.showBottomNavBar();
+                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+                Navigation.findNavController(getView()).navigate(action);
+            }
+        });
+
+
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
 
         toolbar.setOnMenuItemClickListener(item -> {

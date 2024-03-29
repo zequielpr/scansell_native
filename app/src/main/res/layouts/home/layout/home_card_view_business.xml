@@ -33,7 +33,7 @@
                 android:id="@+id/textViewNumProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="20 products" />
+                android:text="product number" />
 
             <TextView
                 android:id="@+id/textViewDirection"

@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,8 +97,9 @@ public class CaptureImageFragment extends Fragment {
     }
 
     private void receiveBitmapImg(Bitmap bitmapImg){
+        if (bitmapImg == null) return;
+
         createProductViewModel.setBitmapImg(bitmapImg);
-        createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(), bitmapImg));
 
         //navigate to create product screen
         getActivity().runOnUiThread(this::navigateToPreviewImage);
@@ -114,7 +114,7 @@ public class CaptureImageFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        customCamera.shutDwonThread();
+        if(customCamera != null)customCamera.shutDwonThread();
 
     }
 

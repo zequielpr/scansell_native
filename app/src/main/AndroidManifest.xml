@@ -11,6 +11,11 @@
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <instrumentation
+        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:targetPackage="com.kunano.scansell_native" />
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
