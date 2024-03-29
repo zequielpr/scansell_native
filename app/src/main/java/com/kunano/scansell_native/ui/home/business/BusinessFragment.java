@@ -337,6 +337,7 @@ public class BusinessFragment extends Fragment {
         deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
 
+        deleteIcon.setVisible(businessViewModel.getItemsToDelete().size()>0);
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.delete_button:
@@ -368,8 +369,7 @@ public class BusinessFragment extends Fragment {
         selectAllIcon.setIcon(checkedCircle);
         businessViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
         businessViewModel.selectAll(businessViewModel.parseProductListToGeneric());
-
-
+        updateToolbar();
     }
 
 
@@ -377,6 +377,7 @@ public class BusinessFragment extends Fragment {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         businessViewModel.setCheckedOrUncheckedCirclLivedata(null);
         businessViewModel.unSelectAll();
+        updateToolbar();
     }
 
 

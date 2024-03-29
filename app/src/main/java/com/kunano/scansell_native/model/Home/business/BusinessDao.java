@@ -81,5 +81,11 @@ public interface BusinessDao  {
     @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
             " WHERE BusinessBin.productIdFk  = product.productId) AND product.businessIdFk = (:businessId) " +
             " ORDER BY product.stock DESC")
-    public LiveData<List<Product>> sortProductByStockDesc(Long businessId);
+    LiveData<List<Product>> sortProductByStockDesc(Long businessId);
+
+    @Transaction
+    @Query("SELECT COUNT(productId) as quantity FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
+            " WHERE BusinessBin.productIdFk  = product.productId AND product.businessIdFK = businessIdFK) " +
+            "AND product.businessIdFk = (:businessId) " )
+    LiveData<Integer>getQuantityOfProductsInBusiness(Long businessId);
 }

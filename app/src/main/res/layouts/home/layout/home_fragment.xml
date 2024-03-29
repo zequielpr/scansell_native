@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".ui.home.HomeFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/home_fragment_toolbar"
-        app:title="@string/businesses_title"
-        android:backgroundTint="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/transparent"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:theme="?attr/actionBarTheme"
+        app:title="@string/businesses_title" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:tag="recycleListHome"
         android:id="@+id/businessList"
         android:layout_width="382dp"
-        android:layout_height="533dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/home_fragment_toolbar"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="-58dp" />
+        android:layout_marginBottom="-58dp"
+        android:tag="recycleListHome" />
 
     <include
         android:id="@+id/createNewBusinessView"

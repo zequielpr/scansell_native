@@ -13,7 +13,7 @@ import androidx.room.Index;
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFk", "businessIdFK"},
                 onDelete = ForeignKey.CASCADE),
-        indices = {@Index(value = {"productIdFk", "businessIdFK"})})
+        indices = {@Index(value = {"productIdFk", "businessIdFK"}, unique = true)})
 public class ProductImg {
 
     @NonNull

@@ -19,6 +19,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -106,6 +107,11 @@ dependencies {
     implementation 'com.google.gms:google-services:4.3.10'  // Use the latest version available
     implementation "androidx.databinding:databinding-runtime:7.1.0"
 
+
+    //Test libraries
+    testImplementation 'androidx.test:core:1.4.0'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.robolectric:robolectric:4.7.3'
 
     def room_version = "2.6.1"
 

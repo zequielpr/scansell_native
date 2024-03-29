@@ -105,8 +105,8 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         super.passItemsToBin(new ListenResponse() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if(resultado){
+            public void isSuccessfull(boolean result) {
+                if(result){
                     listenHomeViewModel.hideProgressBar();
                 }
             }
@@ -115,6 +115,10 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     }
 
+
+    public LiveData<Integer> getQuantityOfProductsInBusiness(Long businessId){
+        return businessRepository.getQuantityOfProductsInBusiness(businessId);
+    }
 
 
 

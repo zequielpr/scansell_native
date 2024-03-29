@@ -33,7 +33,7 @@ tools:context=".ui.home.HomeFragment">
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:layout_toRightOf="@id/create_business_title"
+            android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/cancel"
             android:src="@drawable/close_24" />
@@ -52,6 +52,7 @@ tools:context=".ui.home.HomeFragment">
             android:autofillHints="name"
             android:ems="10"
             android:hint="@string/business_name"
+            android:maxLength="30"
             android:inputType="text" />
 
         <TextView
@@ -69,6 +70,7 @@ tools:context=".ui.home.HomeFragment">
             android:autofillHints="postalAddress"
             android:ems="10"
             android:hint="@string/business_address"
+            android:maxLength="30"
             android:inputType="text" />
 
         <TextView

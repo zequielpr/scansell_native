@@ -42,8 +42,8 @@ public class ProductRepository {
                     resultado = productDao.insertProduct(product).get();
                     ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
                     productImgDao.insertProductImg(img).get();
-                }
-*/
+                }*/
+
                 //product.setProductId(UUID.randomUUID().toString());
                 resultado = productDao.insertProduct(product).get();
 

@@ -87,37 +87,13 @@
                     android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imageViewIconStock"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/baseline_circle_24" />
-
                     <TextView
-                        android:id="@+id/textViewStock"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:text="Stock"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/imageViewIconSellingPrice"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
+                        android:id="@+id/textView18"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="0"
-                        app:srcCompat="@drawable/sell_ic" />
+                        android:text="@string/sell_price"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textViewSellingPrice"
@@ -135,13 +111,13 @@
                     android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imageViewIconBuyinPrice"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
+                    <TextView
+                        android:id="@+id/textView19"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="0"
-                        app:srcCompat="@drawable/buying_price_ic" />
+                        android:text="@string/buy_price"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textViewBuyingPrice"
@@ -150,6 +126,30 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:text="Buying price"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:text="@string/stock"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/textViewStock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="3dp"
+                        android:text="Stock"
                         android:textSize="16sp" />
                 </LinearLayout>
 

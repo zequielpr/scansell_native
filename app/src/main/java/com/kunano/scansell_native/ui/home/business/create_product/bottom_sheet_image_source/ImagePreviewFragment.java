@@ -69,6 +69,7 @@ public class ImagePreviewFragment extends Fragment {
         int navDirections = R.id.createProductFragment2;
         Navigation.findNavController(getView()).navigate(navDirections);
 
+
         createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(),
                 createProductViewModel.getBitmapImg() ));
         createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);

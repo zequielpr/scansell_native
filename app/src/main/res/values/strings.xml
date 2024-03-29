@@ -11,7 +11,7 @@
     <string name="business_name">Business name</string>
     <string name="business_address">Business address</string>
     <string name="save">Save</string>
-    <string name="advert_invalid_name">Name invalid. Letters and spaces only (At least 3 letters)</string>
+    <string name="advert_invalid_name">Name invalid. Letters and spaces only</string>
     <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
     <string name="advert_introduce_name">introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
@@ -182,6 +182,12 @@
     <string name="english">English</string>
     <string name="automatic">Automatic</string>
     <string name="saving_file_in_local">Saving copy. Do not close the app</string>
+    <string name="leave_app">Leave app</string>
+    <string name="ask_to_leave_app">Do you want to leave this app?</string>
+    <string name="current_products">Current products</string>
+    <string name="stock">Stock:</string>
+    <string name="sell_price">Sell price:</string>
+    <string name="buy_price">Buy price:</string>
 
 
 </resources>

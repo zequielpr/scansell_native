@@ -26,6 +26,11 @@ import java.util.concurrent.Executors;
 
 public class CreateProductViewModel extends AndroidViewModel {
 
+    private String productName;
+    private String buyPrice;
+    private String sellPrice;
+    private String stock;
+
     private MutableLiveData<Drawable> bitmapImgMutableLiveData;
     private MutableLiveData<Boolean> handleSaveButtonClickLiveData;
     private MutableLiveData<String> warningName;
@@ -299,5 +304,38 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void setFragmentListener(ViewModelListener viewModelListener) {
         this.viewModelListener = viewModelListener;
+    }
+
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(String buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public String getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(String sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public String getStock() {
+        return stock;
+    }
+
+    public void setStock(String stock) {
+        this.stock = stock;
     }
 }
