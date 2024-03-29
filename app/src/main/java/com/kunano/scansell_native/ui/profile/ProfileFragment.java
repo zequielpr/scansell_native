@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.profile;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -99,7 +100,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
         //Select business spinner
         pickBusinessSpinnerAdapter = new BusinessSpinnerAdapter(getContext(),
-                R.layout.custom_item_spinner, new ArrayList<>());
+                R.layout.custom_item_spinner, new ArrayList<>(), Color.BLACK);
         pickBusinessSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         pickBusinessSpinner.setAdapter(pickBusinessSpinnerAdapter);
         profileViewModel.getSeletedBusiness().observe(getViewLifecycleOwner(), pickBusinessSpinner::setSelection);

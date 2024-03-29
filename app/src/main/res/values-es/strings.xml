@@ -189,4 +189,5 @@
     <string name="stock">Stock:</string>
     <string name="sell_price">Sell price:</string>
     <string name="buy_price">Buy price:</string>
+    <string name="cancel_sell">Cancel sell</string>
 </resources>

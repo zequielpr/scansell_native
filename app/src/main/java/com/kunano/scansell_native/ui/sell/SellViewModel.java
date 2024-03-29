@@ -17,7 +17,6 @@ import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.text.DecimalFormat;
@@ -190,7 +189,7 @@ public class SellViewModel extends AndroidViewModel {
 
 
     /**Finish sell and create receipt**/
-    public void finishSell(byte paymentMethod, ListenResponse listenResponse){
+    public void finishSell(byte paymentMethod, ViewModelListener<Boolean> listenResponse){
         String generatedReceiptId = UUID.randomUUID().toString();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
@@ -204,7 +203,7 @@ public class SellViewModel extends AndroidViewModel {
             executorService.execute(()->{
                 try {
                   Long result =  sellRepository.insertReceipt(receipt).get();
-                  if (result > 0)listenResponse.isSuccessfull(insertSoldProducts(receipt.getReceiptId()).get().size()>0);
+                  if (result > 0)listenResponse.result(insertSoldProducts(receipt.getReceiptId()).get().size()>0);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {

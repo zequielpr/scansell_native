@@ -17,7 +17,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.databinding.FragmentCollectPaymentMethodBinding;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellFragmentDirections;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 
@@ -27,6 +27,10 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private RadioGroup radioGroup;
     private Button cancelButton;
     private Button payButton;
+
+    public static int CASH = 0;
+    public static int CARD = 1;
+
 
     /** 0 = cash, 1 = card**/
     private byte paymentMethod;
@@ -99,9 +103,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
         cancelButton.setOnClickListener(this::cancelPayment);
         payButton.setOnClickListener(this::pay);
 
-        if(sellViewModel.getRadioButtonChecked() != null){
-            radioGroup.check(sellViewModel.getRadioButtonChecked());
-        }
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -127,10 +129,10 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        sellViewModel.finishSell(paymentMethod, new ListenResponse() {
+        sellViewModel.finishSell(paymentMethod, new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean resultado) {
-                if(resultado){
+            public void result(Boolean result) {
+                if(result){
                     getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
                 }else {
                     // do something else
@@ -147,6 +149,14 @@ public class CollectPaymentMethodFragment extends DialogFragment {
                 sellViewModel.getCurrentReceiptId());
 
         Navigation.findNavController(parentView).navigate(receiptDirection);
+    }
+
+    public void onResume(){
+        super.onResume();
+        if(sellViewModel.getRadioButtonChecked() != null){
+            if (sellViewModel.getRadioButtonChecked()== CARD)activateOrdesacPayButton(true);
+            radioGroup.check(sellViewModel.getRadioButtonChecked());
+        }
     }
 
 

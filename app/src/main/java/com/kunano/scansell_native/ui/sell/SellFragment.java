@@ -68,6 +68,7 @@ public class SellFragment extends Fragment {
     private View sellProductView;
     private View createBusinessView;
     private ImageButton createNewBusinessImgButton;
+    private Button cancelSellButton;
 
 
 
@@ -92,6 +93,7 @@ public class SellFragment extends Fragment {
         sellProductView = binding.sellProductsView;
         createBusinessView = binding.createNewBusinessView.createNewBusinessView;
         createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
+        cancelSellButton = binding.cancelSellButton;
 
 
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -108,7 +110,7 @@ public class SellFragment extends Fragment {
         setCardListener();
 
         spinerAdapter = new BusinessSpinnerAdapter(getContext(),
-                R.layout.custom_item_spinner, new ArrayList<>());
+                R.layout.custom_item_spinner, new ArrayList<>(), Color.WHITE);
 
 
         //Set business in adapter and get the current business id
@@ -186,7 +188,9 @@ public class SellFragment extends Fragment {
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
+        cancelSellButton.setOnClickListener(this::cancelSell);
         sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), finishButton::setClickable);
+        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), cancelSellButton::setClickable);
         sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), (s)->spinner.setEnabled(!s));
         sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
 
@@ -217,9 +221,8 @@ public class SellFragment extends Fragment {
     }
 
 
-    private void activateOrDesactFinishButton(boolean activate){
-        finishButton.setClickable(activate);
-    }
+
+
 
     private void createNewBusiness(View view){
         BottomSheetFragmentCreateBusiness createBusiness = new BottomSheetFragmentCreateBusiness();
@@ -259,6 +262,19 @@ public class SellFragment extends Fragment {
         CollectPaymentMethodFragment collectPaymentMethodFragment;
         collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView());
         collectPaymentMethodFragment.show(getParentFragmentManager(), "collect_payment_method");
+    }
+
+    private void cancelSell(View view){
+        AskForActionDialog askToCancelSell = new AskForActionDialog(getString(R.string.cancel_sell),
+                getString(R.string.cancel_sell).concat(" ?"));
+        askToCancelSell.setButtonListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object) sellViewModel.clearProductsToSell();
+            }
+        });
+
+        askToCancelSell.show(getParentFragmentManager(), getString(R.string.cancel));
     }
 
 
