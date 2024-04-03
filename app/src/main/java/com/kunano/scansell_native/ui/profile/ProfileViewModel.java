@@ -17,6 +17,7 @@ import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.profile.chart.line.LineChartData;
 
 import java.time.DayOfWeek;
@@ -49,6 +50,7 @@ public class ProfileViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> mostSoldProductsTxtViewVisibility;
     private MutableLiveData<Integer> businessStatsVisibilityMutableData;
     private MutableLiveData<Integer> createBusinessButtonVisibility;
+    private MutableLiveData<Double> sellsSumMutableLiveDta;
 
     private Long currentBusinessId;
 
@@ -61,6 +63,7 @@ public class ProfileViewModel extends AndroidViewModel {
         seletedBusiness = new MutableLiveData<>(0);
         receiptListLiveData = new MutableLiveData<>();
         soldProductsListLiveData = new MutableLiveData<>();
+        sellsSumMutableLiveDta = new MutableLiveData<>();
 
         sellsLineChartDataLive = new MutableLiveData<>();
         mostSoldProductPieChartMLive = new MutableLiveData<>();
@@ -76,6 +79,7 @@ public class ProfileViewModel extends AndroidViewModel {
         }
 
         mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
+
             mostSoldProductsTxtViewVisibility.postValue(mostSoldProductsList.size()>0? View.VISIBLE:View.GONE);
             List<PieEntry> pieEntryList = processMostSoldPData(mostSoldProductsList);
             mostSoldProductPieChartMLive.postValue(pieEntryList);
@@ -140,6 +144,11 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     private LineChartData processReceiptsGetWeeklySells(List<Receipt> receiptList){
+
+        Double sellsSum = receiptList.stream().reduce(0.0, (a, receipt)
+                ->a + receipt.getSpentAmount(), Double::sum);
+        sellsSumMutableLiveDta.postValue(Utils.formatDecimal(sellsSum));
+
         selectedDateMutableLiveData.postValue("");
         Float sells;
         LocalDateTime dateTime = dateToSearch;
@@ -299,5 +308,13 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void setCreateBusinessButtonVisibility(Integer createBusinessButtonVisibility) {
         this.createBusinessButtonVisibility.postValue(createBusinessButtonVisibility);
+    }
+
+    public MutableLiveData<Double> getSellsSumMutableLiveDta() {
+        return sellsSumMutableLiveDta;
+    }
+
+    public void setSellsSumMutableLiveDta(Double sellsSumMutableLiveDta) {
+        this.sellsSumMutableLiveDta.postValue(sellsSumMutableLiveDta);
     }
 }

@@ -18,25 +18,7 @@ public class CustomLineChart {
 
     public void populateChart(LineChartData lineChartData) {
         this.lineChartData = lineChartData;
-        /*ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 4));
-        entries.add(new Entry(1, 8));
-        entries.add(new Entry(2, 6));
-        entries.add(new Entry(3, 2));
-        entries.add(new Entry(4, 7));
-        entries.add(new Entry(5, 3));
-        entries.add(new Entry(6, 3));
 
-        List<String> dates =new ArrayList<>();
-
-
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());
-        dates.add(new Date().toString());*/
 
 
         LineDataSet dataSet = new LineDataSet(lineChartData.getEntries(), "Sells"); // Label for the dataset
@@ -54,8 +36,9 @@ public class CustomLineChart {
         lineChart.getDescription().setText("");
 
         lineChart.invalidate();
-    }
 
+
+    }
 
     public void setOnChartValueSelectedListener(OnChartValueSelectedListener onChartValueSelectedListener) {
         lineChart.setOnChartValueSelectedListener(onChartValueSelectedListener);
