@@ -152,19 +152,28 @@ public class BackUpFragment extends Fragment {
         backUpViewModel.exportDatabaseToLocalFile(getContext(), dirTosaveBackUp, new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean object) {
+
                 progressBarDialog.dismiss();
                 if (object) {
+                    System.out.println("create success");
                     showResults(getString(R.string.backup_created_success));
+
                 } else {
                     showResults(getString(R.string.thera_has_been_an_error));
                 }
-                Utils.restartApp(getContext());
+
             }
         });
     }
 
     private void showResults(String message) {
         Utils.showToast(getActivity(), message, Toast.LENGTH_LONG);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Utils.restartApp(getContext());
     }
 
 
@@ -226,10 +235,9 @@ public class BackUpFragment extends Fragment {
                         backUpViewModel.setUploadFileToDriveProgress(progress);
                         break;
                     case MEDIA_COMPLETE:
-                        Utils.showToast(getActivity(), getString(R.string.backup_created_success), Toast.LENGTH_LONG);
+                        showResults(getString(R.string.backup_created_success));
                         getActivity().runOnUiThread(() -> {
                             progressBarDialog.dismiss();
-                            Utils.restartApp(getContext());
                         });
 
 
@@ -286,7 +294,6 @@ public class BackUpFragment extends Fragment {
     private void processResult(boolean result) {
         if (result) {
             showResults(getString(R.string.data_restored_success));
-            Utils.restartApp(getContext());
             return;
         }
         showResults(getString(R.string.thera_has_been_an_error));

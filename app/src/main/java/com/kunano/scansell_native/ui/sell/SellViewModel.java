@@ -94,6 +94,7 @@ public class SellViewModel extends AndroidViewModel {
             productToSellMutableLiveData.postValue(productsToSellList);
             totalItemsSellMutableLIveData.postValue(String.valueOf(productsToSellList.size()));
 
+
             Double t = productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
             totalToPay.postValue(Utils.formatDecimal(t));
             finishButtonStateVisibility.postValue(productsToSellList.size() > 0?View.VISIBLE:View.GONE);

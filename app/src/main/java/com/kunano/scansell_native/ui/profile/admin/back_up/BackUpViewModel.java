@@ -196,10 +196,10 @@ public class BackUpViewModel extends AndroidViewModel {
                             double progress = (double) totalBytesRead * 100 /totalBytes;;
                             exportProgress.postValue((int)progress);
                             System.out.println("Progress: " + progress + "%");
-                            if (progress == 100)listener.result(true);
                         }
 
                     }
+                    listener.result(true);
 
                     Log.d(TAG, "Database path " + dbFile);
                     Log.d(TAG, "Database exported to " + backUpFile.getUri().getPath());

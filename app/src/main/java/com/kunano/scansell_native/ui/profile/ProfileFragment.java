@@ -67,6 +67,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private ImageButton createNewBusinessImgButton;
     private ScrollView businessStatsView;
     private Drawable userImage;
+    private TextView sellsSumTotal;
 
 
     @Override
@@ -90,10 +91,11 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         selectedDateTextView = binding.selecteddDateTextView;
         profileToolbar = binding.profileToolbar;
         mostSoldProductsTxtView = binding.mostSoldPTextView;
-        sellsTxtView = binding.sellsAndRevenuesTextView;
+        sellsTxtView = binding.sellsTextView;
         createNewBusinessView = binding.createNewBusinessView.createNewBusinessView;
         createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
         businessStatsView = binding.businessStatsView;
+        sellsSumTotal = binding.sellsSumTextView;
 
         profileToolbar.addMenuProvider(this);
 
@@ -145,6 +147,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                 businessStatsView::setVisibility);
         profileViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
                 createNewBusinessView::setVisibility);
+        profileViewModel.getSellsSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->sellsSumTotal.setText(String.valueOf(t)));
 
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
@@ -187,7 +190,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                     LocalDateTime localDateTime = customLineChart.getLineChartData().getDates().get((int) e.getX());
                     Float soldAmount = e.getY();
                     profileViewModel.setSelectedDateMutableLiveData(localDateTime.format(formatter)
-                    + " / " + soldAmount + "€");
+                    + " / " + soldAmount + getString(R.string.dollar_symbol));
                 }
             }
 

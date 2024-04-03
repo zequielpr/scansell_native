@@ -134,7 +134,7 @@ public class Utils {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
         // Format the number using the DecimalFormat object
-        String formattedNumber = decimalFormat.format(decimalToFormat);
+        String formattedNumber = decimalFormat.format(decimalToFormat).replace(",", ".");
 
         return Double.parseDouble(formattedNumber);
     }
