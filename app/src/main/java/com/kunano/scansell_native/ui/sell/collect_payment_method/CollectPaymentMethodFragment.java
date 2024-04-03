@@ -135,6 +135,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
                 if(result){
 
                     try {
+                        sellViewModel.clearProductsToSell();
                         getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
                     }catch (Exception e){
                         e.printStackTrace();
@@ -148,7 +149,6 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void navigateToReceipt(){
-        sellViewModel.clearProductsToSell();
         NavDirections receiptDirection = SellFragmentDirections.actionSellFragmentToSoldProductFragment22(sellViewModel.getCurrentBusinessId(),
                 sellViewModel.getCurrentReceiptId());
 

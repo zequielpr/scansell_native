@@ -69,13 +69,12 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/deleteReceiptImageButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_weight="0"
-                android:background="@color/transparent"
-                android:src="@drawable/baseline_delete_24" />
+                android:background="@color/transparent" />
 
         </LinearLayout>
 

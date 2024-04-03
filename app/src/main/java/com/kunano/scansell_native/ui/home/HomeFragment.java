@@ -345,7 +345,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
 
          progressBarDialog = new ProgressBarDialog(
-                title, getViewLifecycleOwner(), progress, deletedBusiness);
+                title, progress, deletedBusiness);
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 

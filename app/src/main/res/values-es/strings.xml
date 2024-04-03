@@ -194,4 +194,5 @@
     <string name="update_stock">Update stock?</string>
     <string name="items">Items:</string>
     <string name="dollar_symbol">$</string>
+    <string name="delete_selected_items">Delete selected items</string>
 </resources>

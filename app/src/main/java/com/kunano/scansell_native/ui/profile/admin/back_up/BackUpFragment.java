@@ -144,7 +144,7 @@ public class BackUpFragment extends Fragment {
 
     private void createBackUp(Uri dirTosaveBackUp) {
         progressBarDialog = new
-                ProgressBarDialog(getString(R.string.saving_file_in_local), getViewLifecycleOwner(),
+                ProgressBarDialog(getString(R.string.saving_file_in_local),
                 backUpViewModel.getExportProgress());
         progressBarDialog.show(getParentFragmentManager(), "restore progress");
 
@@ -205,7 +205,7 @@ public class BackUpFragment extends Fragment {
 
     private MediaHttpUploaderProgressListener resultOfsaveBackUpInDrive() {
         progressBarDialog = new
-                ProgressBarDialog(getString(R.string.uploading_file_to_drive), getViewLifecycleOwner(),
+                ProgressBarDialog(getString(R.string.uploading_file_to_drive),
                 backUpViewModel.getUploadFileToDriveProgress());
         MediaHttpUploaderProgressListener mediaHttpUploaderProgressListener = new MediaHttpUploaderProgressListener() {
 
@@ -274,7 +274,7 @@ public class BackUpFragment extends Fragment {
         if (isToRestore) {
             if (askForActionDialog != null) askForActionDialog.dismiss();
             progressBarDialog = new
-                    ProgressBarDialog(getString(R.string.restoring), getViewLifecycleOwner(),
+                    ProgressBarDialog(getString(R.string.restoring),
                     backUpViewModel.getRestoreProgress());
             progressBarDialog.show(getParentFragmentManager(), "restore progress");
 
