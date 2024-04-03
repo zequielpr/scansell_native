@@ -2,33 +2,38 @@ package com.kunano.scansell_native.ui.sell;
 
 import android.view.View;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-public class CustomLinearLayout {
+public class HandleBootomSheetBehavior {
 
     View linearLayout;
     BottomSheetBehavior<View> standardBottomSheetBehavior;
-    public CustomLinearLayout(View view){
+    public HandleBootomSheetBehavior(View view){
         this.linearLayout = view;
+        standardBottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
     }
 
 
 
-    public void setupStandardBottomSheet() {
-        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
-        bottomSheetBehavior.setPeekHeight(1000);
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+    public void setupStandardBottomSheet(boolean setFitToContents) {
+        standardBottomSheetBehavior.setPeekHeight(linearLayout.getResources().getDisplayMetrics().heightPixels / 12);
+        standardBottomSheetBehavior.setFitToContents(setFitToContents);
+        standardBottomSheetBehavior.setHalfExpandedRatio(0.5f);
+        standardBottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
+    }
 
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+    public void setState(Integer state){
+        standardBottomSheetBehavior.setState(state);
+    }
 
-            }
-        });
+    public Integer getState(){
+        return standardBottomSheetBehavior.getState();
+    }
+
+    public void setListener(BottomSheetBehavior.BottomSheetCallback callback){
+        standardBottomSheetBehavior.addBottomSheetCallback(callback);
+        standardBottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
+
     }
 }

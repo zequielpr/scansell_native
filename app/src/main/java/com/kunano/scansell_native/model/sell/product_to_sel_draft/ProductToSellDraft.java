@@ -8,6 +8,8 @@ import androidx.room.Index;
 
 import com.kunano.scansell_native.model.Home.product.Product;
 
+import java.time.LocalDateTime;
+
 @Entity(primaryKeys = {"businessIdIdFK", "productIdFK", "id"},
         foreignKeys = @ForeignKey(entity = Product.class,
                 parentColumns = {"productId", "businessIdFK"},
@@ -25,14 +27,18 @@ public class ProductToSellDraft {
     @NonNull
     private Long businessIdIdFK;
 
+    @NonNull
+    LocalDateTime addedDate;
+
     @Ignore
     public ProductToSellDraft(){
     }
 
-    public ProductToSellDraft(String productIdFK, Long businessIdIdFK, String id) {
+    public ProductToSellDraft(String productIdFK, Long businessIdIdFK, String id, LocalDateTime addedDate ) {
         this.id = id;
         this.productIdFK = productIdFK;
         this.businessIdIdFK = businessIdIdFK;
+        this.addedDate = addedDate;
     }
 
 
@@ -60,5 +66,14 @@ public class ProductToSellDraft {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @NonNull
+    public LocalDateTime getAddedDate() {
+        return addedDate;
+    }
+
+    public void setAddedDate(@NonNull LocalDateTime addedDate) {
+        this.addedDate = addedDate;
     }
 }

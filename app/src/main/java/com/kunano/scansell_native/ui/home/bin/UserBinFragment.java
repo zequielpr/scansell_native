@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
@@ -286,13 +285,6 @@ public class UserBinFragment extends Fragment {
 
 
     public void showProgressBar(String title) {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                mViewModel.cancelDeleteProcess();
-                desactivateDeleteMode();
-            }
-        };
-
 
         MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();

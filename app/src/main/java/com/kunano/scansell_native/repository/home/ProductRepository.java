@@ -9,6 +9,7 @@ import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
@@ -133,7 +134,7 @@ public class ProductRepository {
     }
 
 
-    public void getProductByIds(String productId, Long businessId, ProductRepositoryListener productRepositoryListener){
+    public void getProductByIds(String productId, Long businessId, ViewModelListener<Product> listener){
         Executor executor = Executors.newSingleThreadExecutor();
 
         executor.execute(()->{
@@ -141,13 +142,22 @@ public class ProductRepository {
             try {
                 product = productDao.getProductByIds(businessId, productId).get();
             } catch (ExecutionException e) {
+                listener.result(null);
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
+                listener.result(null);
                 throw new RuntimeException(e);
             }
-            productRepositoryListener.receiveResult(product);
+            listener.result(product);
         });
     }
+
+    public ListenableFuture<Integer> updateProductStock(Long businessId,
+            String productId, int stockToDecrease){
+        return productDao.updateStock(businessId, productId, stockToDecrease);
+    }
+
+
 
 
 

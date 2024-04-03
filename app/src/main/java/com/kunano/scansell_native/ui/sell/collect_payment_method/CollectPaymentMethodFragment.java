@@ -133,14 +133,18 @@ public class CollectPaymentMethodFragment extends DialogFragment {
             @Override
             public void result(Boolean result) {
                 if(result){
-                    getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
+
+                    try {
+                        getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else {
                     // do something else
                 }
             }
         });
         this.dismiss();
-
     }
 
     private void navigateToReceipt(){

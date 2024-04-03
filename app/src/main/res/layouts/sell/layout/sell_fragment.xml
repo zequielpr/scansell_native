@@ -1,73 +1,100 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.sell.SellFragment">
-    <RelativeLayout
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sell_products_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/sellToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/black_transparent"
-            android:elevation="1dp"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme">
-
-            <Spinner
-                android:id="@+id/spinnerPickBusiness"
-                style="@style/Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </androidx.appcompat.widget.Toolbar>
-
         <RelativeLayout
-            android:id="@+id/cameraLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/torchButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/sell_camera_preview"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="50dp"
-                android:background="@color/transparent"
-                android:elevation="1dp"
-                android:src="@drawable/torch_24" />
-
-            <androidx.camera.view.PreviewView
-                android:id="@+id/sell_camera_preview"
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
-
-            </androidx.camera.view.PreviewView>
-        </RelativeLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/imageButtonScanProduct"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="50dp"
-            android:elevation="2dp"
-            android:src="@drawable/bar_code_scanner_24" />
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/cameraLayout"
+            android:background="@color/design_default_color_on_primary"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <!-- Add your main content components here -->
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/sellToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme">
+
+                <Spinner
+                    android:id="@+id/spinnerPickBusiness"
+                    style="@style/Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </androidx.appcompat.widget.Toolbar>
+
+            <RelativeLayout
+                android:id="@+id/cameraLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/torchButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sell_camera_preview"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="150dp"
+                    android:background="@color/transparent"
+                    android:elevation="1dp"
+                    android:src="@drawable/torch_24" />
+
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/sell_camera_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </androidx.camera.view.PreviewView>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <!-- Bottom Sheet -->
+        <LinearLayout
+            android:id="@+id/productToSellBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:elevation="2dp"
             android:gravity="center"
-            android:orientation="vertical">
+
+            android:orientation="vertical"
+            app:layout_behavior="@string/bottom_sheet_behavior"> <!-- Set bottom sheet behavior -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/showBottomSheetView"
+                    android:layout_width="100dp"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/oval_line"></View>
+
+                <ImageButton
+                    android:id="@+id/cancelSellButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/close_24"
+                    android:layout_centerVertical="true"
+                    android:background="@color/transparent"
+                    android:text="@string/cancel" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,21 +105,62 @@
                 android:paddingStart="30dp"
                 android:paddingEnd="30dp">
 
-                <TextView
-                    android:id="@+id/totalTextView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
-                    android:text="total"
-                    android:textSize="25sp" />
+                    android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/cancelSellButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/cancel" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:text="@string/items"
+                            android:layout_marginEnd="8dp"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/itemsTotalTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:text="total"
+                            android:textSize="25sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/totalTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:text="total"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/textView20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="5dp"
+                            android:textSize="25sp"
+                            android:text="@string/dollar_symbol" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/finishButton"
@@ -111,16 +179,26 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleViewProductsToSell"
                 android:layout_width="330dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
-
-
-    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include
         android:id="@+id/createNewBusinessView"
         layout="@layout/create_new_business_button"
         tools:visibility="gone" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/imageButtonScanProduct"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="100dp"
+        android:elevation="2dp"
+        android:src="@drawable/bar_code_scanner_24" />
 
 </RelativeLayout>

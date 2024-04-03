@@ -27,6 +27,11 @@ public interface ProductDao {
     public ListenableFuture<Product> getProductByIds(Long businessId, String productId);
 
 
+    @Query("UPDATE product SET stock = stock - (:stockToDecrease)" +
+            " WHERE product.businessIdFk = (:businessId) AND productId =(:productId)" )
+    ListenableFuture<Integer> updateStock(Long businessId, String productId, int stockToDecrease);
+
+
 
 
 

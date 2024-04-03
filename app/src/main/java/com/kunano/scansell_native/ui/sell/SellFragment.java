@@ -30,6 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.SellFragmentBinding;
@@ -68,7 +69,11 @@ public class SellFragment extends Fragment {
     private View sellProductView;
     private View createBusinessView;
     private ImageButton createNewBusinessImgButton;
-    private Button cancelSellButton;
+    private ImageButton cancelSellButton;
+    private HandleBootomSheetBehavior handleBootomSheetBehavior;
+    private TextView itemsTotalTextView;
+
+    private View showBottomSheetViewBar;
 
 
 
@@ -94,10 +99,15 @@ public class SellFragment extends Fragment {
         createBusinessView = binding.createNewBusinessView.createNewBusinessView;
         createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
         cancelSellButton = binding.cancelSellButton;
+        showBottomSheetViewBar = binding.showBottomSheetView;
+        itemsTotalTextView = binding.itemsTotalTextView;
+                handleBootomSheetBehavior = new HandleBootomSheetBehavior(binding.productToSellBottomSheet);
+        handleBootomSheetBehavior.setupStandardBottomSheet(false);
+        handleBootomSheetBehavior.setListener(getBottomSheetListener());
+
 
 
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewProducts.setHasFixedSize(true);
         productToSellAdapter = new ProductToSellAdapter();
         recyclerViewProducts.setAdapter(productToSellAdapter);
 
@@ -189,10 +199,13 @@ public class SellFragment extends Fragment {
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
         cancelSellButton.setOnClickListener(this::cancelSell);
-        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), finishButton::setClickable);
-        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), cancelSellButton::setClickable);
-        sellViewModel.getFinishButtonState().observe(getViewLifecycleOwner(), (s)->spinner.setEnabled(!s));
+        sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), finishButton::setVisibility);
+        sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), cancelSellButton::setVisibility);
+        sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), (v)->{
+            spinner.setEnabled(v == View.VISIBLE?false:true);
+        });
         sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
+        sellViewModel.getTotalItemsSellMutableLIveData().observe(getViewLifecycleOwner(), itemsTotalTextView::setText);
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
@@ -278,19 +291,61 @@ public class SellFragment extends Fragment {
     }
 
 
-    public void processProductRequest(Object result, String barcode){
-        if(result == null && sellViewModel.getCurrentBusinessId() != null){
+    public void processProductRequest(Product product, String barcode){
+        if(product == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
            getActivity().runOnUiThread(()->askCreateNewProdOrTryAgain(barcode));
             return;
-        }else if(sellViewModel.getCurrentBusinessId() == null){
+        }else if(!sellViewModel.isStockEnough(product)){
+            getActivity().runOnUiThread(()->askToUpdateStock(barcode));
             return;
         }
-        Product p = (Product) result;
-        sellViewModel.addProductToSell(p);
+
+        sellViewModel.addProductToSell(product);
         makeSound();
+        expandBottomSheet();
+        getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
 
 
+
+    }
+
+    private void expandBottomSheet(){
+        if (handleBootomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED){
+            handleBootomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+        }
+    }
+
+    public BottomSheetBehavior.BottomSheetCallback getBottomSheetListener(){
+        return new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState){
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        System.out.println("Collapsed");
+                        toolbar.setVisibility(View.VISIBLE);
+                        showBottomSheetViewBar.setVisibility(View.VISIBLE);
+                        break;
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                        System.out.println("half_Expanded");
+                        toolbar.setVisibility(View.VISIBLE);
+                        showBottomSheetViewBar.setVisibility(View.VISIBLE);
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        System.out.println("expanded");
+                        toolbar.setVisibility(View.GONE);
+                        showBottomSheetViewBar.setVisibility(View.GONE);
+                        break;
+                    default:
+
+                }
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        };
     }
 
     private void makeSound(){
@@ -335,6 +390,26 @@ public class SellFragment extends Fragment {
             mediaPlayer = null;
         }
     }
+
+
+    private void askToUpdateStock(String barcode){
+        AskForActionDialog askForActionDialog = new AskForActionDialog(
+                getString(R.string.out_of_stock), getString(R.string.tray_again),
+                getString(R.string.update_stock));
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object){
+                    navigateToCreateProduct(barcode);
+                }else {
+                    scanNewProduct(getView());
+                }
+            }
+        });
+
+        askForActionDialog.show(getParentFragmentManager(), getString(R.string.scanned_product_not_found));
+    }
+
 
 
     //Ask to create a new product or try again
