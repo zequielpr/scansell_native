@@ -27,7 +27,6 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
@@ -340,19 +339,13 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void showProgressBar() {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                homeViewModel.cancelDeleteProcess();
-            }
-        };
-
 
         String title =  getString(R.string.delete);
         MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
 
          progressBarDialog = new ProgressBarDialog(
-                title, getViewLifecycleOwner(), progress, deletedBusiness);
+                title, progress, deletedBusiness);
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 

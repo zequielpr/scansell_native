@@ -4,7 +4,7 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -75,7 +75,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         private TextView seriesNumber;
         private TextView spentAmount;
         private TextView sellDate;
-        private ImageButton imageButtonDeleteReceipt;
+        private ImageView checkIndicator;
         private TextView daysLeft;
         public CardHolder(@NonNull View itemView) {
             super(itemView);
@@ -83,32 +83,20 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
             seriesNumber = itemView.findViewById(R.id.textViewSeriesNumber);
             spentAmount = itemView.findViewById(R.id.spent_amount);
             sellDate = itemView.findViewById(R.id.sell_date);
-            imageButtonDeleteReceipt = itemView.findViewById(R.id.deleteReceiptImageButton);
+            checkIndicator = itemView.findViewById(R.id.deleteReceiptImageButton);
             daysLeft = itemView.findViewById(R.id.daysLeftTextView);
 
 
-            int position = getAbsoluteAdapterPosition();
-            if (listener != null && itemView != null && position != RecyclerView.NO_POSITION){
-                listener.reciveCardHol(itemView, getItem(position));
 
-            }
+            listener.reciveCardHol(this);
 
-            imageButtonDeleteReceipt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAbsoluteAdapterPosition();
-                    if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onDelete(getItem(position));
-                    }
-                }
-            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onShortTap(getItem(position), itemView);
+                        listener.onShortTap(getItem(position), CardHolder.this);
                     }
                 }
             });
@@ -119,7 +107,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
                 public boolean onLongClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onLongTap(getItem(position), itemView);
+                        listener.onLongTap(getItem(position), CardHolder.this);
                     }
                     return true;
                 }
@@ -128,6 +116,17 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
 
         public TextView getDaysLeft() {
             return daysLeft;
+        }
+
+
+
+
+        public ImageView getCheckIndicator() {
+            return checkIndicator;
+        }
+
+        public void setCheckIndicator(ImageView checkIndicator) {
+            this.checkIndicator = checkIndicator;
         }
     }
 

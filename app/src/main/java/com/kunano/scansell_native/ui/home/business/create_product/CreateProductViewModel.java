@@ -31,6 +31,8 @@ public class CreateProductViewModel extends AndroidViewModel {
     private String sellPrice;
     private String stock;
 
+    private boolean productToUpdate;
+
     private MutableLiveData<Drawable> bitmapImgMutableLiveData;
     private MutableLiveData<Boolean> handleSaveButtonClickLiveData;
     private MutableLiveData<String> warningName;
@@ -82,13 +84,14 @@ public class CreateProductViewModel extends AndroidViewModel {
 
         this.productId = productId;
         productRepository.getProductByIds(productId, businessId, this::showData);
-        System.out.println("Businessid create product: " + businessId + " ProductId: " + productId);
     }
+
 
     private void showData(Object result){
         Product product = (Product) result;
 
         if(product != null){
+            productToUpdate = true;
             System.out.println("Product name: " + product.getProductName());
             productNameLiveData.postValue(product.getProductName());
             buyingPriceLivedata.postValue(String.valueOf(product.getBuying_price()));
@@ -96,7 +99,8 @@ public class CreateProductViewModel extends AndroidViewModel {
             stockLiveData.postValue(String.valueOf(product.getStock()));
             buttonSaveTitle.postValue(this.getApplication().getResources().getString(R.string.update));
             productRepository.getProdductImage(productId, product.getBusinessIdFK(), this::showImage );
-
+        }else {
+            productToUpdate = false;
         }
     }
 
@@ -161,9 +165,21 @@ public class CreateProductViewModel extends AndroidViewModel {
         int stck = Integer.parseInt(stock);
         Product product = new Product(productId, businessId, name, bPrice, sPrice, stck,
                 creatingDate);
-        System.out.println("Business id-: " + businessId);
 
         productRepository.insertProduct(product, img, response::isSuccessfull);
+    }
+
+    public void updateProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
+                              String creatingDate, byte[] img, ListenResponse response) {
+
+        double bPrice = Double.parseDouble(buyingPrice);
+        double sPrice = Double.parseDouble(sellingPrice);
+        int stck = Integer.parseInt(stock);
+        Product product = new Product(productId, businessId, name, bPrice, sPrice, stck,
+                creatingDate);
+        System.out.println("Upadate product: " + businessId);
+
+        productRepository.updateProduct(product, img, response::isSuccessfull);
     }
 
 
@@ -337,5 +353,14 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void setStock(String stock) {
         this.stock = stock;
+    }
+
+
+    public boolean isProductToUpdate() {
+        return productToUpdate;
+    }
+
+    public void setProductToUpdate(boolean productToUpdate) {
+        this.productToUpdate = productToUpdate;
     }
 }

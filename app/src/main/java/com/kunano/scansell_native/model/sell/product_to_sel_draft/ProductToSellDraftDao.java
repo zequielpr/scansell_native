@@ -14,7 +14,8 @@ import java.util.List;
 public interface ProductToSellDraftDao {
     @Query("SELECT productId, product.businessIdFK, product_name, buying_price,selling_price, stock, cratingDate " +
             " FROM product LEFT JOIN producttoselldraft ON product.productId = producttoselldraft.productIdFK " +
-            "WHERE product.businessIdFK = (:businessID) AND producttoselldraft.businessIdIdFK = (:businessID);")
+            "WHERE product.businessIdFK = (:businessID) AND producttoselldraft.businessIdIdFK = (:businessID)" +
+            "ORDER BY addedDate DESC")
     LiveData<List<Product>> getProductsInDraft(Long businessID);
 
     @Insert

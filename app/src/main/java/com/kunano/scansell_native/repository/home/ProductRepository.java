@@ -9,6 +9,7 @@ import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
@@ -66,6 +67,43 @@ public class ProductRepository {
         });
     }
 
+    public void updateProduct(Product product, byte[] productImg, ListenResponse response) {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+
+        executor.execute(() -> {
+            Integer resultado = null;
+            try {
+                /*for (int i = 0; i < 600; i++){
+                    product.setProductId(UUID.randomUUID().toString());
+                    resultado = productDao.insertProduct(product).get();
+                    ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
+                    productImgDao.insertProductImg(img).get();
+                }*/
+
+                //product.setProductId(UUID.randomUUID().toString());
+                resultado = productDao.updateProduct(product).get();
+
+
+                if (resultado > 0) {
+                    ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
+                    productImgDao.insertProductImg(img).get();
+                    response.isSuccessfull(true);
+                } else {
+                    response.isSuccessfull(false);
+                }
+
+            } catch (ExecutionException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                response.isSuccessfull(false);
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
     public void insertProduct(List<Product> product) {
 
     }
@@ -96,7 +134,7 @@ public class ProductRepository {
     }
 
 
-    public void getProductByIds(String productId, Long businessId, ProductRepositoryListener productRepositoryListener){
+    public void getProductByIds(String productId, Long businessId, ViewModelListener<Product> listener){
         Executor executor = Executors.newSingleThreadExecutor();
 
         executor.execute(()->{
@@ -104,13 +142,22 @@ public class ProductRepository {
             try {
                 product = productDao.getProductByIds(businessId, productId).get();
             } catch (ExecutionException e) {
+                listener.result(null);
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
+                listener.result(null);
                 throw new RuntimeException(e);
             }
-            productRepositoryListener.receiveResult(product);
+            listener.result(product);
         });
     }
+
+    public ListenableFuture<Integer> updateProductStock(Long businessId,
+            String productId, int stockToDecrease){
+        return productDao.updateStock(businessId, productId, stockToDecrease);
+    }
+
+
 
 
 

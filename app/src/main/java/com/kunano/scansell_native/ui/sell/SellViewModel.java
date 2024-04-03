@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.sell;
 
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,17 +18,20 @@ import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<List<Product>> productToSellMutableLiveData;
@@ -40,7 +44,7 @@ public class SellViewModel extends AndroidViewModel {
     private SellRepository sellRepository;
     private LiveData<List<Receipt>> liveDataReceipts;
     private LiveData<List<Product>> liveDataSoldProducts;
-    private MutableLiveData<Boolean> finishButtonState;
+    private MutableLiveData<Integer> finishButtonStateVisibility;
     private String currentReceiptId;
     private MutableLiveData<Integer> selectedIndexSpinner;
 
@@ -48,7 +52,9 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Double> cashDue;
     private MutableLiveData<Integer> cashTenderedAndDueVisibility;
 
-    /** it observes at listProductsToSellLiveData **/
+    /**
+     * it observes at listProductsToSellLiveData
+     **/
     private Observer<List<Product>> observer;
     private LiveData<List<Product>> listProductsToSellLiveData;
     private Integer radioButtonChecked;
@@ -58,6 +64,7 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
     private DecimalFormat df;
 
+    private MutableLiveData<String> totalItemsSellMutableLIveData;
 
 
     public SellViewModel(@NonNull Application application) {
@@ -66,14 +73,15 @@ public class SellViewModel extends AndroidViewModel {
         businessRepository = new BusinessRepository(application);
         sellRepository = new SellRepository(application);
         productToSellMutableLiveData = new MutableLiveData<>();
+        totalItemsSellMutableLIveData = new MutableLiveData<>();
 
         businessesListLiveData = businessRepository.getAllBusinesses();
         totalToPay = new MutableLiveData<>(0.0);
         liveDataReceipts = new MutableLiveData<>();
-        finishButtonState = new MutableLiveData<>(false);
+        finishButtonStateVisibility = new MutableLiveData<>(View.GONE);
         selectedIndexSpinner = new MutableLiveData<>(0);
-        cashDue  = new MutableLiveData<>();
-        totalToPay.observeForever(v->cashDue.postValue(0-v));
+        cashDue = new MutableLiveData<>();
+        totalToPay.observeForever(v -> cashDue.postValue(0 - v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
@@ -81,47 +89,31 @@ public class SellViewModel extends AndroidViewModel {
         sellProductsVisibilityMD = new MutableLiveData<>();
         createNewBusinessVisibilityMD = new MutableLiveData<>();
 
-        observer = ( List<Product> productsToSellList) -> {
+        observer = (List<Product> productsToSellList) -> {
 
             productToSellMutableLiveData.postValue(productsToSellList);
+            totalItemsSellMutableLIveData.postValue(String.valueOf(productsToSellList.size()));
 
-            Double t =  productsToSellList.stream().reduce(0.0, (partialAgeResult, p) ->
-                    partialAgeResult + p.getSelling_price(), Double::sum);
-            totalToPay.postValue(t);
-            finishButtonState.postValue(productsToSellList.size()>0);
+            Double t = productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
+            totalToPay.postValue(Utils.formatDecimal(t));
+            finishButtonStateVisibility.postValue(productsToSellList.size() > 0?View.VISIBLE:View.GONE);
         };
 
-        receiptObserver = (List<Receipt> receiptList)->{
+        receiptObserver = (List<Receipt> receiptList) -> {
             System.out.println("Observing: " + receiptList.size());
             mutableLiveDataReceipt.postValue(receiptList);
         };
 
     }
 
-    public void requestProduct(String productId, ViewModelListener viewModelListener){
+    public void requestProduct(String productId, ViewModelListener<Product> viewModelListener) {
         executorService = Executors.newSingleThreadExecutor();
-
-        executorService.execute(()->fetchProduct(productId, viewModelListener));
+        executorService.execute(() -> fetchProduct(productId, viewModelListener));
     }
 
-    private void fetchProduct(String productId, ViewModelListener viewModelListener){
-        productRepository.getProductByIds(productId, currentBusinessId,
-                (p)->receiveProduct(p, viewModelListener));
+    private void fetchProduct(String productId, ViewModelListener<Product> viewModelListener) {
+        productRepository.getProductByIds(productId, currentBusinessId, viewModelListener::result);
     }
-
-    private void receiveProduct(Object product, ViewModelListener viewModelListener){
-
-        if (product == null){
-            viewModelListener.result(null);
-            return;
-        }
-
-        Product p = (Product) product;
-        viewModelListener.result(p);
-    }
-
-
-
 
 
     public MutableLiveData<List<Product>> getProductToSellMutableLiveData() {
@@ -131,35 +123,32 @@ public class SellViewModel extends AndroidViewModel {
     public void addProductToSell(Product product) {
         String draftId = UUID.randomUUID().toString();
 
-        ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId,
-                draftId);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDateTime currentDate = LocalDateTime.now();
 
-        executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
-            try {
-                Long result = sellRepository.insertProductInDraft(productToSellDraft).get();
-                if (result>0){
-                    //sumPrice(product);
-                    finishButtonState.postValue(true);
+            ProductToSellDraft productToSellDraft = new ProductToSellDraft(product.getProductId(), currentBusinessId, draftId, currentDate);
+
+            executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
+                try {
+                   sellRepository.insertProductInDraft(productToSellDraft).get();
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-
-
+            });
+        }
     }
 
 
     public void deleteProductToSell(Product product) {
 
         executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
+        executorService.execute(() -> {
             try {
-                sellRepository.removeProductFromDraft(currentBusinessId, product.getProductId());;
+                sellRepository.removeProductFromDraft(currentBusinessId, product.getProductId());
+                ;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -167,10 +156,10 @@ public class SellViewModel extends AndroidViewModel {
 
     }
 
-    public void clearProductsToSell(){
+    public void clearProductsToSell() {
 
         executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
+        executorService.execute(() -> {
             try {
                 sellRepository.clearDraft(currentBusinessId);
                 cashTendered = 0.0;
@@ -188,23 +177,29 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-
-    /**Finish sell and create receipt**/
-    public void finishSell(byte paymentMethod, ListenResponse listenResponse){
+    /**
+     * Finish sell and create receipt
+     **/
+    public void finishSell(byte paymentMethod, ViewModelListener<Boolean> listenResponse) {
         String generatedReceiptId = UUID.randomUUID().toString();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             LocalDateTime actualDate = LocalDateTime.now();
             double totalPay = totalToPay.getValue();
-            Receipt receipt = new Receipt (generatedReceiptId, currentBusinessId, "", actualDate,
-                    totalPay,  paymentMethod);
+            Receipt receipt = new Receipt(generatedReceiptId, currentBusinessId, "", actualDate, totalPay, paymentMethod);
             currentReceiptId = receipt.getReceiptId();//Return the substring of the given id
 
             executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(()->{
+            executorService.execute(() -> {
                 try {
-                  Long result =  sellRepository.insertReceipt(receipt).get();
-                  if (result > 0)listenResponse.isSuccessfull(insertSoldProducts(receipt.getReceiptId()).get().size()>0);
+                    Long result = sellRepository.insertReceipt(receipt).get();
+                    if (result > 0) {
+                        updateProductStock();
+                        listenResponse.result(insertSoldProducts(receipt.getReceiptId()).get().size() > 0);
+                    } else {
+
+                    }
+
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
@@ -214,12 +209,12 @@ public class SellViewModel extends AndroidViewModel {
         }
     }
 
-    private ListenableFuture<List<Long>> insertSoldProducts(String receiptID){
+    private ListenableFuture<List<Long>> insertSoldProducts(String receiptID) {
         List<SoldProduct> soldProductList = new ArrayList<>();
         String soldProductId;
         SoldProduct soldProduct;
 
-        for (Product p:productToSellMutableLiveData.getValue()){
+        for (Product p : productToSellMutableLiveData.getValue()) {
             soldProductId = UUID.randomUUID().toString();
             soldProduct = new SoldProduct(p.getProductId(), receiptID, p.getBusinessIdFK(), soldProductId);
             soldProductList.add(soldProduct);
@@ -228,8 +223,56 @@ public class SellViewModel extends AndroidViewModel {
         return sellRepository.inertSoldProductsList(soldProductList);
     }
 
+
+    private void updateProductStock() {
+
+        List<Product> productList = productToSellMutableLiveData.getValue();
+        productList.sort((product, p) -> {
+            return product.getProductId().compareTo(p.getProductId());
+        });
+
+        Product product = productList.get(0);
+
+        Map<String, Integer> productQuantityToSell = new HashMap<>();
+        int counter = 0;
+
+        for (Product p : productToSellMutableLiveData.getValue()) {
+
+            if (product.getProductId().equalsIgnoreCase(p.getProductId())) {
+                counter++;
+                productQuantityToSell.put(p.getProductId(), counter);
+            } else {
+                counter = 0;
+                product = p;
+            }
+        }
+
+        productQuantityToSell.forEach((pId, stockToDecrease) -> {
+            try {
+                productRepository.updateProductStock(currentBusinessId, pId, stockToDecrease).get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("product: " + pId + "Quantity: " + stockToDecrease);
+        });
+
+    }
+
+
+    public boolean isStockEnough(Product product) {
+        int productToSel = productToSellMutableLiveData.getValue().stream().filter(p -> {
+            return p.getProductId().equalsIgnoreCase(product.getProductId());
+        }).collect(Collectors.toList()).size();
+
+        return productToSel < product.getStock();
+    }
+
+
     //Receipt and sold products
-    public LiveData<List<Receipt>> getReceipts(){
+    public LiveData<List<Receipt>> getReceipts() {
         liveDataReceipts.removeObserver(receiptObserver);
         liveDataReceipts = sellRepository.getReceiptList(currentBusinessId);
         liveDataReceipts.observeForever(receiptObserver);
@@ -239,16 +282,16 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-    public void searchReceipt(String query){
+    public void searchReceipt(String query) {
         liveDataReceipts.removeObserver(receiptObserver);
         liveDataReceipts = sellRepository.getReceiptList(currentBusinessId, query);
         liveDataReceipts.observeForever(receiptObserver);
     }
 
 
-    public void deleteReceipt(Receipt receipt){
+    public void deleteReceipt(Receipt receipt) {
         executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(()->{
+        executorService.execute(() -> {
             try {
                 sellRepository.deleteReceipt(receipt).get();
             } catch (ExecutionException e) {
@@ -259,7 +302,6 @@ public class SellViewModel extends AndroidViewModel {
         });
 
     }
-
 
 
     public void setTotalToPay(MutableLiveData<Double> totalToPay) {
@@ -285,8 +327,10 @@ public class SellViewModel extends AndroidViewModel {
         setObserverOnNewBusiness();
     }
 
-    /**When a new observer is set the previous one is deleted**/
-    private void setObserverOnNewBusiness(){
+    /**
+     * When a new observer is set the previous one is deleted
+     **/
+    private void setObserverOnNewBusiness() {
         listProductsToSellLiveData.removeObserver(observer);
         listProductsToSellLiveData = sellRepository.getProductToSellDraft(currentBusinessId);
         listProductsToSellLiveData.observeForever(observer);
@@ -300,12 +344,12 @@ public class SellViewModel extends AndroidViewModel {
         this.currentReceiptId = currentReceiptId;
     }
 
-    public MutableLiveData<Boolean> getFinishButtonState() {
-        return finishButtonState;
+    public MutableLiveData<Integer> getFinishButtonStateVisibility() {
+        return finishButtonStateVisibility;
     }
 
-    public void setFinishButtonState(Boolean finishButtonState) {
-        this.finishButtonState.postValue(finishButtonState);
+    public void setFinishButtonStateVisibility(Integer finishButtonStateVisibility) {
+        this.finishButtonStateVisibility.postValue(finishButtonStateVisibility);
     }
 
     public MutableLiveData<Integer> getSelectedIndexSpinner() {
@@ -321,8 +365,9 @@ public class SellViewModel extends AndroidViewModel {
     }
 
     public void setCashTendered(double cashTendered) {
-        this.cashTendered = Double.valueOf(df.format(cashTendered));;
-        cashDue.postValue(Double.valueOf(df.format((cashTendered-totalToPay.getValue()))));
+        this.cashTendered = Double.valueOf(df.format(cashTendered));
+        ;
+        cashDue.postValue(Double.valueOf(df.format((cashTendered - totalToPay.getValue()))));
     }
 
     public MutableLiveData<Double> getCashDue() {
@@ -363,5 +408,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCreateNewBusinessVisibilityMD(Integer createNewBusinessVisibilityMD) {
         this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
+    }
+
+    public MutableLiveData<String> getTotalItemsSellMutableLIveData() {
+        return totalItemsSellMutableLIveData;
+    }
+
+    public void setTotalItemsSellMutableLIveData(String totalItemsSellMutableLIveData) {
+        this.totalItemsSellMutableLIveData.postValue(totalItemsSellMutableLIveData);
     }
 }

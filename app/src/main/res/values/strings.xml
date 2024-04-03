@@ -22,6 +22,7 @@
     <string name="delete_businesses_warn">Deleted businesses can not be retrieved</string>
     <string name="send_items_to_bin_warning">Send items to bin?</string>
     <string name="delete">delete</string>
+    <string name="delete_selected_items">Delete selected items</string>
     <string name="deleting">deleteing</string>
     <string name="restoring">restoring... Do not close this app</string>
     <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
@@ -188,6 +189,12 @@
     <string name="stock">Stock:</string>
     <string name="sell_price">Sell price:</string>
     <string name="buy_price">Buy price:</string>
+    <string name="cancel_sell">Cancel sell</string>
+    <string name="out_of_stock">Product out of stock</string>
+    <string name="update_stock">Update stock</string>
+    <string name="items">Items:</string>
+    <string name="dollar_symbol">$</string>
+
 
 
 </resources>

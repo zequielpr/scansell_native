@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -126,6 +127,16 @@ public class Utils {
         askForActionDialog.show(fragment.getParentFragmentManager(), title);
 
 
+    }
+
+
+    public static double formatDecimal(double decimalToFormat){
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+        // Format the number using the DecimalFormat object
+        String formattedNumber = decimalFormat.format(decimalToFormat);
+
+        return Double.parseDouble(formattedNumber);
     }
 
 

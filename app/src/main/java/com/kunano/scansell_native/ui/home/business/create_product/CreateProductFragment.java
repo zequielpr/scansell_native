@@ -200,8 +200,14 @@ public class CreateProductFragment extends Fragment {
 
         byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
-        createProductViewModel.createProduct(createProductViewModel.getProductId(),
-                name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+        if (createProductViewModel.isProductToUpdate()){
+            createProductViewModel.updateProduct(createProductViewModel.getProductId(),
+                    name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+        }else {
+            createProductViewModel.createProduct(createProductViewModel.getProductId(),
+                    name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+        }
+
     }
 
     private void recibirRespuesta(boolean result){
@@ -328,6 +334,8 @@ public class CreateProductFragment extends Fragment {
             createProductToolbar.inflateMenu(R.menu.product_details_tool_bar);
             createProductToolbar.getMenu().findItem(R.id.delete_action).
                     setOnMenuItemClickListener(this::askTosndBin);
+        }else {
+            createProductToolbar.getMenu().clear();
         }
     }
 

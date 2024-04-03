@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.databinding.DeletingProgressBarBinding;
@@ -31,24 +30,21 @@ public class ProgressBarDialog extends DialogFragment {
     MutableLiveData<Integer> progress;
     MutableLiveData<String> deletedItems;
 
-    LifecycleOwner lifecycleOwner;
     String title;
-    ListenResponse action;
+    ViewModelListener<Boolean> action;
 
 
-    public ProgressBarDialog( String title,  LifecycleOwner lifecycleOwner,
+    public ProgressBarDialog( String title,
                              MutableLiveData<Integer> progress, MutableLiveData<String> deletedItems) {
         this.title = title;
-        this.lifecycleOwner = lifecycleOwner;
         this.progress = progress;
         this.deletedItems = deletedItems;
 
     }
 
-    public ProgressBarDialog( String title,  LifecycleOwner lifecycleOwner,
+    public ProgressBarDialog( String title,
                               MutableLiveData<Integer> progress) {
         this.title = title;
-        this.lifecycleOwner = lifecycleOwner;
         this.progress = progress;
     }
 
@@ -63,12 +59,12 @@ public class ProgressBarDialog extends DialogFragment {
         percentage = binding.progressBarPercentage;
         cancelButton = binding.progressBarCancelButton;
 
-        progress.observe(lifecycleOwner, (p)-> percentage.setText(Integer.toString(p).concat("%")));
-        progress.observe(lifecycleOwner, progressBar::setProgress);
+        progress.observe(getViewLifecycleOwner(), (p)-> percentage.setText(Integer.toString(p).concat("%")));
+        progress.observe(getViewLifecycleOwner(), progressBar::setProgress);
 
 
         if (deletedItems != null){
-            deletedItems.observe(lifecycleOwner, textViewItemsToDelete::setText);
+            deletedItems.observe(getViewLifecycleOwner(), textViewItemsToDelete::setText);
         }else {
             textViewItemsToDelete.setVisibility(View.GONE);
             cancelButton.setVisibility(View.GONE);
@@ -83,7 +79,7 @@ public class ProgressBarDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (action != null){
-                    action.isSuccessfull(true);
+                    action.result(true);
                 }
             }
         });
@@ -110,7 +106,7 @@ public class ProgressBarDialog extends DialogFragment {
         this.cancelButton = cancelButton;
     }
 
-    public void setAction(ListenResponse action) {
+    public void setAction(ViewModelListener<Boolean> action) {
         this.action = action;
     }
 }

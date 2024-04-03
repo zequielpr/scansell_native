@@ -2,16 +2,22 @@ package com.kunano.scansell_native.ui.sell.receipts;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -23,11 +29,13 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentReceiptsBinding;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
-public class ReceiptsFragment extends Fragment{
+import java.util.HashSet;
+
+public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private ReceiptsViewModel receiptsViewModel;
     private MainActivityViewModel mainActivityViewModel;
@@ -41,8 +49,22 @@ public class ReceiptsFragment extends Fragment{
     private static String DELETE_AFTER_15_DAYS = "DELETE_AFTER_15_DAYS";
     private SearchView searchView;
 
+    private  ProcessItemsComponent<Receipt> processItemsComponent;
+    private Drawable checkedCircle;
+    private Drawable unCheckedCircle;
+
+
     public static ReceiptsFragment newInstance() {
         return new ReceiptsFragment();
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        processItemsComponent = new ProcessItemsComponent<>(this);
+
     }
 
     @Override
@@ -52,6 +74,10 @@ public class ReceiptsFragment extends Fragment{
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         receiptsViewModel = new ViewModelProvider(getActivity()).get(ReceiptsViewModel.class);
         binding = FragmentReceiptsBinding.inflate(inflater, container, false);
+
+
+        checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
+        unCheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
 
         recyclerViewReceipt = binding.receiptRecycleView;
         recyclerViewReceipt.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -70,11 +96,15 @@ public class ReceiptsFragment extends Fragment{
 
 
     private void handleBackPress(){
-        naVigateBack(getView());
+        navigateBack(getView());
     }
 
-    private void naVigateBack(View view){
-        if(receiptsViewModel.getIsSearchModeActive().getValue()){
+    private void navigateBack(View view){
+        if (processItemsComponent.isProcessItemActive()){
+            desActivateDeleteMode();
+            return;
+        }
+       if(receiptsViewModel.getIsSearchModeActive().getValue()){
             receiptsViewModel.setIsSearchModeActive(false);
             if(searchView != null){
                 searchView.onActionViewCollapsed();
@@ -99,47 +129,147 @@ public class ReceiptsFragment extends Fragment{
 
         receiptAdapter.setListener(new  OnclickReceiptCardListener() {
             @Override
-            public void onShortTap(Receipt receipt, View cardHolder) {
+            public void onShortTap(Receipt receipt,ReceiptAdapter.CardHolder cardHolder) {
+
+               if (processItemsComponent.isProcessItemActive()){
+                   addOrRemoveItemToProcess(receipt);
+                   checkIfReceiptIsChecked(receipt, cardHolder);
+                   return;
+               }
                 sellViewModel.setCurrentReceiptId(receipt.getReceiptId());
                 navigateToSoldProducts();
             }
 
             @Override
-            public void onLongTap(Receipt receipt, View cardHolder) {
+            public void onLongTap(Receipt receipt, ReceiptAdapter.CardHolder cardHolder) {
+
+                if (processItemsComponent.isProcessItemActive()){
+                    addOrRemoveItemToProcess(receipt);
+                    checkIfReceiptIsChecked(receipt, cardHolder);
+                    return;
+                }
+                activateDeleteMode();
+                addOrRemoveItemToProcess(receipt);
+                checkIfReceiptIsChecked(receipt, cardHolder);
+                //addOrRemoveItemToProcess(receipt);
+                //checkIfReceiptIsChecked(receipt, cardHolder);
+
 
             }
 
             @Override
             public void getCardHolderOnBind(ReceiptAdapter.CardHolder cardHolder, Receipt receipt) {
+                if (processItemsComponent.isProcessItemActive()){
+                    checkIfReceiptIsChecked(receipt, cardHolder);
+                }
                 String daysLeft = receiptsViewModel.calculateDaysTobeDeleted(receipt.getSellingDate());
                 cardHolder.getDaysLeft().setText(daysLeft);
 
             }
 
             @Override
-            public void reciveCardHol(View cardHolder, Receipt receipt) {
-
+            public void reciveCardHol(ReceiptAdapter.CardHolder cardHolder) {
+                ImageView imageView = cardHolder.getCheckIndicator();
+                receiptsViewModel.getAllSelectedIconMutableLiveData().observe(getViewLifecycleOwner(),
+                        imageView::setImageDrawable);
             }
 
             @Override
             public void onDelete(Receipt receipt) {
-                askToDelete(receipt);
+
             }
         });
     }
 
 
-    public void askToDelete(Receipt receipt){
-        AskForActionDialog askForActionDialog = new AskForActionDialog( getString(R.string.delete));
-        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
-            @Override
-            public void result(Boolean object) {
-                if (object){
-                    sellViewModel.deleteReceipt(receipt);
-                }
-            }
-        });
-        askForActionDialog.show(getParentFragmentManager(), getString(R.string.delete));
+
+
+    private void activateDeleteMode(){
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
+        selectAllMenuItem = toolbar.getMenu().findItem(R.id.select_all_button);
+        deleteMenuItem = toolbar.getMenu().findItem(R.id.delete_button);
+        processItemsComponent.setProcessItemActive(true);
+        mainActivityViewModel.hideBottomNavBar();
+        receiptsViewModel.getSelectedItemQuantityMutableLiveData().observe(getViewLifecycleOwner(),
+                (i) ->{toolbar.setTitle(String.valueOf(i));});
+    }
+
+    private MenuItem selectAllMenuItem;
+    private MenuItem deleteMenuItem;
+    private void desActivateDeleteMode(){
+        unSelectAllItems();
+        processItemsComponent.setProcessItemActive(false);
+        mainActivityViewModel.showBottomNavBar();
+        receiptsViewModel.getSelectedItemQuantityMutableLiveData().removeObservers(getViewLifecycleOwner());
+        toolbar.setTitle(getString(R.string.receipts));
+        toolbar.addMenuProvider(this);
+    }
+
+    private void addOrRemoveItemToProcess(Receipt receipt){
+        boolean isAdded = receiptsViewModel.checkIfReceiptIsChecked(receipt, processItemsComponent);
+        System.out.println("Is added: " + isAdded);
+        if(isAdded){
+            processItemsComponent.removeItemToProcess(receipt);
+        }else {
+          processItemsComponent.addItemToProcess(receipt);
+        }
+
+        receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
+    }
+
+
+    private void checkIfReceiptIsChecked(Receipt receipt, ReceiptAdapter.CardHolder cardHolder){
+        boolean isChecked = receiptsViewModel.checkIfReceiptIsChecked(receipt, processItemsComponent);
+
+        if(isChecked){
+            checkCard(cardHolder);
+        }else {
+            unCheckCard(cardHolder);
+        }
+
+        if (receiptAdapter.getCurrentList().size() == processItemsComponent.getItemsToProcess().size()){
+            processItemsComponent.setAllSelected(true);
+            selectAllMenuItem.setIcon(checkedCircle);
+        }else {
+            processItemsComponent.setAllSelected(false);
+            selectAllMenuItem.setIcon(unCheckedCircle);
+        }
+
+        if (processItemsComponent.getItemsToProcess().isEmpty()){
+            deleteMenuItem.setVisible(false);
+        }else {
+            deleteMenuItem.setVisible(true);
+        }
+
+
+    }
+
+    private void checkCard(ReceiptAdapter.CardHolder cardHolder){
+        cardHolder.getCheckIndicator().setImageDrawable(checkedCircle);
+
+    }
+    private void unCheckCard(ReceiptAdapter.CardHolder cardHolder){
+        cardHolder.getCheckIndicator().setImageDrawable(null);
+    }
+
+    private void selectAllItems(){
+        receiptsViewModel.setAllSelectedIconMutableLiveData(checkedCircle);
+        HashSet<Receipt> receipts = new HashSet<>(receiptAdapter.getCurrentList());
+        processItemsComponent.setItemsToProcess(receipts);
+        selectAllMenuItem.setIcon(checkedCircle);
+        processItemsComponent.setAllSelected(true);
+        deleteMenuItem.setVisible(true);
+        receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
+    }
+
+    private void unSelectAllItems(){
+        receiptsViewModel.setAllSelectedIconMutableLiveData(null);
+        processItemsComponent.setItemsToProcess(new HashSet<>());
+        selectAllMenuItem.setIcon(unCheckedCircle);
+        processItemsComponent.setAllSelected(false);
+        deleteMenuItem.setVisible(false);
+        receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
     }
 
 
@@ -149,9 +279,17 @@ public class ReceiptsFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        toolbar.inflateMenu(R.menu.receipt_tool_bar);
+        toolbar.addMenuProvider(this);
+    }
+
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        toolbar.getMenu().clear();
+        menuInflater.inflate(R.menu.receipt_tool_bar, menu);
+
         toolbar.setNavigationIcon(R.drawable.back_arrow);
-        toolbar.setNavigationOnClickListener(this::naVigateBack);
+        toolbar.setNavigationOnClickListener(this::navigateBack);
         searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
 
 
@@ -185,36 +323,48 @@ public class ReceiptsFragment extends Fragment{
         }else {
             toolbar.getMenu().findItem(R.id.delete_30_days).setChecked(true);
         }
-
-
-
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.delete_15_days:
-                        deletePeridio15Days(true);
-                        item.setChecked(true);
-                        return true;
-                    case R.id.delete_30_days:
-                        deletePeridio15Days(false);
-                        item.setChecked(true);
-                        return true;
-                    default:
-
-                        return false;
-                }
-            }
-        });
-
     }
 
-    private void deletePeridio15Days(Boolean delete_after_15_days){
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+
+        switch (menuItem.getItemId()){
+            case R.id.delete_15_days:
+                deletePeriod15Days(true);
+                menuItem.setChecked(true);
+                return true;
+            case R.id.delete_30_days:
+                deletePeriod15Days(false);
+                menuItem.setChecked(true);
+                return true;
+            case R.id.delete_button:
+                processItemsComponent.deleteItems(new ViewModelListener<Void>() {
+                    @Override
+                    public void result(Void object) {
+                        receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
+                    }
+                });
+                return true;
+            case R.id.select_all_button:
+                if (processItemsComponent.isAllSelected()) {
+                    unSelectAllItems();
+                } else {
+                    selectAllItems();
+                }
+                return true;
+            case R.id.search_action:
+                return true;
+            default:
+
+                return false;
+        }
+    }
+
+
+    private void deletePeriod15Days(Boolean delete_after_15_days){
         if(editor != null){
             editor.putBoolean(DELETE_AFTER_15_DAYS,delete_after_15_days);
             editor.apply();
         }
     }
-
 }

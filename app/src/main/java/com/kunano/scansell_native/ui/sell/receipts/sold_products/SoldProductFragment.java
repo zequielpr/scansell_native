@@ -21,6 +21,7 @@ import com.kunano.scansell_native.databinding.FragmentSoldProductBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
@@ -52,7 +53,7 @@ public class SoldProductFragment extends Fragment{
                 System.out.println("business: " + business_key + " receipt id: " + receipt_key);
                 double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
                         c + sp.getSelling_price(), Double::sum);
-                toolbar.setSubtitle(String.valueOf(spentAmount));
+                toolbar.setSubtitle(String.valueOf(Utils.formatDecimal(spentAmount)));
             });
         }else {
             business_key = new Long(0);
@@ -148,8 +149,8 @@ public class SoldProductFragment extends Fragment{
 
     private void deleteSoldProduct(Product product){
         if (receipt != null && product != null){
-            soldProductViewModel.cancelProductSell(product, receipt, (resulst)->{
-                System.out.println("Product deleted: " + resulst);
+            soldProductViewModel.cancelProductSell(product, receipt, (result)->{
+                System.out.println("Product deleted: " + result);
             });
         }
     }

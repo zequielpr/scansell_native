@@ -189,4 +189,10 @@
     <string name="stock">Stock:</string>
     <string name="sell_price">Sell price:</string>
     <string name="buy_price">Buy price:</string>
+    <string name="cancel_sell">Cancel sell</string>
+    <string name="out_of_stock">Product out of stock</string>
+    <string name="update_stock">Update stock?</string>
+    <string name="items">Items:</string>
+    <string name="dollar_symbol">$</string>
+    <string name="delete_selected_items">Delete selected items</string>
 </resources>
