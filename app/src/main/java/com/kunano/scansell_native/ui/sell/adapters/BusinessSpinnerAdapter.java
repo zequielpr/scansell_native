@@ -16,14 +16,16 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
 
     private LayoutInflater inflater;
     private List<Business> businesses;
+    private Integer textColor;
 
     private int mResource;
 
-    public BusinessSpinnerAdapter(Context context, int resource, List<Business> businesses) {
+    public BusinessSpinnerAdapter(Context context, int resource, List<Business> businesses, Integer textColor) {
         super(context, resource, businesses);
         inflater = LayoutInflater.from(context);
         this.businesses = businesses;
         this.mResource = resource;
+        this.textColor = textColor;
     }
 
 
@@ -52,7 +54,7 @@ public class BusinessSpinnerAdapter extends ArrayAdapter<Business> {
         if (isDropDownView){
             nameTextView.setTextColor(Color.BLACK);
         }else{
-            nameTextView.setTextColor(Color.BLACK);
+            nameTextView.setTextColor(textColor);
         }
 
 

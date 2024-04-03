@@ -8,6 +8,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.kunano.scansell_native.R;
 
 import java.util.List;
 
@@ -18,6 +19,15 @@ public class CustomPieChart {
     }
 
     public void populatePieChart(List<PieEntry> entries){
+
+        int percentageTotal = entries.stream().reduce(0f, (aFloat, pieEntry) ->
+                aFloat+pieEntry.getValue(), Float::sum).intValue();
+
+        if (percentageTotal < 100){
+            float otherProductsPercentage = 100 - percentageTotal;
+            entries.add(new PieEntry(otherProductsPercentage, pieChart.getContext().getString(R.string.others)));
+        }
+
 
         // Create a PieDataSet
         PieDataSet dataSet = new PieDataSet(entries, null);

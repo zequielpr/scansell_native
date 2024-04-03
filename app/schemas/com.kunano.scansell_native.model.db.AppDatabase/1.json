@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "16189b22c7ae9efef907b0dbdeb1214b",
+    "identityHash": "35f4dafb665cdc22f363be5afecb21c7",
     "entities": [
       {
         "tableName": "Business",
@@ -161,13 +161,13 @@
         "indices": [
           {
             "name": "index_productImg_productIdFk_businessIdFK",
-            "unique": false,
+            "unique": true,
             "columnNames": [
               "productIdFk",
               "businessIdFK"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_productImg_productIdFk_businessIdFK` ON `${TABLE_NAME}` (`productIdFk`, `businessIdFK`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_productImg_productIdFk_businessIdFK` ON `${TABLE_NAME}` (`productIdFk`, `businessIdFK`)"
           }
         ],
         "foreignKeys": [
@@ -464,7 +464,7 @@
       },
       {
         "tableName": "ProductToSellDraft",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `productIdFK` TEXT NOT NULL, `businessIdIdFK` INTEGER NOT NULL, PRIMARY KEY(`businessIdIdFK`, `productIdFK`, `id`), FOREIGN KEY(`productIdFK`, `businessIdIdFK`) REFERENCES `product`(`productId`, `businessIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `productIdFK` TEXT NOT NULL, `businessIdIdFK` INTEGER NOT NULL, `addedDate` INTEGER NOT NULL, PRIMARY KEY(`businessIdIdFK`, `productIdFK`, `id`), FOREIGN KEY(`productIdFK`, `businessIdIdFK`) REFERENCES `product`(`productId`, `businessIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -481,6 +481,12 @@
           {
             "fieldPath": "businessIdIdFK",
             "columnName": "businessIdIdFK",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "addedDate",
+            "columnName": "addedDate",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -525,7 +531,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16189b22c7ae9efef907b0dbdeb1214b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35f4dafb665cdc22f363be5afecb21c7')"
     ]
   }
 }

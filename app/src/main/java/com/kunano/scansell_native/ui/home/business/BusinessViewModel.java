@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
@@ -25,25 +26,30 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     private LiveData<List<BusinessWithProduct>> businessListWithProductsList;
     private Long currentBusinessId;
-    MutableLiveData<List<Product>> allProductLive;
+    MutableLiveData<List<Product>> allProductMuyableLiveData;
     private LiveData<Business> currentBusinessLiveData;
     private String businessName;
     private String businessAddress;
-    private   List<Product> productList;
+    private List<Product> productList;
     private ProductRepository productRepository;
     private boolean searchModeActive;
     ExecutorService executorService;
+    private LiveData<List<Product>> allProductLiveData;
+    Observer<List<Product>> productsObserver;
 
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
         productRepository = new ProductRepository(application);
         businessName = "";
-        allProductLive = new MutableLiveData<>();
+        allProductLiveData = new MutableLiveData<>();
+        allProductMuyableLiveData = new MutableLiveData<>();
         currentBusinessId = new Long(-1);
         currentBusinessLiveData = new MutableLiveData<>();
         productList = new ArrayList<>();
         searchModeActive = false;
+
+        productsObserver = allProductMuyableLiveData::postValue;
     }
 
 
@@ -51,12 +57,12 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         //Optional<Business> business = currentBusiness.stream().findFirst();
 
         System.out.println("Business name: " + businessName);
-        if (currentBusiness!= null) {
+        if (currentBusiness != null) {
             this.currentBusiness = currentBusiness;
             //Set name and address of the business
             businessName = currentBusiness.getBusinessName();
             System.out.println("Business name: " + businessName);
-            if(!isDeleteModeActive)setSelectedItemsNumbLiveData(businessName);
+            if (!isDeleteModeActive) setSelectedItemsNumbLiveData(businessName);
 
             businessAddress = currentBusiness.getBusinessAddress();
 
@@ -65,45 +71,55 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
     //prueba
-    public LiveData<List<Product>> queryAllProducts(long currentBusinessId){
+    public LiveData<List<Product>> queryAllProducts(long currentBusinessId) {
         System.out.println("New businessID: " + currentBusinessId);
-        if(this.currentBusinessId != currentBusinessId){
+        if (this.currentBusinessId != currentBusinessId) {
             System.out.println("New businessID: " + currentBusinessId);
             this.currentBusinessId = currentBusinessId;
-             businessRepository.getProductsList(currentBusinessId).observeForever(allProductLive::postValue);
+            allProductLiveData.removeObserver(productsObserver);
+            allProductLiveData = businessRepository.getProductsList(currentBusinessId);
+            allProductLiveData.observeForever(productsObserver);
 
-            return allProductLive;
+            return allProductMuyableLiveData;
         }
-        return allProductLive;
+        return allProductMuyableLiveData;
 
     }
 
 
     //Search
-    public void searchProduct(String query){
-        businessRepository.searchProducts(currentBusinessId, query).observeForever(allProductLive::postValue);
+    public void searchProduct(String query) {
+        allProductLiveData.removeObserver(productsObserver);
+        allProductLiveData = businessRepository.searchProducts(currentBusinessId, query);
+        allProductLiveData.observeForever(productsObserver);
     }
 
-    public void sortProductByNameAsc(){
-
-        businessRepository.sortProductByNameAsc(currentBusinessId).observeForever(allProductLive::postValue);
+    public void sortProductByNameAsc() {
+        allProductLiveData.removeObserver(productsObserver);
+        allProductLiveData = businessRepository.sortProductByNameAsc(currentBusinessId);
+        allProductLiveData.observeForever(productsObserver);
     }
 
-    public void sortProductByNameDesc(){
-        businessRepository.sortProductByNameDesc(currentBusinessId).observeForever(allProductLive::postValue);
+    public void sortProductByNameDesc() {
+        allProductLiveData.removeObserver(productsObserver);
+        allProductLiveData = businessRepository.sortProductByNameDesc(currentBusinessId);
+        allProductLiveData.observeForever(productsObserver);
     }
 
-    public void sortProductByStockAsc(){
-        businessRepository.sortProductByStockAsc(currentBusinessId).observeForever(allProductLive::postValue);
+    public void sortProductByStockAsc() {
+        allProductLiveData.removeObserver(productsObserver);
+        allProductLiveData = businessRepository.sortProductByStockAsc(currentBusinessId);
+        allProductLiveData.observeForever(productsObserver);
     }
 
-    public void sortProductByStcokDesc(){
-        businessRepository.sortProductByStockDesc(currentBusinessId).observeForever(allProductLive::postValue);
+    public void sortProductByStcokDesc() {
+        allProductLiveData.removeObserver(productsObserver);
+        allProductLiveData = businessRepository.sortProductByStockDesc(currentBusinessId);
+        allProductLiveData.observeForever(productsObserver);
     }
 
 
-
-    public void shortTap(Product product){
+    public void shortTap(Product product) {
         if (isDeleteModeActive) {
 
             if (itemsToDelete.contains(product)) {
@@ -116,13 +132,13 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
 
             selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = allProductLive.getValue().size() == itemsToDelete.size();
+            isAllSelected = allProductMuyableLiveData.getValue().size() == itemsToDelete.size();
             return;
         }
 
     }
 
-    public void longTap(Product product){
+    public void longTap(Product product) {
         this.itemTypeToDelete = ItemTypeToDelete.PRODUCT;
         if (itemsToDelete.contains(product)) {
             itemsToDelete.remove(product);
@@ -130,16 +146,16 @@ public class BusinessViewModel extends DeleteItemsViewModel {
             itemsToDelete.add(product);
         }
         selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = allProductLive.getValue().size() == itemsToDelete.size();
+        isAllSelected = allProductMuyableLiveData.getValue().size() == itemsToDelete.size();
 
     }
 
 
-    public void binSingleBusiness(ViewModelListener viewModelListener){
+    public void binSingleBusiness(ViewModelListener viewModelListener) {
 
         executorService = Executors.newSingleThreadExecutor();
 
-        executorService.execute(()->{
+        executorService.execute(() -> {
             Long result;
             try {
                 result = super.binsRepository.sendBusinessTobin(currentBusinessId).get();
@@ -153,33 +169,24 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         });
 
 
-
     }
-
-
-
-
-
-
-
-
 
 
     public List<Object> parseProductListToGeneric() {
-        return allProductLive.getValue().stream()
-                .map(product-> (Object) product)
+        return allProductMuyableLiveData.getValue().stream()
+                .map(product -> (Object) product)
                 .collect(Collectors.toList());
     }
 
-    public void updateBusiness(String name, String address, String creatingData, ListenResponse listenResponse){
+    public void updateBusiness(String name, String address, String creatingData, ListenResponse listenResponse) {
         Business business = new Business(name, address, creatingData);
         business.setBusinessId(currentBusinessId);
         businessRepository.updateBusiness(business, listenResponse);
     }
 
 
-    public LiveData<List<Product>> getAllProductLive() {
-        return allProductLive;
+    public LiveData<List<Product>> getAllProductMuyableLiveData() {
+        return allProductMuyableLiveData;
     }
 
 
@@ -217,7 +224,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     public LiveData<Business> getCurrentBusinessLiveData() {
 
-        if(this.currentBusinessId != null){
+        if (this.currentBusinessId != null) {
             currentBusinessLiveData = businessRepository.getBusinesById(currentBusinessId);
 
         }

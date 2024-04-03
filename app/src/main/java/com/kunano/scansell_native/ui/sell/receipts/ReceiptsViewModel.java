@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.sell.receipts;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -8,15 +9,23 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.db.Converters;
+import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ReceiptsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isSearchModeActive;
+    private MutableLiveData<Drawable> allSelectedIconMutableLiveData;
+    private MutableLiveData<Integer> selectedItemQuantityMutableLiveData;
     public ReceiptsViewModel(@NonNull Application application){
         super(application);
         isSearchModeActive = new MutableLiveData<>(false);
+
+        allSelectedIconMutableLiveData = new MutableLiveData<>();
+
+        selectedItemQuantityMutableLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<Boolean> getIsSearchModeActive() {
@@ -26,6 +35,18 @@ public class ReceiptsViewModel extends AndroidViewModel {
     public void setIsSearchModeActive(boolean isSearchModeActive) {
         this.isSearchModeActive.postValue(isSearchModeActive);
     }
+
+
+
+    public boolean checkIfReceiptIsChecked(Receipt receipt, ProcessItemsComponent<Receipt> processItemsComponent){
+
+       return  processItemsComponent.getItemsToProcess().stream().anyMatch((r)->{
+           return r.getReceiptId().trim().equals(receipt.getReceiptId().trim());
+       });
+
+    }
+
+
 
     public String calculateDaysTobeDeleted(LocalDateTime sellDate) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -41,5 +62,22 @@ public class ReceiptsViewModel extends AndroidViewModel {
         }
         return "";
 
+    }
+
+
+    public MutableLiveData<Drawable> getAllSelectedIconMutableLiveData() {
+        return allSelectedIconMutableLiveData;
+    }
+
+    public void setAllSelectedIconMutableLiveData(Drawable allSelectedIconMutableLiveData) {
+        this.allSelectedIconMutableLiveData.postValue(allSelectedIconMutableLiveData);
+    }
+
+    public MutableLiveData<Integer> getSelectedItemQuantityMutableLiveData() {
+        return selectedItemQuantityMutableLiveData;
+    }
+
+    public void setSelectedItemQuantityMutableLiveData(Integer selectedItemQuantityMutableLiveData) {
+        this.selectedItemQuantityMutableLiveData.postValue(selectedItemQuantityMutableLiveData);
     }
 }

@@ -32,10 +32,10 @@ public class BottomSheetCreateBusinessViewModel extends AndroidViewModel {
 
     //Validate data
     public boolean validateName(String name) {
-        return ValidateData.validateName(name);
+        return ValidateData.validateName(name.trim());
     }
 
     public boolean validateAddress(String address) {
-        return ValidateData.validateAddress(address);
+        return ValidateData.validateAddress(address.trim());
     }
 }

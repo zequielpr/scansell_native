@@ -14,8 +14,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -106,6 +110,33 @@ public class Utils {
             setLanguage(ENGLISH, activity);
         }
 
+    }
+
+
+    public static void askToLeaveApp(Fragment fragment){
+        String title = fragment.getContext().getString(R.string.leave_app);
+        String message = fragment.getContext().getString(R.string.ask_to_leave_app);
+        AskForActionDialog askForActionDialog = new AskForActionDialog(title, message);
+
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object)fragment.getActivity().finish();
+            }
+        });
+        askForActionDialog.show(fragment.getParentFragmentManager(), title);
+
+
+    }
+
+
+    public static double formatDecimal(double decimalToFormat){
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+        // Format the number using the DecimalFormat object
+        String formattedNumber = decimalFormat.format(decimalToFormat).replace(",", ".");
+
+        return Double.parseDouble(formattedNumber);
     }
 
 

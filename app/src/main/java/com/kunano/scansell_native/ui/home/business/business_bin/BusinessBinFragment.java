@@ -28,8 +28,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
@@ -307,10 +307,10 @@ public class BusinessBinFragment extends Fragment {
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
 
         progressBarDialog = new ProgressBarDialog(
-                title, getViewLifecycleOwner(), progress, deletedBusiness);
-        progressBarDialog.setAction(new ListenResponse() {
+                title, progress, deletedBusiness);
+        progressBarDialog.setAction(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean cancelDeleteProcess) {
+            public void result(Boolean cancelDeleteProcess) {
                 if(cancelDeleteProcess){
                     mViewModel.cancelDeleteProcess();
                     desactivateDeleteMode();

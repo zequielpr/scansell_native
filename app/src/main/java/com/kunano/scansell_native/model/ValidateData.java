@@ -4,9 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidateData {
+    private static final String NAME_PATTERN = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
 
     public static boolean validateName(String name){
-        Pattern pattern = Pattern.compile("^[A-Za-z\\u00C0-\\u017F]{3,30}(?:[\\s][A-Za-z\\u00C0-\\u017F]+)*([\\s]?)$");
+        Pattern pattern = Pattern.compile(NAME_PATTERN);
         Matcher matcher = pattern.matcher(name);
 
         return matcher.matches();

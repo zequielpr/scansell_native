@@ -31,8 +31,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 
 
@@ -337,6 +337,7 @@ public class BusinessFragment extends Fragment {
         deleteIcon = toolbar.getMenu().findItem(R.id.delete_button);
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
 
+        deleteIcon.setVisible(businessViewModel.getItemsToDelete().size()>0);
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.delete_button:
@@ -368,8 +369,7 @@ public class BusinessFragment extends Fragment {
         selectAllIcon.setIcon(checkedCircle);
         businessViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
         businessViewModel.selectAll(businessViewModel.parseProductListToGeneric());
-
-
+        updateToolbar();
     }
 
 
@@ -377,6 +377,7 @@ public class BusinessFragment extends Fragment {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         businessViewModel.setCheckedOrUncheckedCirclLivedata(null);
         businessViewModel.unSelectAll();
+        updateToolbar();
     }
 
 
@@ -446,10 +447,10 @@ public class BusinessFragment extends Fragment {
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 
         progressBarDialog = new ProgressBarDialog(
-                title, getViewLifecycleOwner(), progress, deletedBusiness);
-        progressBarDialog.setAction(new ListenResponse() {
+                title, progress, deletedBusiness);
+        progressBarDialog.setAction(new ViewModelListener<Boolean>() {
             @Override
-            public void isSuccessfull(boolean cancelDeleteProcess) {
+            public void result(Boolean cancelDeleteProcess) {
                 if(cancelDeleteProcess){
                     businessViewModel.cancelDeleteProcess();
                 }

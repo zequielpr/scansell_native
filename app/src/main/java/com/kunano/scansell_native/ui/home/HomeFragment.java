@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +22,16 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
+import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
 
 import java.util.List;
 
@@ -48,8 +50,17 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     private View createBusinessView;
     private ImageButton createNewBusinessImgButton;
+    private MainActivityViewModel mainActivityViewModel;
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -66,8 +77,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         businessCardAdepter = new BusinessCardAdepter();
         recyclerViewBusinessList.setAdapter(businessCardAdepter);
 
-
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         homeViewModel.getAllBusinesses().observe(getViewLifecycleOwner(), businessCardAdepter::submitList);
         listenHomeViewModel = this;
         homeViewModel.setListenHomeViewModel(listenHomeViewModel);
@@ -84,16 +93,14 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
 
         return binding.getRoot();
-
-
     }
+
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-
-        System.out.println("Activity obliterated");
     }
 
     private MenuItem addIcon;
@@ -110,6 +117,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         homeViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
                 createBusinessView::setVisibility);
+
+        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
 
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -141,6 +150,16 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         }
         updateToolbar();
 
+    }
+
+
+    public void handleBackPress(){
+        if (homeViewModel.isDeleteModeActive()){
+            desactivateDeleteMode(getView());
+        }
+        else {
+            Utils.askToLeaveApp(this);
+        }
     }
 
     private void handleCreateBusinessVisibility(List<Business> l){
@@ -185,8 +204,10 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         boolean isDeleteModeActivate = homeViewModel.isDeleteModeActive();
         addIcon.setVisible(!isDeleteModeActivate);
 
+
         deleteIcon.setVisible(isDeleteModeActivate);
         selectAllIcon.setVisible(isDeleteModeActivate);
+        deleteIcon.setVisible(homeViewModel.getItemsToDelete().size()>0);
 
         if (homeViewModel.isAllSelected()){
             selectAllIcon.setIcon(R.drawable.checked_circle);
@@ -225,6 +246,13 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             @Override
             public void getCardHolderOnBind(View cardHolder, Business business) {
                 if (homeViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+
+               TextView quantity =  cardHolder.findViewById(R.id.textViewNumProducts);
+
+               homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
+                       getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
+                               concat(": ").concat(String.valueOf(q)))
+               );
             }
 
             @Override
@@ -248,7 +276,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         selectAllIcon.setIcon(R.drawable.checked_circle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
         homeViewModel.selectAll(homeViewModel.parseBusinessListToGeneric());
-
+        updateToolbar();
 
     }
 
@@ -257,6 +285,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
         homeViewModel.unSelectAll();
+        updateToolbar();
     }
 
 
@@ -310,19 +339,13 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     @Override
     public void showProgressBar() {
-        ListenResponse action = (cancelDeleteProcess)->{
-            if(cancelDeleteProcess){
-                homeViewModel.cancelDeleteProcess();
-            }
-        };
-
 
         String title =  getString(R.string.delete);
         MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
 
          progressBarDialog = new ProgressBarDialog(
-                title, getViewLifecycleOwner(), progress, deletedBusiness);
+                title, progress, deletedBusiness);
 
         progressBarDialog.show(getParentFragmentManager(), "progress bar");
 

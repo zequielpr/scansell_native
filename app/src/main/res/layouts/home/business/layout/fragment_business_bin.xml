@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,23 +15,34 @@
         android:theme="?attr/actionBarTheme"
         app:title="@string/recycle_bin" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycled_business_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="548dp"
-        android:layout_gravity="center"
-        android:tag="recycleListBin" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/binToolbar"
+        android:orientation="vertical">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/delete_or_restore_option"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycled_business_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:tag="recycleListBin" />
 
-        android:focusable="false"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
-        app:menu="@menu/delete_or_restore_options"
-        tools:visibility="visible" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/delete_or_restore_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
 
-</FrameLayout>
+
+            android:layout_weight="0"
+            android:focusable="false"
+            app:itemIconTint="@color/black"
+            app:itemTextColor="@color/black"
+            app:menu="@menu/delete_or_restore_options"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</RelativeLayout>

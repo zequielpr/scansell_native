@@ -12,6 +12,7 @@ import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,7 @@ public class BusinessRepository {
 
 
     //insert oprations--------------------------------------------------------------
-    public void insertBusiness(Business business, ListenResponse response) {
+    public void insertBusiness(Business business, ViewModelListener<Boolean> response) {
         Executor executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
@@ -54,16 +55,16 @@ public class BusinessRepository {
                 }*/
                 resultado = businessDao.insertBusiness(business).get();
                 if (resultado > 0) {
-                    response.isSuccessfull(true);
+                    response.result(true);
                 } else {
-                    response.isSuccessfull(false);
+                    response.result(false);
                 }
 
             } catch (ExecutionException e) {
-                response.isSuccessfull(false);
+                response.result(false);
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
-                response.isSuccessfull(false);
+                response.result(false);
                 throw new RuntimeException(e);
             }
         });
@@ -148,6 +149,10 @@ public class BusinessRepository {
     }
     public LiveData<List<Product>> sortProductByStockDesc(Long businessId){
         return businessDao.sortProductByStockDesc(businessId);
+    }
+
+    public LiveData<Integer> getQuantityOfProductsInBusiness(Long businessId){
+         return businessDao.getQuantityOfProductsInBusiness(businessId);
     }
 
 
