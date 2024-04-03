@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.profile;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -154,7 +155,9 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     }
 
     private void setUserImage(Bitmap userImage){
-        getActivity().runOnUiThread(()->{
+        Activity activity = getActivity();
+        if (activity == null) return;
+        activity.runOnUiThread(()->{
             Bitmap roundImg = ImageProcessor.getRoundedBitmap(userImage);
             this.userImage = ImageProcessor.bitmapToDrawable(ProfileFragment.this.getContext(),
                     roundImg);
