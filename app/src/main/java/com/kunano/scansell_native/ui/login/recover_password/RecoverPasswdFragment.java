@@ -38,6 +38,11 @@ public class RecoverPasswdFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void onResume(){
+        super.onResume();
+
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

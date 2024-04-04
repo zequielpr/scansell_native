@@ -196,4 +196,7 @@
     <string name="dollar_symbol">$</string>
     <string name="delete_selected_items">Delete selected items</string>
     <string name="others">others</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>
