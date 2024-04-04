@@ -1,4 +1,16 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="fab_margin">16dp</dimen></resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="window_start_side">14dp</dimen>
+    <dimen name="window_end_side">14dp</dimen>
+    <dimen name="window_bottom_side">20dp</dimen>
+    <dimen name="window_top_side">20dp</dimen>
+
+    <dimen name="button_top_side">20dp</dimen>
+
+    <dimen name="space_between_edit_text">14dp</dimen>
+
+    <dimen name="warn_top_side">5dp</dimen>
+</resources>
