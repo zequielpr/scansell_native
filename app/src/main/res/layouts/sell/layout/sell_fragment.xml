@@ -79,6 +79,7 @@
                     android:id="@+id/showBottomSheetView"
                     android:layout_width="100dp"
                     android:layout_height="10dp"
+                    style=""
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="30dp"
                     android:layout_centerInParent="true"

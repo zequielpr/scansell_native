@@ -34,11 +34,8 @@
             android:id="@+id/delete_or_restore_option"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foregroundTint="@color/transparent"
-            app:itemBackground="@color/transparent"
-            app:itemTextColor="@color/black"
+            style="@style/BottomNavigationStyle"
             android:layout_weight="0"
-            app:itemIconTint="@color/black"
             app:menu="@menu/delete_or_restore_options"/>
 
     </LinearLayout>
