@@ -22,6 +22,13 @@ public class HandleBootomSheetBehavior {
         standardBottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
     }
 
+    public void setupStandardBottomSheet(int peekHeight, boolean draggable) {
+        standardBottomSheetBehavior.setDraggable(draggable);
+        standardBottomSheetBehavior.setPeekHeight(peekHeight);
+        standardBottomSheetBehavior.setFitToContents(false);
+        standardBottomSheetBehavior.setSaveFlags(BottomSheetBehavior.SAVE_ALL);
+    }
+
 
     public void setState(Integer state){
         standardBottomSheetBehavior.setState(state);

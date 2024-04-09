@@ -6,7 +6,6 @@
     android:id="@+id/carView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
     app:cardElevation="0dp">
 
     <LinearLayout
@@ -73,5 +72,10 @@
         android:layout_marginEnd="5dp"
         android:layout_weight="1"
         tools:visibility="gone" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/black_transparent" />
 
 </androidx.cardview.widget.CardView>

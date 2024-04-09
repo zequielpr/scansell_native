@@ -1,9 +1,13 @@
 package com.kunano.scansell_native.ui.home.business.create_product;
 
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,13 +32,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.palette.graphics.Palette;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
@@ -71,6 +78,11 @@ public class CreateProductFragment extends Fragment {
     private Long businessKey;
     private String productId;
     private CustomMediaPicker customMediaPicker;
+    private View imageButtonFrame;
+    private TextInputLayout nameTextInputLayout;
+    private TextInputLayout buyingPriceTextInputLayout;
+    private TextInputLayout sellingPriceTextInputLayout;
+    private TextInputLayout stockTextInputLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -110,6 +122,15 @@ public class CreateProductFragment extends Fragment {
         warningStock = binding.textViewStockWarn;
         cancelImageUploadButton = binding.cancelImageUpload;
         createProductToolbar = binding.createProductToolbar;
+        imageButtonFrame = binding.imageButtonFrame;
+        nameTextInputLayout = binding.nameFilledTextField;
+        buyingPriceTextInputLayout = binding.buyPriceFilledTextField;
+        sellingPriceTextInputLayout = binding.sellPriceFilledTextField;
+        stockTextInputLayout = binding.stockFilledTextField;
+
+
+
+
         createProductFragment = this;
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
         customMediaPicker = new CustomMediaPicker(pickMedia);
@@ -121,7 +142,7 @@ public class CreateProductFragment extends Fragment {
 
 
         createProductViewModel.getBitmapImgMutableLiveData().observe(getViewLifecycleOwner(),
-                imageViewAddImage::setImageDrawable);
+                imageViewAddImage::setImageBitmap);
 
         imageViewAddImage.setOnClickListener(this::showOptionPickImage);
         saveButton.setOnClickListener(this::createProduct);
@@ -156,8 +177,6 @@ public class CreateProductFragment extends Fragment {
 
 
         mainActivityViewModel.setHandleBackPress(this::navigateBack);
-
-
         return binding.getRoot();
     }
 
@@ -166,12 +185,52 @@ public class CreateProductFragment extends Fragment {
         createProductToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         createProductToolbar.setNavigationOnClickListener((v)->navigateBack());
         createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(),this::inflateToolbar);
+        createProductViewModel.getBitmapImgMutableLiveData().observe(getViewLifecycleOwner(),
+                this::setToolBarColor);
+
+    }
+
+    private void setToolBarColor(Bitmap bitmapImg){
+        if (getActivity() == null || bitmapImg == null) return;
+        Palette palette = Utils.getColorPaletteFromImage(bitmapImg);
+        Integer brightColor = Utils.getVibrantColor(palette);
+        if (brightColor == null) return;
+        int [] colors = {brightColor, Color.TRANSPARENT};
+
+        GradientDrawable gradientColor = Utils.getGradientColor(colors, GradientDrawable.RECTANGLE,
+                GradientDrawable.Orientation.TOP_BOTTOM, 0f, GradientDrawable.LINEAR_GRADIENT);
+
+
+        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.rounded_button_background);
+        drawable.setColorFilter(brightColor, PorterDuff.Mode.SRC_IN);
+
+        imageButtonFrame.setBackground(drawable);
+        createProductToolbar.setBackground(gradientColor);
+        Utils.setActionBarColor(getActivity(), brightColor);
+        saveButton.setBackgroundColor(brightColor);
+
+        nameTextInputLayout.setBoxStrokeColor(brightColor);
+        buyingPriceTextInputLayout.setBoxStrokeColor(brightColor);
+        sellingPriceTextInputLayout.setBoxStrokeColor(brightColor);
+        stockTextInputLayout.setBoxStrokeColor(brightColor);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ColorStateList cursorColor = ColorStateList.valueOf(brightColor);
+            nameTextInputLayout.setCursorColor(cursorColor);
+            buyingPriceTextInputLayout.setCursorColor(cursorColor);
+            sellingPriceTextInputLayout.setCursorColor(cursorColor);
+            stockTextInputLayout.setCursorColor(cursorColor);
+
+            nameTextInputLayout.setHintTextColor(cursorColor);
+            buyingPriceTextInputLayout.setHintTextColor(cursorColor);
+            sellingPriceTextInputLayout.setHintTextColor(cursorColor);
+            stockTextInputLayout.setHintTextColor(cursorColor);
+        }
 
     }
 
 
     public void navigateBack(){
-
       navController = Navigation.findNavController(getView());
       NavDirections navDirections = CreateProductFragmentDirections.
               actionCreateProductFragment2ToBusinessFragment2(createProductViewModel.getBusinessId());
@@ -198,7 +257,7 @@ public class CreateProductFragment extends Fragment {
         String sPrice = sellingPrice.getText().toString();
         String stck = stock.getText().toString();
 
-        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
+        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImgMutableLiveData().getValue());
 
         if (createProductViewModel.isProductToUpdate()){
             createProductViewModel.updateProduct(createProductViewModel.getProductId(),
@@ -247,7 +306,7 @@ public class CreateProductFragment extends Fragment {
         if ( bitmapImg != null) {
             // If the decoding was successful, set the Bitmap to the ImageView
             createProductViewModel.setBitmapImg(bitmapImg);
-            createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(), bitmapImg));
+            createProductViewModel.setBitmapImgMutableLiveData(bitmapImg);
             //imageViewAddImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border_shape));
             createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
         } else {
@@ -262,7 +321,7 @@ public class CreateProductFragment extends Fragment {
     //Validate
     private boolean validateData(){
         if (productName.getText().toString().isEmpty()){
-            createProductViewModel.setWarningName(getString(R.string.advert_introduce_name));
+            createProductViewModel.setWarningName(getString(R.string.introduce_name));
             return false;
         }
 
@@ -295,7 +354,7 @@ public class CreateProductFragment extends Fragment {
 
     public void cancelImageUpload(View view){
         Drawable imgAdd = ContextCompat.getDrawable(getContext(), R.drawable.add_image_ic_80dp);
-        createProductViewModel.setDrawableImgMutableLiveData(imgAdd);
+        createProductViewModel.setBitmapImgMutableLiveData(ImageProcessor.parseDrawbleToBitmap(imgAdd));
         createProductViewModel.setBitmapImg(null);
         createProductViewModel.setCancelImageButtonVisibility(View.GONE);
     }
@@ -376,6 +435,8 @@ public class CreateProductFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println("On resume");
+        setToolBarColor(createProductViewModel.getBitmapImgMutableLiveData().getValue());
         if (createProductViewModel == null)return;
         productName.setText(createProductViewModel.getProductName());
         buyingPrice.setText(createProductViewModel.getBuyPrice());
@@ -391,11 +452,15 @@ public class CreateProductFragment extends Fragment {
         createProductViewModel.setSellPrice(sellingPrice.getText().toString());
         createProductViewModel.setBuyPrice(buyingPrice.getText().toString());
         createProductViewModel.setStock(stock.getText().toString());
+        if (getActivity() == null) return;
+        Utils.setActionBarColor(getActivity(), Color.TRANSPARENT);
+        createProductToolbar.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
+
         if (createProductViewModel == null)return;
         createProductViewModel.shotDownExecutors();
         System.out.println("on destroy");

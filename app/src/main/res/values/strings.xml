@@ -13,7 +13,6 @@
     <string name="save">Save</string>
     <string name="advert_invalid_name">Name invalid. Letters and spaces only</string>
     <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
-    <string name="advert_introduce_name">introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
     <string name="business_created_succ">Business createed successfully</string>
     <string name="failure_to_create_business">Failure to create business</string>
@@ -40,9 +39,8 @@
     <string name="update">Update</string>
     <string name="details">Details</string>
     <string name="image_product_decription">Image of product</string>
-    <string name="intro_buy_price">Introduce buying price</string>
-    <string name="intro_selling_price">Introduce selling price</string>
-    <string name="intro_stock">Introduce stock</string>
+    <string name="buying_price">buying price</string>
+    <string name="selling_price">Selling price</string>
     <string name="warning">warning</string>
     <string name="bin">bin</string>
     <string name="recycle_bin">Recycle bin</string>
@@ -160,7 +158,7 @@
     <string name="introduced_email_incorrect">Email incorrect. Introduce the email account</string>
     <string name="account_deleted_success">Account deleted successfully</string>
     <string name="continue_action">Continue</string>
-    <string name="introduce_name">name</string>
+    <string name="introduce_name">introduce name</string>
     <string name="email_in_use">The email introduced is in use</string>
     <string name="email_verification_sent">A verification email has been sent. Verify your email to log in</string>
     <string name="verify_email">Verify email</string>
@@ -188,7 +186,7 @@
     <string name="leave_app">Leave app</string>
     <string name="ask_to_leave_app">Do you want to leave this app?</string>
     <string name="current_products">Current products</string>
-    <string name="stock">Stock:</string>
+    <string name="stock">Stock</string>
     <string name="sell_price">Sell price:</string>
     <string name="buy_price">Buy price:</string>
     <string name="cancel_sell">Cancel sell</string>
@@ -198,6 +196,8 @@
     <string name="dollar_symbol">$</string>
     <string name="others">others</string>
     <string name="password">Password</string>
+    <string name="business_empty">Business empty</string>
+    <string name="empty_bin">Bin empty</string>
 
 
 
