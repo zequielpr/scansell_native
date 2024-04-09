@@ -7,37 +7,48 @@
     tools:context=".ui.home.bin.UserBinFragment">
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/binToolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:title="@string/recycle_bin" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/binToolbar"
-        android:orientation="vertical">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycled_business_list"
-            android:layout_width="353dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:tag="recycleListBin" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/delete_or_restore_option"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/binToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/BottomNavigationStyle"
-            android:layout_weight="0"
-            app:menu="@menu/delete_or_restore_options"/>
+            android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:title="@string/recycle_bin" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/binToolbar"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycled_business_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/window_end_side"
+                android:layout_marginStart="@dimen/window_start_side"
+                android:tag="recycleListBin" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/delete_or_restore_option"
+                style="@style/BottomNavigationStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                app:menu="@menu/delete_or_restore_options" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/empty_bin_layout"
+        layout="@layout/empty_bin_layout"/>
 
 </RelativeLayout>

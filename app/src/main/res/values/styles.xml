@@ -29,8 +29,8 @@
 
     <style name="imageButton">
         <item name="android:background">@color/transparent</item>
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
     </style>
 
 
@@ -51,6 +51,8 @@
     <style name="BottomNavigationTextAppearance" parent="Widget.Design.BottomNavigationView">
         <!-- Text size for the menu items -->
         <item name="android:textSize">12sp</item>
+
+        <item name="android:textColor">@color/red</item>
         <!-- You can add more attributes as needed -->
     </style>
 

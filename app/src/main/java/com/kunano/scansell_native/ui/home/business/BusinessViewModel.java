@@ -1,6 +1,7 @@
 package com.kunano.scansell_native.ui.home.business;
 
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -9,7 +10,6 @@ import androidx.lifecycle.Observer;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.db.relationship.BusinessWithProduct;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 import com.kunano.scansell_native.ui.components.ListenResponse;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class BusinessViewModel extends DeleteItemsViewModel {
 
-    private LiveData<List<BusinessWithProduct>> businessListWithProductsList;
+
     private Long currentBusinessId;
     MutableLiveData<List<Product>> allProductMuyableLiveData;
     private LiveData<Business> currentBusinessLiveData;
@@ -36,7 +36,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     ExecutorService executorService;
     private LiveData<List<Product>> allProductLiveData;
     Observer<List<Product>> productsObserver;
-
+    private MutableLiveData<Integer> emptyBusinessVisibility;
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
@@ -48,8 +48,12 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         currentBusinessLiveData = new MutableLiveData<>();
         productList = new ArrayList<>();
         searchModeActive = false;
+        emptyBusinessVisibility = new MutableLiveData<>();
 
-        productsObserver = allProductMuyableLiveData::postValue;
+        productsObserver = productList -> {
+            allProductMuyableLiveData.postValue(productList);
+            emptyBusinessVisibility.postValue(productList.size() > 0? View.GONE:View.VISIBLE);
+        };
     }
 
 
@@ -214,13 +218,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         this.businessAddress = businessAddress;
     }
 
-    public LiveData<List<BusinessWithProduct>> getBusinessListWithProductsList() {
-        return businessListWithProductsList;
-    }
 
-    public void setBusinessListWithProductsList(LiveData<List<BusinessWithProduct>> businessListWithProductsList) {
-        this.businessListWithProductsList = businessListWithProductsList;
-    }
 
     public LiveData<Business> getCurrentBusinessLiveData() {
 
@@ -256,5 +254,13 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     public void setSearchModeActive(boolean searchModeActive) {
         this.searchModeActive = searchModeActive;
+    }
+
+    public MutableLiveData<Integer> getEmptyBusinessVisibility() {
+        return emptyBusinessVisibility;
+    }
+
+    public void setEmptyBusinessVisibility(Integer emptyBusinessVisibility) {
+        this.emptyBusinessVisibility.postValue(emptyBusinessVisibility);
     }
 }

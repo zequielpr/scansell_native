@@ -3,8 +3,6 @@ package com.kunano.scansell_native.ui.home.business.create_product;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -33,7 +31,7 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     private boolean productToUpdate;
 
-    private MutableLiveData<Drawable> bitmapImgMutableLiveData;
+    private MutableLiveData<Bitmap> bitmapImgMutableLiveData;
     private MutableLiveData<Boolean> handleSaveButtonClickLiveData;
     private MutableLiveData<String> warningName;
     private MutableLiveData<String> warningBuyinPrice;
@@ -108,12 +106,12 @@ public class CreateProductViewModel extends AndroidViewModel {
         bitmapImg  = ImageProcessor.bytesToBitmap(productImg.getImg());
 
         if(bitmapImg == null){
-            setDrawableImgMutableLiveData(getApplication().getDrawable(R.drawable.add_image_ic_80dp));
+            setBitmapImgMutableLiveData(ImageProcessor.parseDrawbleToBitmap(getApplication().getDrawable(R.drawable.add_image_ic_80dp)));
             cancelImageButtonVisibility.postValue(View.GONE);
             return;
         }
 
-        setDrawableImgMutableLiveData(new BitmapDrawable(this.getApplication().getResources(), bitmapImg));
+        setBitmapImgMutableLiveData(bitmapImg);
         cancelImageButtonVisibility.postValue(View.VISIBLE);
 
     }
@@ -131,7 +129,7 @@ public class CreateProductViewModel extends AndroidViewModel {
         setWarningStock("");
         setBitmapImg(null);
         setCancelImageButtonVisibility(View.GONE);
-        setDrawableImgMutableLiveData( this.getApplication().getDrawable(R.drawable.add_image_ic_80dp));
+        setBitmapImgMutableLiveData( ImageProcessor.parseDrawbleToBitmap(this.getApplication().getDrawable(R.drawable.add_image_ic_80dp)));
     }
 
 
@@ -190,11 +188,11 @@ public class CreateProductViewModel extends AndroidViewModel {
 
 
 
-    public MutableLiveData<Drawable> getBitmapImgMutableLiveData() {
+    public MutableLiveData<Bitmap> getBitmapImgMutableLiveData() {
         return bitmapImgMutableLiveData;
     }
 
-    public void setDrawableImgMutableLiveData(Drawable bitmapImgMutableLiveData) {
+    public void setBitmapImgMutableLiveData(Bitmap bitmapImgMutableLiveData) {
         this.bitmapImgMutableLiveData.postValue(bitmapImgMutableLiveData);
     }
 

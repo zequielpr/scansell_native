@@ -20,6 +20,7 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCaptureImageBinding;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
@@ -110,6 +111,13 @@ public class CaptureImageFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(navDirections);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() == null) return;
+        Utils.setActionBarColor(getActivity(), Color.TRANSPARENT);
+    }
 
     @Override
     public void onDestroy() {

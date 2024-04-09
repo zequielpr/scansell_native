@@ -105,7 +105,7 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
                     }
                     return;
                 }
-                showWarningName(getString(R.string.advert_introduce_name));
+                showWarningName(getString(R.string.name));
                 showWarningAddress(getString(R.string.advert_introduce_address));
 
             }
@@ -156,7 +156,7 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
 
                 if(name.toString().trim().isEmpty()){
                     isBusinessNameValid = false;
-                    showWarningName(getString(R.string.advert_introduce_name));
+                    showWarningName(getString(R.string.name));
                     desactivateSaveButton();
                     return;
                 }

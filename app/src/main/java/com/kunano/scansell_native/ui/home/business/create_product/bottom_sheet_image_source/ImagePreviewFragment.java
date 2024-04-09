@@ -1,6 +1,5 @@
 package com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +7,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.palette.graphics.Palette;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentImagePreviewBinding;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 public class ImagePreviewFragment extends Fragment {
@@ -30,6 +33,9 @@ public class ImagePreviewFragment extends Fragment {
     private Button trayAgainButton;
     private Button saveButton;
     private MainActivityViewModel mainActivityViewModel;
+    private View imagePreviewLayout;
+
+    private Palette colorPalette;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,8 +47,15 @@ public class ImagePreviewFragment extends Fragment {
         imageView = binding.imageView;
         trayAgainButton = binding.trayAgainButton;
         saveButton = binding.saveButton;
+        imagePreviewLayout = binding.imagePreviewLayout;
 
         imageView.setImageBitmap(createProductViewModel.getBitmapImg());
+        colorPalette = Utils.getColorPaletteFromImage(createProductViewModel.getBitmapImg());
+        Integer imageVibrantColor = Utils.getLightVibrantColor(colorPalette);
+        if (imageVibrantColor != null){
+            imagePreviewLayout.setBackgroundColor(imageVibrantColor);
+            Utils. setActionBarColor(getActivity(), imageVibrantColor);
+        }
 
         mainActivityViewModel.setHandleBackPress(this::handlePackPress);
         trayAgainButton.setOnClickListener(this::navigateBack);
@@ -51,6 +64,12 @@ public class ImagePreviewFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+    }
 
     private void handlePackPress(){
         navigateBack(getView());
@@ -70,8 +89,7 @@ public class ImagePreviewFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(navDirections);
 
 
-        createProductViewModel.setDrawableImgMutableLiveData(new BitmapDrawable(getResources(),
-                createProductViewModel.getBitmapImg() ));
+        createProductViewModel.setBitmapImgMutableLiveData(createProductViewModel.getBitmapImg() );
         createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
         mainActivityViewModel.setHandleBackPress(null);
     }

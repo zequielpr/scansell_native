@@ -50,6 +50,7 @@ public class UserBinFragment extends Fragment {
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+    private View empty_bin_layout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -65,6 +66,7 @@ public class UserBinFragment extends Fragment {
         toolbar = binding.binToolbar;
         deleteOrRestoreOptions = binding.deleteOrRestoreOption;
         recyclerView = binding.recycledBusinessList;
+        empty_bin_layout = binding.emptyBinLayout.emptyBinLayout;
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -332,6 +334,9 @@ public class UserBinFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l)->{
+            empty_bin_layout.setVisibility(l.size() > 0?View.GONE:View.VISIBLE);
+        });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
