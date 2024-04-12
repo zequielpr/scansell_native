@@ -43,11 +43,12 @@ public class CustomPieChart {
         // Customize the chart
         this.pieChart.getDescription().setEnabled(false);
         this.pieChart.setDrawHoleEnabled(true);
-        this.pieChart.setHoleColor(Color.WHITE);
+        this.pieChart.setHoleColor(Color.TRANSPARENT);
         this.pieChart.setTransparentCircleRadius(61f);
         this.pieChart.setCenterText(entries.size()==0?"":"%");
         this.pieChart.setHoleRadius(58f);
         this.pieChart.setEntryLabelColor(Color.TRANSPARENT);
+
 
         // Refresh the chart
         this.pieChart.invalidate();

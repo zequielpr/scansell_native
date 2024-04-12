@@ -81,7 +81,7 @@
     <string name="delete_after_15_days">delete after 15 days</string>
     <string name="delete_after_30_days">delete after 30 days</string>
     <string name="options">options</string>
-    <string name="sells_and_revenues">sells and revenues</string>
+    <string name="sells_and_revenues">sells</string>
     <string name="most_sold_products">most sold products</string>
     <string name="not_sold_product">there is not sold products</string>
     <string name="this_week">this week</string>
