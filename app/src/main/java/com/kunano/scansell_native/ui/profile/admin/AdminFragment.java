@@ -68,7 +68,10 @@ public class AdminFragment extends BottomSheetDialogFragment {
     }
 
     private void backUpSectionAction(View view){
-        NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
+        /*BuyBackUpFunctionFragment buyBackUpFunctionFragment = new BuyBackUpFunctionFragment();
+        buyBackUpFunctionFragment.show(getParentFragmentManager(), "buy function");*/
+
+       NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
         Navigation.findNavController(parentView).navigate(navDirectionsBackUp);
         dismiss();
     }

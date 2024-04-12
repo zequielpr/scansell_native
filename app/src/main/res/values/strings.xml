@@ -199,6 +199,9 @@
     <string name="business_empty">Business empty</string>
     <string name="empty_bin">Bin empty</string>
     <string name="payment_method">Payment method:</string>
+    <string name="buy_functionality">Buy functionality</string>
+    <string name="single_payment">Single payment</string>
+    <string name="functionality_description">Save copies of you businesses and restore them at any time.</string>
 
 
 
