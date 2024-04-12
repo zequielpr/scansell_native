@@ -11,9 +11,20 @@ tools:context=".ui.home.HomeFragment">
 
     android:id="@+id/modalBottomSheetContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="15dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/button_top_side"
+    android:layout_marginStart="@dimen/window_start_side"
+    android:layout_marginEnd="@dimen/window_end_side"
+    android:layout_marginBottom="@dimen/window_bottom_side"
     android:orientation="vertical">
+
+    <View
+        android:layout_width="@dimen/oval_line_with"
+        android:layout_height="@dimen/oval_line_height"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/warn_top_side"
+        android:layout_marginBottom="@dimen/window_bottom_side"
+        android:background="@drawable/oval_line"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,15 +39,6 @@ tools:context=".ui.home.HomeFragment">
             android:text="@string/create_new_business"
             android:textSize="25sp" />
 
-        <ImageButton
-            android:id="@+id/cancel_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="20dp"
-            android:layout_alignParentEnd="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/cancel"
-            android:src="@drawable/close_24" />
     </RelativeLayout>
 
     <LinearLayout
@@ -45,15 +47,26 @@ tools:context=".ui.home.HomeFragment">
         android:gravity="center"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/business_name"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:autofillHints="name"
-            android:ems="10"
-            android:hint="@string/business_name"
-            android:maxLength="30"
-            android:inputType="text" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/window_top_side"
+            android:hint="@string/business_name">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/business_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:ems="10"
+                android:maxLength="30"
+                android:inputType="text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/advert_name"
@@ -61,17 +74,26 @@ tools:context=".ui.home.HomeFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <EditText
 
-            android:id="@+id/business_address"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addressFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="20dp"
-            android:autofillHints="postalAddress"
-            android:ems="10"
-            android:hint="@string/business_address"
-            android:maxLength="30"
-            android:inputType="text" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_between_edit_text"
+            android:hint="@string/business_address">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/business_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="postalAddress"
+                android:ems="10"
+                android:maxLength="30"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/advert_address"
@@ -81,9 +103,9 @@ tools:context=".ui.home.HomeFragment">
 
         <Button
             android:id="@+id/saving_button"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/button_top_side"
             android:text="@string/save" />
 
     </LinearLayout>

@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.name.NameViewModel;
@@ -29,6 +30,7 @@ public class CollectNameAndSurnameFragment extends Fragment {
     private Button continueButton;
     private SignUpViewModel signUpViewModel;
     private LogInViewModel logInViewModel;
+    private TextInputLayout nameTextInputLayout;
 
 
     public CollectNameAndSurnameFragment() {
@@ -53,10 +55,6 @@ public class CollectNameAndSurnameFragment extends Fragment {
         logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
     }
 
-    public void onResume(){
-        super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +66,7 @@ public class CollectNameAndSurnameFragment extends Fragment {
         nameWarnTextView = view.findViewById(R.id.newNameWarnTextView);
         continueButton = view.findViewById(R.id.buttonSave);
         nameToolbar = view.findViewById(R.id.changeNameToolbar);
+        nameTextInputLayout = view.findViewById(R.id.nameFilledTextField);
 
         return  view;
     }
@@ -90,7 +89,7 @@ public class CollectNameAndSurnameFragment extends Fragment {
 
         nameToolbar.setVisibility(View.GONE);
         continueButton.setText(getText(R.string.continue_action));
-        editTextName.setHint(getText(R.string.introduce_name));
+        nameTextInputLayout.setHint(getText(R.string.introduce_name));
         nameViewModel.getNewNameWarnMutableData().observe(getViewLifecycleOwner(),
                 nameWarnTextView::setText);
 
@@ -106,6 +105,13 @@ public class CollectNameAndSurnameFragment extends Fragment {
         NavDirections navDirectionsToCollectPasswd = CollectNameAndSurnameFragmentDirections.
                 actionCollectNameAndSurnameFragmentToCollectPasswdFragment2();
         Navigation.findNavController(getView()).navigate(navDirectionsToCollectPasswd);
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
+        // Access the activity and its action bar
     }
 
 

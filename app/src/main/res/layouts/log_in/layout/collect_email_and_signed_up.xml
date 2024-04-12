@@ -8,7 +8,8 @@
 
     <include android:id="@+id/collectEmailView" layout="@layout/fragment_change_email_address" />
 
-    <include android:id="@+id/terms_and_privacy_view" layout="@layout/terms_and_policies" />
+    <include
+        android:id="@+id/terms_and_privacy_view" layout="@layout/terms_and_policies" />
 
 
 </LinearLayout>

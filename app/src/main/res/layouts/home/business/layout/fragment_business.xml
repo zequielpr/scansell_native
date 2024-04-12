@@ -7,33 +7,48 @@
     android:orientation="vertical"
     tools:context=".ui.home.business.BusinessFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarProducts"
+    <RelativeLayout
+        android:id="@+id/showProductsLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        android:layout_alignParentTop="true"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleViewProducts"
-        android:layout_width="412dp"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleViewProducts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbarProducts"
+            android:layout_marginLeft="@dimen/window_start_side"
+            android:layout_marginRight="@dimen/window_end_side" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButtonCreateProduct"
+            android:layout_width="63dp"
+            android:layout_height="67dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginBottom="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+
+            android:clickable="true"
+            android:src="@android:drawable/ic_input_add" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/emptyBusinessLayout"
+        layout="@layout/empty_business_layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbarProducts" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonCreateProduct"
-        android:layout_width="63dp"
-        android:layout_height="67dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="60dp"
-
-        android:clickable="true"
-        android:src="@android:drawable/ic_input_add" />
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

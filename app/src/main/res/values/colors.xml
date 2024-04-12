@@ -10,4 +10,5 @@
     <color name="red">#FF2525</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="black_transparent">#1E000000</color>
+    <color name="appPColor">#6750A4</color>
 </resources>

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -88,10 +89,10 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
                 });
             }
         });
-        holder.card.setTag(String.valueOf(product.getProductId()));
+        holder.view.setTag(String.valueOf(product.getProductId()));
         System.out.println("it is on bind");
 
-        listener.getCardHolderOnBind(holder.itemView, product);
+        listener.getCardHolderOnBind(holder, product);
     }
 
 
@@ -105,11 +106,11 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         private ImageView unCheckedCircle;
         ImageButton restoreButton;
 
-        private  View card;
+        private  View view;
 
         public CardHolder(View itemView) {
             super(itemView);
-            card = itemView;
+            view = itemView;
 
             title = itemView.findViewById(R.id.textViewTitleProduct);
             stock = itemView.findViewById(R.id.textViewStock);
@@ -121,7 +122,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
             //unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
 
             if (listener != null && itemView != null){
-                listener.reciveCardHol(itemView);
+                listener.reciveCardHol(CardHolder.this);
             }
 
             restoreButton.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +140,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onShortTap(getItem(position), itemView);
+                        listener.onShortTap(getItem(position), CardHolder.this);
                     }
                 }
             });
@@ -150,13 +151,77 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
                 public boolean onLongClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onLongTap(getItem(position), itemView);
+                        listener.onLongTap(getItem(position), CardHolder.this);
                     }
                     return true;
                 }
             });
         }
 
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
+
+        public TextView getStock() {
+            return stock;
+        }
+
+        public void setStock(TextView stock) {
+            this.stock = stock;
+        }
+
+        public TextView getSellingPrice() {
+            return sellingPrice;
+        }
+
+        public void setSellingPrice(TextView sellingPrice) {
+            this.sellingPrice = sellingPrice;
+        }
+
+        public TextView getBuyingPrice() {
+            return buyingPrice;
+        }
+
+        public void setBuyingPrice(TextView buyingPrice) {
+            this.buyingPrice = buyingPrice;
+        }
+
+        public ImageView getImageViewProduct() {
+            return imageViewProduct;
+        }
+
+        public void setImageViewProduct(ImageView imageViewProduct) {
+            this.imageViewProduct = imageViewProduct;
+        }
+
+        public ImageView getUnCheckedCircle() {
+            return unCheckedCircle;
+        }
+
+        public void setUnCheckedCircle(ImageView unCheckedCircle) {
+            this.unCheckedCircle = unCheckedCircle;
+        }
+
+        public ImageButton getRestoreButton() {
+            return restoreButton;
+        }
+
+        public void setRestoreButton(ImageButton restoreButton) {
+            this.restoreButton = restoreButton;
+        }
+
+        public CardView getCardView() {
+            CardView cardView = (CardView) view.findViewById(R.id.productCard);;
+            return cardView;
+        }
+
+        public void setView(View view) {
+            this.view = view;
+        }
     }
 
 
@@ -176,10 +241,10 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
     }
 
     public interface OnclickProductCardListener{
-        abstract void onShortTap(Product product, View cardHolder);
-        abstract void onLongTap(Product  product, View cardHolder);
-        abstract void getCardHolderOnBind(View cardHolder, Product  prod);
-        abstract void reciveCardHol(View cardHolder);
+        abstract void onShortTap(Product product, ProductCardAdapter.CardHolder cardHolder);
+        abstract void onLongTap(Product  product,ProductCardAdapter.CardHolder cardHolder);
+        abstract void getCardHolderOnBind(ProductCardAdapter.CardHolder cardHolder, Product  prod);
+        abstract void reciveCardHol(ProductCardAdapter.CardHolder cardHolder);
         abstract void onRestore(Product product);
 
     }

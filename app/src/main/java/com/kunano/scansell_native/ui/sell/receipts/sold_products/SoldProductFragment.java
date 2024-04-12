@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,12 @@ public class SoldProductFragment extends Fragment{
     private FragmentSoldProductBinding binding;
     private Long business_key;
     private String receipt_key;
+    private View cashDueLayout;
+    private View cashTenderedLayout;
+    private TextView paymentMethod;
+    private TextView soldItems;
+    private TextView cashTendered;
+    private TextView cashDue;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -53,7 +60,8 @@ public class SoldProductFragment extends Fragment{
                 System.out.println("business: " + business_key + " receipt id: " + receipt_key);
                 double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
                         c + sp.getSelling_price(), Double::sum);
-                toolbar.setSubtitle(String.valueOf(Utils.formatDecimal(spentAmount)));
+                String spentAmountString = String.valueOf(Utils.formatDecimal(spentAmount)) + " ".concat(getString(R.string.dollar_symbol));
+                toolbar.setSubtitle(spentAmountString);
             });
         }else {
             business_key = new Long(0);
@@ -66,6 +74,13 @@ public class SoldProductFragment extends Fragment{
         binding = FragmentSoldProductBinding.inflate(inflater, container, false);
         soldProductRecycleView = binding.soldProductRecycleView;
         toolbar = binding.soldToolbar;
+        cashDueLayout = binding.cashDueLayout;
+        cashTenderedLayout = binding.cashTenderedLayout;
+        paymentMethod = binding.paymentMethod;
+        soldItems = binding.soldItems;
+        cashTendered = binding.cashTendered;
+        cashDue = binding.casDue;
+
         soldProductRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         soldProductRecycleView.setHasFixedSize(true);
         soldProductAdapter = new ProductToSellAdapter();

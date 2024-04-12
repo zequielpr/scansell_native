@@ -91,7 +91,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
         setBusinessCardOncliListener();
 
-
         return binding.getRoot();
     }
 

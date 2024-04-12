@@ -14,7 +14,6 @@
     <string name="save">Guardar</string>
     <string name="advert_invalid_name">Nombre inválido. Solo letras y espacios (mínimo 3 letras)</string>
     <string name="advert_invalid_address">Dirección inválida. No se permiten caracteres especiales</string>
-    <string name="advert_introduce_name">introduce un nombre</string>
     <string name="advert_introduce_address">Introduce una dirección</string>
     <string name="business_created_succ">Negocio creado exitosamente</string>
     <string name="failure_to_create_business">Fallo al crear negocio</string>
@@ -40,9 +39,8 @@
     <string name="update">Actualizar</string>
     <string name="details">Detalles</string>
     <string name="image_product_decription">Imagen del producto</string>
-    <string name="intro_buy_price">Introduce precio de compra</string>
-    <string name="intro_selling_price">Introduce precio de venta</string>
-    <string name="intro_stock">Introduce stock</string>
+    <string name="buying_price">Introduce precio de compra</string>
+    <string name="selling_price">Introduce precio de venta</string>
     <string name="warning">advertencia</string>
     <string name="bin">papelera</string>
     <string name="recycle_bin">Papelera de reciclaje</string>
@@ -196,4 +194,10 @@
     <string name="dollar_symbol">$</string>
     <string name="delete_selected_items">Delete selected items</string>
     <string name="others">others</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="business_empty">Business empty</string>
+    <string name="empty_bin">Bin empty</string>
+    <string name="payment_method">Payment method</string>
 </resources>

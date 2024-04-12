@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/imagePreviewLayout"
     tools:context=".ui.home.business.create_product.bottom_sheet_image_source.ImagePreviewFragment">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="402dp"
-        android:layout_height="590dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:srcCompat="@android:mipmap/sym_def_app_icon" />
 
 
@@ -21,9 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="@dimen/window_bottom_side"
         android:gravity="center">
 
         <Button

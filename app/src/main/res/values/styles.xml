@@ -12,8 +12,48 @@
         <item name="android:windowEnterAnimation">@anim/nav_default_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/nav_default_exit_anim</item>
     </style>
+
     <style name="Spinner" parent="Widget.AppCompat.Spinner">
         <item name="backgroundTint">@color/white</item>
+    </style>
+
+    <style name="bin_bottom_sheet" parent="Theme.Design.BottomSheetDialog">
+        <item name="layout_behavior">@string/bottom_sheet_behavior</item>
+        <item name="android:background">?colorSurface</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">@dimen/window_bottom_side</item>
+    </style>
+
+    <style name="imageButton">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+
+    <style name="BottomNavigationStyle" parent="Widget.Design.BottomNavigationView">
+        <!-- Background color for the navigation view -->
+        <item name="android:background">@color/white</item>
+
+        <!-- Text appearance for the menu items -->
+        <item name="android:itemTextAppearance">@style/BottomNavigationTextAppearance</item>
+
+        <!-- Icon tint for the menu items -->
+        <item name="itemIconTint">@color/black</item>
+
+        <!-- Text color for the selected and unselected menu items -->
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BottomNavigationTextAppearance" parent="Widget.Design.BottomNavigationView">
+        <!-- Text size for the menu items -->
+        <item name="android:textSize">12sp</item>
+
+        <item name="android:textColor">@color/red</item>
+        <!-- You can add more attributes as needed -->
     </style>
 
 </resources>

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.kunano.scansell_native.ui.login.sing_in.SignInFragment"
-        android:label=""
+        android:label="@string/sign_in"
         tools:layout="@layout/fragment_log_in" >
         <action
             android:id="@+id/action_logInFragment_to_collectNameAndSurnameFragment"
@@ -18,7 +18,8 @@
             app:destination="@id/verifyEmailFragment" />
         <action
             android:id="@+id/action_logInFragment_to_recoverPasswdFragment"
-            app:destination="@id/recoverPasswdFragment" />
+            app:destination="@id/recoverPasswdFragment"
+            app:enterAnim="@anim/nav_default_pop_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/collectEmail"

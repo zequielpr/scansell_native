@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -29,7 +28,6 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
     private TextView textViewAdvertName;
     private TextView textViewAdvertAddress;
     private Button saveBusinessButton;
-    private ImageButton cancelBtn;
     private HomeBottomSheetCreateBusinessFragmentBinding binding;
     private ViewModelListener<Boolean> requestRestult;
     BottomSheetCreateBusinessViewModel viewModel;
@@ -68,7 +66,6 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
         textViewAdvertName = binding.advertName;
         textViewAdvertAddress = binding.advertAddress;
         saveBusinessButton = binding.savingButton;
-        cancelBtn = binding.cancelButton;
 
         if (businessName != null & businessAddress != null){
             isBusinessAddressValid = true;
@@ -87,7 +84,6 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
 
         setLisnerSaveButton();
         setEditTExtListeners();
-        setListenerCloseButton();
 
         return binding.getRoot();
     }
@@ -109,21 +105,13 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
                     }
                     return;
                 }
-                showWarningName(getString(R.string.advert_introduce_name));
+                showWarningName(getString(R.string.name));
                 showWarningAddress(getString(R.string.advert_introduce_address));
 
             }
         });
     }
 
-    public void setListenerCloseButton(){
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideBottomSheet();
-            }
-        });
-    }
 
 
     public void createBusinessRequest(){
@@ -168,7 +156,7 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
 
                 if(name.toString().trim().isEmpty()){
                     isBusinessNameValid = false;
-                    showWarningName(getString(R.string.advert_introduce_name));
+                    showWarningName(getString(R.string.name));
                     desactivateSaveButton();
                     return;
                 }

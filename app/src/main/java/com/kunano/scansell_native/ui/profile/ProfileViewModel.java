@@ -208,6 +208,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
             soldPercentage = (double)mostSoldProducts.getSoldQuantity() * 100.0 / (double)mostSoldProducts.getSoldProductsTotal();
             productName = mostSoldProducts.getProductName();
+            productName = productName.length()>15?productName.substring(0,15).concat("..."):productName;
             entries.add(new PieEntry(soldPercentage.floatValue(), productName));
 
         }

@@ -74,6 +74,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accountHelper = new AccountHelper();
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -124,7 +125,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
 
 
-        customLineChart = new CustomLineChart(lineChart);
+        customLineChart = new CustomLineChart(lineChart, this);
         customLineChart.setOnChartValueSelectedListener(getOnChartValueSelectedListener());
         customPieChart = new CustomPieChart(pieChartMostSellProducts);
         return binding.getRoot();

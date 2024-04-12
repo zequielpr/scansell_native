@@ -39,6 +39,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private TextView cashDueTextViewLabel;
     private SellViewModel sellViewModel;
     private View parentView;
+    private View cashDueLayout;
 
     public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView) {
         this.sellViewModel = sellViewModel;
@@ -59,6 +60,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
         cashDueTextView = binding.cashDueTextView;
         cashDueTextViewLabel = binding.cashDueTextViewLabel;
         paymentMethod = 0;
+        cashDueLayout = binding.cashDueLayout;
 
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->totalToPay.setText(String.valueOf(t)));
         sellViewModel.getCashDue().observe(getViewLifecycleOwner(),(cd)-> {
@@ -74,8 +76,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
         cashTenderedEditText.setText(cashTendered > 0? String .valueOf(cashTendered):null);
         sellViewModel.getCashTenderedAndDueVisibility().observe(getViewLifecycleOwner(), (v)->{
             cashTenderedEditText.setVisibility(v);
-            cashDueTextView.setVisibility(v);
-            cashDueTextViewLabel.setVisibility(v);
+            cashDueLayout.setVisibility(v);
         });
 
 

@@ -46,7 +46,7 @@
                 android:background="@color/transparent"
                 android:elevation="0dp"
                 android:text="@string/cancel"
-                android:textColor="@color/purple_500"
+                android:textColor="?colorPrimary"
                 android:visibility="visible" />
 
             <Button
@@ -57,7 +57,7 @@
                 android:background="@color/transparent"
                 android:elevation="0dp"
                 android:text="@string/ok"
-                android:textColor="@color/purple_500"
+                android:textColor="?colorPrimary"
                 tools:visibility="visible" />
 
         </LinearLayout>
