@@ -51,6 +51,7 @@ public class SellViewModel extends AndroidViewModel {
     private double cashTendered;
     private MutableLiveData<Double> cashDue;
     private MutableLiveData<Integer> cashTenderedAndDueVisibility;
+    private MutableLiveData<Boolean> isScanActiveMutableLiveData;
 
     /**
      * it observes at listProductsToSellLiveData
@@ -88,6 +89,7 @@ public class SellViewModel extends AndroidViewModel {
         mutableLiveDataReceipt = new MutableLiveData<>();
         sellProductsVisibilityMD = new MutableLiveData<>();
         createNewBusinessVisibilityMD = new MutableLiveData<>();
+        isScanActiveMutableLiveData = new MutableLiveData<>();
 
         observer = (List<Product> productsToSellList) -> {
 
@@ -417,5 +419,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setTotalItemsSellMutableLIveData(String totalItemsSellMutableLIveData) {
         this.totalItemsSellMutableLIveData.postValue(totalItemsSellMutableLIveData);
+    }
+
+    public MutableLiveData<Boolean> isScanActiveMutableLiveData() {
+        return isScanActiveMutableLiveData;
+    }
+
+    public void setIsScanActiveMutableLiveData(Boolean isScanActiveMutableLiveData) {
+        this.isScanActiveMutableLiveData.postValue(isScanActiveMutableLiveData);
     }
 }

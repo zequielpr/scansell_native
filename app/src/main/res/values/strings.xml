@@ -198,6 +198,7 @@
     <string name="password">Password</string>
     <string name="business_empty">Business empty</string>
     <string name="empty_bin">Bin empty</string>
+    <string name="payment_method">Payment method:</string>
 
 
 

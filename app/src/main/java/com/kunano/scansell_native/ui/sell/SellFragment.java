@@ -39,6 +39,7 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SellFragment extends Fragment {
+
 
     private SellFragmentBinding binding;
     private Spinner spinner;
@@ -74,6 +76,9 @@ public class SellFragment extends Fragment {
     private TextView itemsTotalTextView;
 
     private View showBottomSheetViewBar;
+    private View topSide;
+    private View scanningLine;
+    private View scanLineParentContainer;
 
 
 
@@ -101,6 +106,9 @@ public class SellFragment extends Fragment {
         cancelSellButton = binding.cancelSellButton;
         showBottomSheetViewBar = binding.showBottomSheetView;
         itemsTotalTextView = binding.itemsTotalTextView;
+        scanningLine = binding.scanLayout.sCanningLine;
+        scanLineParentContainer = binding.scanLayout.transparentSpot;
+        topSide = binding.bottomSheetTopSide;
                 handleBootomSheetBehavior = new HandleBootomSheetBehavior(binding.productToSellBottomSheet);
         handleBootomSheetBehavior.setupStandardBottomSheet(false);
         handleBootomSheetBehavior.setListener(getBottomSheetListener());
@@ -180,6 +188,7 @@ public class SellFragment extends Fragment {
             @Override
             public void receiveBarCodeData(String barCodeData) {
                 if(!barCodeData.isBlank()){
+
                     sellViewModel.requestProduct(barCodeData, (r)->processProductRequest(r, barCodeData));
                 }
             }
@@ -204,6 +213,7 @@ public class SellFragment extends Fragment {
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), (v)->{
             spinner.setEnabled(v == View.VISIBLE?false:true);
         });
+        sellViewModel.isScanActiveMutableLiveData().observe(getViewLifecycleOwner(), this::handleScanLineAnim);
         sellViewModel.getSelectedIndexSpinner().observe(getViewLifecycleOwner(), spinner::setSelection);
         sellViewModel.getTotalItemsSellMutableLIveData().observe(getViewLifecycleOwner(), itemsTotalTextView::setText);
 
@@ -234,6 +244,16 @@ public class SellFragment extends Fragment {
     }
 
 
+    private void handleScanLineAnim(Boolean isActive){
+       getActivity().runOnUiThread(()->{
+           customCamera.setNewProductInCamera(isActive);
+           if (isActive){
+               Utils.startAnimationOfScanningLine(this, scanningLine, scanLineParentContainer);
+           }else {
+               Utils.finishScanningLineAnim(scanningLine);
+           }
+       });
+    }
 
 
 
@@ -267,7 +287,7 @@ public class SellFragment extends Fragment {
 
 
     private void scanNewProduct(View v){
-        customCamera.setNewProductInCamera(true);
+        sellViewModel.setIsScanActiveMutableLiveData(true);
     }
 
 
@@ -283,7 +303,10 @@ public class SellFragment extends Fragment {
         askToCancelSell.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean object) {
-                if (object) sellViewModel.clearProductsToSell();
+                if (object){
+                    sellViewModel.clearProductsToSell();
+                    handleBootomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                };
             }
         });
 
@@ -292,6 +315,7 @@ public class SellFragment extends Fragment {
 
 
     public void processProductRequest(Product product, String barcode){
+        sellViewModel.setIsScanActiveMutableLiveData(false);
         if(product == null && sellViewModel.getCurrentBusinessId() != null){
             //Ask to add product
            getActivity().runOnUiThread(()->askCreateNewProdOrTryAgain(barcode));
@@ -325,15 +349,18 @@ public class SellFragment extends Fragment {
                         System.out.println("Collapsed");
                         toolbar.setVisibility(View.VISIBLE);
                         showBottomSheetViewBar.setVisibility(View.VISIBLE);
+                        topSide.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HALF_EXPANDED:
                         System.out.println("half_Expanded");
                         toolbar.setVisibility(View.VISIBLE);
                         showBottomSheetViewBar.setVisibility(View.VISIBLE);
+                        topSide.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         System.out.println("expanded");
                         toolbar.setVisibility(View.GONE);
+                        topSide.setVisibility(View.GONE);
                         showBottomSheetViewBar.setVisibility(View.GONE);
                         break;
                     default:
