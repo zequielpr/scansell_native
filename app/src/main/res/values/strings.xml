@@ -2,10 +2,10 @@
     <string name="default_web_client_id">88525641549-aag73eulao2lncjg990thm5jn8cdjnhi.apps.googleusercontent.com</string>
     <string name="default_android_client_id">88525641549-jcsb347tt4bpeltdmoqtg7co53b5ii7h.apps.googleusercontent.com</string>
 
-    <string name="app_name">scansell_native</string>
-    <string name="title_home">Inicio</string>
-    <string name="title_dashboard">Vender</string>
-    <string name="title_notifications">Perfil</string>
+    <string name="app_name">scanSell</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Sell</string>
+    <string name="title_notifications">Profile</string>
     <string name="businesses_title">businesses</string>
     <string name="create_new_business">Create new business</string>
     <string name="business_name">Business name</string>
@@ -199,6 +199,9 @@
     <string name="business_empty">Business empty</string>
     <string name="empty_bin">Bin empty</string>
     <string name="payment_method">Payment method:</string>
+    <string name="buy_functionality">Buy functionality</string>
+    <string name="single_payment">Single payment</string>
+    <string name="functionality_description">Save copies of you businesses and restore them at any time.</string>
 
 
 
