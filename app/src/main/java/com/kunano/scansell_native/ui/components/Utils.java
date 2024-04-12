@@ -15,8 +15,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -204,6 +207,31 @@ public class Utils {
         gradientDrawable.setGradientType(gradientType);
 
         return gradientDrawable;
+
+    }
+
+    public static void startAnimationOfScanningLine(Fragment fragment, View line, View parentContainer){
+
+        Animation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 1.0f);
+        animation.setDuration(1500); // Adjust duration as needed
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+        line.startAnimation(animation);
+    }
+
+    public static void finishScanningLineAnim(View line){
+        Animation animation = line.getAnimation();
+
+        System.out.println("finish anim");
+        if (animation != null){
+            System.out.println("finish anim");
+            line.getAnimation().cancel();
+            line.clearAnimation();
+        }
 
     }
 

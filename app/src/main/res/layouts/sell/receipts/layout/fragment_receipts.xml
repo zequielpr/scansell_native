@@ -23,7 +23,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/receiptRecycleView"
             android:layout_width="match_parent"
-            android:layout_height="584dp" />
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/window_end_side"
+            android:layout_marginStart="@dimen/window_start_side"
+            android:layout_marginTop="@dimen/window_top_side"/>
     </LinearLayout>
 
 </FrameLayout>
