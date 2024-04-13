@@ -29,13 +29,23 @@ public class AskForActionDialog extends DialogFragment {
     TextView customDialogMessage;
     Button customDialogOkButton;
     Button customDialogCancelButton;
+    private boolean cancelable;
 
     public AskForActionDialog(String title) {
         super();
         this.title = title;
         this.leftButtonVisibility = true;
         this.rightButtonVisibility = true;
+        this.cancelable = true;
     }
+    public AskForActionDialog(String title, boolean leftButtonVisibility, boolean rightButtonVisibility) {
+        super();
+        this.title = title;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+        this.cancelable = true;
+    }
+
 
     public AskForActionDialog(String title,
                               String buttonLeftText, String buttonRightText) {
@@ -45,6 +55,7 @@ public class AskForActionDialog extends DialogFragment {
         this.buttonRightText = buttonRightText;
         this.leftButtonVisibility = true;
         this.rightButtonVisibility = true;
+        this.cancelable = true;
     }
     public AskForActionDialog(String title, String content) {
         super();
@@ -52,6 +63,7 @@ public class AskForActionDialog extends DialogFragment {
         this.content = content;
         this.leftButtonVisibility = true;
         this.rightButtonVisibility = true;
+        this.cancelable = true;
     }
 
 
@@ -64,6 +76,19 @@ public class AskForActionDialog extends DialogFragment {
         this.buttonRightText = buttonRightText;
         this.leftButtonVisibility = true;
         this.rightButtonVisibility = true;
+        this.cancelable = true;
+    }
+
+    public AskForActionDialog(String title, String content,
+                              String buttonLeftText, String buttonRightText, boolean dialogCancelable) {
+        super();
+        this.title = title;
+        this.content = content;
+        this.buttonLeftText = buttonLeftText;
+        this.buttonRightText = buttonRightText;
+        this.leftButtonVisibility = true;
+        this.rightButtonVisibility = true;
+        this.cancelable = dialogCancelable;
     }
 
     public AskForActionDialog(String title, String content, boolean leftButtonVisibility,
@@ -73,6 +98,7 @@ public class AskForActionDialog extends DialogFragment {
         this.content = content;
         this.leftButtonVisibility = leftButtonVisibility;
         this.rightButtonVisibility = rightButtonVisibility;
+        this.cancelable = true;
     }
 
 
@@ -88,7 +114,7 @@ public class AskForActionDialog extends DialogFragment {
         customDialogOkButton = binding.customDialogOkButton;
         customDialogCancelButton = binding.customDialogCancelButton;
 
-
+        getDialog().setCancelable(cancelable);
 
         return binding.getRoot();
     }
@@ -97,6 +123,7 @@ public class AskForActionDialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
 
         customDialogTitle.setText(title);

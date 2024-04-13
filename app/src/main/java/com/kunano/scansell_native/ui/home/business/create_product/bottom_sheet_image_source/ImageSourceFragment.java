@@ -25,6 +25,7 @@ public class ImageSourceFragment extends BottomSheetDialogFragment {
     private ImageButton imageButtonFiles;
     private imageSoucerLisner imageSoucerLisner;
 
+
     public ImageSourceFragment() {
         // Required empty public constructor
     }
