@@ -42,6 +42,7 @@ import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
 import com.kunano.scansell_native.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
@@ -71,7 +72,6 @@ public class CreateProductFragment extends Fragment {
     private MainActivityViewModel mainActivityViewModel;
     private ImageButton cancelImageUploadButton;
     private  ImageSourceFragment imageSourceFragment;
-    private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     NavDirections takePictureFragmenttNavDirections;
     private NavController navController;
 
@@ -84,6 +84,12 @@ public class CreateProductFragment extends Fragment {
     private TextInputLayout sellingPriceTextInputLayout;
     private TextInputLayout stockTextInputLayout;
 
+    private  AdminPermissions adminPermissions;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adminPermissions = new AdminPermissions(this);
+
+    }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -135,8 +141,6 @@ public class CreateProductFragment extends Fragment {
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
         customMediaPicker = new CustomMediaPicker(pickMedia);
 
-        requestCameraPermissionLauncher = registerForActivityResult(new
-                ActivityResultContracts.RequestPermission(), this::resultCameraPermission);
 
         cancelImageUploadButton.setOnClickListener(this::cancelImageUpload);
 
@@ -160,17 +164,6 @@ public class CreateProductFragment extends Fragment {
         createProductViewModel.getButtonSaveTitle().observe(getViewLifecycleOwner(), saveButton::setText);
 
         imageSourceFragment = new ImageSourceFragment();
-        imageSourceFragment.setImageSoucerLisner(new ImageSourceFragment.imageSoucerLisner() {
-            @Override
-            public void fromFiles(View view) {
-                lunchImagePicker();
-            }
-
-            @Override
-            public void fromCamera(View view) {
-                captureImage();
-            }
-        });
 
 
         // This callback will only be called when MyFragment is at least Started.
@@ -242,6 +235,39 @@ public class CreateProductFragment extends Fragment {
 
     //Show option to pick image
     public void showOptionPickImage(View view){
+        imageSourceFragment.setImageSoucerLisner(new ImageSourceFragment.imageSoucerLisner() {
+            @Override
+            public void fromFiles(View view) {
+                adminPermissions.setResultListener(new ViewModelListener<Boolean>() {
+                    @Override
+                    public void result(Boolean object) {
+                        if (object){
+                            lunchImagePicker();
+                        }else {
+                            imageSourceFragment.dismiss();
+                        }
+                    }
+                });
+                adminPermissions.checkMediaPermission();
+            }
+
+            @Override
+            public void fromCamera(View view) {
+
+                adminPermissions.setResultListener(new ViewModelListener<Boolean>() {
+                    @Override
+                    public void result(Boolean object) {
+                        if (object){
+                            captureImage();
+                        }else {
+                            imageSourceFragment.dismiss();
+                        }
+                    }
+                });
+                adminPermissions.checkCameraPermission();
+
+            }
+        });
         imageSourceFragment.show(getParentFragmentManager(), "pick image options");
     }
 
@@ -367,9 +393,7 @@ public class CreateProductFragment extends Fragment {
     public void captureImage(){
         imageSourceFragment.dismiss();
 
-        AdminPermissions adminPermissions = new AdminPermissions(this);
-        adminPermissions.setRequestPermissionLauncher(requestCameraPermissionLauncher);
-        if (!adminPermissions.verifyCameraPermission()) return;
+
 
         //Navigate to camera fragment
         takePictureFragmenttNavDirections = CreateProductFragmentDirections.actionCreateProductFragment2ToCaptureImageFragment2();
