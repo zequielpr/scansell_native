@@ -26,6 +26,12 @@ import com.kunano.scansell_native.model.bins.user.UserBin;
 import com.kunano.scansell_native.model.bins.user.UserBinDao;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.ReceiptDao;
+import com.kunano.scansell_native.model.sell.payment.Payment;
+import com.kunano.scansell_native.model.sell.payment.PaymentDao;
+import com.kunano.scansell_native.model.sell.payment.card.Card;
+import com.kunano.scansell_native.model.sell.payment.card.CardDao;
+import com.kunano.scansell_native.model.sell.payment.cash.Cash;
+import com.kunano.scansell_native.model.sell.payment.cash.CashDao;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraftDao;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
@@ -39,7 +45,7 @@ import java.io.OutputStream;
 
 @Database(entities = {Business.class, Product.class, ProductImg.class,
         UserBin.class, BusinessBin.class, Receipt.class, SoldProduct.class,
-        ProductToSellDraft.class},  version = 1)
+        ProductToSellDraft.class, Payment.class, Card.class, Cash.class},  version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static final String TAG = "DatabaseManager";
@@ -61,6 +67,9 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ReceiptDao receiptDao();
     public  abstract SoldProductDao soldProductDao();
     public abstract ProductToSellDraftDao productToSellDraftDao();
+    public abstract PaymentDao paymentDao();
+    public abstract CardDao cardDao();
+    public abstract CashDao cashDao();
 
 
 

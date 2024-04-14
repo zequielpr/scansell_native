@@ -57,12 +57,13 @@ public class SoldProductFragment extends Fragment{
             soldProductViewModel.getReceiptByid(business_key, receipt_key).observe(getViewLifecycleOwner(), this::populateReceipt);
             soldProductViewModel.getSoldProducts(business_key, receipt_key).observe(getViewLifecycleOwner(), (soldProductsList)->{
                 soldProductAdapter.submitList(soldProductsList);
-                System.out.println("business: " + business_key + " receipt id: " + receipt_key);
+                soldProductViewModel.setSoldItems(String.valueOf(soldProductsList.size()));
                 double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
                         c + sp.getSelling_price(), Double::sum);
                 String spentAmountString = String.valueOf(Utils.formatDecimal(spentAmount)) + " ".concat(getString(R.string.dollar_symbol));
                 toolbar.setSubtitle(spentAmountString);
             });
+            soldProductViewModel.populatePaymentInfo(receipt_key);
         }else {
             business_key = new Long(0);
             receipt_key = "";
@@ -173,6 +174,24 @@ public class SoldProductFragment extends Fragment{
 
     public void onViewCreated(@NonNull View view, @NonNull Bundle savedState){
         super.onViewCreated(view, savedState);
+
+        cashTendered.setText(cashTendered.getText().toString().concat(":"))   ;
+
+        soldProductViewModel.getCashDueAndTenderedVisibility().observe(getViewLifecycleOwner(),
+                cashTenderedLayout::setVisibility);
+        soldProductViewModel.getCashDueAndTenderedVisibility().observe(getViewLifecycleOwner(),
+                cashDueLayout::setVisibility);
+
+        soldProductViewModel.getPaymentMethod().observe(getViewLifecycleOwner(),
+                paymentMethod::setText);
+        soldProductViewModel.getSoldItems().observe(getViewLifecycleOwner(),
+                soldItems::setText);
+        soldProductViewModel.getCashTendered().observe(getViewLifecycleOwner(),
+                cashTendered::setText);
+        soldProductViewModel.getCashDue().observe(getViewLifecycleOwner(),
+                cashDue::setText);
+
+
         toolbar.setNavigationIcon(R.drawable.back_arrow);
         toolbar.setNavigationOnClickListener(this::navigateBack);
     }

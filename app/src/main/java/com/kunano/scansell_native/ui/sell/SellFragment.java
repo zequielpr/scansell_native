@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -38,6 +39,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
@@ -79,8 +81,41 @@ public class SellFragment extends Fragment {
     private View topSide;
     private View scanningLine;
     private View scanLineParentContainer;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+    private  AdminPermissions adminPermissions;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adminPermissions = new AdminPermissions(this);
+        adminPermissions.setResultListener(this::navigateToHome);
+
+    }
+
+    public void onStart(){
+        super.onStart();
+        adminPermissions.checkCameraPermission();
+    }
+
+    private void navigateToHome(Boolean result){
+       if (!result){
+           PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
+                   .setGraph(R.navigation.mobile_navigation).
+                   setDestination(R.id.home_navigation_graph)
+                   .createPendingIntent();
 
 
+           try {
+               // This will execute the PendingIntent
+               pendingIntent.send();
+           } catch (PendingIntent.CanceledException e) {
+               // Handle error if PendingIntent is canceled
+               e.printStackTrace();
+           }catch (Exception e){
+
+           }
+       }
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -513,12 +548,12 @@ public class SellFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
+
+
 }
