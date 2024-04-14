@@ -30,8 +30,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         @Override
         public boolean areContentsTheSame(@NonNull Receipt oldItem, @NonNull Receipt newItem) {
             return oldItem.getSellingDate().equals(newItem.getSellingDate()) &&
-                    oldItem.getSpentAmount() == newItem.getSpentAmount()&&
-                    oldItem.getPaymentMethod() == newItem.getPaymentMethod();
+                    oldItem.getSpentAmount() == newItem.getSpentAmount();
         }
     };
 

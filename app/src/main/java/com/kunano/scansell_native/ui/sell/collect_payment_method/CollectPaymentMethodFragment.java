@@ -130,7 +130,17 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        sellViewModel.finishSell(paymentMethod, new ViewModelListener<Boolean>() {
+        PaymentInfo paymentInfo;
+        if (paymentMethod == CASH){
+            Double cashTendered = Double.valueOf(cashTenderedEditText.getText().toString());
+            Double cashDue = Double.valueOf(cashDueTextView.getText().toString());
+            paymentInfo = new PaymentInfo(paymentMethod, cashTendered, cashDue);
+        }else {
+            paymentInfo = new PaymentInfo(paymentMethod);
+        }
+
+
+        sellViewModel.finishSell(paymentInfo, new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean result) {
                 if(result){
@@ -171,5 +181,45 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
     private void activateOrdesacPayButton(Boolean state){
         payButton.setClickable(state);
+    }
+
+    public class PaymentInfo{
+        byte method;
+        double cashTendered;
+        double cashDue;
+
+
+        public PaymentInfo(byte method, double cashTendered, double cashDue) {
+            this.method = method;
+            this.cashTendered = cashTendered;
+            this.cashDue = cashDue;
+        }
+        public PaymentInfo(byte method) {
+            this.method = method;
+        }
+
+        public byte getMethod() {
+            return method;
+        }
+
+        public void setMethod(byte method) {
+            this.method = method;
+        }
+
+        public double getCashTendered() {
+            return cashTendered;
+        }
+
+        public void setCashTendered(double cashTendered) {
+            this.cashTendered = cashTendered;
+        }
+
+        public double getCashDue() {
+            return cashDue;
+        }
+
+        public void setCashDue(double cashDue) {
+            this.cashDue = cashDue;
+        }
     }
 }

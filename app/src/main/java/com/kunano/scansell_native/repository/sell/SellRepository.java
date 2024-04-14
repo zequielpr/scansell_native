@@ -10,6 +10,12 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.ReceiptDao;
+import com.kunano.scansell_native.model.sell.payment.Payment;
+import com.kunano.scansell_native.model.sell.payment.PaymentDao;
+import com.kunano.scansell_native.model.sell.payment.card.Card;
+import com.kunano.scansell_native.model.sell.payment.card.CardDao;
+import com.kunano.scansell_native.model.sell.payment.cash.Cash;
+import com.kunano.scansell_native.model.sell.payment.cash.CashDao;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraftDao;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
@@ -23,12 +29,19 @@ public class SellRepository {
     private ReceiptDao receiptDao;
     private SoldProductDao soldProductDao;
     private ProductToSellDraftDao productToSellDraftDao;
+    private PaymentDao paymentDao;
+    private CashDao cashDao;
+    private CardDao cardDao;
 
     public SellRepository(Application aplication){
         AppDatabase appDatabase = AppDatabase.getInstance(aplication);
         receiptDao = appDatabase.receiptDao();
         soldProductDao = appDatabase.soldProductDao();
         productToSellDraftDao = appDatabase.productToSellDraftDao();
+
+        paymentDao = appDatabase.paymentDao();
+        cardDao = appDatabase.cardDao();
+        cashDao = appDatabase.cashDao();
     }
 
     public LiveData<List<Receipt>> getReceiptList(Long businessId){
@@ -115,6 +128,41 @@ public class SellRepository {
                                                                           LocalDateTime currentWeekDate){
         return soldProductDao.getMostSoldProductsInLastWeek(businessId, startOfLastWeek, currentWeekDate);
     }
+
+
+
+
+    //Handle payment
+    public ListenableFuture<Long> insertPayment(Payment payment){
+        return paymentDao.insertPayment(payment);
+    }
+    public ListenableFuture<Integer> deletePayment(Payment payment){
+        return paymentDao.deletePayment(payment);
+    }
+
+    public LiveData<Payment> getPayment(String receiptId){
+        return paymentDao.getPayment(receiptId);
+    }
+
+    //PaymentMethod
+    public ListenableFuture<Long> insertPaymentMethod(Card paymentMethod){
+        return cardDao.insertPaymentMethod(paymentMethod);
+    }
+    public ListenableFuture<Integer> deletePaymentMethod(Card paymentMethod){
+        return cardDao.deletePaymentMethod(paymentMethod);
+    }
+    public ListenableFuture<Long> insertPaymentMethod(Cash paymentMethod){
+        return cashDao.insertPaymentMethod(paymentMethod);
+    }
+    public ListenableFuture<Integer> deletePaymentMethod(Cash paymentMethod){
+        return cashDao.deletePaymentMethod(paymentMethod);
+    }
+
+    public LiveData<Cash> getPaymentMethodByCash(String receiptId){
+        return cashDao.getPaymentMethodByCash(receiptId);
+    }
+
+
 
 
 
