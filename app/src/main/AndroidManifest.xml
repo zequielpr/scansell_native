@@ -10,12 +10,14 @@
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <instrumentation
         android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.kunano.scansell_native" />
 
     <application
+        android:name=".ui.profile.admin.QonversionApp"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
