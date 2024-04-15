@@ -43,6 +43,7 @@ public class SoldProductFragment extends Fragment{
     private TextView soldItems;
     private TextView cashTendered;
     private TextView cashDue;
+    private TextView cashTenderedLabel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class SoldProductFragment extends Fragment{
         soldItems = binding.soldItems;
         cashTendered = binding.cashTendered;
         cashDue = binding.casDue;
+        cashTenderedLabel = binding.cashTenderedLabel;
 
         soldProductRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         soldProductRecycleView.setHasFixedSize(true);
@@ -175,7 +177,7 @@ public class SoldProductFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @NonNull Bundle savedState){
         super.onViewCreated(view, savedState);
 
-        cashTendered.setText(cashTendered.getText().toString().concat(":"))   ;
+        cashTenderedLabel.setText(cashTenderedLabel.getText().toString().concat(":"));
 
         soldProductViewModel.getCashDueAndTenderedVisibility().observe(getViewLifecycleOwner(),
                 cashTenderedLayout::setVisibility);

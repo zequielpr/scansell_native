@@ -317,6 +317,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void desActivateDeleteMode(View view) {
         businessesProcessor.setProcessItemActive(false);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
         toolbar.setTitle(getString(R.string.businesses_title));
         toolbar.getMenu().clear();
