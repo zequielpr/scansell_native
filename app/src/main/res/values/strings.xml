@@ -62,7 +62,7 @@
     <string name="send_bin_product">bin product</string>
     <string name="product_sent_to_bin_successfuly">product binned succefuly</string>
     <string name="error_to_send_bin_product">error to bin product</string>
-    <string name="bin_business">bin business</string>
+    <string name="bin_business">bin businesses</string>
     <string name="error_to_bin_business">error to bin business</string>
     <string name="business_binned_successfuly">business binned successfuly</string>
     <string name="finish">Finish</string>

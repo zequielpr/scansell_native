@@ -8,12 +8,4 @@ public interface ListenHomeViewModel {
 
 
 
-   abstract void showProgressBar();
-
-   abstract void hideProgressBar();
-
-   /** Update the progress bar shown in the deleting process**/
-   abstract void askDeleteBusiness();
-
-
 }

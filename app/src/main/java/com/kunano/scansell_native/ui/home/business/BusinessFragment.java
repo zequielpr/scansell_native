@@ -300,7 +300,7 @@ public class BusinessFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                businessViewModel.setSearchModeActive(true);
+                //businessViewModel.setSearchModeActive(true);
                 businessViewModel.searchProduct(newText.trim());
                 return false;
             }

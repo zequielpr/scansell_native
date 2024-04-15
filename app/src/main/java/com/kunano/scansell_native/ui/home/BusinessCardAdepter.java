@@ -54,7 +54,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
         holder.address.setText(businessData.getBusinessAddress());
         holder.card.setTag(String.valueOf(businessData.getBusinessId()));
 
-        listener.getCardHolderOnBind(holder.itemView, businessData);
+        listener.getCardHolderOnBind(holder, businessData);
     }
 
 
@@ -65,6 +65,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
         private ImageView unCheckedCircle;
 
         private ImageButton imageButtonRestore;
+        private TextView numProducts;
         private  View card;
 
         public CardHolder(View itemView) {
@@ -74,16 +75,17 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
             address = itemView.findViewById(R.id.textViewDirection);
             unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
             imageButtonRestore = itemView.findViewById(R.id.imageButtonRestoreFromTrash);
+            numProducts = itemView.findViewById(R.id.textViewNumProducts);
 
 
-            listener.reciveCardHol(itemView);
+            listener.reciveCardHol(this);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onShortTap(getItem(position), itemView);
+                        listener.onShortTap(getItem(position), CardHolder.this);
                     }
                 }
             });
@@ -94,7 +96,7 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
                 public boolean onLongClick(View view) {
                     int position = getAbsoluteAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onLongTap(getItem(position), itemView);
+                        listener.onLongTap(getItem(position), CardHolder.this);
                     }
                     return true;
                 }
@@ -111,13 +113,60 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
             });
         }
 
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
+
+        public TextView getAddress() {
+            return address;
+        }
+
+        public void setAddress(TextView address) {
+            this.address = address;
+        }
+
+        public ImageView getUnCheckedCircle() {
+            return unCheckedCircle;
+        }
+
+        public void setUnCheckedCircle(ImageView unCheckedCircle) {
+            this.unCheckedCircle = unCheckedCircle;
+        }
+
+        public ImageButton getImageButtonRestore() {
+            return imageButtonRestore;
+        }
+
+        public void setImageButtonRestore(ImageButton imageButtonRestore) {
+            this.imageButtonRestore = imageButtonRestore;
+        }
+
+        public View getCard() {
+            return card;
+        }
+
+        public void setCard(View card) {
+            this.card = card;
+        }
+
+        public TextView getNumProducts() {
+            return numProducts;
+        }
+
+        public void setNumProducts(TextView numProducts) {
+            this.numProducts = numProducts;
+        }
     }
 
     public interface OnclickBusinessCardListener{
-        abstract void onShortTap(Business business, View cardHolder);
-        abstract void onLongTap(Business business, View cardHolder);
-        abstract void getCardHolderOnBind(View cardHolder, Business business);
-        abstract void reciveCardHol(View cardHolder);
+        abstract void onShortTap(Business business, CardHolder cardHolder);
+        abstract void onLongTap(Business business, CardHolder cardHolder);
+        abstract void getCardHolderOnBind(CardHolder cardHolder, Business business);
+        abstract void reciveCardHol(CardHolder cardHolder);
         abstract void onRestore(Business business);
 
     }
