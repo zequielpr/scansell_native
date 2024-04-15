@@ -53,7 +53,7 @@ public class PasswordViewModel extends AndroidViewModel {
     }
 
     public boolean checkIfPasswdMatch(String passwd, String passToConfirm){
-        return  validatePasswd.checkIfPasswdMatch(passwd, passToConfirm);
+        return  validatePasswd.checkIfPasswdMatch(passwd.trim(), passToConfirm.trim());
     }
 
 

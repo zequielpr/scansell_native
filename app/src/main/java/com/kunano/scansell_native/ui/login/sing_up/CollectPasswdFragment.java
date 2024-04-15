@@ -149,7 +149,7 @@ public class CollectPasswdFragment extends Fragment {
 
         if (!passwordViewModel.checkIfPasswdMatch(passwd, passwdToConfirm))return;
 
-        signUpViewModel.setPasswd(passwd);
+        signUpViewModel.setPasswd(passwd.trim());
         NavDirections navDirectionToCollectEmail = CollectPasswdFragmentDirections.
                 actionCollectPasswdFragment2ToCollectEmail();
 

@@ -207,5 +207,6 @@
     <string name="camera_access_required">The access to phone camera is required for this functionality</string>
     <string name="file_and_media_permission_required">The access to phone files and media
         is required for this functionality</string>
+    <string name="account_disabled">This account has been disable</string>
 
 </resources>

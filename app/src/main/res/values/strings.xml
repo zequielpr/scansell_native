@@ -130,7 +130,7 @@
     <string name="update_email">update email</string>
     <string name="introduce_an_email">introduce email</string>
     <string name="introduce_an_email_to_confirm">introduce email to confirm</string>
-    <string name="email_not_valid">email not valid(example@example.com</string>
+    <string name="email_not_valid">email not valid</string>
     <string name="emails_not_matches">email does not match</string>
     <string name="email_updated_successfully">Email updated successfully</string>
     <string name="sign_in_again">Sign in again to make this operation</string>
@@ -207,6 +207,7 @@
     <string name="file_and_media_permission_required">The access to phone files and media
         is required for this functionality</string>
 
+    <string name="account_disabled">This account has been disabled</string>
 
 
 
