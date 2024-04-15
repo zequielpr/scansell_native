@@ -369,7 +369,6 @@ public class BusinessBinFragment extends Fragment {
         restoreButton.setOnClickListener(this::restoreBusinesses);
 
 
-        selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
         mViewModel.getRecycledProductLiveData(currentBusinessId).observe(getViewLifecycleOwner(),
                 (l)->{empty_bin_layout.setVisibility(l.size()>0?View.GONE:View.VISIBLE);});
 

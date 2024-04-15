@@ -1,26 +1,28 @@
 package com.kunano.scansell_native.ui.sell.receipts.dele_component;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.repository.home.BinsRepository;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -28,25 +30,27 @@ import java.util.concurrent.Executors;
 public class ProcessItemsComponent<T> {
 
     public static String ASK_TO_DELETE_TAG = "ask to delete items";
+    private static String ASK_TO_BIN_TAG = "ask to bin items";
     public static String SHOW_DELETING_PROGRESS = "ask to delete items";
 
     private Fragment fragment;
     private Application application;
-    private ListAdapter<Object, RecyclerView.ViewHolder> adapter;
     private BusinessRepository businessRepository;
     private ProductRepository productRepository;
     private SellRepository sellRepository;
+    private BinsRepository binsRepository;
 
 
     private Toolbar toolbar;
 
 
+    int itemsCounter;
     private Executor executor;
     private boolean isProcessToCancel;
     private boolean isAllSelected;
     private boolean isProcessItemActive;
 
-    private HashSet<T> itemsToProcess;
+    private LinkedHashSet<T> itemsToProcess;
     private MutableLiveData<String> processedItemsMutableLiveData;
     private MutableLiveData<Integer> processedPercentageMutableLiveData;
     private MutableLiveData<Integer> itemsToProcessMutableLIveDate;
@@ -56,11 +60,12 @@ public class ProcessItemsComponent<T> {
         this.fragment = fragment;
         this.application = fragment.getActivity().getApplication();
 
-        itemsToProcess = new HashSet<>();
+        itemsToProcess = new LinkedHashSet<>();
 
         businessRepository = new BusinessRepository(application);
         productRepository = new ProductRepository(application);
         sellRepository = new SellRepository(application);
+        binsRepository = new BinsRepository(application);
 
         processedItemsMutableLiveData = new MutableLiveData<>();
         processedPercentageMutableLiveData = new MutableLiveData<>();
@@ -71,8 +76,9 @@ public class ProcessItemsComponent<T> {
         isAllSelected = false;
     }
 
-    public void binItems() {
-        new BinItems();
+    public void binItems(ViewModelListener<Void> listener) {
+        this.listener = listener;
+        new BinItems().binSelectedItems();
 
     }
 
@@ -94,7 +100,10 @@ public class ProcessItemsComponent<T> {
                 new ProgressBarDialog(title, processedPercentageMutableLiveData, processedItemsMutableLiveData);
         progressBarDialog.setAction(this::cancelProcess);
         progressBarDialog.show(fragment.getParentFragmentManager(), SHOW_DELETING_PROGRESS);
+    }
 
+    public void hideProgress(){
+        if (progressBarDialog != null) progressBarDialog.dismiss();
     }
 
     private void updateProcessProgress(int processedItems) {
@@ -126,7 +135,7 @@ public class ProcessItemsComponent<T> {
 
     public void processFinished(String message) {
         itemsToProcess.clear();
-        listener.result(null);
+        if( listener != null)listener.result(null);
         if (progressBarDialog == null) return;
         progressBarDialog.dismiss();
     }
@@ -136,9 +145,18 @@ public class ProcessItemsComponent<T> {
         return itemsToProcess;
     }
 
-    public void setItemsToProcess(HashSet<T> itemsToProcess) {
+    public void setItemsToProcess(LinkedHashSet<T> itemsToProcess) {
         this.itemsToProcess = itemsToProcess;
         if (itemsToProcess.size() == 0) isAllSelected = false;
+    }
+
+    public void clearItemsToProcess(){
+        this.itemsToProcess.clear();
+        isAllSelected = false;
+    }
+
+    public boolean isItemToBeProcess(T item){
+        return itemsToProcess.contains(item);
     }
 
     public boolean isProcessToCancel() {
@@ -163,6 +181,7 @@ public class ProcessItemsComponent<T> {
 
     public void setProcessItemActive(boolean processItemActive) {
         isProcessItemActive = processItemActive;
+        itemsToProcess.clear();
     }
 
     private class DeleteItems {
@@ -182,7 +201,7 @@ public class ProcessItemsComponent<T> {
             executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 Integer result = 0;
-                int itemsCounter = 0;
+                itemsCounter = 0;
 
                 updateProcessProgress(itemsCounter);
 
@@ -203,10 +222,19 @@ public class ProcessItemsComponent<T> {
                         itemsCounter++;
                         updateProcessProgress(itemsCounter);
                     } catch (InterruptedException e) {
+                        hideProgress();
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                                Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     } catch (ExecutionException e) {
+                        hideProgress();
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                                Toast.LENGTH_SHORT);
                         throw new RuntimeException(e);
                     }catch (Exception e){
+                        hideProgress();
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                                Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     }
                 }
@@ -233,6 +261,69 @@ public class ProcessItemsComponent<T> {
     }
 
     private class BinItems{
+        public void binSelectedItems() {
+            String title = fragment.getString(R.string.bin);
+            String content = fragment.getString(R.string.send_items_to_bin_warning);
+
+            AskForActionDialog askForActionDialog = new AskForActionDialog(title, content);
+            askForActionDialog.setButtonListener(this::binSelectedItems);
+            askForActionDialog.show(fragment.getParentFragmentManager(), ASK_TO_BIN_TAG);
+        }
+
+        private void binSelectedItems(boolean isToDeletedItems) {
+            if (!isToDeletedItems) return;
+
+            executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> {
+                Integer result = 0;
+                itemsCounter = 0;
+
+                updateProcessProgress(itemsCounter);
+
+                showProcessProgress();
+                for (T i : itemsToProcess) {
+                    if (isProcessToCancel) break;
+                    try {
+                        Thread.sleep(Math.round(1000 / itemsToProcess.size()));
+
+                        if (i.getClass() == Business.class) {
+                            binItem((Business) i).get();
+                        } else if (i.getClass() == Product.class) {
+                            binItem((Product) i).get();
+                        } else if (i.getClass() == Receipt.class) {
+
+                        }
+                        if (result < 0) continue;
+                        itemsCounter++;
+                        updateProcessProgress(itemsCounter);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+                //Show results
+
+                //DesActivate process mode
+                processFinished("holaa");
+            });
+        }
+
+
+        private ListenableFuture<Long> binItem(Business business) {
+            return binsRepository.sendBusinessTobin(business.getBusinessId());
+        }
+
+        private ListenableFuture<Long> binItem(Product product) {
+            return binsRepository.sendProductTobin(product.getBusinessIdFK(), product.getProductId());
+        }
+
+        private void binItem(Receipt receipt) throws ExecutionException, InterruptedException {
+
+        }
 
     }
 

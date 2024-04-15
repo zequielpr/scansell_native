@@ -33,7 +33,7 @@ import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class ReceiptsFragment extends Fragment implements MenuProvider {
 
@@ -255,7 +255,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private void selectAllItems(){
         receiptsViewModel.setAllSelectedIconMutableLiveData(checkedCircle);
-        HashSet<Receipt> receipts = new HashSet<>(receiptAdapter.getCurrentList());
+        LinkedHashSet<Receipt> receipts = new LinkedHashSet<>(receiptAdapter.getCurrentList());
         processItemsComponent.setItemsToProcess(receipts);
         selectAllMenuItem.setIcon(checkedCircle);
         processItemsComponent.setAllSelected(true);
@@ -265,7 +265,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private void unSelectAllItems(){
         receiptsViewModel.setAllSelectedIconMutableLiveData(null);
-        processItemsComponent.setItemsToProcess(new HashSet<>());
+        processItemsComponent.clearItemsToProcess();
         selectAllMenuItem.setIcon(unCheckedCircle);
         processItemsComponent.setAllSelected(false);
         deleteMenuItem.setVisible(false);

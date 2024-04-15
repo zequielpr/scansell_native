@@ -6,13 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.DeleteItemsViewModel;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /***This view model is scooped in the host activity. Home fragment and BottomSheetFragment share it ***/
@@ -21,6 +19,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
     private ListenHomeViewModel listenHomeViewModel;
     private LiveData<List<Business>> businessListLiveData;
     private Long currentBusinessId;
+    private MutableLiveData<Integer> selectedItems;
 
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
 
@@ -33,6 +32,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
         currentBusinessId = null;
 
         createNewBusinessVisibilityMD = new MutableLiveData<>();
+        selectedItems = new MutableLiveData<>();
     }
 
 
@@ -51,69 +51,23 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
 
     //BusinessCard------------------------------------------------------------------------
-    public void shortTap(Business business) {
-        if (isDeleteModeActive) {
-
-            if (itemsToDelete.contains(business)) {
-                itemsToDelete.remove(business);
-
-            } else {
-                itemsToDelete.add(business);
-                //Select to delete
-            }
 
 
-            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = businessListLiveData.getValue().size() == itemsToDelete.size();
-            return;
+
+
+    public void  addOrRemoveItemToProcess(ProcessItemsComponent<Business> businessProcessor, Business business) {
+        boolean isAdded = businessProcessor.isItemToBeProcess(business);
+        System.out.println("Is added: " + isAdded);
+        if(isAdded){
+            businessProcessor.removeItemToProcess(business);
+        }else {
+            businessProcessor.addItemToProcess(business);
         }
 
-        //currentBusiness = repository.getBusinesById(business.getBusinessId());
-
-        listenHomeViewModel.navigateToProducts(business.getBusinessId());
-        currentBusinessId = business.getBusinessId();
+        selectedItems.postValue(businessProcessor.getItemsToProcess().size());
     }
 
 
-
-    public void longTap(Business business) {
-        if (itemsToDelete.contains(business)) {
-            itemsToDelete.remove(business);
-        } else {
-            itemsToDelete.add(business);
-        }
-        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = businessListLiveData.getValue().size() == itemsToDelete.size();
-    }
-
-
-
-    public List<Object> parseBusinessListToGeneric() {
-        return businessListLiveData.getValue().stream()
-                .map(business -> (Object) business)
-                .collect(Collectors.toList());
-    }
-
-
-
-
-
-    public void passBusinessToBin() {
-        this.itemTypeToDelete = ItemTypeToDelete.BUSINESS;
-
-        listenHomeViewModel.showProgressBar();
-
-        super.passItemsToBin(new ListenResponse() {
-            @Override
-            public void isSuccessfull(boolean result) {
-                if(result){
-                    listenHomeViewModel.hideProgressBar();
-                }
-            }
-        },getApplication().getString(R.string.businesses_title));
-
-
-    }
 
 
     public LiveData<Integer> getQuantityOfProductsInBusiness(Long businessId){
@@ -151,5 +105,13 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setCreateNewBusinessVisibilityMD(Integer createNewBusinessVisibilityMD) {
         this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
+    }
+
+    public MutableLiveData<Integer> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(Integer selectedItems) {
+        this.selectedItems.postValue(selectedItems);
     }
 }
