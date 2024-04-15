@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -34,6 +35,7 @@ import com.kunano.scansell_native.databinding.FragmentBackUpBinding;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.home.DriveServices;
+import com.kunano.scansell_native.ui.components.AdminPermissions;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.Utils;
@@ -55,6 +57,12 @@ public class BackUpFragment extends Fragment {
     private CustomMediaPicker customMediaPicker;
     private BackUpViewModel backUpViewModel;
     private AskForActionDialog askForActionDialog;
+    private AdminPermissions adminPermissions;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adminPermissions = new AdminPermissions(this);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,8 +118,17 @@ public class BackUpFragment extends Fragment {
         backupDestinationFragment.setBackUpDestinationListener(new BackupDestinationFragment.BackUpDestinationListener() {
             @Override
             public void onDevice(View view) {
+                adminPermissions.setResultListener(new ViewModelListener<Boolean>() {
+                    @Override
+                    public void result(Boolean object) {
+                        if (object){
+                            chooseDir();
+                        }
+                    }
+                });
+                adminPermissions.checkMediaPermission();
                 backupDestinationFragment.dismiss();
-                chooseDir();
+
             }
 
             @Override
@@ -253,8 +270,18 @@ public class BackUpFragment extends Fragment {
 
     //Restore database___________________________________________________________
     private void setRestoreBackUpSection(View view) {
-        customMediaPicker.lunchImagePicker(new
-                ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+        adminPermissions.setResultListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object){
+                    customMediaPicker.lunchImagePicker(new
+                            ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+                }
+            }
+        });
+        adminPermissions.checkMediaPermission();
+
+
 
     }
 

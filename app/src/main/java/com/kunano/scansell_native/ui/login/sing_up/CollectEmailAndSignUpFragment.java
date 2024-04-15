@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.CollectEmailAndSignedUpBinding;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
@@ -44,6 +46,9 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     private TextView privacyPolicyTextView;
     private CheckBox acceptTermAndPolicies;
     private LogInViewModel logInViewModel;
+
+    private TextInputLayout emailTextInputLayout;
+    private TextInputLayout emailToConfirmTextInputLayout;
 
     public CollectEmailAndSignUpFragment() {
         // Required empty public constructor
@@ -77,6 +82,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
        termOfServicesTextView = binding.termsAndPrivacyView.termsOfServiceText;
        privacyPolicyTextView = binding.termsAndPrivacyView.privacyPolicyText;
        acceptTermAndPolicies = binding.termsAndPrivacyView.checkBox;
+       emailTextInputLayout = binding.collectEmailView.emailFilledTextField;
+       emailToConfirmTextInputLayout = binding.collectEmailView.confirmEmailFilledTextField;
 
 
 
@@ -102,8 +109,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
         privacyPolicyTextView.setOnClickListener(this::showPrivacyPolicy);
         acceptTermAndPolicies.setChecked(signUpViewModel.getTermsAndPoliciesStateCondition());
 
-        emailEditText.setHint(getText(R.string.introduce_an_email));
-        confirmEmailEditText.setHint(getText(R.string.introduce_an_email_to_confirm));
+        emailTextInputLayout.setHint(getText(R.string.introduce_an_email));
+        emailToConfirmTextInputLayout.setHint(getText(R.string.introduce_an_email_to_confirm));
     }
 
     private void navigateBack(){
@@ -117,6 +124,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     public void onResume(){
         super.onResume();
         logInViewModel.setLogInViewModelListener(this::navigateBack);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
     }
 
     public void onDestroy(){

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.profile.admin.account.email.ChangeEmailAddressFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -12,62 +12,83 @@
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:minHeight="?attr/actionBarSize"
-        app:title="@string/update_email"
-        android:theme="?attr/actionBarTheme" />
+        android:theme="?attr/actionBarTheme"
+        app:title="@string/update_email" />
 
-    <EditText
-        android:id="@+id/editTextEmail"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="16dp"
-        android:cursorVisible="true"
         android:layout_below="@id/changeEmailToolbar"
-        android:hint="@string/enter_new_email_address"
-        android:inputType="textEmailAddress"
-        android:maxLength="35"/>
+        android:layout_marginStart="@dimen/window_start_side"
+        android:layout_marginTop="@dimen/window_top_side"
+        android:layout_marginEnd="@dimen/window_end_side"
+        android:layout_marginBottom="@dimen/window_bottom_side">
 
-    <TextView
-        android:id="@+id/emailWarnTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextEmail"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/red"
-        android:visibility="visible" />
 
-    <EditText
-        android:id="@+id/editTextConfirmEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextEmail"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/confirm_new_email_address"
-        android:inputType="textEmailAddress"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_new_email_address">
 
-    <TextView
-        android:id="@+id/emailToConfirmTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextConfirmEmail"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/red"
-        android:visibility="visible" />
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:maxLength="35" />
 
-    <Button
-        android:id="@+id/buttonSaveEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextConfirmEmail"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="Save"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/emailWarnTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailFilledTextField"
+            android:textColor="@color/red"
+            android:layout_marginBottom="@dimen/space_between_edit_text"
+            android:visibility="visible" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmEmailFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailWarnTextView"
+            android:hint="@string/confirm_new_email_address">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextConfirmEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/emailToConfirmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/confirmEmailFilledTextField"
+            android:textColor="@color/red"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/buttonSaveEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailToConfirmTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/button_top_side"
+            android:text="Save" />
+
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

@@ -39,13 +39,17 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
+                <include
+                    android:id="@+id/scan_layout"
+                    layout="@layout/scanner_layout"/>
+
                 <ImageButton
                     android:id="@+id/torchButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/sell_camera_preview"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="150dp"
+                    android:layout_marginBottom="100dp"
                     android:background="@color/transparent"
                     android:elevation="1dp"
                     android:src="@drawable/torch_24" />
@@ -64,123 +68,138 @@
             android:id="@+id/productToSellBottomSheet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:elevation="2dp"
             android:gravity="center"
-
             android:orientation="vertical"
             app:layout_behavior="@string/bottom_sheet_behavior"> <!-- Set bottom sheet behavior -->
-
-            <RelativeLayout
+            <View
+                android:id="@+id/bottomSheetTopSide"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:id="@+id/showBottomSheetView"
-                    android:layout_width="100dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/oval_line"></View>
-
-                <ImageButton
-                    android:id="@+id/cancelSellButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/close_24"
-                    android:layout_centerVertical="true"
-                    android:background="@color/transparent"
-                    android:text="@string/cancel" />
-            </RelativeLayout>
-
+                android:layout_height="10dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/products_to_sell_top_side"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?colorSurface"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                android:paddingStart="30dp"
-                android:paddingEnd="30dp">
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <View
+                        android:id="@+id/showBottomSheetView"
+                        style=""
+                        android:layout_width="100dp"
+                        android:layout_height="10dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@drawable/oval_line"/>
+
+                    <ImageButton
+                        android:id="@+id/cancelSellButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/transparent"
+                        android:src="@drawable/close_24"
+                        android:text="@string/cancel" />
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:paddingStart="@dimen/window_start_side"
+                    android:paddingEnd="@dimen/window_end_side">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="15dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView16"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="@string/items"
-                            android:layout_marginEnd="8dp"
-                            android:textSize="25sp" />
-
-                        <TextView
-                            android:id="@+id/itemsTotalTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="total"
-                            android:textSize="25sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/totalTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0"
-                            android:text="total"
-                            android:textSize="25sp" />
-
-                        <TextView
-                            android:id="@+id/textView20"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:layout_marginStart="5dp"
-                            android:textSize="25sp"
-                            android:text="@string/dollar_symbol" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView16"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="0"
+                                android:text="@string/items"
+                                android:textSize="25sp" />
+
+                            <TextView
+                                android:id="@+id/itemsTotalTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0"
+                                android:text="total"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/totalTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0"
+                                android:text="total"
+                                android:textSize="25sp" />
+
+                            <TextView
+                                android:id="@+id/textView20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1"
+                                android:text="@string/dollar_symbol"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/finishButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="@string/finish" />
 
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/finishButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:text="@string/finish" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black_transparent" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleViewProductsToSell"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/window_top_side"
+                    android:layout_marginEnd="@dimen/window_end_side"
+                    android:layout_marginStart="@dimen/window_start_side"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/teal_700" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycleViewProductsToSell"
-                android:layout_width="330dp"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -197,7 +216,7 @@
         android:layout_marginEnd="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="80dp"
         android:elevation="2dp"
         android:src="@drawable/bar_code_scanner_24" />
 

@@ -29,22 +29,18 @@ public class Receipt {
     private LocalDateTime sellingDate;
     private double spentAmount;
 
-    /** 0 = cash, 1 = card **/
-    private byte paymentMethod;
-
 
     @Ignore
     public Receipt(){
 
     }
 
-    public Receipt(String receiptId, Long businessIdFK, @Unique String userEmail, LocalDateTime sellingDate, double spentAmount, byte paymentMethod) {
+    public Receipt(String receiptId, Long businessIdFK, @Unique String userEmail, LocalDateTime sellingDate, double spentAmount) {
         this.receiptId = receiptId;
         this.businessIdFK = businessIdFK;
         this.userEmail = userEmail;
         this.sellingDate = sellingDate;
         this.spentAmount = spentAmount;
-        this.paymentMethod = paymentMethod;
     }
 
     public String getReceiptId() {
@@ -85,13 +81,5 @@ public class Receipt {
 
     public void setSpentAmount(double spentAmount) {
         this.spentAmount = spentAmount;
-    }
-
-    public byte getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(byte paymentMethod) {
-        this.paymentMethod = paymentMethod;
     }
 }

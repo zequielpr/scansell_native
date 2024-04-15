@@ -10,11 +10,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.palette.graphics.Palette;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
@@ -137,6 +146,93 @@ public class Utils {
         String formattedNumber = decimalFormat.format(decimalToFormat).replace(",", ".");
 
         return Double.parseDouble(formattedNumber);
+    }
+
+
+    public static Palette getColorPaletteFromImage(Bitmap img){
+        if (img == null) return  null;
+        Palette p = Palette.from(img).generate();
+        return p;
+    }
+
+    public static Integer getMutedColor(Palette palette){
+        Palette.Swatch muted = palette.getMutedSwatch();
+        if(muted != null){
+            int color = muted.getTitleTextColor();
+            return  color;
+        }
+        return null;
+    }
+    public static Integer getVibrantColor(Palette palette){
+        if (palette == null) return null;
+        Palette.Swatch vibrant= palette.getMutedSwatch();
+        if(vibrant != null ){
+            int color = vibrant.getRgb();
+            return  color;
+        }
+        return null;
+    }
+
+    public static Integer getLightVibrantColor(Palette palette){
+        if (palette == null) return  null;
+        Palette.Swatch lightVibrant= palette.getMutedSwatch();
+        if(lightVibrant != null){
+            int color = lightVibrant.getRgb();
+            return  color;
+        }
+        return null;
+    }
+
+    public static void setActionBarColor(Activity activity, Integer color){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+
+        }
+    }
+
+    public static GradientDrawable getGradientColor(int[] colors, Integer shape, GradientDrawable.Orientation orientation,
+                                    float cornersRadius, Integer gradientType){
+        // Create gradient drawable
+        GradientDrawable gradientDrawable = new GradientDrawable(orientation, colors);
+
+        // Set gradient shape (RECTANGLE, OVAL, LINE, RING)
+        gradientDrawable.setShape(shape);
+
+        // Set corner radius, if needed
+        gradientDrawable.setCornerRadius(cornersRadius); // Optional
+
+        // Set the gradient type (LINEAR_GRADIENT, RADIAL_GRADIENT, SWEEP_GRADIENT)
+        gradientDrawable.setGradientType(gradientType);
+
+        return gradientDrawable;
+
+    }
+
+    public static void startAnimationOfScanningLine(Fragment fragment, View line, View parentContainer){
+
+        Animation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 1.0f);
+        animation.setDuration(1500); // Adjust duration as needed
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+        line.startAnimation(animation);
+    }
+
+    public static void finishScanningLineAnim(View line){
+        Animation animation = line.getAnimation();
+
+        System.out.println("finish anim");
+        if (animation != null){
+            System.out.println("finish anim");
+            line.getAnimation().cancel();
+            line.clearAnimation();
+        }
+
     }
 
 

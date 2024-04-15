@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "35f4dafb665cdc22f363be5afecb21c7",
+    "identityHash": "3549438059d750a8509c381b4440d84e",
     "entities": [
       {
         "tableName": "Business",
@@ -300,7 +300,7 @@
       },
       {
         "tableName": "Receipt",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptId` TEXT NOT NULL, `businessIdFK` INTEGER, `userEmail` TEXT, `sellingDate` INTEGER, `spentAmount` REAL NOT NULL, `paymentMethod` INTEGER NOT NULL, PRIMARY KEY(`receiptId`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptId` TEXT NOT NULL, `businessIdFK` INTEGER, `userEmail` TEXT, `sellingDate` INTEGER, `spentAmount` REAL NOT NULL, PRIMARY KEY(`receiptId`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "receiptId",
@@ -330,12 +330,6 @@
             "fieldPath": "spentAmount",
             "columnName": "spentAmount",
             "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "paymentMethod",
-            "columnName": "paymentMethod",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -526,12 +520,150 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "Payment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptIdFK` TEXT NOT NULL, PRIMARY KEY(`receiptIdFK`), FOREIGN KEY(`receiptIdFK`) REFERENCES `Receipt`(`receiptId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "receiptIdFK",
+            "columnName": "receiptIdFK",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "receiptIdFK"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Payment_receiptIdFK",
+            "unique": false,
+            "columnNames": [
+              "receiptIdFK"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Payment_receiptIdFK` ON `${TABLE_NAME}` (`receiptIdFK`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Receipt",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "receiptIdFK"
+            ],
+            "referencedColumns": [
+              "receiptId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Card",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptIdFKInCard` TEXT NOT NULL, PRIMARY KEY(`receiptIdFKInCard`), FOREIGN KEY(`receiptIdFKInCard`) REFERENCES `Payment`(`receiptIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "receiptIdFKInCard",
+            "columnName": "receiptIdFKInCard",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "receiptIdFKInCard"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Card_receiptIdFKInCard",
+            "unique": false,
+            "columnNames": [
+              "receiptIdFKInCard"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Card_receiptIdFKInCard` ON `${TABLE_NAME}` (`receiptIdFKInCard`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Payment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "receiptIdFKInCard"
+            ],
+            "referencedColumns": [
+              "receiptIdFK"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Cash",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`receiptIdFKInCash` TEXT NOT NULL, `cashTendered` REAL NOT NULL, `cashDue` REAL NOT NULL, PRIMARY KEY(`receiptIdFKInCash`), FOREIGN KEY(`receiptIdFKInCash`) REFERENCES `Payment`(`receiptIdFK`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "receiptIdFKInCash",
+            "columnName": "receiptIdFKInCash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cashTendered",
+            "columnName": "cashTendered",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cashDue",
+            "columnName": "cashDue",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "receiptIdFKInCash"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Cash_receiptIdFKInCash",
+            "unique": false,
+            "columnNames": [
+              "receiptIdFKInCash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Cash_receiptIdFKInCash` ON `${TABLE_NAME}` (`receiptIdFKInCash`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Payment",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "receiptIdFKInCash"
+            ],
+            "referencedColumns": [
+              "receiptIdFK"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35f4dafb665cdc22f363be5afecb21c7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3549438059d750a8509c381b4440d84e')"
     ]
   }
 }

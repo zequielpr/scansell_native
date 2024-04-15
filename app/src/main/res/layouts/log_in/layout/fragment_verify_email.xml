@@ -6,26 +6,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
+    android:layout_marginStart="@dimen/window_start_side"
+    android:layout_marginTop="@dimen/window_top_side"
+    android:layout_marginEnd="@dimen/window_end_side"
+    android:layout_marginBottom="@dimen/window_bottom_side"
     tools:context=".ui.login.sing_up.VerifyEmailFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:id="@+id/text_verification_sent"
-        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="@string/email_verification_sent"
         android:textSize="18sp"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="16dp"/>
+        android:textColor="@android:color/black"/>
 
     <Button
         android:id="@+id/button_resend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Resend Verification Email"
+        android:layout_marginTop="@dimen/button_top_side"
         android:textSize="16sp"
         android:textColor="@android:color/white"/>
 

@@ -19,11 +19,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/businessList"
-        android:layout_width="382dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/home_fragment_toolbar"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="-58dp"
+        android:layout_marginStart="@dimen/window_start_side"
+        android:layout_marginEnd="@dimen/window_end_side"
         android:tag="recycleListHome" />
 
     <include

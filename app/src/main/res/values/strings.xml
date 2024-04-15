@@ -2,10 +2,10 @@
     <string name="default_web_client_id">88525641549-aag73eulao2lncjg990thm5jn8cdjnhi.apps.googleusercontent.com</string>
     <string name="default_android_client_id">88525641549-jcsb347tt4bpeltdmoqtg7co53b5ii7h.apps.googleusercontent.com</string>
 
-    <string name="app_name">scansell_native</string>
-    <string name="title_home">Inicio</string>
-    <string name="title_dashboard">Vender</string>
-    <string name="title_notifications">Perfil</string>
+    <string name="app_name">scanSell</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Sell</string>
+    <string name="title_notifications">Profile</string>
     <string name="businesses_title">businesses</string>
     <string name="create_new_business">Create new business</string>
     <string name="business_name">Business name</string>
@@ -13,7 +13,6 @@
     <string name="save">Save</string>
     <string name="advert_invalid_name">Name invalid. Letters and spaces only</string>
     <string name="advert_invalid_address">Address invalid. Special characters are not allowed</string>
-    <string name="advert_introduce_name">introduce a name</string>
     <string name="advert_introduce_address">Introduce an address</string>
     <string name="business_created_succ">Business createed successfully</string>
     <string name="failure_to_create_business">Failure to create business</string>
@@ -40,9 +39,8 @@
     <string name="update">Update</string>
     <string name="details">Details</string>
     <string name="image_product_decription">Image of product</string>
-    <string name="intro_buy_price">Introduce buying price</string>
-    <string name="intro_selling_price">Introduce selling price</string>
-    <string name="intro_stock">Introduce stock</string>
+    <string name="buying_price">buying price</string>
+    <string name="selling_price">Selling price</string>
     <string name="warning">warning</string>
     <string name="bin">bin</string>
     <string name="recycle_bin">Recycle bin</string>
@@ -64,7 +62,7 @@
     <string name="send_bin_product">bin product</string>
     <string name="product_sent_to_bin_successfuly">product binned succefuly</string>
     <string name="error_to_send_bin_product">error to bin product</string>
-    <string name="bin_business">bin business</string>
+    <string name="bin_business">bin businesses</string>
     <string name="error_to_bin_business">error to bin business</string>
     <string name="business_binned_successfuly">business binned successfuly</string>
     <string name="finish">Finish</string>
@@ -83,7 +81,7 @@
     <string name="delete_after_15_days">delete after 15 days</string>
     <string name="delete_after_30_days">delete after 30 days</string>
     <string name="options">options</string>
-    <string name="sells_and_revenues">sells and revenues</string>
+    <string name="sells_and_revenues">sells</string>
     <string name="most_sold_products">most sold products</string>
     <string name="not_sold_product">there is not sold products</string>
     <string name="this_week">this week</string>
@@ -97,6 +95,7 @@
     <string name="sound_after_acanned">sound after scanned</string>
     <string name="language">language</string>
     <string name="email_address">email address</string>
+    <string name="email">Email</string>
     <string name="name">name</string>
     <string name="change_password">change password</string>
     <string name="delete_account">delete account</string>
@@ -116,6 +115,7 @@
     <string name="continue_google">continue with google</string>
     <string name="forgotten_pass">Password forgotten?</string>
     <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
     <string name="title_activity_log_in">LogInActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -141,7 +141,7 @@
     <string name="sign_out">sign out</string>
     <string name="enter_new_email_address">enter new email address</string>
     <string name="confirm_new_email_address">confirm new email address</string>
-    <string name="enter_new_name">enter new name</string>
+    <string name="enter_new_name">new name</string>
     <string name="change_name">Change name</string>
     <string name="name_updated_success">name updated successfully</string>
     <string name="update_password">update password</string>
@@ -158,7 +158,7 @@
     <string name="introduced_email_incorrect">Email incorrect. Introduce the email account</string>
     <string name="account_deleted_success">Account deleted successfully</string>
     <string name="continue_action">Continue</string>
-    <string name="introduce_name">Introduce your name</string>
+    <string name="introduce_name">introduce name</string>
     <string name="email_in_use">The email introduced is in use</string>
     <string name="email_verification_sent">A verification email has been sent. Verify your email to log in</string>
     <string name="verify_email">Verify email</string>
@@ -186,7 +186,7 @@
     <string name="leave_app">Leave app</string>
     <string name="ask_to_leave_app">Do you want to leave this app?</string>
     <string name="current_products">Current products</string>
-    <string name="stock">Stock:</string>
+    <string name="stock">Stock</string>
     <string name="sell_price">Sell price:</string>
     <string name="buy_price">Buy price:</string>
     <string name="cancel_sell">Cancel sell</string>
@@ -195,6 +195,19 @@
     <string name="items">Items:</string>
     <string name="dollar_symbol">$</string>
     <string name="others">others</string>
+    <string name="password">Password</string>
+    <string name="business_empty">Business empty</string>
+    <string name="empty_bin">Bin empty</string>
+    <string name="payment_method">Payment method:</string>
+    <string name="buy_functionality">Buy functionality</string>
+    <string name="single_payment">Single payment</string>
+    <string name="functionality_description">Save copies of you businesses and restore them at any time.</string>
+    <string name="access_denied">Access denied</string>
+    <string name="camera_access_required">The access to phone camera is required for this functionality</string>
+    <string name="file_and_media_permission_required">The access to phone files and media
+        is required for this functionality</string>
+
+
 
 
 

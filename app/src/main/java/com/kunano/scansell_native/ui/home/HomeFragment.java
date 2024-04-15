@@ -3,6 +3,8 @@ package com.kunano.scansell_native.ui.home;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -26,13 +28,13 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
@@ -46,18 +48,19 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     FragmentManager suportFmanager;
     BusinessCardAdepter businessCardAdepter;
     private Drawable checkedCircle;
-    private  Drawable uncheckedCircle;
+    private Drawable uncheckedCircle;
 
     private View createBusinessView;
     private ImageButton createNewBusinessImgButton;
     private MainActivityViewModel mainActivityViewModel;
-
     private Toolbar toolbar;
+
+    private ProcessItemsComponent<Business> businessesProcessor;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        businessesProcessor = new ProcessItemsComponent<>(this);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
     }
@@ -84,17 +87,14 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         suportFmanager = getActivity().getSupportFragmentManager();
 
         toolbar = binding.homeFragmentToolbar;
-        toolbar.inflateMenu(R.menu.actions_toolbar_home);
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
-        homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(),toolbar::setTitle);
+        homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
 
         setBusinessCardOncliListener();
 
-
         return binding.getRoot();
     }
-
 
 
     @Override
@@ -106,63 +106,67 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private MenuItem addIcon;
     private MenuItem deleteIcon;
     private MenuItem selectAllIcon;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         addIcon = toolbar.getMenu().findItem(R.id.add);
         deleteIcon = toolbar.getMenu().findItem(R.id.delete);
-        selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
 
-        homeViewModel.getAllBusinesses().observe(getViewLifecycleOwner(),this::handleCreateBusinessVisibility);
+        homeViewModel.getAllBusinesses().observe(getViewLifecycleOwner(), this::handleCreateBusinessVisibility);
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
-        homeViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
-                createBusinessView::setVisibility);
-
+        homeViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(), createBusinessView::setVisibility);
         mainActivityViewModel.setHandleBackPress(this::handleBackPress);
 
-        toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.delete:
-                    askDeleteBusiness();
-                    return true;
-                case R.id.select_all:
-                    if (homeViewModel.isAllSelected()) {
-                        unSelectAll();
-                    } else {
-                        selectAll();
-                    }
-                    // Save profile changes.
-                    return true;
+        toolbar.addMenuProvider(menuProvider);
+    }
+
+    MenuProvider menuProvider = new MenuProvider() {
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.actions_toolbar_home, menu);
+
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()){
                 case R.id.add:
                     showBottomSheet();
                     return true;
                 case R.id.bin:
                     navigateToBin();
                     return true;
-                default:
-                    return false;
+                case R.id.delete_button:
+                    businessesProcessor.binItems(new ViewModelListener<Void>() {
+                        @Override
+                        public void result(Void object) {
+                            getActivity().runOnUiThread(()->desActivateDeleteMode(getView()));
+                        }
+                    });
+                    return true;
+                case R.id.select_all_button:
+                    if (businessesProcessor.isAllSelected()){
+                        unSelectAll();
+                    }else {
+                        selectAll();
+                    }
+                    return true;
             }
-        });
-
-        if (homeViewModel.isDeleteModeActive()) {
-            toolbar.setNavigationIcon(R.drawable.close_24);
-            toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
+            return false;
         }
-        updateToolbar();
-
-    }
+    };
 
 
-    public void handleBackPress(){
-        if (homeViewModel.isDeleteModeActive()){
-            desactivateDeleteMode(getView());
-        }
-        else {
+    public void handleBackPress() {
+        if (businessesProcessor.isProcessItemActive()) {
+            desActivateDeleteMode(getView());
+        } else {
             Utils.askToLeaveApp(this);
         }
     }
 
-    private void handleCreateBusinessVisibility(List<Business> l){
+    private void handleCreateBusinessVisibility(List<Business> l) {
         if (l.size() > 0) {
             homeViewModel.setCreateNewBusinessVisibilityMD(View.GONE);
         } else {
@@ -170,96 +174,68 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         }
     }
 
-    private void createNewBusiness(View view){
+    private void createNewBusiness(View view) {
         BottomSheetFragmentCreateBusiness createBusiness = new BottomSheetFragmentCreateBusiness();
         createBusiness.setRequestResult(this::processCreateBusinessRequest);
         createBusiness.show(getParentFragmentManager(), BottomSheetFragmentCreateBusiness.TAG);
     }
 
-    private void processCreateBusinessRequest(boolean result){
+    private void processCreateBusinessRequest(boolean result) {
 
     }
 
 
     public void showBottomSheet() {
-        BottomSheetFragmentCreateBusiness bottomSheetFragmentCreateBusiness =
-                new BottomSheetFragmentCreateBusiness();
+        BottomSheetFragmentCreateBusiness bottomSheetFragmentCreateBusiness = new BottomSheetFragmentCreateBusiness();
 
         bottomSheetFragmentCreateBusiness.setRequestResult(homeViewModel::notifyInsertNewBusinessResult);
 
         bottomSheetFragmentCreateBusiness.show(suportFmanager, bottomSheetFragmentCreateBusiness.getTag());
     }
 
-    public void navigateToBin(){
-        @NonNull NavDirections action =
-                HomeFragmentDirections.actionNavigationHomeToUserBinFragment();
+    public void navigateToBin() {
+        @NonNull NavDirections action = HomeFragmentDirections.actionNavigationHomeToUserBinFragment();
 
         Navigation.findNavController(getView()).navigate(action);
-    }
-
-
-
-
-    public void updateToolbar() {
-        boolean isDeleteModeActivate = homeViewModel.isDeleteModeActive();
-        addIcon.setVisible(!isDeleteModeActivate);
-
-
-        deleteIcon.setVisible(isDeleteModeActivate);
-        selectAllIcon.setVisible(isDeleteModeActivate);
-        deleteIcon.setVisible(homeViewModel.getItemsToDelete().size()>0);
-
-        if (homeViewModel.isAllSelected()){
-            selectAllIcon.setIcon(R.drawable.checked_circle);
-        }else {
-            selectAllIcon.setIcon(R.drawable.unchked_circle);
-        }
-
-        if(!isDeleteModeActivate){
-            toolbar.setNavigationIcon(null);
-        }else{
-            toolbar.setNavigationIcon(R.drawable.close_24);
-        }
-
     }
 
 
     public void setBusinessCardOncliListener() {
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
-            public void onShortTap(Business business, View cardHolder) {
-                homeViewModel.shortTap(business);
-                if (homeViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+            public void onShortTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
+                if (businessesProcessor.isProcessItemActive()){
+                    homeViewModel.addOrRemoveItemToProcess(businessesProcessor, business);
+                    checkCard(cardHolder, business);
+                    return;
+                }
+                navigateToProducts(business.getBusinessId());
 
             }
 
             @Override
-            public void onLongTap(Business business, View cardHolder) {
-                homeViewModel.longTap(business);
-                checkCard(cardHolder, business);
-                if(!homeViewModel.isDeleteModeActive()){
+            public void onLongTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
+                if (!businessesProcessor.isProcessItemActive()) {
                     activateDeleteMode();
                 }
+                homeViewModel.addOrRemoveItemToProcess(businessesProcessor, business);
+                checkCard(cardHolder, business);
 
             }
 
             @Override
-            public void getCardHolderOnBind(View cardHolder, Business business) {
+            public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
                 if (homeViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
 
-               TextView quantity =  cardHolder.findViewById(R.id.textViewNumProducts);
+                TextView quantity = cardHolder.getNumProducts();
 
-               homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
-                       getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
-                               concat(": ").concat(String.valueOf(q)))
-               );
+                homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(getViewLifecycleOwner(), (q) -> quantity.setText(getString(R.string.current_products).concat(": ").concat(String.valueOf(q))));
             }
 
             @Override
-            public void reciveCardHol(View cardHolder) {
+            public void reciveCardHol(BusinessCardAdepter.CardHolder cardHolder) {
                 //Show empty circle when the delete mode is activated
-                homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
-                        cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
+                homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(), cardHolder.getUnCheckedCircle()::setBackground);
             }
 
             @Override
@@ -273,49 +249,80 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
 
     public void selectAll() {
-        selectAllIcon.setIcon(R.drawable.checked_circle);
+        selectAllMenuItem.setIcon(checkedCircle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
-        homeViewModel.selectAll(homeViewModel.parseBusinessListToGeneric());
-        updateToolbar();
+        LinkedHashSet<Business> receipts = new LinkedHashSet<>(businessCardAdepter.getCurrentList());
+        businessesProcessor.setItemsToProcess(receipts);
+        businessesProcessor.setAllSelected(true);
+        deleteMenuItem.setVisible(true);
+        homeViewModel.setSelectedItems(businessesProcessor.getItemsToProcess().size());
+
 
     }
 
 
     public void unSelectAll() {
-        selectAllIcon.setIcon(R.drawable.unchked_circle);
+        selectAllMenuItem.setIcon(uncheckedCircle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
-        homeViewModel.unSelectAll();
-        updateToolbar();
+        businessesProcessor.clearItemsToProcess();
+        deleteMenuItem.setVisible(false);
+        homeViewModel.setSelectedItems(businessesProcessor.getItemsToProcess().size());
+
     }
 
 
-    public void checkCard(View cardHolder, Business business) {
-        updateToolbar();
+    public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
-        if (homeViewModel.getItemsToDelete().contains(business)) {
-            cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            return;
+        boolean isChecked = businessesProcessor.isItemToBeProcess(business);
+
+        if(isChecked){
+            cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
+
+        }else {
+            cardHolder.getUnCheckedCircle().setBackground(null);
         }
-        cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
 
+        if (businessCardAdepter.getCurrentList().size() ==businessesProcessor.getItemsToProcess().size()){
+            businessesProcessor.setAllSelected(true);
+            selectAllMenuItem.setIcon(checkedCircle);
+        }else {
+            businessesProcessor.setAllSelected(false);
+            selectAllMenuItem.setIcon(uncheckedCircle);
+        }
+
+        if (businessesProcessor.getItemsToProcess().isEmpty()){
+            deleteMenuItem.setVisible(false);
+        }else {
+            deleteMenuItem.setVisible(true);
+        }
 
     }
 
 
-
+    private MenuItem selectAllMenuItem;
+    private MenuItem deleteMenuItem;
     public void activateDeleteMode() {
-        homeViewModel.setDeleteModeActive(true);
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.toolbar_delete_mode_menu);
         toolbar.setNavigationIcon(R.drawable.close_24);
-        toolbar.setNavigationOnClickListener(this::desactivateDeleteMode);
-        updateToolbar();
+        toolbar.setNavigationOnClickListener(this::desActivateDeleteMode);
+        selectAllMenuItem = toolbar.getMenu().findItem(R.id.select_all_button);
+        deleteMenuItem = toolbar.getMenu().findItem(R.id.delete_button);
+        businessesProcessor.setProcessItemActive(true);
+        mainActivityViewModel.hideBottomNavBar();
+        homeViewModel.getSelectedItems().observe(getViewLifecycleOwner(),
+                (i) ->{toolbar.setTitle(String.valueOf(i));});
     }
 
-    public void desactivateDeleteMode(View view) {
+    public void desActivateDeleteMode(View view) {
+        businessesProcessor.setProcessItemActive(false);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
-        selectAllIcon.setIcon(R.drawable.unchked_circle);
-        homeViewModel.desactivateDeleteMod(getString(R.string.businesses_title));
+        mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
-        updateToolbar();
+        toolbar.setTitle(getString(R.string.businesses_title));
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.actions_toolbar_home);
+
     }
 
 
@@ -335,60 +342,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void navigateToProducts(Long businessId) {
         NavDirections action = HomeFragmentDirections.actionNavigationHomeToBusinessFragment2(businessId);
         Navigation.findNavController(getView()).navigate(action);
-    }
-
-    @Override
-    public void showProgressBar() {
-
-        String title =  getString(R.string.delete);
-        MutableLiveData<Integer> progress = homeViewModel.getDeleteProgressLiveData();
-        MutableLiveData<String> deletedBusiness = homeViewModel.getDeletedItemsLiveData();
-
-         progressBarDialog = new ProgressBarDialog(
-                title, progress, deletedBusiness);
-
-        progressBarDialog.show(getParentFragmentManager(), "progress bar");
-
-    }
-    private  ProgressBarDialog progressBarDialog;
-
-    @Override
-    public void hideProgressBar() {
-        if(progressBarDialog != null){
-            progressBarDialog.dismiss();
-        }
-
-
-
-
-
-    }
-
-    @Override
-    public void askDeleteBusiness() {
-        String title = getString(R.string.send_items_to_bin_warning);
-        AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog( title);
-        askWhetherDeleteDialog.setButtonListener(new ViewModelListener<Boolean>() {
-            @Override
-            public void result(Boolean object) {
-                if(object){
-                    homeViewModel.passBusinessToBin();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateToolbar();
-                        }
-                    });
-
-                }else {
-                    desactivateDeleteMode(null);
-                }
-            }
-        });
-
-        askWhetherDeleteDialog.show(suportFmanager, "ask to send business to bin");
-
     }
 
 }

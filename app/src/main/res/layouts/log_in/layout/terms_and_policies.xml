@@ -3,6 +3,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:layout_marginStart="@dimen/window_start_side"
+    android:layout_marginTop="@dimen/window_top_side"
+    android:layout_marginEnd="@dimen/window_end_side"
+    android:layout_marginBottom="@dimen/window_bottom_side"
     android:orientation="horizontal">
 
     <CheckBox

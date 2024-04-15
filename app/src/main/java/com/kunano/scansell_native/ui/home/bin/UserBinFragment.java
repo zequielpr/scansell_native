@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +49,7 @@ public class UserBinFragment extends Fragment {
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+    private View empty_bin_layout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -65,6 +65,7 @@ public class UserBinFragment extends Fragment {
         toolbar = binding.binToolbar;
         deleteOrRestoreOptions = binding.deleteOrRestoreOption;
         recyclerView = binding.recycledBusinessList;
+        empty_bin_layout = binding.emptyBinLayout.emptyBinLayout;
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -99,13 +100,13 @@ public class UserBinFragment extends Fragment {
 
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
-            public void onShortTap(Business business, View cardHolder) {
+            public void onShortTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
                 mViewModel.shortTap(business);
                 if (mViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
             }
 
             @Override
-            public void onLongTap(Business business, View cardHolder) {
+            public void onLongTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
                 if (!mViewModel.isDeleteModeActive()) {
                     actcivateDeleteMode();
                 }
@@ -116,9 +117,9 @@ public class UserBinFragment extends Fragment {
             }
 
             @Override
-            public void getCardHolderOnBind(View cardHolder, Business business) {
+            public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
                 mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
-                TextView quantity =  cardHolder.findViewById(R.id.textViewNumProducts);
+                TextView quantity =  cardHolder.getNumProducts();
 
                 homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
                         getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
@@ -127,19 +128,15 @@ public class UserBinFragment extends Fragment {
             }
 
             @Override
-            public void reciveCardHol(View cardHolder) {
+            public void reciveCardHol(BusinessCardAdepter.CardHolder cardHolder) {
                 mViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
-                        cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
-
-                ImageButton imageButton = cardHolder.findViewById(R.id.imageButtonRestoreFromTrash);
-
+                        cardHolder.getUnCheckedCircle()::setBackground);
 
                 mViewModel.getRestoreButtonVisibilityLiveData().observe(getViewLifecycleOwner(),
-                        imageButton::setVisibility
+                        cardHolder.getImageButtonRestore()::setVisibility
                 );
 
-
-                TextView textViewDaysLeft = cardHolder.findViewById(R.id.textViewDaysLeftProduct);
+                TextView textViewDaysLeft = cardHolder.getCard().findViewById(R.id.textViewDaysLeftProduct);
                 textViewDaysLeft.setVisibility(View.VISIBLE);
                 mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d) -> {
                     textViewDaysLeft.setText((CharSequence) d);
@@ -214,7 +211,7 @@ public class UserBinFragment extends Fragment {
     }
 
 
-    public void checkCard(View cardHolder, Business business) {
+    public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
         if (mViewModel.getItemsToDelete().isEmpty()){
             deleteOrRestoreOptions.setVisibility(View.GONE);
         }else {
@@ -222,8 +219,8 @@ public class UserBinFragment extends Fragment {
         }
 
         if (mViewModel.getItemsToDelete().contains(business)) {
-            cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            System.out.println("Seleccionada" + cardHolder.getTag());
+            cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
+            System.out.println("Seleccionada" + cardHolder.getCard().getTag());
             checkIfAllSelected();
             return;
         }
@@ -231,7 +228,7 @@ public class UserBinFragment extends Fragment {
 
 
         checkIfAllSelected();
-        cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
+        cardHolder.getUnCheckedCircle().setBackground(null);
 
 
     }
@@ -332,6 +329,9 @@ public class UserBinFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l)->{
+            empty_bin_layout.setVisibility(l.size() > 0?View.GONE:View.VISIBLE);
+        });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -348,8 +348,6 @@ public class UserBinFragment extends Fragment {
             }
         });
 
-
-        selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
 
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {

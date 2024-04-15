@@ -1,65 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.login.sing_in.SignInFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_margin="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="@dimen/window_start_side"
+        android:layout_marginEnd="@dimen/window_end_side"
         android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailFilledTextField"
 
-        <EditText
-            android:id="@+id/emailEditText"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/intro_account_email"
-            android:inputType="textEmailAddress" />
+            android:hint="@string/email">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEditText"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/emailWarnTextViewSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/emailFilledTextField"
             android:textColor="@color/red" />
 
-        <EditText
-            android:id="@+id/passdEditText"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            android:layout_below="@id/emailWarnTextViewSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:hint="@string/introduce_account_passwd"
-            android:ems="10"
-            android:inputType="textPassword" />
+            android:hint="@string/password">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passdEditText"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/passwdWarnTextViewSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/passwordFilledTextField"
             android:textColor="@color/red" />
+
         <CheckBox
             android:id="@+id/checkBoxShowPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_below="@id/matchTextView"
+            android:layout_below="@id/passwdWarnTextViewSignIn"
             android:text="@string/show_password" />
 
         <Button
             android:id="@+id/sign_inbutton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/checkBoxShowPassword"
             android:text="@string/log_in" />
 
         <LinearLayout
+            android:id="@+id/o_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:layout_below="@id/sign_inbutton"
             android:orientation="horizontal">
 
             <View
@@ -67,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="5dp"
                 android:background="@color/black_transparent" />
 
             <TextView
@@ -81,45 +114,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_weight="1"
+                android:layout_marginStart="5dp"
                 android:background="@color/black_transparent" />
 
         </LinearLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/logInGoogleCard"
+        <FrameLayout
+            android:id="@+id/continueGoogleLayout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:radius="8dp"
+            android:padding="1dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/o_layout"
+            android:background="@drawable/cardview_border">
 
-            android:layout_marginTop="30dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/logInGoogleCard"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
 
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/google_logo" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="30dp"
+                    android:padding="6dp">
 
-                <TextView
-                    android:id="@+id/textView14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/continue_google"
-                    android:textSize="19sp" />
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/google_logo" />
 
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/continue_google"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="30dp"
             android:orientation="horizontal">
 
             <Button
@@ -140,5 +192,5 @@
                 android:text="@string/sign_up"
                 android:textColor="@color/black" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </FrameLayout>

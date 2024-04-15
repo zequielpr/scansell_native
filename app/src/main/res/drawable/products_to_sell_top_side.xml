@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item> <!-- Adjust the top value to control the size of the tongue -->
+        <shape android:shape="rectangle">
+            <solid android:color="?colorSurface"/>
+            <corners android:topLeftRadius="120dp" android:topRightRadius="120dp"/> <!-- Adjust the radius as needed -->
+        </shape>
+    </item>
+</layer-list>
