@@ -209,6 +209,6 @@ dependencies {
 
     //qonversion_____________________________
 
-    implementation 'io.qonversion.android.sdk:sdk:3.2.3'
+    implementation 'io.qonversion.android.sdk:sdk:7.+'
 
 }

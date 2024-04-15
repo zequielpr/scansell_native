@@ -2,15 +2,16 @@ package com.kunano.scansell_native.ui.profile.admin;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.qonversion.android.sdk.Qonversion;
-import com.qonversion.android.sdk.QonversionError;
-import com.qonversion.android.sdk.QonversionOfferingsCallback;
-import com.qonversion.android.sdk.QonversionPermissionsCallback;
-import com.qonversion.android.sdk.dto.QPermission;
+import com.qonversion.android.sdk.dto.QonversionError;
+import com.qonversion.android.sdk.dto.entitlements.QEntitlement;
 import com.qonversion.android.sdk.dto.offerings.QOffering;
 import com.qonversion.android.sdk.dto.offerings.QOfferings;
+import com.qonversion.android.sdk.listeners.QonversionEntitlementsCallback;
+import com.qonversion.android.sdk.listeners.QonversionOfferingsCallback;
 
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,8 @@ public class AdminViewModel extends ViewModel{
 
 
     public AdminViewModel() {
-        updatePermissions();
-        loadOfferings();
+        //updatePermissions();
+        //loadOfferings();
     }
 
 
@@ -42,7 +43,7 @@ public class AdminViewModel extends ViewModel{
 
 
     private void loadOfferings() {
-        Qonversion.offerings(new QonversionOfferingsCallback() {
+        Qonversion.getSharedInstance().offerings(new QonversionOfferingsCallback() {
             @Override
             public void onError(QonversionError error) {
                 // Handle error
@@ -57,16 +58,16 @@ public class AdminViewModel extends ViewModel{
     }
 
     public void updatePermissions() {
-        Qonversion.checkPermissions(new QonversionPermissionsCallback() {
+        Qonversion.getSharedInstance().checkEntitlements(new QonversionEntitlementsCallback() {
             @Override
-            public void onError(QonversionError error) {
-                Log.d("TAG", "onError: " + error.getDescription());
+            public void onSuccess(@NonNull Map<String, QEntitlement> permissions) {
+                hasPremiumPermission = permissions.get("Premium").isActive();
+                Log.d("TAG", "permissions: " + permissions.keySet());
             }
 
             @Override
-            public void onSuccess(Map<String, QPermission> permissions) {
-                hasPremiumPermission = permissions.get("Premium").isActive();
-                Log.d("TAG", "permissions: " + permissions.keySet());
+            public void onError(@NonNull QonversionError error) {
+                Log.d("TAG", "onError: " + error.getDescription());
             }
         });
     }
