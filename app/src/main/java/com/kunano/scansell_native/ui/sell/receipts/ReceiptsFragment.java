@@ -64,21 +64,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        processItemsComponent = new ProcessItemsComponent<>(this);
-        requireActivity().getOnBackPressedDispatcher().
-                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        System.out.println("back");
-                        handleBackPress();
-                    }
-                });
+
 
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        processItemsComponent = new ProcessItemsComponent<>(this);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         receiptsViewModel = new ViewModelProvider(getActivity()).get(ReceiptsViewModel.class);
@@ -97,6 +90,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
         sellViewModel.getReceipts().observe(getViewLifecycleOwner(), receiptAdapter::submitList);
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         setCardListener();
         return binding.getRoot();
@@ -349,6 +350,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
                 processItemsComponent.deleteItems(new ViewModelListener<Void>() {
                     @Override
                     public void result(Void object) {
+                        getActivity().runOnUiThread(ReceiptsFragment.this::desActivateDeleteMode);
                         receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
                     }
                 });

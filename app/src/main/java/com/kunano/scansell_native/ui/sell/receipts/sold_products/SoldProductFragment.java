@@ -50,18 +50,13 @@ public class SoldProductFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requireActivity().getOnBackPressedDispatcher().
-                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        handleBackPress();
-                    }
-                });
+
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         soldProductViewModel = new ViewModelProvider(this).get(SoldProductViewModel.class);
 
@@ -106,6 +101,13 @@ public class SoldProductFragment extends Fragment{
         soldProductRecycleView.setAdapter(soldProductAdapter);
 
         setCardListener();
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        handleBackPress();
+                    }
+                });
 
 
         return binding.getRoot();

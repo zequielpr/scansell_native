@@ -33,6 +33,7 @@ import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 
@@ -448,7 +449,7 @@ public class BusinessFragment extends Fragment {
             getActivity().runOnUiThread(() -> updateToolbar());
 
         } else {
-            desactivateDeleteMode(null);
+            desactivateDeleteMode(getView());
         }
     }
 
@@ -477,9 +478,13 @@ public class BusinessFragment extends Fragment {
 
 
     public void hideProgressBar(boolean result) {
-        if (!result) {
-            //Show result
-            return;
+        if (result) {
+            getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
+            Utils.showToast(getActivity(), getString(R.string.product_sent_to_bin_successfuly),
+                    Toast.LENGTH_SHORT);
+        }else {
+            Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),
+                    Toast.LENGTH_SHORT);
         }
 
         if (progressBarDialog != null) {

@@ -334,7 +334,7 @@ public class SellFragment extends Fragment {
 
     private void finish(View view){
         CollectPaymentMethodFragment collectPaymentMethodFragment;
-        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView());
+        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView(), getActivity());
         collectPaymentMethodFragment.show(getParentFragmentManager(), "collect_payment_method");
     }
 
