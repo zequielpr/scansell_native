@@ -79,8 +79,8 @@
     <string name="scanned_product_not_found"> scanned product not found</string>
     <string name="try_again"> try again</string>
     <string name="create_new_product">new product</string>
-    <string name="delete_after_15_days">delete after 15 days</string>
-    <string name="delete_after_30_days">delete after 30 days</string>
+    <string name="delete_after_15_days">Delete after 15 days</string>
+    <string name="delete_after_30_days">Delete after 30 days</string>
     <string name="options">options</string>
     <string name="sells_and_revenues">sells</string>
     <string name="most_sold_products">most sold products</string>
@@ -214,6 +214,8 @@
     <string name="product_restored_successfully">Products restored successfully</string>
     <string name="business_deleted_successfully">Businesses deleted successfully</string>
     <string name="product_deleted_successfully">Products deleted successfully</string>
+    <string name="there_is_not_receipt">There is not any receipt</string>
+    <string name="never_delete">Never delete</string>
 
 
 

@@ -89,6 +89,14 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="0"
                     android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_weight="0"
+                    android:text="@string/dollar_symbol" />
             </LinearLayout>
 
             <LinearLayout
@@ -108,9 +116,17 @@
                     android:id="@+id/casDue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="0"
                     android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/dollar_symbol" />
             </LinearLayout>
         </LinearLayout>
 

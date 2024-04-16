@@ -22,5 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:title="@string/delete_after_30_days" />
+        <item
+            android:id="@+id/never_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/never_delete" />
     </group>
 </menu>
