@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -47,7 +48,15 @@ public class DeleteAccountFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         accountHelper = new AccountHelper();
         deleteAccountViewModel = new ViewModelProvider(this).get(DeleteAccountViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
+
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
     }
 
@@ -80,7 +89,6 @@ public class DeleteAccountFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections navDirectionsToAccount = DeleteAccountFragmentDirections.actionDeleteAccountFragmentToAccountFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToAccount);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void handleBackPress(){

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -56,7 +57,14 @@ public class ChangeEmailAddressFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
 
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         accountHelper = new AccountHelper();
     }
@@ -93,7 +101,6 @@ public class ChangeEmailAddressFragment extends Fragment {
 
     private void handleBackPress(){
         navigateBack(getView());
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 

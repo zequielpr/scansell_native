@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -64,6 +65,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
         super.onCreate(savedInstanceState);
 
         processItemsComponent = new ProcessItemsComponent<>(this);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
     }
 
@@ -88,7 +97,6 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
         sellViewModel.getReceipts().observe(getViewLifecycleOwner(), receiptAdapter::submitList);
 
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
 
         setCardListener();
         return binding.getRoot();

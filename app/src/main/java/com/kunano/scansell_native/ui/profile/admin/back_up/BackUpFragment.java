@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -61,6 +62,14 @@ public class BackUpFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPressed();
+                    }
+                });
 
     }
 
@@ -84,9 +93,6 @@ public class BackUpFragment extends Fragment {
         backupToolbar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         backupToolbar.setNavigationOnClickListener(this::navigateBack);
 
-        mainActivityViewModel.setHandleBackPress(this::handlePressBack);
-
-
         restoreBackUpSection.setOnClickListener(this::setRestoreBackUpSection);
         createBackupSection.setOnClickListener(this::setCreateBackupSectionAction);
 
@@ -98,7 +104,7 @@ public class BackUpFragment extends Fragment {
     }
 
 
-    private void handlePressBack() {
+    private void handleBackPressed() {
         navigateBack(getView());
     }
 
@@ -106,7 +112,6 @@ public class BackUpFragment extends Fragment {
     private void navigateBack(View view) {
         NavDirections profileNavDirections = BackUpFragmentDirections.actionBackUpFragmentToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 

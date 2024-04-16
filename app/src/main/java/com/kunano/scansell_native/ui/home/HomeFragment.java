@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -92,6 +93,14 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
 
         setBusinessCardOncliListener();
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         return binding.getRoot();
     }
@@ -116,7 +125,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
         homeViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(), createBusinessView::setVisibility);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
 
         toolbar.addMenuProvider(menuProvider);
     }

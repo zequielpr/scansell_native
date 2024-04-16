@@ -36,13 +36,9 @@
                 android:layout_marginStart="@dimen/window_start_side"
                 android:tag="recycleListBin" />
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/delete_or_restore_option"
-                style="@style/BottomNavigationStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                app:menu="@menu/delete_or_restore_options" />
+            <include android:id="@+id/delete_or_restore_option"
+                layout="@layout/bin_bottom_sheet"/>
+
 
         </LinearLayout>
     </RelativeLayout>

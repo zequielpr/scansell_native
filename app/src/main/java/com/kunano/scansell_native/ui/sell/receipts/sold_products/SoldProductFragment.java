@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -44,6 +45,20 @@ public class SoldProductFragment extends Fragment{
     private TextView cashTendered;
     private TextView cashDue;
     private TextView cashTenderedLabel;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        handleBackPress();
+                    }
+                });
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -90,8 +105,6 @@ public class SoldProductFragment extends Fragment{
         soldProductAdapter.setActivityParent(getActivity());
         soldProductRecycleView.setAdapter(soldProductAdapter);
 
-
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         setCardListener();
 
 
@@ -106,7 +119,6 @@ public class SoldProductFragment extends Fragment{
     private void navigateBack(View view){
         NavDirections navDirections = SoldProductFragmentDirections.actionSoldProductFragment2ToReceiptsFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void populateReceipt(Receipt receipt){

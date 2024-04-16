@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -56,8 +57,16 @@ public class ChangePasswordFragment extends Fragment {
         super.onCreate(savedInstanceState);
         passwordViewModel = new ViewModelProvider(this).get(PasswordViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         accountHelper = new AccountHelper();
+
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
     }
 
@@ -121,7 +130,6 @@ public class ChangePasswordFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections navDirectionsToAccount = ChangePasswordFragmentDirections.actionChangePasswordFragmentToAccountFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToAccount);
-        if (mainActivityViewModel != null) mainActivityViewModel.setHandleBackPress(null);
     }
 
 

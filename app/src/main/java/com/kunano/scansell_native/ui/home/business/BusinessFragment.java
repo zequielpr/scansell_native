@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -117,8 +118,14 @@ public class BusinessFragment extends Fragment {
 
 
         setCardListener();
-
-        mainActivityViewModel.setHandleBackPress(this::handlerBackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                System.out.println("back");
+               handlerBackPress();
+            }
+        });
 
 
         return binding.getRoot();
@@ -128,7 +135,6 @@ public class BusinessFragment extends Fragment {
     private void handlerBackPress() {
         if (businessViewModel.isDeleteModeActive()) {
             desactivateDeleteMode(getView());
-            updateToolbar();
             return;
         } else if (businessViewModel.isSearchModeActive()) {
             System.out.println("Desactivate search mode: ");
@@ -145,7 +151,6 @@ public class BusinessFragment extends Fragment {
         getActivity().runOnUiThread(() -> {
             NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToNavigationHome();
             Navigation.findNavController(getView()).navigate(action);
-            mainActivityViewModel.setHandleBackPress(null);
         });
     }
 
@@ -410,6 +415,8 @@ public class BusinessFragment extends Fragment {
     public void activateDeleteMode() {
         businessViewModel.setDeleteModeActive(true);
         sendingBusinessToBin = false;
+        mainActivityViewModel.hideBottomNavBar();
+        fButton.setVisibility(View.GONE);
         updateToolbar();
     }
 
@@ -417,6 +424,8 @@ public class BusinessFragment extends Fragment {
         businessViewModel.setCheckedOrUncheckedCirclLivedata(null);
         businessViewModel.desactivateDeleteMod(businessViewModel.getBusinessName());
         toolbar.setNavigationIcon(null);
+        mainActivityViewModel.showBottomNavBar();
+        fButton.setVisibility(View.VISIBLE);
         updateToolbar();
     }
 
@@ -499,7 +508,7 @@ public class BusinessFragment extends Fragment {
     private void handleResult(Boolean result) {
 
         if (result) {
-            showToast(getString(R.string.update), Toast.LENGTH_SHORT);
+            showToast(getString(R.string.business_update_successfully), Toast.LENGTH_SHORT);
         }
     }
 

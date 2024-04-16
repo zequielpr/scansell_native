@@ -66,7 +66,7 @@ public class CustomCamera {
 
 
         customCameraviewModel.getFlashMode().observe(fragment.getViewLifecycleOwner(), this::handleFlashIconButton);
-        customCameraviewModel.getTorchState().observe(fragment.getViewLifecycleOwner(), this::handleTorchconButton);
+        customCameraviewModel.getTorchState().observe(fragment.getViewLifecycleOwner(), this::handleTorchState);
 
 
 
@@ -209,12 +209,12 @@ public class CustomCamera {
         imageButtonFlash.getDrawable().setColorFilter(colorFilterWhite);
     }
 
-    private void handleTorchconButton(Boolean torchState) {
+    private void handleTorchState(Boolean torchState) {
         if (torchState) {
-            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.torch_off_24));
+            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.flash_of_24));
 
         } else {
-            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.torch_24));
+            imageButtonFlash.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.flash_on_24));
         }
 
         imageButtonFlash.getDrawable().setColorFilter(colorFilterWhite);
