@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -32,6 +33,7 @@ import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 
@@ -117,8 +119,14 @@ public class BusinessFragment extends Fragment {
 
 
         setCardListener();
-
-        mainActivityViewModel.setHandleBackPress(this::handlerBackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                System.out.println("back");
+               handlerBackPress();
+            }
+        });
 
 
         return binding.getRoot();
@@ -128,7 +136,6 @@ public class BusinessFragment extends Fragment {
     private void handlerBackPress() {
         if (businessViewModel.isDeleteModeActive()) {
             desactivateDeleteMode(getView());
-            updateToolbar();
             return;
         } else if (businessViewModel.isSearchModeActive()) {
             System.out.println("Desactivate search mode: ");
@@ -145,7 +152,6 @@ public class BusinessFragment extends Fragment {
         getActivity().runOnUiThread(() -> {
             NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToNavigationHome();
             Navigation.findNavController(getView()).navigate(action);
-            mainActivityViewModel.setHandleBackPress(null);
         });
     }
 
@@ -410,6 +416,8 @@ public class BusinessFragment extends Fragment {
     public void activateDeleteMode() {
         businessViewModel.setDeleteModeActive(true);
         sendingBusinessToBin = false;
+        mainActivityViewModel.hideBottomNavBar();
+        fButton.setVisibility(View.GONE);
         updateToolbar();
     }
 
@@ -417,6 +425,8 @@ public class BusinessFragment extends Fragment {
         businessViewModel.setCheckedOrUncheckedCirclLivedata(null);
         businessViewModel.desactivateDeleteMod(businessViewModel.getBusinessName());
         toolbar.setNavigationIcon(null);
+        mainActivityViewModel.showBottomNavBar();
+        fButton.setVisibility(View.VISIBLE);
         updateToolbar();
     }
 
@@ -439,7 +449,7 @@ public class BusinessFragment extends Fragment {
             getActivity().runOnUiThread(() -> updateToolbar());
 
         } else {
-            desactivateDeleteMode(null);
+            desactivateDeleteMode(getView());
         }
     }
 
@@ -468,9 +478,13 @@ public class BusinessFragment extends Fragment {
 
 
     public void hideProgressBar(boolean result) {
-        if (!result) {
-            //Show result
-            return;
+        if (result) {
+            getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
+            Utils.showToast(getActivity(), getString(R.string.product_sent_to_bin_successfuly),
+                    Toast.LENGTH_SHORT);
+        }else {
+            Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),
+                    Toast.LENGTH_SHORT);
         }
 
         if (progressBarDialog != null) {
@@ -499,7 +513,7 @@ public class BusinessFragment extends Fragment {
     private void handleResult(Boolean result) {
 
         if (result) {
-            showToast(getString(R.string.update), Toast.LENGTH_SHORT);
+            showToast(getString(R.string.business_update_successfully), Toast.LENGTH_SHORT);
         }
     }
 

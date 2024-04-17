@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -21,11 +22,6 @@ import com.kunano.scansell_native.databinding.FragmentAccountBinding;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AccountFragment extends Fragment {
 
 
@@ -51,7 +47,6 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handlePressBack);
         accountHelper = new AccountHelper();
 
         nameSectionView = binding.nameSection;
@@ -67,6 +62,13 @@ public class AccountFragment extends Fragment {
         accountToolbar = binding.accountToolbar;
 
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        handleBackPressed();
+                    }
+                });
 
         return binding.getRoot();
     }
@@ -92,7 +94,7 @@ public class AccountFragment extends Fragment {
         emailTextView.setText(accountHelper.getUserEmail());
     }
 
-    private void handlePressBack(){
+    private void handleBackPressed(){
         navigateBack(getView());
     }
 
@@ -100,7 +102,6 @@ public class AccountFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections profileNavDirections = AccountFragmentDirections.actionAccountFragmentToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 

@@ -45,9 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/red"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_below="@id/emailFilledTextField"
         android:text="@string/introduced_email_incorrect" />
 

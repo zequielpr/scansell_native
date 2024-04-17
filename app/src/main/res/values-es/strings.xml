@@ -185,8 +185,8 @@
     <string name="ask_to_leave_app">Do you want to leave this app?</string>
     <string name="current_products">Current products</string>
     <string name="stock">Stock:</string>
-    <string name="sell_price">Sell price:</string>
-    <string name="buy_price">Buy price:</string>
+    <string name="selling_price_two_dots">Sell price:</string>
+    <string name="buying_price_two_dots">Buy price:</string>
     <string name="cancel_sell">Cancel sell</string>
     <string name="out_of_stock">Product out of stock</string>
     <string name="update_stock">Update stock?</string>
@@ -207,5 +207,16 @@
     <string name="camera_access_required">The access to phone camera is required for this functionality</string>
     <string name="file_and_media_permission_required">The access to phone files and media
         is required for this functionality</string>
+    <string name="account_disabled">This account has been disable</string>
+    <string name="business_restored_successfully">Businesses restored successfully</string>
+    <string name="product_restored_successfully">Products restored successfully</string>
+    <string name="business_deleted_successfully">Businesses deleted successfully</string>
+    <string name="product_deleted_successfully">Products deleted successfully</string>
+    <string name="business_update_successfully">Business updated successfully</string>
+    <string name="stock_two_dots">Stock:</string>
+    <string name="there_is_not_receipt">There is not any receipt</string>
+    <string name="never_delete">Never delete</string>
+    <string name="introduce_your_account_email">Introduce the email account</string>
+
 
 </resources>

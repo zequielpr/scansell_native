@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,6 +90,7 @@ public class SellFragment extends Fragment {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);
         adminPermissions.setResultListener(this::navigateToHome);
+
 
     }
 
@@ -230,6 +232,12 @@ public class SellFragment extends Fragment {
         });
 
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                    }
+                });
 
 
 
@@ -259,8 +267,6 @@ public class SellFragment extends Fragment {
         sellViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
                 createBusinessView::setVisibility);
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(),this::handleViewsVisibilities);
-
-        mainActivityViewModel.setHandleBackPress(null);
 
         toolbar.inflateMenu(R.menu.sell_tool_bar);
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
@@ -328,7 +334,7 @@ public class SellFragment extends Fragment {
 
     private void finish(View view){
         CollectPaymentMethodFragment collectPaymentMethodFragment;
-        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView());
+        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView(), getActivity());
         collectPaymentMethodFragment.show(getParentFragmentManager(), "collect_payment_method");
     }
 

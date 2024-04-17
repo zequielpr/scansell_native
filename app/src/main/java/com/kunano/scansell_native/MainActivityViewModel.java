@@ -7,8 +7,6 @@ public class MainActivityViewModel extends ViewModel {
     HostComponentListener hostComponentListener;
     MutableLiveData<Integer> bottomNavBarVisibility;
 
-    HandleBackPress handleBackPress;
-
     public MainActivityViewModel() {
         bottomNavBarVisibility = new MutableLiveData<>();
     }
@@ -21,13 +19,6 @@ public class MainActivityViewModel extends ViewModel {
     public void showBottomNavBar(){
         hostComponentListener.showBottomNavBar();
     }
-
-    public void notifyBackPressed(){
-        if(handleBackPress != null){
-            handleBackPress.backButtonPressed();
-        };
-    }
-
 
 
     public HostComponentListener getHostComponentListener() {
@@ -53,18 +44,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 
 
-    @FunctionalInterface
-    public interface HandleBackPress{
-        abstract void backButtonPressed();
-    }
 
 
-    public HandleBackPress getHandleBackPress() {
-        return handleBackPress;
-    }
-
-    public void setHandleBackPress(HandleBackPress handleBackPress) {
-        this.handleBackPress = handleBackPress;
-    }
 }
 

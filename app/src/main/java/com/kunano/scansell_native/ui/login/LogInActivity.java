@@ -30,6 +30,7 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         MaterialToolbar toolbar = binding.toolbar;
+        toolbar.setNavigationOnClickListener((v)->logInViewModel.navigateBack());
         setSupportActionBar(toolbar);
 
 
@@ -47,6 +48,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
+        super.onBackPressed();
         logInViewModel.navigateBack();
     }
 }

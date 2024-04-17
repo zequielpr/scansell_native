@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.camera.view.PreviewView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -73,7 +74,13 @@ public class CaptureImageFragment extends Fragment {
         });
 
 
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        handleBackPress();
+                    }
+                });
         cancelButton.setOnClickListener(this::navigateBack);
 
 
@@ -94,7 +101,6 @@ public class CaptureImageFragment extends Fragment {
     public void navigateBack(View view){
         int navDirections = R.id.createProductFragment2;
         Navigation.findNavController(getView()).navigate(navDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void receiveBitmapImg(Bitmap bitmapImg){

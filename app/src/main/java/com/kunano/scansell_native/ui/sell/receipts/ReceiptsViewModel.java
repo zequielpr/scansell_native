@@ -19,6 +19,7 @@ public class ReceiptsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isSearchModeActive;
     private MutableLiveData<Drawable> allSelectedIconMutableLiveData;
     private MutableLiveData<Integer> selectedItemQuantityMutableLiveData;
+
     public ReceiptsViewModel(@NonNull Application application){
         super(application);
         isSearchModeActive = new MutableLiveData<>(false);

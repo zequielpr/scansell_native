@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -47,8 +48,6 @@ public class DeleteAccountFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         accountHelper = new AccountHelper();
         deleteAccountViewModel = new ViewModelProvider(this).get(DeleteAccountViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
-
     }
 
     @Override
@@ -61,6 +60,15 @@ public class DeleteAccountFragment extends Fragment {
         deleteButton = binding.deleteButton;
         emailWarnTextView = binding.warnEmailTextView;
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
+
         return binding.getRoot();
     }
 
@@ -72,6 +80,8 @@ public class DeleteAccountFragment extends Fragment {
         deleteAccountToolbar.setNavigationOnClickListener(this::navigateBack);
         deleteAccountViewModel.getEmailWarnVisibilityMutableLiveData().observe(getViewLifecycleOwner(),
                 emailWarnTextView::setVisibility);
+        deleteAccountViewModel.getEmailWarnContentMutableLiveData().observe(getViewLifecycleOwner(),
+                emailWarnTextView::setText);
 
         deleteButton.setOnClickListener(this::deleteAccountRequest);
 
@@ -80,7 +90,6 @@ public class DeleteAccountFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections navDirectionsToAccount = DeleteAccountFragmentDirections.actionDeleteAccountFragmentToAccountFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToAccount);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void handleBackPress(){
@@ -89,8 +98,8 @@ public class DeleteAccountFragment extends Fragment {
 
     AskForActionDialog askAskToDeleteAccount;
     private void deleteAccountRequest(View view){
-
-        if (!validateEmail(editTextEmail.getText().toString()))return;
+        String email = editTextEmail.getText().toString().trim();
+        if (!validateEmail(email))return;
 
         askAskToDeleteAccount = new AskForActionDialog(getString(R.string.delete_account),
                 getString(R.string.deleted_account_not_retrievable));
@@ -130,13 +139,22 @@ public class DeleteAccountFragment extends Fragment {
     }
 
     private boolean validateEmail(String email){
+        if (email.isEmpty()){
+            showWarn(false);
+            deleteAccountViewModel.
+                    setEmailWarnContentMutableLiveData(getString(R.string.introduce_your_account_email));
+            return  false;
+        }
+
+        deleteAccountViewModel.
+                setEmailWarnContentMutableLiveData(getString(R.string.introduced_email_incorrect));
         boolean emailValid = email.equals(accountHelper.getUserEmail());
         showWarn(emailValid);
         return emailValid;
     }
 
     private void showWarn(boolean result){
-        deleteAccountViewModel.setEmailWarnVisibilityMutableLiveData(result?View.GONE:View.VISIBLE);
+        deleteAccountViewModel.setEmailWarnVisibilityMutableLiveData(result?View.INVISIBLE:View.VISIBLE);
 
     }
 }

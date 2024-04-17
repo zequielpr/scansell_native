@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
@@ -37,16 +37,17 @@ public class VerifyEmailFragment extends Fragment {
         accountHelper = new AccountHelper();
         setResendEmailVerificationButtonAction(getView());
         logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
+        logInViewModel.setLogInViewModelListener(this::navigateBack);
+
+
     }
     public void onResume(){
         super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
+
     }
 
     private void navigateBack(){
-        NavDirections navDirectionsToLogIn = VerifyEmailFragmentDirections.actionVerifyEmailFragmentToLogInFragment();
-        Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
-        logInViewModel.setLogInViewModelListener(null);
+        Navigation.findNavController(getView()).navigateUp();
     }
 
     public void onDestroy(){
@@ -74,6 +75,11 @@ public class VerifyEmailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         resendEmailVerificationButton.setOnClickListener(this::setResendEmailVerificationButtonAction);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
     }
 
     public void setResendEmailVerificationButtonAction(View view){

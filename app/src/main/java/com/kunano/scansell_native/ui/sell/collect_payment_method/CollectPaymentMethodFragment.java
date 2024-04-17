@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.sell.collect_payment_method;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,9 +42,12 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private View parentView;
     private View cashDueLayout;
 
-    public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView) {
+    private Activity parentActivity;
+
+    public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView, Activity parentActivity) {
         this.sellViewModel = sellViewModel;
         this.parentView = parentView;
+        this.parentActivity = parentActivity;
     }
 
     @Override
@@ -147,7 +151,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
                     try {
                         sellViewModel.clearProductsToSell();
-                        getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
+                        parentActivity.runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
                     }catch (Exception e){
                         e.printStackTrace();
                     }

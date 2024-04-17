@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -46,12 +47,17 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     private Toolbar toolbar;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-    private static String DELETE_AFTER_15_DAYS = "DELETE_AFTER_15_DAYS";
+    private static final String DELETE_AFTER_15_DAYS = "DELETE_AFTER_15_DAYS";
+    private static final String DELETE_AFTER_30_DAYS = "DELETE_AFTER_30_DAYS";
+    private static final String NEVER = "NEVER";
+    private static final String DELETE_MODE = "DELETE_MODE";
     private SearchView searchView;
 
     private  ProcessItemsComponent<Receipt> processItemsComponent;
     private Drawable checkedCircle;
     private Drawable unCheckedCircle;
+
+    private View receiptEmptySectionLayout;
 
 
     public static ReceiptsFragment newInstance() {
@@ -63,13 +69,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        processItemsComponent = new ProcessItemsComponent<>(this);
+
 
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        processItemsComponent = new ProcessItemsComponent<>(this);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         receiptsViewModel = new ViewModelProvider(getActivity()).get(ReceiptsViewModel.class);
@@ -80,6 +87,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
         unCheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
 
         recyclerViewReceipt = binding.receiptRecycleView;
+        receiptEmptySectionLayout = binding.notReceiptLayout.receiptEmptySection;
         recyclerViewReceipt.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewReceipt.setHasFixedSize(true);
         receiptAdapter = new ReceiptAdapter();
@@ -88,7 +96,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
         sellViewModel.getReceipts().observe(getViewLifecycleOwner(), receiptAdapter::submitList);
 
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         setCardListener();
         return binding.getRoot();
@@ -280,6 +295,8 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         toolbar.addMenuProvider(this);
+        sellViewModel.getEmptyReceiptSectionVisibility().observe(getViewLifecycleOwner(),
+                receiptEmptySectionLayout::setVisibility);
     }
 
 
@@ -316,12 +333,19 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
-        boolean isDeleteAfter15Active = sharedPref.getBoolean(DELETE_AFTER_15_DAYS, true);
+        String deleteMode = sharedPref.getString(DELETE_MODE, NEVER);
 
-        if (isDeleteAfter15Active){
-            toolbar.getMenu().findItem(R.id.delete_15_days).setChecked(true);
-        }else {
-            toolbar.getMenu().findItem(R.id.delete_30_days).setChecked(true);
+
+        switch (deleteMode){
+            case DELETE_AFTER_15_DAYS:
+                toolbar.getMenu().findItem(R.id.delete_15_days).setChecked(true);
+                break;
+            case DELETE_AFTER_30_DAYS:
+                toolbar.getMenu().findItem(R.id.delete_30_days).setChecked(true);
+                break;
+            default:
+                toolbar.getMenu().findItem(R.id.never_delete).setChecked(true);
+
         }
     }
 
@@ -330,17 +354,22 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
         switch (menuItem.getItemId()){
             case R.id.delete_15_days:
-                deletePeriod15Days(true);
+                setDeleteMode(DELETE_AFTER_15_DAYS);
                 menuItem.setChecked(true);
                 return true;
             case R.id.delete_30_days:
-                deletePeriod15Days(false);
+                setDeleteMode(DELETE_AFTER_30_DAYS);
+                menuItem.setChecked(true);
+                return true;
+            case R.id.never_delete:
+                setDeleteMode(NEVER);
                 menuItem.setChecked(true);
                 return true;
             case R.id.delete_button:
                 processItemsComponent.deleteItems(new ViewModelListener<Void>() {
                     @Override
                     public void result(Void object) {
+                        getActivity().runOnUiThread(ReceiptsFragment.this::desActivateDeleteMode);
                         receiptsViewModel.setSelectedItemQuantityMutableLiveData(processItemsComponent.getItemsToProcess().size());
                     }
                 });
@@ -361,9 +390,9 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     }
 
 
-    private void deletePeriod15Days(Boolean delete_after_15_days){
+    private void setDeleteMode(String deleteMode){
         if(editor != null){
-            editor.putBoolean(DELETE_AFTER_15_DAYS,delete_after_15_days);
+            editor.putString(DELETE_MODE, deleteMode);
             editor.apply();
         }
     }

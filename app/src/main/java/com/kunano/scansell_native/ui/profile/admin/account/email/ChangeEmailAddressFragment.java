@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -55,9 +56,6 @@ public class ChangeEmailAddressFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
-
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
-
         accountHelper = new AccountHelper();
     }
 
@@ -67,16 +65,27 @@ public class ChangeEmailAddressFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentChangeEmailAddressBinding.inflate(inflater, container, false);
 
+        emailEditText = binding.editTextEmail;
+        emailEditTextConfirm = binding.editTextConfirmEmail;
+        saveButton = binding.buttonSaveEmail;
+        changeEmailToolbar = binding.changeEmailToolbar;
+
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
+
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        emailEditText = binding.editTextEmail;
-        emailEditTextConfirm = binding.editTextConfirmEmail;
-        saveButton = binding.buttonSaveEmail;
-        changeEmailToolbar = binding.changeEmailToolbar;
+
         saveButton.setOnClickListener(this::setSaveButtonAction);
         emailWarnTextView = binding.emailWarnTextView;
         emailToConfirmWarnTextView = binding.emailToConfirmTextView;
@@ -93,7 +102,6 @@ public class ChangeEmailAddressFragment extends Fragment {
 
     private void handleBackPress(){
         navigateBack(getView());
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 
@@ -129,14 +137,14 @@ public class ChangeEmailAddressFragment extends Fragment {
     private void processEmailRequest(String  result){
        spinningWheel.dismiss();
         String message  = "";
+        System.out.println("result: " + result);
 
-       if (result.contains(AccountHelper.SIG_IN_AGAIN)){
+       if (result.contains(AccountHelper.SIG_IN_AGAIN) || result.contains(AccountHelper.CREDENTIAL_NOT_LONGER_VALID)){
            message = getString(R.string.sign_in_again);
 
        } else if (result.contains(AccountHelper.NETWORK_ERROR)) {
            message = getString(R.string.network_error);
-       }
-       else if(result.equalsIgnoreCase(AccountHelper.SUCCESS)){
+       }else if(result.equalsIgnoreCase(AccountHelper.SUCCESS)){
            showLinkSentLinkAlert();
            return;
        }
