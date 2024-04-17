@@ -5,9 +5,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="100dp"
+        app:cardBackgroundColor="?colorPrimary"
+        android:elevation="1dp">
+        <ImageButton
+            android:id="@+id/cancel_b_sell_product"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_weight="0"
+            android:background="@color/transparent"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/close_24"
+            android:elevation="1dp"
+            android:layout_margin="3dp"
+            android:visibility="visible" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/productCardToSell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:cardElevation="0dp"
         android:outlineSpotShadowColor="@color/black">
 
@@ -71,16 +93,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/cancel_b_sell_product"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0"
-                android:background="@color/transparent"
-                android:src="@drawable/close_24"
-                android:visibility="visible" />
 
 
         </LinearLayout>
