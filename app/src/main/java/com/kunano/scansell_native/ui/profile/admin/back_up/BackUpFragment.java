@@ -62,14 +62,6 @@ public class BackUpFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);
-        requireActivity().getOnBackPressedDispatcher().
-                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        System.out.println("back");
-                        handleBackPressed();
-                    }
-                });
 
     }
 
@@ -99,6 +91,15 @@ public class BackUpFragment extends Fragment {
         directoryPickerLauncher = registerForActivityResult(new
                 ActivityResultContracts.StartActivityForResult(), this::receiveDirSelcted);
 
+
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPressed();
+                    }
+                });
 
         return binding.getRoot();
     }

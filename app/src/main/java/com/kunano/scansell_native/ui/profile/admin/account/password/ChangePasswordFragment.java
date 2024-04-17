@@ -59,14 +59,7 @@ public class ChangePasswordFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         accountHelper = new AccountHelper();
 
-        requireActivity().getOnBackPressedDispatcher().
-                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        System.out.println("back");
-                        handleBackPress();
-                    }
-                });
+
 
     }
 
@@ -87,6 +80,14 @@ public class ChangePasswordFragment extends Fragment {
 
         saveButton = binding.buttonSavePassword;
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         return binding.getRoot();
     }

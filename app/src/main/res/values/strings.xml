@@ -156,7 +156,8 @@
     <string name="passwd_updated_success">Password updated successfully</string>
     <string name="intro_account_email">Introduce your account email</string>
     <string name="deleted_account_not_retrievable">Delete accounts can not be retrieved</string>
-    <string name="introduced_email_incorrect">Email incorrect. Introduce the email account</string>
+    <string name="introduced_email_incorrect">Email incorrect. Introduce your account email</string>
+    <string name="introduce_your_account_email">Introduce your account email</string>
     <string name="account_deleted_success">Account deleted successfully</string>
     <string name="continue_action">Continue</string>
     <string name="introduce_name">introduce name</string>

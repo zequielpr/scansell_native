@@ -16,10 +16,12 @@ import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.login.LogInActivity;
 
 public class AccountHelper extends UserData {
-    public static String SIG_IN_AGAIN = "Log in again";
-    public static String SUCCESS = "SUCCESS";
-    public static String NETWORK_ERROR = "network error";
-    private static String UNUSUAL_ACTIVITY = "unusual activity";
+    public static final String SIG_IN_AGAIN = "Log in again";
+    public static final String SUCCESS = "SUCCESS";
+    public static final String NETWORK_ERROR = "network error";
+    public static final String CREDENTIAL_NOT_LONGER_VALID = "credential is no longer valid";
+    private static final String UNUSUAL_ACTIVITY = "unusual activity";
+
     private FirebaseUser currentUser;
     private static FirebaseAuth firebaseAuth;
     private UserProfileChangeRequest userProfileChangeRequest;

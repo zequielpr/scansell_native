@@ -216,6 +216,7 @@
     <string name="stock_two_dots">Stock:</string>
     <string name="there_is_not_receipt">There is not any receipt</string>
     <string name="never_delete">Never delete</string>
+    <string name="introduce_your_account_email">Introduce the email account</string>
 
 
 </resources>
