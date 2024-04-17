@@ -47,7 +47,8 @@ import com.kunano.scansell_native.ui.profile.auth.Auth;
 
 public class SignInFragment extends Fragment {
     private static String TAG = "results";
-
+    private static String ACCOUNT_DISABLE_BY_THE_ADMINISTRATOR = "account has been disabled by an administrator";
+    private static String NETWORK_ERROR = "network error";
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
     private EditText emailEditText;
@@ -169,6 +170,13 @@ public class SignInFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            String error = task.getException().toString();
+                            if(error.contains(NETWORK_ERROR)){
+                                Utils.showToast(getActivity(), getString(R.string.network_error), Toast.LENGTH_SHORT);
+                            } else if (error.contains(ACCOUNT_DISABLE_BY_THE_ADMINISTRATOR)) {
+                                Utils.showToast(getActivity(), getString(R.string.account_disabled), Toast.LENGTH_SHORT);
+                            }
+
                             //updateUI(null);
                         }
                         spinningWheel.dismiss();

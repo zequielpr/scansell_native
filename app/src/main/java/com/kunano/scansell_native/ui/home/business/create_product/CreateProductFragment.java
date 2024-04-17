@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -169,7 +170,14 @@ public class CreateProductFragment extends Fragment {
         // This callback will only be called when MyFragment is at least Started.
 
 
-        mainActivityViewModel.setHandleBackPress(this::navigateBack);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                       navigateBack();
+                    }
+                });
         return binding.getRoot();
     }
 
@@ -283,7 +291,7 @@ public class CreateProductFragment extends Fragment {
         String sPrice = sellingPrice.getText().toString();
         String stck = stock.getText().toString();
 
-        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImgMutableLiveData().getValue());
+        byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
         if (createProductViewModel.isProductToUpdate()){
             createProductViewModel.updateProduct(createProductViewModel.getProductId(),

@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -21,7 +23,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
@@ -40,7 +41,7 @@ public class UserBinFragment extends Fragment {
     private BusinessCardAdepter businessCardAdepter;
 
     private UserBinViewModel mViewModel;
-    BottomNavigationView deleteOrRestoreOptions;
+    View deleteOrRestoreOptions;
     private Drawable checkedCircle;
     private Drawable uncheckedCircle;
     private MenuItem selectAllIcon;
@@ -49,6 +50,9 @@ public class UserBinFragment extends Fragment {
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+
+    private ImageButton deleteButton;
+    private ImageButton restoreButton;
     private View empty_bin_layout;
 
     @Override
@@ -63,7 +67,9 @@ public class UserBinFragment extends Fragment {
 
 
         toolbar = binding.binToolbar;
-        deleteOrRestoreOptions = binding.deleteOrRestoreOption;
+        deleteOrRestoreOptions = binding.deleteOrRestoreOption.binBottomSheet;
+        deleteButton = binding.deleteOrRestoreOption.deleteImageButton;
+        restoreButton = binding.deleteOrRestoreOption.restoreImageButton;
         recyclerView = binding.recycledBusinessList;
         empty_bin_layout = binding.emptyBinLayout.emptyBinLayout;
 
@@ -149,26 +155,31 @@ public class UserBinFragment extends Fragment {
             }
         });
 
-
-        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
-            @Override
-            public void backButtonPressed() {
-                if (mViewModel.isDeleteModeActive()) {
-                    desactivateDeleteMode();
-                    return;
-                }
-
-
-                mainActivityViewModel.showBottomNavBar();
-                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
-                Navigation.findNavController(getView()).navigate(action);
-                mainActivityViewModel.setHandleBackPress(null);
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPressed();
+                    }
+                });
 
 
         return binding.getRoot();
     }
+
+    private void handleBackPressed(){
+        if (mViewModel.isDeleteModeActive()) {
+            desactivateDeleteMode();
+            return;
+        }
+
+
+        mainActivityViewModel.showBottomNavBar();
+        NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+        Navigation.findNavController(getView()).navigate(action);
+    }
+
 
     public void showDeleteOrRestoreOptions() {
         DeleteOrRestoreOptions bottomSheetFragment = new DeleteOrRestoreOptions();
@@ -380,18 +391,8 @@ public class UserBinFragment extends Fragment {
             }
         });
 
-        deleteOrRestoreOptions.setOnItemSelectedListener((item)->{
-            switch (item.getItemId()){
-                case R.id.delete:
-                    askDeleteBusiness();
-                    return true;
-                case R.id.restore:
-                    restoreBusinesses();
-                    return true;
-                default :
-                    return false;
-            }
-        });
+        deleteButton.setOnClickListener((v)->askDeleteBusiness());
+        restoreButton.setOnClickListener((v)->restoreBusinesses());
     }
 
 

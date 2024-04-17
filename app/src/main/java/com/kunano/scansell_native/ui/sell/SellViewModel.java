@@ -68,7 +68,7 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> sellProductsVisibilityMD;
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
     private DecimalFormat df;
-
+    private MutableLiveData<Integer> emptyReceiptSectionVisibility;
     private MutableLiveData<String> totalItemsSellMutableLIveData;
 
 
@@ -79,6 +79,7 @@ public class SellViewModel extends AndroidViewModel {
         sellRepository = new SellRepository(application);
         productToSellMutableLiveData = new MutableLiveData<>();
         totalItemsSellMutableLIveData = new MutableLiveData<>();
+        emptyReceiptSectionVisibility = new MutableLiveData<>();
 
         businessesListLiveData = businessRepository.getAllBusinesses();
         totalToPay = new MutableLiveData<>(0.0);
@@ -108,6 +109,7 @@ public class SellViewModel extends AndroidViewModel {
 
         receiptObserver = (List<Receipt> receiptList) -> {
             System.out.println("Observing: " + receiptList.size());
+            emptyReceiptSectionVisibility.postValue(receiptList.size()>0?View.GONE:View.VISIBLE);
             mutableLiveDataReceipt.postValue(receiptList);
         };
 
@@ -454,5 +456,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setIsScanActiveMutableLiveData(Boolean isScanActiveMutableLiveData) {
         this.isScanActiveMutableLiveData.postValue(isScanActiveMutableLiveData);
+    }
+
+    public MutableLiveData<Integer> getEmptyReceiptSectionVisibility() {
+        return emptyReceiptSectionVisibility;
+    }
+
+    public void setEmptyReceiptSectionVisibility(MutableLiveData<Integer> emptyReceiptSectionVisibility) {
+        this.emptyReceiptSectionVisibility = emptyReceiptSectionVisibility;
     }
 }

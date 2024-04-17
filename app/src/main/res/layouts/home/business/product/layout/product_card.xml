@@ -67,6 +67,7 @@
                     android:layout_marginStart="5dp"
                     android:text="TextView"
                     android:textColor="#FFFFFF"
+                    android:elevation="3dp"
                     android:visibility="gone" />
 
                 <FrameLayout
@@ -109,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="0"
-                        android:text="@string/sell_price"
+                        android:text="@string/selling_price_two_dots"
                         android:textSize="16sp" />
 
                     <TextView
@@ -133,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="0"
-                        android:text="@string/buy_price"
+                        android:text="@string/buying_price_two_dots"
                         android:textSize="16sp" />
 
                     <TextView
@@ -157,7 +158,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="0"
-                        android:text="@string/stock"
+                        android:text="@string/stock_two_dots"
                         android:textSize="16sp"/>
 
                     <TextView

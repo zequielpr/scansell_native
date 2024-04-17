@@ -89,16 +89,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    @Override
-    public void onBackPressed() {
-       mainActivityViewModel.notifyBackPressed();
-    }
-
-    @Override
-    public void onDestroy(){
-        System.out.println("main activiti on destroy");
-        super.onDestroy();
-    }
 
     public void handleLanguage(){
         SettingRepository settingRepository = new SettingRepository(this, MODE_PRIVATE);

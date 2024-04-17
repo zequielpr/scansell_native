@@ -4,7 +4,6 @@ import static com.kunano.scansell_native.repository.share_preference.SettingRepo
 import static com.kunano.scansell_native.repository.share_preference.SettingRepository.LANGUAGE_AUTOMATIC;
 import static com.kunano.scansell_native.repository.share_preference.SettingRepository.SPANISH;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,7 +17,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -55,6 +56,11 @@ public class SettingsFragment extends Fragment {
 
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -74,7 +80,6 @@ public class SettingsFragment extends Fragment {
         settingsToolBar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         settingsToolBar.setNavigationOnClickListener(this::navigateBack);
 
-        mainActivityViewModel.setHandleBackPress(this::handlePressBack);
         settingViewModel.getSoundState().observe(getViewLifecycleOwner(), this::handleSoundState);
         settingViewModel.getCurrentSound().observe(getViewLifecycleOwner(), currentSoundSpinner::setSelection);
 
@@ -104,6 +109,14 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPressed();
+                    }
+                });
 
 
         return binding.getRoot();
@@ -136,7 +149,7 @@ public class SettingsFragment extends Fragment {
 
 
 
-    private void handlePressBack(){
+    private void handleBackPressed(){
         navigateBack(getView());
     }
 
@@ -153,7 +166,6 @@ public class SettingsFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections profileNavDirections = SettingsFragmentDirections.actionSettingsFragment2ToProfileFragment();
         Navigation.findNavController(getView()).navigate(profileNavDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 

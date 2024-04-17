@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -27,7 +28,9 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
@@ -188,24 +191,29 @@ public class BusinessBinFragment extends Fragment {
         });
 
 
-        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
-            @Override
-            public void backButtonPressed() {
-                if (mViewModel.isDeleteModeActive()) {
-                    desactivateDeleteMode();
-                    return;
-                }
-
-
-                mainActivityViewModel.showBottomNavBar();
-                NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2(currentBusinessId);
-                Navigation.findNavController(getView()).navigate(action);
-                mainActivityViewModel.setHandleBackPress(null);
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handlerBackPress();
+                    }
+                });
 
 
         return binding.getRoot();
+    }
+
+    private void handlerBackPress(){
+        if (mViewModel.isDeleteModeActive()) {
+            desactivateDeleteMode();
+            return;
+        }
+
+
+        mainActivityViewModel.showBottomNavBar();
+        NavDirections action = BusinessBinFragmentDirections.actionBusinessBinFragment2ToBusinessFragment2(currentBusinessId);
+        Navigation.findNavController(getView()).navigate(action);
     }
 
     public void showDeleteOrRestoreOptions() {
@@ -316,7 +324,22 @@ public class BusinessBinFragment extends Fragment {
     public void deleteOrCancel(boolean response){
         if(response){
             showProgressBar(getString(R.string.deleting));
-            mViewModel.deleteItems(this::hideProgressBar, getString(R.string.recycle_bin));
+            mViewModel.deleteItems(new ListenResponse() {
+                @Override
+                public void isSuccessfull(boolean resultado) {
+                    if (resultado){
+                        Utils.showToast(getActivity(), getString(R.string.product_deleted_successfully), Toast.LENGTH_SHORT);
+
+                    }
+                    if(progressBarDialog != null){
+                        progressBarDialog.dismiss();
+
+                        getActivity().runOnUiThread(()->{
+                            desactivateDeleteMode();
+                        });
+                    }
+                }
+            }, getString(R.string.recycle_bin));
         }else {
             desactivateDeleteMode();
         }
@@ -347,9 +370,10 @@ public class BusinessBinFragment extends Fragment {
 
 
     public void hideProgressBar(boolean result) {
-        if(!result){
-            //Show result
-            return;
+        if(result){
+            Utils.showToast(getActivity(), getString(R.string.product_restored_successfully), Toast.LENGTH_SHORT);
+        }else {
+            Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
         }
 
         if(progressBarDialog != null){

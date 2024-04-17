@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -57,7 +58,14 @@ public class ImagePreviewFragment extends Fragment {
             Utils. setActionBarColor(getActivity(), imageVibrantColor);
         }
 
-        mainActivityViewModel.setHandleBackPress(this::handlePackPress);
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handlePackPress();
+                    }
+                });
         trayAgainButton.setOnClickListener(this::navigateBack);
         saveButton.setOnClickListener(this::saveImage);
 
@@ -79,8 +87,6 @@ public class ImagePreviewFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections navDirections = ImagePreviewFragmentDirections.actionImagePreviewFragment2ToCaptureImageFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
-
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void saveImage(View view){
@@ -91,7 +97,6 @@ public class ImagePreviewFragment extends Fragment {
 
         createProductViewModel.setBitmapImgMutableLiveData(createProductViewModel.getBitmapImg() );
         createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
 }

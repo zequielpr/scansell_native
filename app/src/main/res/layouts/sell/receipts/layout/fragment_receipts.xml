@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.sell.receipts.ReceiptsFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -24,9 +24,15 @@
             android:id="@+id/receiptRecycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/receiptToolbar"
             android:layout_marginEnd="@dimen/window_end_side"
             android:layout_marginStart="@dimen/window_start_side"
             android:layout_marginTop="@dimen/window_top_side"/>
-    </LinearLayout>
+
+        <include
+            android:id="@+id/not_receipt_layout"
+            layout="@layout/receipt_section_empty"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </FrameLayout>

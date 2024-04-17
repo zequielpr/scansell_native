@@ -30,9 +30,9 @@ public class ValidatePasswd {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String password = charSequence.toString().trim();
                 passwordViewModel.setIsPasswordValid(ValidateData.validatePassword(password));
-                boolean itContainsDigit = ValidateData.containsDigit(password);
+                boolean itContainsDigit = ValidateData.containsDigit(password.trim());
                 boolean itContainsUpperAndLowerLtt = ValidateData.containsUpperAndLowerCase(password);
-                boolean atLeastEightCharacters = password.length() >= 8;
+                boolean atLeastEightCharacters = password.trim().length() >= 8;
 
                 checkIsContainsDigit(context, itContainsDigit);
                 checkUpperAndLowerCase(context, itContainsUpperAndLowerLtt);
@@ -103,8 +103,8 @@ public class ValidatePasswd {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String passwd = passwordEditText.getText().toString();
-                String passwdToConfirm = charSequence.toString();
+                String passwd = passwordEditText.getText().toString().trim();
+                String passwdToConfirm = charSequence.toString().trim();
 
                 checkIfPasswdMatch(passwdToConfirm, passwd);
 

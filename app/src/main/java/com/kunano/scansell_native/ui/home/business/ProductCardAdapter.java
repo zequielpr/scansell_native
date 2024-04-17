@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -84,6 +85,11 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
                     public void run() {
                         if (productImg != null){
                             holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(productImg.getImg()));
+                            if (productImg.getImg().length < 1){
+                                holder.imageViewProduct.
+                                        setImageDrawable(ContextCompat.
+                                                getDrawable(activityParent.getApplicationContext(),R.drawable.broken_image ));
+                            }
                         }
                     }
                 });

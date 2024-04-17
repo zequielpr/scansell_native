@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.components;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -52,6 +53,11 @@ public class ImageProcessor {
 
     public static Drawable bitmapToDrawable(Context context, Bitmap bitmap) {
         return new BitmapDrawable(context.getResources(), bitmap);
+    }
+
+    public static Bitmap drawableToBitmap(Resources resources, Integer drawableResourceId) {
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, drawableResourceId);
+        return bitmap;
     }
 
     public static void ImageLoadTask(Uri imageUrl, ViewModelListener<Bitmap> listener){
