@@ -11,8 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,7 +27,6 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.CollectEmailAndSignedUpBinding;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.email.EmailViewModel;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
 import com.kunano.scansell_native.ui.profile.auth.UserData;
@@ -45,7 +46,6 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     private TextView termOfServicesTextView;
     private TextView privacyPolicyTextView;
     private CheckBox acceptTermAndPolicies;
-    private LogInViewModel logInViewModel;
 
     private TextInputLayout emailTextInputLayout;
     private TextInputLayout emailToConfirmTextInputLayout;
@@ -62,8 +62,6 @@ public class CollectEmailAndSignUpFragment extends Fragment {
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         userData = new UserData();
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
-
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
 
     }
 
@@ -86,6 +84,13 @@ public class CollectEmailAndSignUpFragment extends Fragment {
        emailToConfirmTextInputLayout = binding.collectEmailView.confirmEmailFilledTextField;
 
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateBack();
+
+            }
+        });
 
 
        return binding.getRoot();
@@ -95,6 +100,15 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
+
         toolbar.setVisibility(View.GONE);
         signUpButton.setOnClickListener(this::continueAction);
         signUpButton.setText(getText(R.string.sign_up));
@@ -118,21 +132,7 @@ public class CollectEmailAndSignUpFragment extends Fragment {
                 actionCollectEmailToCollectPasswdFragment2();
 
         Navigation.findNavController(getView()).navigate(navDirectionToCollectPasswd);
-        logInViewModel.setLogInViewModelListener(null);
     }
-
-    public void onResume(){
-        super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-    }
-
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
 
     private String email;
     private void continueAction(View view){
