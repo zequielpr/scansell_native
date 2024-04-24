@@ -30,7 +30,6 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
@@ -170,7 +169,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         if (businessesProcessor.isProcessItemActive()) {
             desActivateDeleteMode(getView());
         } else {
-            Utils.askToLeaveApp(this);
+            Navigation.findNavController(getView()).navigate(R.id.sell_navigation_graph);
         }
     }
 

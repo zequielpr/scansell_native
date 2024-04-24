@@ -333,7 +333,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
-        String deleteMode = sharedPref.getString(DELETE_MODE, NEVER);
+        /*String deleteMode = sharedPref.getString(DELETE_MODE, NEVER);
 
 
         switch (deleteMode){
@@ -346,14 +346,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
             default:
                 toolbar.getMenu().findItem(R.id.never_delete).setChecked(true);
 
-        }
+        }*/
     }
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()){
-            case R.id.delete_15_days:
+      /*      case R.id.delete_15_days:
                 setDeleteMode(DELETE_AFTER_15_DAYS);
                 menuItem.setChecked(true);
                 return true;
@@ -364,7 +364,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
             case R.id.never_delete:
                 setDeleteMode(NEVER);
                 menuItem.setChecked(true);
-                return true;
+                return true;*/
             case R.id.delete_button:
                 processItemsComponent.deleteItems(new ViewModelListener<Void>() {
                     @Override
@@ -390,10 +390,10 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     }
 
 
-    private void setDeleteMode(String deleteMode){
+   /* private void setDeleteMode(String deleteMode){
         if(editor != null){
             editor.putString(DELETE_MODE, deleteMode);
             editor.apply();
         }
-    }
+    }*/
 }

@@ -122,6 +122,8 @@ public class SellFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+
+
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
 
@@ -187,6 +189,7 @@ public class SellFragment extends Fragment {
 
 
 
+
         spinerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -246,6 +249,15 @@ public class SellFragment extends Fragment {
 
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                System.out.println("holaaaa");
+                Utils.askToLeaveApp(SellFragment.this);
+
+            }
+        });
 
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
