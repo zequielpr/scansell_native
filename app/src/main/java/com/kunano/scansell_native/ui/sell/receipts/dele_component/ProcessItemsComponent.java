@@ -106,7 +106,7 @@ public class ProcessItemsComponent<T> {
     }
 
     private void updateProcessProgress(int processedItems) {
-        processedItemsMutableLiveData.postValue(String.valueOf( processedItems));
+        processedItemsMutableLiveData.postValue(processedItems + "/" + itemsToProcess.size());
         int processedPercentage =  processedItems * 100 / itemsToProcess.size();
         processedPercentageMutableLiveData.postValue(processedPercentage);
     }
