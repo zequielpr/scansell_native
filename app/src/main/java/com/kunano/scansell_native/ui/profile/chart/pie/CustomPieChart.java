@@ -23,7 +23,7 @@ public class CustomPieChart {
         int percentageTotal = entries.stream().reduce(0f, (aFloat, pieEntry) ->
                 aFloat+pieEntry.getValue(), Float::sum).intValue();
 
-        if (percentageTotal < 100){
+        if (percentageTotal < 100 && percentageTotal > 0){
             float otherProductsPercentage = 100 - percentageTotal;
             entries.add(new PieEntry(otherProductsPercentage, pieChart.getContext().getString(R.string.others)));
         }
