@@ -479,7 +479,7 @@ public class BusinessFragment extends Fragment {
     public void hideProgressBar(boolean result) {
         if (result) {
             getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
-            Utils.showToast(getActivity(), getString(R.string.products_sent_to _bin_successfuly),
+            Utils.showToast(getActivity(), getString(R.string.products_sent_to_bin_successfuly),
                     Toast.LENGTH_SHORT);
         }else {
             Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),
