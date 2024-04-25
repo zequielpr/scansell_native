@@ -93,20 +93,22 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
         saveBusinessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Try introducir business: ");
-                if (isBusinessNameValid && isBusinessAddressValid){
-
-                    hideBottomSheet();
-                    if(toUpdate){
-                        updateBusinessRequest();
-                    }else {
-                        createBusinessRequest();
-
-                    }
+                if (!isBusinessNameValid){
+                    showWarningName(getString(R.string.introduce_name));
+                    return;
+                } else if (!isBusinessAddressValid) {
+                    showWarningAddress(getString(R.string.advert_introduce_address));
                     return;
                 }
-                showWarningName(getString(R.string.name));
-                showWarningAddress(getString(R.string.advert_introduce_address));
+                hideBottomSheet();
+                if(toUpdate){
+                    updateBusinessRequest();
+                }else {
+                    createBusinessRequest();
+
+                }
+
+
 
             }
         });
@@ -154,9 +156,9 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
             @Override
             public void onTextChanged(CharSequence name, int i, int i1, int i2) {
 
-                if(name.toString().trim().isEmpty()){
+                if(name.toString().trim().length() < 1){
                     isBusinessNameValid = false;
-                    showWarningName(getString(R.string.name));
+                    showWarningName(getString(R.string.introduce_name));
                     desactivateSaveButton();
                     return;
                 }

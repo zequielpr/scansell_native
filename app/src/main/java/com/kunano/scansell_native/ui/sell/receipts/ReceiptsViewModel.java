@@ -19,14 +19,15 @@ public class ReceiptsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> isSearchModeActive;
     private MutableLiveData<Drawable> allSelectedIconMutableLiveData;
     private MutableLiveData<Integer> selectedItemQuantityMutableLiveData;
+    private MutableLiveData<Integer> receiptCardBackgroundColor;
 
     public ReceiptsViewModel(@NonNull Application application){
         super(application);
         isSearchModeActive = new MutableLiveData<>(false);
 
         allSelectedIconMutableLiveData = new MutableLiveData<>();
-
         selectedItemQuantityMutableLiveData = new MutableLiveData<>();
+        receiptCardBackgroundColor = new MutableLiveData<>();
     }
 
     public MutableLiveData<Boolean> getIsSearchModeActive() {
@@ -80,5 +81,13 @@ public class ReceiptsViewModel extends AndroidViewModel {
 
     public void setSelectedItemQuantityMutableLiveData(Integer selectedItemQuantityMutableLiveData) {
         this.selectedItemQuantityMutableLiveData.postValue(selectedItemQuantityMutableLiveData);
+    }
+
+    public MutableLiveData<Integer> getReceiptCardBackgroundColor() {
+        return receiptCardBackgroundColor;
+    }
+
+    public void setReceiptCardBackgroundColor(Integer receiptCardBackgroundColor) {
+        this.receiptCardBackgroundColor.postValue(receiptCardBackgroundColor);
     }
 }

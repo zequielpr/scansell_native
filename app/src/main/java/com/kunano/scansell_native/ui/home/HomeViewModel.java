@@ -22,6 +22,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
     private MutableLiveData<Integer> selectedItems;
 
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
+    private MutableLiveData<Integer> cardBackgroundColor;
 
 
 
@@ -33,6 +34,8 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
         createNewBusinessVisibilityMD = new MutableLiveData<>();
         selectedItems = new MutableLiveData<>();
+
+        cardBackgroundColor = new MutableLiveData<>();
     }
 
 
@@ -113,5 +116,13 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setSelectedItems(Integer selectedItems) {
         this.selectedItems.postValue(selectedItems);
+    }
+
+    public MutableLiveData<Integer> getCardBackgroundColor() {
+        return cardBackgroundColor;
+    }
+
+    public void setCardBackgroundColor(Integer cardBackgroundColor) {
+        this.cardBackgroundColor.postValue(cardBackgroundColor);
     }
 }

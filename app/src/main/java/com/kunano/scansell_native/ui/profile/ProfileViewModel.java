@@ -79,9 +79,8 @@ public class ProfileViewModel extends AndroidViewModel {
         }
 
         mostSoldProductsObserver = (List<MostSoldProducts> mostSoldProductsList)->{
-
-            mostSoldProductsTxtViewVisibility.postValue(mostSoldProductsList.size()>0? View.VISIBLE:View.GONE);
             List<PieEntry> pieEntryList = processMostSoldPData(mostSoldProductsList);
+            mostSoldProductsTxtViewVisibility.postValue(pieEntryList.isEmpty()? View.GONE:View.VISIBLE);
             mostSoldProductPieChartMLive.postValue(pieEntryList);
         };
         sellObserver = (List<Receipt> receiptList)->{

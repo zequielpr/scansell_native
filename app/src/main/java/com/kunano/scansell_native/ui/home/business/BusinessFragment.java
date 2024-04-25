@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home.business;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -196,12 +197,11 @@ public class BusinessFragment extends Fragment {
                 businessViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
                         (icon)->{
                     if (icon != null){
-                        cardHolder.getCardView().setBackgroundColor(getResources().
-                                getColor(R.color.black_transparent, getActivity().getTheme()));
+                        cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                                R.color.black_transparent));
                         return;
                     }
-                            cardHolder.getCardView().setBackgroundColor(getResources().
-                                    getColor(R.color.white, getActivity().getTheme()));
+                            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
                         });
             }
 
@@ -401,14 +401,14 @@ public class BusinessFragment extends Fragment {
         if (businessViewModel.getItemsToDelete().contains((Object) product)) {
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
 
-            cardHolder.getCardView().setBackgroundColor(getResources().
-                    getColor(R.color.black_transparent, getActivity().getTheme()));
+            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.black_transparent));
             System.out.println("selected");
             return;
         }
         System.out.println("unselected");
         cardHolder.getUnCheckedCircle().setBackground(null);
-        cardHolder.getCardView().setBackgroundColor(getResources().getColor(R.color.white, getActivity().getTheme()));
+        cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
 
     }
 
@@ -432,7 +432,6 @@ public class BusinessFragment extends Fragment {
 
 
     public void askToSendProductsBin() {
-        System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
                 AskForActionDialog(title);
@@ -457,7 +456,7 @@ public class BusinessFragment extends Fragment {
     public void showProgressBar() {
 
 
-        String title = getString(R.string.send_items_to_bin_warning);
+        String title = getString(R.string.sending_items_to_bin);
         MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 
@@ -480,7 +479,7 @@ public class BusinessFragment extends Fragment {
     public void hideProgressBar(boolean result) {
         if (result) {
             getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
-            Utils.showToast(getActivity(), getString(R.string.product_sent_to_bin_successfuly),
+            Utils.showToast(getActivity(), getString(R.string.products_sent_to_bin_successfuly),
                     Toast.LENGTH_SHORT);
         }else {
             Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),

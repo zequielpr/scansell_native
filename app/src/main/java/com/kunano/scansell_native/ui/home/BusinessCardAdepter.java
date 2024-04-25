@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,11 +67,11 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
 
         private ImageButton imageButtonRestore;
         private TextView numProducts;
-        private  View card;
+        private CardView card;
 
         public CardHolder(View itemView) {
             super(itemView);
-            card = itemView;
+            card = itemView.findViewById(R.id.cardView);
             title = itemView.findViewById(R.id.titleTextView);
             address = itemView.findViewById(R.id.textViewDirection);
             unCheckedCircle = itemView.findViewById(R.id.checked_unchecked_image_view);
@@ -145,11 +146,11 @@ public class BusinessCardAdepter extends ListAdapter<Business, BusinessCardAdept
             this.imageButtonRestore = imageButtonRestore;
         }
 
-        public View getCard() {
+        public CardView getCard() {
             return card;
         }
 
-        public void setCard(View card) {
+        public void setCard(CardView card) {
             this.card = card;
         }
 

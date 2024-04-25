@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -98,6 +99,13 @@ public class SignInFragment extends Fragment {
         showOrHidePasswdCheckBox = binding.checkBoxShowPassword;
 
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+               Utils.askToLeaveApp(SignInFragment.this);
+
+            }
+        });
 
         return binding.getRoot();
     }
@@ -211,8 +219,8 @@ public class SignInFragment extends Fragment {
     private SpinningWheel spinningWheel;
     private void signInWithEmailAndPasswdRequest(View view){
 
-        String email = emailEditText.getText().toString();
-        String passwd = passwordEditText.getText().toString();
+        String email = emailEditText.getText().toString().trim();
+        String passwd = passwordEditText.getText().toString().trim();
 
         if (!signInViewModel.validateEmailAndPasswd(email, passwd)) return;
 

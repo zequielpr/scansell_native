@@ -7,7 +7,7 @@
         android:title="@android:string/search_go"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
-    <group
+   <!-- <group
         android:checkableBehavior="single"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -27,5 +27,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:title="@string/never_delete" />
-    </group>
+    </group>-->
 </menu>

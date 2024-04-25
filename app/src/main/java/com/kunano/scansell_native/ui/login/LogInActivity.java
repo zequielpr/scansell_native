@@ -46,9 +46,4 @@ public class LogInActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_log_in);
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
-
-    public void onBackPressed() {
-        super.onBackPressed();
-        logInViewModel.navigateBack();
-    }
 }

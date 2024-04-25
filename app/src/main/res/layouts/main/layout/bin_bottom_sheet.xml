@@ -2,45 +2,57 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/binBottomSheet"
-
+    android:orientation="vertical"
+    android:background="@color/white"
     style="@style/bin_bottom_sheet">
 
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="@color/black_transparent" />
 
-        <ImageButton
-            android:id="@+id/deleteImageButton"
-            style="@style/imageButton"
-            android:src="@drawable/baseline_delete_24" />
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_weight="1"
+           android:gravity="center"
+           android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete" />
-    </LinearLayout>
+           <ImageButton
+               android:id="@+id/deleteImageButton"
+               style="@style/imageButton"
+               android:src="@drawable/baseline_delete_24" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+           <TextView
+               android:id="@+id/textView21"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/delete" />
+       </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/restoreImageButton"
-            style="@style/imageButton"
-            android:src="@drawable/restore_from_trash" />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_weight="1"
+           android:gravity="center"
+           android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView22"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/restore" />
-    </LinearLayout>
+           <ImageButton
+               android:id="@+id/restoreImageButton"
+               style="@style/imageButton"
+               android:src="@drawable/restore_from_trash" />
+
+           <TextView
+               android:id="@+id/textView22"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/restore" />
+       </LinearLayout>
+   </LinearLayout>
 </LinearLayout>
