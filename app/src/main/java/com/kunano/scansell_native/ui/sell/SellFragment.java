@@ -23,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.view.PreviewView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -84,6 +85,7 @@ public class SellFragment extends Fragment {
     private View scanLineParentContainer;
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private  AdminPermissions adminPermissions;
+    private ImageButton switchCamera;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,6 +149,7 @@ public class SellFragment extends Fragment {
         itemsTotalTextView = binding.itemsTotalTextView;
         scanningLine = binding.scanLayout.sCanningLine;
         scanLineParentContainer = binding.scanLayout.transparentSpot;
+        switchCamera = binding.switchCamera;
         topSide = binding.bottomSheetTopSide;
                 handleBootomSheetBehavior = new HandleBootomSheetBehavior(binding.productToSellBottomSheet);
         handleBootomSheetBehavior.setupStandardBottomSheet(false);
@@ -263,6 +266,8 @@ public class SellFragment extends Fragment {
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
         cancelSellButton.setOnClickListener(this::cancelSell);
+        switchCamera.setOnClickListener(this::switchCamera);
+
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), finishButton::setVisibility);
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), cancelSellButton::setVisibility);
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), (v)->{
@@ -310,6 +315,15 @@ public class SellFragment extends Fragment {
        });
     }
 
+
+    private void switchCamera(View view){
+        if (customCamera.getLenFace() == CameraSelector.LENS_FACING_FRONT){
+            customCamera.setLenFace(CameraSelector.LENS_FACING_BACK);
+        }else {
+            customCamera.setLenFace(CameraSelector.LENS_FACING_FRONT);
+        }
+        customCamera.startCamera(true);
+    }
 
 
     private void createNewBusiness(View view){

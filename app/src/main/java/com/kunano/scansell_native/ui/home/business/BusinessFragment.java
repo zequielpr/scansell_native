@@ -432,7 +432,6 @@ public class BusinessFragment extends Fragment {
 
 
     public void askToSendProductsBin() {
-        System.out.println("Ask whether delete businiesses");
         String title = getString(R.string.send_items_to_bin_warning);
         AskForActionDialog askWhetherDeleteDialog = new
                 AskForActionDialog(title);
@@ -457,7 +456,7 @@ public class BusinessFragment extends Fragment {
     public void showProgressBar() {
 
 
-        String title = getString(R.string.send_items_to_bin_warning);
+        String title = getString(R.string.sending_items_to_bin);
         MutableLiveData<Integer> progress = businessViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = businessViewModel.getDeletedItemsLiveData();
 
@@ -480,7 +479,7 @@ public class BusinessFragment extends Fragment {
     public void hideProgressBar(boolean result) {
         if (result) {
             getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
-            Utils.showToast(getActivity(), getString(R.string.product_sent_to_bin_successfuly),
+            Utils.showToast(getActivity(), getString(R.string.products_sent_to _bin_successfuly),
                     Toast.LENGTH_SHORT);
         }else {
             Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),

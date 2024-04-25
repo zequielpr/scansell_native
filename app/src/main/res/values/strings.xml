@@ -24,6 +24,7 @@
     <string name="sending_items_to_bin">Sending items to bin...</string>
     <string name="delete">delete</string>
     <string name="delete_selected_items">Delete selected items</string>
+    <string name="deleting_selected_items">Deleting selected items...</string>
     <string name="deleting">deleteing</string>
     <string name="restoring">restoring... Do not close this app</string>
     <string name="businesses_deleted_succ">"Businesses deleted successfully"</string>
@@ -63,7 +64,7 @@
     <string name="stock_less_more">Stock less-more</string>
     <string name="stock_more_less">Stock more-less</string>
     <string name="send_bin_product">bin product</string>
-    <string name="product_sent_to_bin_successfuly">product binned succefuly</string>
+    <string name="products_sent_to_bin_successfuly">products binned succefuly</string>
     <string name="error_to_send_bin_product">error to bin product</string>
     <string name="bin_business">bin businesses</string>
     <string name="error_to_bin_business">error to bin business</string>

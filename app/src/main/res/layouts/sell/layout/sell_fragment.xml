@@ -44,6 +44,18 @@
                     layout="@layout/scanner_layout"/>
 
                 <ImageButton
+                    android:id="@+id/switch_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/sell_camera_preview"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginBottom="100dp"
+                    android:background="@color/transparent"
+                    android:elevation="1dp"
+                    android:src="@drawable/camera_swithc" />
+
+                <ImageButton
                     android:id="@+id/torchButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +64,7 @@
                     android:layout_marginBottom="100dp"
                     android:background="@color/transparent"
                     android:elevation="1dp"
-                    android:src="@drawable/torch_24" />
+                    android:src="@drawable/flash_on_24" />
 
                 <androidx.camera.view.PreviewView
                     android:id="@+id/sell_camera_preview"

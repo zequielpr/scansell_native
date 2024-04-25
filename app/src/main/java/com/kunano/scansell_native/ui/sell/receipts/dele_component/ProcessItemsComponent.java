@@ -198,7 +198,7 @@ public class ProcessItemsComponent<T> {
 
 
 
-            String title = fragment.getString(R.string.delete_selected_items);
+            String title = fragment.getString(R.string.deleting_selected_items);
             executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 Integer result = 0;
