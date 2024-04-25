@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -236,12 +237,19 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
                 TextView quantity = cardHolder.getNumProducts();
 
-                homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(getViewLifecycleOwner(), (q) -> quantity.setText(getString(R.string.current_products).concat(": ").concat(String.valueOf(q))));
+                homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).
+                        observe(getViewLifecycleOwner(), (q) ->{
+                            String label = getString(R.string.current_products);
+                            label = q < 2? label.substring(0, label.length()-1):label;
+                            quantity.setText(String.valueOf(q) + " " + label);
+                        });
             }
 
             @Override
             public void reciveCardHol(BusinessCardAdepter.CardHolder cardHolder) {
                 //Show empty circle when the delete mode is activated
+                homeViewModel.getCardBackgroundColor().observe(getViewLifecycleOwner(),
+                        cardHolder.getCard()::setCardBackgroundColor);
                 homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(), cardHolder.getUnCheckedCircle()::setBackground);
             }
 
@@ -258,6 +266,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void selectAll() {
         selectAllMenuItem.setIcon(checkedCircle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
+        homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
         LinkedHashSet<Business> receipts = new LinkedHashSet<>(businessCardAdepter.getCurrentList());
         businessesProcessor.setItemsToProcess(receipts);
         businessesProcessor.setAllSelected(true);
@@ -271,6 +280,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void unSelectAll() {
         selectAllMenuItem.setIcon(uncheckedCircle);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        homeViewModel.setCardBackgroundColor(Color.WHITE);
         businessesProcessor.clearItemsToProcess();
         deleteMenuItem.setVisible(false);
         homeViewModel.setSelectedItems(businessesProcessor.getItemsToProcess().size());
@@ -278,14 +288,17 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     }
 
 
+
     public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
         boolean isChecked = businessesProcessor.isItemToBeProcess(business);
 
         if(isChecked){
+            cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
 
         }else {
+            cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
             cardHolder.getUnCheckedCircle().setBackground(null);
         }
 
@@ -324,6 +337,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void desActivateDeleteMode(View view) {
         businessesProcessor.setProcessItemActive(false);
         homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        homeViewModel.setCardBackgroundColor(Color.WHITE);
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
         toolbar.setTitle(getString(R.string.businesses_title));

@@ -136,8 +136,8 @@ public class CollectEmailAndSignUpFragment extends Fragment {
 
     private String email;
     private void continueAction(View view){
-        email = emailEditText.getText().toString();
-        String emailToConfirm = confirmEmailEditText.getText().toString();
+        email = emailEditText.getText().toString().trim();
+        String emailToConfirm = confirmEmailEditText.getText().toString().trim();
 
         if (!validateEmail(email, emailToConfirm)) return;
 

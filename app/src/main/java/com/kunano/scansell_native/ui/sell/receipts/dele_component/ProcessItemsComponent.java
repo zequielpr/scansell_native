@@ -94,8 +94,7 @@ public class ProcessItemsComponent<T> {
 
 
     private ProgressBarDialog progressBarDialog;
-    public void showProcessProgress() {
-        String title = fragment.getString(R.string.delete_selected_items);
+    public void showProcessProgress(String title) {
         progressBarDialog =
                 new ProgressBarDialog(title, processedPercentageMutableLiveData, processedItemsMutableLiveData);
         progressBarDialog.setAction(this::cancelProcess);
@@ -198,6 +197,8 @@ public class ProcessItemsComponent<T> {
             if (!isToDeletedItems) return;
 
 
+
+            String title = fragment.getString(R.string.delete_selected_items);
             executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 Integer result = 0;
@@ -205,7 +206,7 @@ public class ProcessItemsComponent<T> {
 
                 updateProcessProgress(itemsCounter);
 
-                showProcessProgress();
+                showProcessProgress(title);
                 for (T i : itemsToProcess) {
                     if (isProcessToCancel) break;
                     try {
@@ -262,10 +263,10 @@ public class ProcessItemsComponent<T> {
 
     private class BinItems{
         public void binSelectedItems() {
-            String title = fragment.getString(R.string.bin);
-            String content = fragment.getString(R.string.send_items_to_bin_warning);
 
-            AskForActionDialog askForActionDialog = new AskForActionDialog(title, content);
+            String title = fragment.getString(R.string.send_items_to_bin_warning);
+
+            AskForActionDialog askForActionDialog = new AskForActionDialog(title);
             askForActionDialog.setButtonListener(this::binSelectedItems);
             askForActionDialog.show(fragment.getParentFragmentManager(), ASK_TO_BIN_TAG);
         }
@@ -273,6 +274,7 @@ public class ProcessItemsComponent<T> {
         private void binSelectedItems(boolean isToDeletedItems) {
             if (!isToDeletedItems) return;
 
+            String title = fragment.getString(R.string.sending_items_to_bin);
             executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 Integer result = 0;
@@ -280,17 +282,17 @@ public class ProcessItemsComponent<T> {
 
                 updateProcessProgress(itemsCounter);
 
-                showProcessProgress();
+                showProcessProgress(title);
                 for (T i : itemsToProcess) {
                     if (isProcessToCancel) break;
                     try {
                         Thread.sleep(Math.round(1000 / itemsToProcess.size()));
 
-                        if (i.getClass() == Business.class) {
+                        if (i instanceof Business) {
                             binItem((Business) i).get();
-                        } else if (i.getClass() == Product.class) {
+                        } else if (i instanceof Product) {
                             binItem((Product) i).get();
-                        } else if (i.getClass() == Receipt.class) {
+                        } else if (i instanceof Receipt) {
 
                         }
                         if (result < 0) continue;

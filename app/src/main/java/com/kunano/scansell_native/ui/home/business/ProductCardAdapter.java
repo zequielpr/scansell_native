@@ -221,8 +221,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         }
 
         public CardView getCardView() {
-            CardView cardView = (CardView) view.findViewById(R.id.productCard);;
-            return cardView;
+            return view.findViewById(R.id.productCard);
         }
 
         public void setView(View view) {

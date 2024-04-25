@@ -100,7 +100,7 @@ public class RecoverPasswdFragment extends Fragment {
 
     private SpinningWheel wait = new SpinningWheel();
     private void recoverPasswdRequest(View view){
-        String email = emailAddressEditText.getText().toString();
+        String email = emailAddressEditText.getText().toString().trim();
 
         if (!signInViewModel.validateEmail(email)) return;
         auth.recoverPassword(email, this::processRequest);

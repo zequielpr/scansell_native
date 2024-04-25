@@ -219,8 +219,8 @@ public class SignInFragment extends Fragment {
     private SpinningWheel spinningWheel;
     private void signInWithEmailAndPasswdRequest(View view){
 
-        String email = emailEditText.getText().toString();
-        String passwd = passwordEditText.getText().toString();
+        String email = emailEditText.getText().toString().trim();
+        String passwd = passwordEditText.getText().toString().trim();
 
         if (!signInViewModel.validateEmailAndPasswd(email, passwd)) return;
 

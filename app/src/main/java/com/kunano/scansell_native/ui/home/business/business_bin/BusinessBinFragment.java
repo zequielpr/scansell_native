@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home.business.business_bin;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -162,25 +162,24 @@ public class BusinessBinFragment extends Fragment {
                 );
 
 
-              TextView textViewDaysLeft = cardHolder.getCardView().findViewById(R.id.daysLeftProduct);
+              /*TextView textViewDaysLeft = cardHolder.getCardView().findViewById(R.id.daysLeftProduct);
                 textViewDaysLeft.setVisibility(View.VISIBLE);
                 mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d) -> {
                     textViewDaysLeft.setText((CharSequence) d);
-                });
+                });*/
 
                 //If it is all selected, then, the backgrounds of the product cards turn black transparent
                 mViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
                         (icon)->{
                             if (icon != null){
-                                cardHolder.getCardView().setBackgroundColor(getResources().
-                                        getColor(R.color.black_transparent, getActivity().getTheme()));
+                                cardHolder.getCardView().setCardBackgroundColor(ContextCompat.
+                                        getColor(getContext(), R.color.black_transparent));
                                 return;
                             }
-                            cardHolder.getCardView().setBackgroundColor(getResources().
-                                    getColor(R.color.white, getActivity().getTheme()));
+                            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
                         });
 
-                cardHolder.getCardView().findViewById(R.id.dayLeftBackground).setVisibility(View.VISIBLE);
+                //cardHolder.getCardView().findViewById(R.id.dayLeftBackground).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -267,12 +266,11 @@ public class BusinessBinFragment extends Fragment {
         if (mViewModel.getItemsToDelete().contains(product)) {
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
             checkIfAllSelected();
-            cardHolder.getCardView().setBackgroundColor(getResources().
-                    getColor(R.color.black_transparent, getActivity().getTheme()));
+            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.
+                    getColor(getContext(), R.color.black_transparent));
             return;
         }
-        cardHolder.getCardView().setBackgroundColor(getResources().
-                getColor(R.color.white, getActivity().getTheme()));
+        cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
 
 
 
@@ -311,10 +309,10 @@ public class BusinessBinFragment extends Fragment {
 
 
     public void askDeleteBusiness(View view) {
-        System.out.println("Ask whether delete businiesses");
-        String title = getString(R.string.delete_businesses_warn);
+        String title = getString(R.string.delete);
+        String message = getString(R.string.delete_product_warn);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog(title);
+                AskForActionDialog(title, message);
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
 
@@ -371,7 +369,7 @@ public class BusinessBinFragment extends Fragment {
 
     public void hideProgressBar(boolean result) {
         if(result){
-            Utils.showToast(getActivity(), getString(R.string.product_restored_successfully), Toast.LENGTH_SHORT);
+            Utils.showToast(getActivity(), getString(R.string.products_restored_successfully), Toast.LENGTH_SHORT);
         }else {
             Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
         }

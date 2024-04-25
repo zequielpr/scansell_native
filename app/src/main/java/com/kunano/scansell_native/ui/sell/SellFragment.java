@@ -276,6 +276,8 @@ public class SellFragment extends Fragment {
 
         sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
                 sellProductView::setVisibility);
+        sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
+                imageButtonScan::setVisibility);
         sellViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
                 createBusinessView::setVisibility);
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(),this::handleViewsVisibilities);
@@ -351,8 +353,7 @@ public class SellFragment extends Fragment {
     }
 
     private void cancelSell(View view){
-        AskForActionDialog askToCancelSell = new AskForActionDialog(getString(R.string.cancel_sell),
-                getString(R.string.cancel_sell).concat(" ?"));
+        AskForActionDialog askToCancelSell = new AskForActionDialog(getString(R.string.cancel_sell));
         askToCancelSell.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean object) {
