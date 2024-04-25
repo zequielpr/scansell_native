@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.sell.receipts;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -184,6 +185,10 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
             @Override
             public void reciveCardHol(ReceiptAdapter.CardHolder cardHolder) {
+
+                receiptsViewModel.getReceiptCardBackgroundColor().observe(getViewLifecycleOwner(),
+                        cardHolder.getCardView()::setCardBackgroundColor);
+
                 ImageView imageView = cardHolder.getCheckIndicator();
                 receiptsViewModel.getAllSelectedIconMutableLiveData().observe(getViewLifecycleOwner(),
                         imageView::setImageDrawable);
@@ -262,14 +267,17 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private void checkCard(ReceiptAdapter.CardHolder cardHolder){
         cardHolder.getCheckIndicator().setImageDrawable(checkedCircle);
+        cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
 
     }
     private void unCheckCard(ReceiptAdapter.CardHolder cardHolder){
         cardHolder.getCheckIndicator().setImageDrawable(null);
+        cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
     }
 
     private void selectAllItems(){
         receiptsViewModel.setAllSelectedIconMutableLiveData(checkedCircle);
+        receiptsViewModel.setReceiptCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
         LinkedHashSet<Receipt> receipts = new LinkedHashSet<>(receiptAdapter.getCurrentList());
         processItemsComponent.setItemsToProcess(receipts);
         selectAllMenuItem.setIcon(checkedCircle);
@@ -280,6 +288,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private void unSelectAllItems(){
         receiptsViewModel.setAllSelectedIconMutableLiveData(null);
+        receiptsViewModel.setReceiptCardBackgroundColor(Color.WHITE);
         processItemsComponent.clearItemsToProcess();
         selectAllMenuItem.setIcon(unCheckedCircle);
         processItemsComponent.setAllSelected(false);
@@ -333,7 +342,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
-        String deleteMode = sharedPref.getString(DELETE_MODE, NEVER);
+        /*String deleteMode = sharedPref.getString(DELETE_MODE, NEVER);
 
 
         switch (deleteMode){
@@ -346,14 +355,14 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
             default:
                 toolbar.getMenu().findItem(R.id.never_delete).setChecked(true);
 
-        }
+        }*/
     }
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()){
-            case R.id.delete_15_days:
+      /*      case R.id.delete_15_days:
                 setDeleteMode(DELETE_AFTER_15_DAYS);
                 menuItem.setChecked(true);
                 return true;
@@ -364,7 +373,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
             case R.id.never_delete:
                 setDeleteMode(NEVER);
                 menuItem.setChecked(true);
-                return true;
+                return true;*/
             case R.id.delete_button:
                 processItemsComponent.deleteItems(new ViewModelListener<Void>() {
                     @Override
@@ -390,10 +399,10 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     }
 
 
-    private void setDeleteMode(String deleteMode){
+   /* private void setDeleteMode(String deleteMode){
         if(editor != null){
             editor.putString(DELETE_MODE, deleteMode);
             editor.apply();
         }
-    }
+    }*/
 }

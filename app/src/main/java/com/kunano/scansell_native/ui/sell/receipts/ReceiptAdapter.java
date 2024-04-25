@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,9 +77,11 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         private TextView sellDate;
         private ImageView checkIndicator;
         private TextView daysLeft;
+        private CardView cardView;
         public CardHolder(@NonNull View itemView) {
             super(itemView);
 
+            cardView = itemView.findViewById(R.id.receiptCardView);
             seriesNumber = itemView.findViewById(R.id.textViewSeriesNumber);
             spentAmount = itemView.findViewById(R.id.spent_amount);
             sellDate = itemView.findViewById(R.id.sell_date);
@@ -117,15 +120,20 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
             return daysLeft;
         }
 
-
-
-
         public ImageView getCheckIndicator() {
             return checkIndicator;
         }
 
         public void setCheckIndicator(ImageView checkIndicator) {
             this.checkIndicator = checkIndicator;
+        }
+
+        public CardView getCardView() {
+            return cardView;
+        }
+
+        public void setCardView(CardView cardView) {
+            this.cardView = cardView;
         }
     }
 

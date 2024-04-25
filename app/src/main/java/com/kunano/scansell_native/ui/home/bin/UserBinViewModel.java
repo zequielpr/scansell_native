@@ -27,12 +27,14 @@ public class UserBinViewModel extends DeleteItemsViewModel {
     private MutableLiveData<String> daysLeftTobeDeletedLiveDate;
 
     private MutableLiveData<Integer> restoreButtonVisibilityLiveData;
+    private MutableLiveData<Integer> cardBackgroundColor;
 
     public UserBinViewModel(@NonNull Application application) {
         super(application);
         recycledBusinessLiveData = getBinsRepository().getBusinessInBin();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
         restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
+        cardBackgroundColor = new MutableLiveData<>();
     }
 
 
@@ -174,6 +176,14 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     public void setRestoreButtonVisibilityLiveData(Integer restoreButtonVisibilityLiveData) {
         this.restoreButtonVisibilityLiveData.postValue(restoreButtonVisibilityLiveData);
+    }
+
+    public MutableLiveData<Integer> getCardBackgroundColor() {
+        return cardBackgroundColor;
+    }
+
+    public void setCardBackgroundColor(Integer cardBackgroundColor) {
+        this.cardBackgroundColor.postValue(cardBackgroundColor);
     }
 
     public interface ListenUserBinViewModel{

@@ -10,8 +10,7 @@
         android:id="@+id/productCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:outlineSpotShadowColor="@color/black"
-        app:cardCornerRadius="0dp"
+        app:cardCornerRadius="10dp"
         android:elevation="4dp"
         app:cardElevation="0dp">
 
@@ -35,7 +34,7 @@
                     android:id="@+id/imageViewProduct"
                     android:layout_width="92dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="20dp"
                     android:layout_weight="0"
                     android:contentDescription="@string/image_product_decription"
                     android:scaleType="center"
@@ -85,7 +84,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -96,7 +96,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Product title xxxxxxxx"
-                    android:textSize="24sp"
+                    android:textSize="19sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -115,11 +115,20 @@
 
                     <TextView
                         android:id="@+id/textViewSellingPrice"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:text="Selling price"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textView40"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0"
+                        android:text="@string/dollar_symbol"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -139,12 +148,13 @@
 
                     <TextView
                         android:id="@+id/textViewBuyingPrice"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:text="Buying price"
                         android:textSize="16sp" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -159,16 +169,26 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0"
                         android:text="@string/stock_two_dots"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/textViewStock"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:text="Stock"
                         android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textView42"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0"
+                        android:text="@string/unity"
+                        android:textSize="16sp" />
+
                 </LinearLayout>
 
             </LinearLayout>

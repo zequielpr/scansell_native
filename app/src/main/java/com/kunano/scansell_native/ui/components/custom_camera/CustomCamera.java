@@ -88,7 +88,7 @@ public class CustomCamera {
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                bindPreview(cameraProvider, scanBarCode);
+                bindPreview(cameraProvider, customCameraviewModel.getLenFace(), scanBarCode);
             } catch (ExecutionException | InterruptedException e) {
                 // No errors need to be handled for this Future.
                 // This should never be reached.
@@ -98,13 +98,13 @@ public class CustomCamera {
     }
 
 
-    private void bindPreview(@NonNull ProcessCameraProvider cameraProvider, boolean scanBarCode) {
+    private void bindPreview(@NonNull ProcessCameraProvider cameraProvider, Integer lenFace, boolean scanBarCode) {
         Preview preview = new Preview.Builder()
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .requireLensFacing(lenFace)
                 .build();
 
         ImageAnalysis imageAnalysis;
@@ -342,5 +342,13 @@ public class CustomCamera {
 
     public void setCustomCameraListener(CustomCameraListener customCameraListener) {
         this.customCameraListener = customCameraListener;
+    }
+
+    public void setLenFace(Integer lenFace){
+        customCameraviewModel.setLenFace(lenFace);
+    }
+
+    public Integer getLenFace(){
+        return customCameraviewModel.getLenFace();
     }
 }

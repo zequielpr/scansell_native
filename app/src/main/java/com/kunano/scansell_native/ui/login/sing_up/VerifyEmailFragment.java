@@ -10,8 +10,12 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
@@ -37,7 +41,6 @@ public class VerifyEmailFragment extends Fragment {
         accountHelper = new AccountHelper();
         setResendEmailVerificationButtonAction(getView());
         logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
 
 
     }
@@ -46,8 +49,10 @@ public class VerifyEmailFragment extends Fragment {
 
     }
 
-    private void navigateBack(){
-        Navigation.findNavController(getView()).navigateUp();
+    private void navigateToStart(View view){
+        NavDirections navigateToStart = VerifyEmailFragmentDirections.actionVerifyEmailFragmentToLogInFragment();
+
+        Navigation.findNavController(getView()).navigate(navigateToStart);
     }
 
     public void onDestroy(){
@@ -68,6 +73,9 @@ public class VerifyEmailFragment extends Fragment {
         binding = FragmentVerifyEmailBinding.inflate(inflater, container, false);
         resendEmailVerificationButton = binding.buttonResend;
 
+        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mToolbar.setNavigationOnClickListener(this::navigateToStart);
+
         return binding.getRoot();
     }
 
@@ -75,17 +83,32 @@ public class VerifyEmailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         resendEmailVerificationButton.setOnClickListener(this::setResendEmailVerificationButtonAction);
+
+
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
+
+
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                navigateToStart(getView());
+
             }
         });
     }
 
     public void setResendEmailVerificationButtonAction(View view){
-
         accountHelper.sendEmailVerification(this::processRequest);
     }
+
 
     private void processRequest(AccountHelper.SEND_EMAIL_VERIFY_RESULT result){
         System.out.println("Result: " + result);

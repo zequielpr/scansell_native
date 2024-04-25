@@ -8,8 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp"
-        app:cardBackgroundColor="?colorPrimary"
-        android:elevation="1dp">
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="?colorSurface"
+        app:cardElevation="1dp">
         <ImageButton
             android:id="@+id/cancel_b_sell_product"
             android:layout_width="20dp"
@@ -18,7 +19,6 @@
             android:background="@color/transparent"
             android:layout_alignParentTop="true"
             android:src="@drawable/close_24"
-            android:elevation="1dp"
             android:layout_margin="3dp"
             android:visibility="visible" />
     </androidx.cardview.widget.CardView>
@@ -30,6 +30,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         android:outlineSpotShadowColor="@color/black">
 
@@ -43,7 +44,7 @@
                 android:id="@+id/imageViewProduct"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="20dp"
                 android:layout_weight="0"
                 android:contentDescription="@string/image_product_decription"
                 android:scaleType="center"
@@ -53,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 

@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home.bin;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ public class UserBinFragment extends Fragment {
     private Drawable uncheckedCircle;
     private MenuItem selectAllIcon;
 
-    private  ProgressBarDialog progressBarDialog;
+    private ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
@@ -125,11 +126,15 @@ public class UserBinFragment extends Fragment {
             @Override
             public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
                 mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
-                TextView quantity =  cardHolder.getNumProducts();
+                TextView quantity = cardHolder.getNumProducts();
 
                 homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
-                        getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
-                                concat(": ").concat(String.valueOf(q)))
+                        getViewLifecycleOwner(), (q) -> {
+
+                            String label = getString(R.string.current_products);
+                            label = q < 2 ? label.substring(0, label.length() - 1) : label;
+                            quantity.setText(String.valueOf(q) + " " + label);
+                        }
                 );
             }
 
@@ -141,12 +146,14 @@ public class UserBinFragment extends Fragment {
                 mViewModel.getRestoreButtonVisibilityLiveData().observe(getViewLifecycleOwner(),
                         cardHolder.getImageButtonRestore()::setVisibility
                 );
+                mViewModel.getCardBackgroundColor().observe(getViewLifecycleOwner(),
+                        cardHolder.getCard()::setCardBackgroundColor);
 
-                TextView textViewDaysLeft = cardHolder.getCard().findViewById(R.id.textViewDaysLeftProduct);
+                /*TextView textViewDaysLeft = cardHolder.getCard().findViewById(R.id.textViewDaysLeftProduct);
                 textViewDaysLeft.setVisibility(View.VISIBLE);
                 mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d) -> {
                     textViewDaysLeft.setText((CharSequence) d);
-                });
+                });*/
             }
 
             @Override
@@ -168,7 +175,7 @@ public class UserBinFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void handleBackPressed(){
+    private void handleBackPressed() {
         if (mViewModel.isDeleteModeActive()) {
             desactivateDeleteMode();
             return;
@@ -217,34 +224,36 @@ public class UserBinFragment extends Fragment {
         mainActivityViewModel.showBottomNavBar();
         mViewModel.desactivateDeleteMod(getString(R.string.recycle_bin));
         mViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        mViewModel.setCardBackgroundColor(Color.WHITE);
         mViewModel.setRestoreButtonVisibilityLiveData(View.VISIBLE);
 
     }
 
 
     public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
-        if (mViewModel.getItemsToDelete().isEmpty()){
+        if (mViewModel.getItemsToDelete().isEmpty()) {
             deleteOrRestoreOptions.setVisibility(View.GONE);
-        }else {
+        } else {
             deleteOrRestoreOptions.setVisibility(View.VISIBLE);
         }
 
         if (mViewModel.getItemsToDelete().contains(business)) {
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
+            cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
             System.out.println("Seleccionada" + cardHolder.getCard().getTag());
             checkIfAllSelected();
             return;
         }
 
 
-
         checkIfAllSelected();
+        cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
         cardHolder.getUnCheckedCircle().setBackground(null);
 
 
     }
 
-    public void empryBin(){
+    public void empryBin() {
         actcivateDeleteMode();
         selectAll();
         askDeleteBusiness();
@@ -252,7 +261,7 @@ public class UserBinFragment extends Fragment {
 
 
     public void checkIfAllSelected() {
-        if (selectAllIcon == null)return;
+        if (selectAllIcon == null) return;
 
         if (mViewModel.isAllSelected()) {
             selectAllIcon.setIcon(R.drawable.checked_circle);
@@ -269,24 +278,22 @@ public class UserBinFragment extends Fragment {
     }
 
 
-
-
-
     public void askDeleteBusiness() {
-        String title = getString(R.string.delete_businesses_warn);
+        String title = getString(R.string.delete);
+        String message = getString(R.string.delete_businesses_warn);
         AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog( title);
+                AskForActionDialog(title, message);
         askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
         askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
 
     }
 
 
-    public void deleteOrCancel(boolean response){
-        if(response){
+    public void deleteOrCancel(boolean response) {
+        if (response) {
             showProgressBar(getString(R.string.deleting));
             mViewModel.deleteItems(this::hideProgressBar, getString(R.string.recycle_bin));
-        }else {
+        } else {
             desactivateDeleteMode();
         }
     }
@@ -294,7 +301,7 @@ public class UserBinFragment extends Fragment {
 
     public void showProgressBar(String title) {
 
-        MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
+        MutableLiveData<Integer> progress = mViewModel.getDeleteProgressLiveData();
         MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
 
         progressBarDialog = new ProgressBarDialog(
@@ -306,25 +313,20 @@ public class UserBinFragment extends Fragment {
 
 
     public void hideProgressBar(boolean result) {
-        if(!result){
+        if (!result) {
             //Show result
             return;
         }
 
-        if(progressBarDialog != null){
+        if (progressBarDialog != null) {
             progressBarDialog.dismiss();
 
-            getActivity().runOnUiThread(()->{
+            getActivity().runOnUiThread(() -> {
                 desactivateDeleteMode();
             });
         }
 
     }
-
-
-
-
-
 
 
     @Override
@@ -335,13 +337,10 @@ public class UserBinFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l)->{
-            empty_bin_layout.setVisibility(l.size() > 0?View.GONE:View.VISIBLE);
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l) -> {
+            empty_bin_layout.setVisibility(l.size() > 0 ? View.GONE : View.VISIBLE);
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,23 +381,24 @@ public class UserBinFragment extends Fragment {
         });
 
 
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(),(list)->{
-            if (list.isEmpty()){
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (list) -> {
+            if (list.isEmpty()) {
                 toolbar.getMenu().clear();
-            }else {
-                if (toolbar.getMenu()!= null)return;
+            } else {
+                if (toolbar.getMenu() != null) return;
                 toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
             }
         });
 
-        deleteButton.setOnClickListener((v)->askDeleteBusiness());
-        restoreButton.setOnClickListener((v)->restoreBusinesses());
+        deleteButton.setOnClickListener((v) -> askDeleteBusiness());
+        restoreButton.setOnClickListener((v) -> restoreBusinesses());
     }
 
 
     public void selectAll() {
         selectAllIcon.setIcon(R.drawable.checked_circle);
         mViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
+        mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
         mViewModel.selectAll(mViewModel.parseBusinessListToGeneric());
         deleteOrRestoreOptions.setVisibility(View.VISIBLE);
 
@@ -409,6 +409,7 @@ public class UserBinFragment extends Fragment {
     public void unSelectAll() {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         mViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        mViewModel.setCardBackgroundColor(Color.WHITE);
         mViewModel.unSelectAll();
         deleteOrRestoreOptions.setVisibility(View.GONE);
     }

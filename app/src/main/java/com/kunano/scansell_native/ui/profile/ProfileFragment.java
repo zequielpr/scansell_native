@@ -18,12 +18,14 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -128,6 +130,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         customLineChart = new CustomLineChart(lineChart, this);
         customLineChart.setOnChartValueSelectedListener(getOnChartValueSelectedListener());
         customPieChart = new CustomPieChart(pieChartMostSellProducts);
+
         return binding.getRoot();
     }
 
@@ -135,6 +138,15 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(getView()).navigate(R.id.sell_navigation_graph);
+
+            }
+        });
+
         profileToolbar.setTitle(accountHelper.getUserName());
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
