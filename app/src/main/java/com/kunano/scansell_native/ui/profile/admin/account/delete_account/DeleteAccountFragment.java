@@ -128,7 +128,7 @@ public class DeleteAccountFragment extends Fragment {
         }else if(result.contains(AccountHelper.NETWORK_ERROR)){
             message = getString(R.string.network_error);
         }else {
-            message = getString(R.string.thera_has_been_an_error);
+            message = getString(R.string.there_has_been_an_error);
         }
         showResult(message);
 

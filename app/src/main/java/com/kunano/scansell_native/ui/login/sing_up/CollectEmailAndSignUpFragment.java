@@ -189,7 +189,7 @@ public class CollectEmailAndSignUpFragment extends Fragment {
                 showResult(message);
                 break;
             case UNKNOWN_ERROR:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showResult(message);
                 break;
             default:

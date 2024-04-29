@@ -479,10 +479,10 @@ public class BusinessFragment extends Fragment {
     public void hideProgressBar(boolean result) {
         if (result) {
             getActivity().runOnUiThread(()->desactivateDeleteMode(getView()) );
-            Utils.showToast(getActivity(), getString(R.string.products_sent_to_bin_successfuly),
+            Utils.showToast(getActivity(), getString(R.string.products_sent_to_bin_successfully),
                     Toast.LENGTH_SHORT);
         }else {
-            Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error),
+            Utils.showToast(getActivity(), getString(R.string.there_has_been_an_error),
                     Toast.LENGTH_SHORT);
         }
 
@@ -537,7 +537,7 @@ public class BusinessFragment extends Fragment {
         boolean r = (Boolean) result;
 
         if (r) {
-            showToast(getString(R.string.business_binned_successfuly), Toast.LENGTH_SHORT);
+            showToast(getString(R.string.business_binned_successfully), Toast.LENGTH_SHORT);
             navigateBAck();
         } else {
             showToast(getString(R.string.error_to_bin_business), Toast.LENGTH_SHORT);

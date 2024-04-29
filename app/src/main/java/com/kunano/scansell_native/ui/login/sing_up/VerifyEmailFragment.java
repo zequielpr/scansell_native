@@ -124,7 +124,7 @@ public class VerifyEmailFragment extends Fragment {
                 message = getString(R.string.email_verification_sent_several_times);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 break;
         }
         showResult(message);

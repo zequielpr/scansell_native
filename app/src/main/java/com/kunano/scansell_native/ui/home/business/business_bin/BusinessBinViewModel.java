@@ -49,7 +49,7 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
                 if (resultado > 0){
                     listenBusinessBinViewMode.requestResult(getApplication().getString(R.string.product_restored_successfully));
                 }else {
-                    listenBusinessBinViewMode.requestResult(getApplication().getString(R.string.thera_has_been_an_error));
+                    listenBusinessBinViewMode.requestResult(getApplication().getString(R.string.there_has_been_an_error));
                 }
 
             } catch (ExecutionException e) {

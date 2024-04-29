@@ -163,7 +163,7 @@ public class ChangePasswordFragment extends Fragment {
 
         }
         else {
-            message = getString(R.string.thera_has_been_an_error);
+            message = getString(R.string.there_has_been_an_error);
         }
         showResult(message);
 

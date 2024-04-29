@@ -371,7 +371,7 @@ public class BusinessBinFragment extends Fragment {
         if(result){
             Utils.showToast(getActivity(), getString(R.string.products_restored_successfully), Toast.LENGTH_SHORT);
         }else {
-            Utils.showToast(getActivity(), getString(R.string.thera_has_been_an_error), Toast.LENGTH_SHORT);
+            Utils.showToast(getActivity(), getString(R.string.there_has_been_an_error), Toast.LENGTH_SHORT);
         }
 
         if(progressBarDialog != null){

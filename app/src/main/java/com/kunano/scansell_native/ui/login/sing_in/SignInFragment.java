@@ -257,7 +257,7 @@ public class SignInFragment extends Fragment {
                 showResult(message);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showResult(message);
                 break;
         }

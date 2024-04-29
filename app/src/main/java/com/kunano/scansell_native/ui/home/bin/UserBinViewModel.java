@@ -48,7 +48,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
                 if (resultado > 0){
                     listenUserBinViewModel.requestResult(getApplication().getString(R.string.business_restored_successfully));
                 }else {
-                    listenUserBinViewModel.requestResult(getApplication().getString(R.string.thera_has_been_an_error));
+                    listenUserBinViewModel.requestResult(getApplication().getString(R.string.there_has_been_an_error));
                 }
 
             } catch (ExecutionException e) {

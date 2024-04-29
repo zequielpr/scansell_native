@@ -454,7 +454,7 @@ public class CreateProductFragment extends Fragment {
         boolean r = (boolean)result;
         getActivity().runOnUiThread(()->{
             if (r){
-                Toast.makeText(getContext(), getString(R.string.products_sent_to_bin_successfuly),
+                Toast.makeText(getContext(), getString(R.string.products_sent_to_bin_successfully),
                         Toast.LENGTH_LONG).show();
                 navigateBack();
                 return;

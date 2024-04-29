@@ -224,17 +224,17 @@ public class ProcessItemsComponent<T> {
                         updateProcessProgress(itemsCounter);
                     } catch (InterruptedException e) {
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     } catch (ExecutionException e) {
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         throw new RuntimeException(e);
                     }catch (Exception e){
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     }
