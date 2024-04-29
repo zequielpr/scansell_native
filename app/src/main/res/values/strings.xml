@@ -52,6 +52,8 @@
     <string name="days">Days</string>
     <string name="day">Day</string>
     <string name="restore">Restore</string>
+    <string name="restore_selected_items">Restore selected items</string>
+    <string name="restoring_items">Restoring items...</string>
     <string name="set_buying_price">Set buying price</string>
     <string name="set_selling_price">Set selling price</string>
     <string name="set_stock">Set stock</string>

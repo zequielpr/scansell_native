@@ -59,7 +59,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
 
     public void  addOrRemoveItemToProcess(ProcessItemsComponent<Business> businessProcessor, Business business) {
-        boolean isAdded = businessProcessor.isItemToBeProcess(business);
+        boolean isAdded = businessProcessor.isItemToBeProcessed(business);
         System.out.println("Is added: " + isAdded);
         if(isAdded){
             businessProcessor.removeItemToProcess(business);

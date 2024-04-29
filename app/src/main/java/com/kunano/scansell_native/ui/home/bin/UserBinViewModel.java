@@ -1,25 +1,25 @@
 package com.kunano.scansell_native.ui.home.bin;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.model.db.Converters;
-import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
-public class UserBinViewModel extends DeleteItemsViewModel {
+public class UserBinViewModel extends AndroidViewModel {
     private ListenUserBinViewModel listenUserBinViewModel;
 
     private LiveData<List<Business>> recycledBusinessLiveData;
@@ -28,13 +28,19 @@ public class UserBinViewModel extends DeleteItemsViewModel {
 
     private MutableLiveData<Integer> restoreButtonVisibilityLiveData;
     private MutableLiveData<Integer> cardBackgroundColor;
+    private BinsRepository binsRepository;
+    private MutableLiveData<String> selectedItemsNumbLiveData;
+    private MutableLiveData<Drawable> checkedOrUncheckedCircleLivedata;
 
     public UserBinViewModel(@NonNull Application application) {
         super(application);
-        recycledBusinessLiveData = getBinsRepository().getBusinessInBin();
+        binsRepository = new BinsRepository(application);
+        recycledBusinessLiveData = binsRepository.getBusinessInBin();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
         restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
         cardBackgroundColor = new MutableLiveData<>();
+        selectedItemsNumbLiveData = new MutableLiveData<>();
+        checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
     }
 
 
@@ -61,7 +67,7 @@ public class UserBinViewModel extends DeleteItemsViewModel {
     }
 
 
-    public String setDaysLeftToBeDeleted(Long businessId){
+    /*public String setDaysLeftToBeDeleted(Long businessId){
 
         if (continuePassing) return "";
         Executor executor = Executors.newSingleThreadExecutor();
@@ -98,47 +104,28 @@ public class UserBinViewModel extends DeleteItemsViewModel {
             daysLeftTobeDeletedLiveDate.postValue(daysLeft);
         }
     }
+*/
 
 
-
-    public void shortTap(Business business) {
-        if (isDeleteModeActive) {
-
-            if (itemsToDelete.contains(business)) {
-                itemsToDelete.remove(business);
-
-            } else {
-                itemsToDelete.add(business);
-                //Select to delete
-            }
-
-
-            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
-            return;
-        }
-
-        //currentBusiness = repository.getBusinesById(business.getBusinessId());
+    public void shortTap(Business business, ProcessItemsComponent<Business> businessProcessItemsComponent) {
+       processBusiness(business, businessProcessItemsComponent);
     }
 
-    public void longTap(Business business) {
-        if (itemsToDelete.contains(business)) {
-            itemsToDelete.remove(business);
+    public void longTap(Business business, ProcessItemsComponent<Business> businessProcessItemsComponent) {
+        processBusiness(business, businessProcessItemsComponent);
+    }
+
+    private void processBusiness(Business business, ProcessItemsComponent<Business> businessProcessItemsComponent){
+        if (businessProcessItemsComponent.isItemToBeProcessed(business)) {
+            businessProcessItemsComponent.removeItemToProcess(business);
+
         } else {
-            itemsToDelete.add(business);
+            businessProcessItemsComponent.addItemToProcess(business);
+            //Select to delete
         }
-        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = recycledBusinessLiveData.getValue().size() == itemsToDelete.size();
+
+        selectedItemsNumbLiveData.postValue(Integer.toString(businessProcessItemsComponent.getItemsToProcess().size()));
     }
-
-
-
-    public List<Object> parseBusinessListToGeneric() {
-        return recycledBusinessLiveData.getValue().stream()
-                .map(business -> (Object) business)
-                .collect(Collectors.toList());
-    }
-
 
 
 
@@ -186,7 +173,23 @@ public class UserBinViewModel extends DeleteItemsViewModel {
         this.cardBackgroundColor.postValue(cardBackgroundColor);
     }
 
+    public MutableLiveData<Drawable> getCheckedOrUncheckedCircleLivedata() {
+        return checkedOrUncheckedCircleLivedata;
+    }
+
+    public void setCheckedOrUncheckedCircleLivedata(Drawable checkedOrUncheckedCircleLivedata) {
+        this.checkedOrUncheckedCircleLivedata.postValue(checkedOrUncheckedCircleLivedata);
+    }
+
     public interface ListenUserBinViewModel{
         abstract void requestResult(String message);
+    }
+
+    public MutableLiveData<String> getSelectedItemsNumbLiveData() {
+        return selectedItemsNumbLiveData;
+    }
+
+    public void setSelectedItemsNumbLiveData(String selectedItemsNumbLiveData) {
+        this.selectedItemsNumbLiveData.postValue(selectedItemsNumbLiveData);
     }
 }

@@ -233,7 +233,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
             @Override
             public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
-                if (homeViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+                if (businessesProcessor.isProcessItemActive()) checkCard(cardHolder, business);
 
                 TextView quantity = cardHolder.getNumProducts();
 
@@ -291,7 +291,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
-        boolean isChecked = businessesProcessor.isItemToBeProcess(business);
+        boolean isChecked = businessesProcessor.isItemToBeProcessed(business);
+        System.out.println("Business checked: " + isChecked);
 
         if(isChecked){
             cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
