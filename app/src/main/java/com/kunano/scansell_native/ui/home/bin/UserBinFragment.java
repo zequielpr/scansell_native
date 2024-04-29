@@ -59,7 +59,7 @@ public class UserBinFragment extends Fragment {
 
     private ProcessItemsComponent<Business> businessProcessItemsComponent;
 
-    public void onCreate(Bundle savedState){
+    public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         businessProcessItemsComponent = new ProcessItemsComponent<>(this);
     }
@@ -116,7 +116,7 @@ public class UserBinFragment extends Fragment {
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
             public void onShortTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
-                if (businessProcessItemsComponent.isProcessItemActive()){
+                if (businessProcessItemsComponent.isProcessItemActive()) {
                     mViewModel.shortTap(business, businessProcessItemsComponent);
                     checkCard(cardHolder, business);
                 }
@@ -136,7 +136,8 @@ public class UserBinFragment extends Fragment {
             @Override
             public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
-                if (businessProcessItemsComponent.isProcessItemActive())checkCard(cardHolder, business);
+                if (businessProcessItemsComponent.isProcessItemActive())
+                    checkCard(cardHolder, business);
 
                 TextView quantity = cardHolder.getNumProducts();
 
@@ -200,12 +201,6 @@ public class UserBinFragment extends Fragment {
     }
 
 
-    public void showDeleteOrRestoreOptions() {
-        DeleteOrRestoreOptions bottomSheetFragment = new DeleteOrRestoreOptions();
-        bottomSheetFragment.show(getParentFragmentManager(), bottomSheetFragment.getTag());
-    }
-
-
     private void setToolbarSubtitle(List<Business> businessList) {
         toolbar.setSubtitle(Integer.toString(businessList.size()).
                 concat(" ").
@@ -228,7 +223,7 @@ public class UserBinFragment extends Fragment {
     }
 
     public void desactivateDeleteMode() {
-        getActivity().runOnUiThread(()->{
+        getActivity().runOnUiThread(() -> {
             businessProcessItemsComponent.setProcessItemActive(false);
             toolbar.getMenu().clear();
             toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
@@ -279,8 +274,10 @@ public class UserBinFragment extends Fragment {
         if (selectAllIcon == null) return;
 
         if (businessProcessItemsComponent.getItemsToProcess().size() == businessCardAdepter.getCurrentList().size()) {
+            businessProcessItemsComponent.setAllSelected(true);
             selectAllIcon.setIcon(R.drawable.checked_circle);
         } else {
+            businessProcessItemsComponent.setAllSelected(false);
             selectAllIcon.setIcon(R.drawable.unchked_circle);
         }
     }
