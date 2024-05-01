@@ -50,9 +50,9 @@ public class BusinessRepository {
             Long resultado = null;
             try {
 
-               for (int i = 0; i < 5000; i++){
+               /*for (int i = 0; i < 5000; i++){
                     resultado = businessDao.insertBusiness(business).get();
-                }
+                }*/
                 resultado = businessDao.insertBusiness(business).get();
                 if (resultado > 0) {
                     response.result(true);

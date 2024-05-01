@@ -13,6 +13,7 @@ import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -38,12 +39,12 @@ public class ProductRepository {
         executor.execute(() -> {
             Long resultado = null;
             try {
-                /*for (int i = 0; i < 600; i++){
+                for (int i = 0; i < 600; i++){
                     product.setProductId(UUID.randomUUID().toString());
                     resultado = productDao.insertProduct(product).get();
                     ProductImg img = new ProductImg(product.getProductId(), productImg, product.getBusinessIdFK());
                     productImgDao.insertProductImg(img).get();
-                }*/
+                }
 
                 //product.setProductId(UUID.randomUUID().toString());
                 resultado = productDao.insertProduct(product).get();

@@ -1,28 +1,31 @@
 package com.kunano.scansell_native.ui.home.business;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
-import com.kunano.scansell_native.ui.DeleteItemsViewModel;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
-public class BusinessViewModel extends DeleteItemsViewModel {
+public class BusinessViewModel extends AndroidViewModel {
 
 
     private Long currentBusinessId;
@@ -37,6 +40,11 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     private LiveData<List<Product>> allProductLiveData;
     Observer<List<Product>> productsObserver;
     private MutableLiveData<Integer> emptyBusinessVisibility;
+    private MutableLiveData<String> toolBarTitle;
+    private BusinessRepository businessRepository;
+    private BinsRepository binsRepository;
+
+    private MutableLiveData<Drawable> checkedOrUncheckedCircleLivedata;
 
     public BusinessViewModel(@NonNull Application application) {
         super(application);
@@ -49,6 +57,11 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         productList = new ArrayList<>();
         searchModeActive = false;
         emptyBusinessVisibility = new MutableLiveData<>();
+        toolBarTitle = new MutableLiveData<>();
+        checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
+
+        businessRepository = new BusinessRepository(application);
+        binsRepository = new BinsRepository(application);
 
         productsObserver = productList -> {
             allProductMuyableLiveData.postValue(productList);
@@ -66,7 +79,8 @@ public class BusinessViewModel extends DeleteItemsViewModel {
             //Set name and address of the business
             businessName = currentBusiness.getBusinessName();
             System.out.println("Business name: " + businessName);
-            if (!isDeleteModeActive) setSelectedItemsNumbLiveData(businessName);
+
+            toolBarTitle.postValue(businessName);
 
             businessAddress = currentBusiness.getBusinessAddress();
 
@@ -123,34 +137,23 @@ public class BusinessViewModel extends DeleteItemsViewModel {
     }
 
 
-    public void shortTap(Product product) {
-        if (isDeleteModeActive) {
-
-            if (itemsToDelete.contains(product)) {
-                itemsToDelete.remove(product);
-
-            } else {
-                itemsToDelete.add((Object) product);
-                //Select to delete
-            }
-
-
-            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = allProductMuyableLiveData.getValue().size() == itemsToDelete.size();
-            return;
-        }
-
+    public void shortTap(Product product, ProcessItemsComponent<Product> productProcessItemsComponent) {
+        selectItem(product, productProcessItemsComponent);
     }
 
-    public void longTap(Product product) {
-        this.itemTypeToDelete = ItemTypeToDelete.PRODUCT;
-        if (itemsToDelete.contains(product)) {
-            itemsToDelete.remove(product);
-        } else {
-            itemsToDelete.add(product);
+
+    private void selectItem(Product product, ProcessItemsComponent<Product> productProcessItemsComponent){
+        if (productProcessItemsComponent.isItemToBeProcessed(product)){
+            productProcessItemsComponent.removeItemToProcess(product);
+        }else {
+            productProcessItemsComponent.addItemToProcess(product);
         }
-        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = allProductMuyableLiveData.getValue().size() == itemsToDelete.size();
+
+        toolBarTitle.postValue(String.valueOf(productProcessItemsComponent.getItemsToProcess().size()));
+    }
+
+    public void longTap(Product product, ProcessItemsComponent<Product> productProcessItemsComponent) {
+        selectItem(product, productProcessItemsComponent);
 
     }
 
@@ -162,7 +165,7 @@ public class BusinessViewModel extends DeleteItemsViewModel {
         executorService.execute(() -> {
             Long result;
             try {
-                result = super.binsRepository.sendBusinessTobin(currentBusinessId).get();
+                result = binsRepository.sendBusinessTobin(currentBusinessId).get();
                 viewModelListener.result(result > 0);
 
             } catch (ExecutionException e) {
@@ -175,31 +178,10 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     }
 
-
-    public List<Object> parseProductListToGeneric() {
-        return allProductMuyableLiveData.getValue().stream()
-                .map(product -> (Object) product)
-                .collect(Collectors.toList());
-    }
-
     public void updateBusiness(String name, String address, String creatingData, ListenResponse listenResponse) {
         Business business = new Business(name, address, creatingData);
         business.setBusinessId(currentBusinessId);
         businessRepository.updateBusiness(business, listenResponse);
-    }
-
-
-    public LiveData<List<Product>> getAllProductMuyableLiveData() {
-        return allProductMuyableLiveData;
-    }
-
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
     }
 
     public String getBusinessName() {
@@ -262,5 +244,21 @@ public class BusinessViewModel extends DeleteItemsViewModel {
 
     public void setEmptyBusinessVisibility(Integer emptyBusinessVisibility) {
         this.emptyBusinessVisibility.postValue(emptyBusinessVisibility);
+    }
+
+    public MutableLiveData<String> getToolBarTitle() {
+        return toolBarTitle;
+    }
+
+    public void setToolBarTitle(String toolBarTitle) {
+        this.toolBarTitle.postValue(toolBarTitle);
+    }
+
+    public MutableLiveData<Drawable> getCheckedOrUncheckedCircleLivedata() {
+        return checkedOrUncheckedCircleLivedata;
+    }
+
+    public void setCheckedOrUncheckedCircleLivedata(Drawable checkedOrUncheckedCircleLivedata ) {
+        this.checkedOrUncheckedCircleLivedata.postValue(checkedOrUncheckedCircleLivedata);
     }
 }
