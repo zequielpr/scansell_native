@@ -18,6 +18,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.databinding.FragmentCollectPaymentMethodBinding;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellFragmentDirections;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
@@ -68,7 +69,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->totalToPay.setText(String.valueOf(t)));
         sellViewModel.getCashDue().observe(getViewLifecycleOwner(),(cd)-> {
-            cashDueTextView.setText(String.valueOf(cd));
+            cashDueTextView.setText(String.valueOf(Utils.formatDecimal(cd)));
             if(cd.doubleValue() >= 0){
                 activateOrdesacPayButton(true);
             }else {

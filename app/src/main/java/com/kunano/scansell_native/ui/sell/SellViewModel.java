@@ -133,7 +133,7 @@ public class SellViewModel extends AndroidViewModel {
         return productToSellMutableLiveData;
     }
 
-    public void addProductToSell(Product product) {
+    public void addProductToSell(Product product, ViewModelListener<Boolean> listener) {
         String draftId = UUID.randomUUID().toString();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -144,7 +144,8 @@ public class SellViewModel extends AndroidViewModel {
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
                 try {
-                    sellRepository.insertProductInDraft(productToSellDraft).get();
+                   Long result = sellRepository.insertProductInDraft(productToSellDraft).get();
+                   listener.result(result > 0);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
@@ -401,7 +402,11 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCashTendered(double cashTendered) {
         this.cashTendered = Double.valueOf(df.format(cashTendered));
-        cashDue.postValue(BigDecimal.valueOf(cashTendered).subtract(totalToPay.getValue()));
+
+        BigDecimal cashDueBigDec = BigDecimal.valueOf(cashTendered).subtract(totalToPay.getValue());
+        System.out.println("cash due: " + cashDueBigDec);
+
+        cashDue.postValue(Utils.formatDecimal(cashDueBigDec));
     }
 
     public MutableLiveData<BigDecimal> getCashDue() {

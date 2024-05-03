@@ -212,6 +212,11 @@ public class BusinessFragment extends Fragment {
             public void onRestore(Product product) {
 
             }
+
+            @Override
+            public void onListChanged() {
+                recyclerViewProduct.scrollToPosition(0);
+            }
         });
     }
 

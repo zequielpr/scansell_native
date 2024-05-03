@@ -26,6 +26,7 @@ import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.components.Utils;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -66,8 +67,11 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         return new CardHolder(view);
     }
 
-
-
+    @Override
+    public void onCurrentListChanged(@NonNull List<Product> previousList, @NonNull List<Product> currentList) {
+        super.onCurrentListChanged(previousList, currentList);
+        listener.onListChanged ();
+    }
 
     @Override
     public void onBindViewHolder(CardHolder holder, final int position) {
@@ -254,6 +258,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         abstract void getCardHolderOnBind(ProductCardAdapter.CardHolder cardHolder, Product  prod);
         abstract void reciveCardHol(ProductCardAdapter.CardHolder cardHolder);
         abstract void onRestore(Product product);
+        abstract void onListChanged();
 
     }
 

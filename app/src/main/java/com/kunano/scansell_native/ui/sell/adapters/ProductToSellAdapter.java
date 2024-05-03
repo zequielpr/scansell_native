@@ -23,6 +23,7 @@ import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -46,7 +47,14 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
                     oldItem.getBusinessIdFK() == newItem.getBusinessIdFK() &&
                     oldItem.getStock().equals(newItem.getStock());
         }
+
     };
+
+    @Override
+    public void onCurrentListChanged(@NonNull List<Product> previousList, @NonNull List<Product> currentList) {
+        super.onCurrentListChanged(previousList, currentList);
+        listener.onListChanged();
+    }
 
     public ProductToSellAdapter() {
         super(DIFF_CALLBACK);
@@ -173,6 +181,8 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
         abstract void getCardHolderOnBind(View cardHolder, Product  prod);
         abstract void reciveCardHol(View cardHolder);
         abstract void onCancel(Product product);
+
+        abstract void onListChanged();
 
     }
 

@@ -161,6 +161,11 @@ public class SoldProductFragment extends Fragment{
             public void onCancel(Product product) {
                 askTodeleteProduct(product);
             }
+
+            @Override
+            public void onListChanged() {
+
+            }
         });
     }
 

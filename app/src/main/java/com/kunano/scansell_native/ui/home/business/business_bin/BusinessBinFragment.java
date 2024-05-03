@@ -198,6 +198,11 @@ public class BusinessBinFragment extends Fragment {
                 mViewModel.restoreSingleProduct(product);
             }
 
+            @Override
+            public void onListChanged() {
+
+            }
+
         });
 
 

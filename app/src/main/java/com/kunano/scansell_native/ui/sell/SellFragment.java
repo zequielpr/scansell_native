@@ -393,10 +393,17 @@ public class SellFragment extends Fragment {
             return;
         }
 
-        sellViewModel.addProductToSell(product);
-        makeSound();
-        expandBottomSheet();
-        getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+        sellViewModel.addProductToSell(product, new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean result) {
+               if (result){
+                   makeSound();
+                   expandBottomSheet();
+                   //getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+               }
+            }
+        });
+
 
 
 
@@ -576,6 +583,11 @@ public class SellFragment extends Fragment {
             @Override
             public void onCancel(Product product) {
                 sellViewModel.deleteProductToSell(product);
+            }
+
+            @Override
+            public void onListChanged() {
+                recyclerViewProducts.scrollToPosition(0);
             }
         });
     }
