@@ -19,7 +19,10 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
+
+import java.math.BigDecimal;
 
 public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -67,7 +70,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
         Product product = getItem(position);
         holder.title.setText(product.getProductName());
         holder.sellingPrice.setText(activityParent.getString(R.string.price)+" ".
-                concat(Double.toString(product.getSelling_price())));
+                concat(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(product.getSelling_price())))));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
         productRepository.getProdductImage(product.getProductId(), product.getBusinessIdFK()
                 , new ProductCardAdapter.LisnedProductImage() {

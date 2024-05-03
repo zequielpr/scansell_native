@@ -146,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:maxLength="7"
+                android:maxLength="9"
                 android:ems="10"
                 android:inputType="numberDecimal"  />
 
@@ -173,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:maxLength="7"
+                android:maxLength="9"
                 android:ems="10"
                 android:inputType="number"  />
 

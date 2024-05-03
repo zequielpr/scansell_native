@@ -27,6 +27,8 @@ import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
+import java.math.BigDecimal;
+
 public class SoldProductFragment extends Fragment{
     private MainActivityViewModel mainActivityViewModel;
     private ProductToSellAdapter soldProductAdapter;
@@ -71,7 +73,7 @@ public class SoldProductFragment extends Fragment{
                 soldProductViewModel.setSoldItems(String.valueOf(soldProductsList.size()));
                 double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
                         c + sp.getSelling_price(), Double::sum);
-                String spentAmountString = String.valueOf(Utils.formatDecimal(spentAmount)) + " ".concat(getString(R.string.dollar_symbol));
+                String spentAmountString = String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(spentAmount))) + " ".concat(getString(R.string.dollar_symbol));
                 toolbar.setSubtitle(spentAmountString);
             });
             soldProductViewModel.populatePaymentInfo(receipt_key);

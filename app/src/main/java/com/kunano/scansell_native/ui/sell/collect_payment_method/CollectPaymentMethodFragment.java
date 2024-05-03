@@ -69,7 +69,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->totalToPay.setText(String.valueOf(t)));
         sellViewModel.getCashDue().observe(getViewLifecycleOwner(),(cd)-> {
             cashDueTextView.setText(String.valueOf(cd));
-            if(cd >= 0){
+            if(cd.doubleValue() >= 0){
                 activateOrdesacPayButton(true);
             }else {
                 activateOrdesacPayButton(false);
@@ -118,7 +118,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
                if(paymentMethod == 0){
                    sellViewModel.setCashTenderedAndDueVisibility(View.VISIBLE);
-                   activateOrdesacPayButton(sellViewModel.getCashDue().getValue()>= 0);
+                   activateOrdesacPayButton(sellViewModel.getCashDue().getValue().doubleValue()>= 0);
                }else {
                    sellViewModel.setCashTenderedAndDueVisibility(View.GONE);
                    activateOrdesacPayButton(true);

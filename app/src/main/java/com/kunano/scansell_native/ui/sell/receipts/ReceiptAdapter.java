@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.ui.components.Utils;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
 public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHolder> {
@@ -55,7 +57,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.CardHold
         Receipt receipt = getItem(position);
 
         holder.seriesNumber.setText(receipt.getReceiptId());
-        holder.spentAmount.setText(String.valueOf(receipt.getSpentAmount()));
+        holder.spentAmount.setText(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(receipt.getSpentAmount()))));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm");
             holder.sellDate.setText(String.valueOf(receipt.getSellingDate().format(formatter)));

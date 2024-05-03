@@ -25,6 +25,7 @@ import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<List<Product>> productToSellMutableLiveData;
-    private MutableLiveData<Double> totalToPay;
+    private MutableLiveData<BigDecimal> totalToPay;
     private ProductRepository productRepository;
     private BusinessRepository businessRepository;
     private ExecutorService executorService;
@@ -53,7 +54,7 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> selectedIndexSpinner;
 
     private double cashTendered;
-    private MutableLiveData<Double> cashDue;
+    private MutableLiveData<BigDecimal> cashDue;
     private MutableLiveData<Integer> cashTenderedAndDueVisibility;
     private MutableLiveData<Boolean> isScanActiveMutableLiveData;
 
@@ -82,12 +83,11 @@ public class SellViewModel extends AndroidViewModel {
         emptyReceiptSectionVisibility = new MutableLiveData<>();
 
         businessesListLiveData = businessRepository.getAllBusinesses();
-        totalToPay = new MutableLiveData<>(0.0);
+        totalToPay = new MutableLiveData<>(new BigDecimal("0.0"));
         liveDataReceipts = new MutableLiveData<>();
         finishButtonStateVisibility = new MutableLiveData<>(View.GONE);
         selectedIndexSpinner = new MutableLiveData<>(0);
         cashDue = new MutableLiveData<>();
-        totalToPay.observeForever(v -> cashDue.postValue(0 - v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
@@ -102,8 +102,12 @@ public class SellViewModel extends AndroidViewModel {
             totalItemsSellMutableLIveData.postValue(String.valueOf(productsToSellList.size()));
 
 
-            Double t = productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
+            BigDecimal t = BigDecimal.valueOf(productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum));
             totalToPay.postValue(Utils.formatDecimal(t));
+            cashDue.postValue(t.negate());
+
+            System.out.println("Number: " + t);
+
             finishButtonStateVisibility.postValue(productsToSellList.size() > 0 ? View.VISIBLE : View.GONE);
         };
 
@@ -172,7 +176,6 @@ public class SellViewModel extends AndroidViewModel {
             try {
                 sellRepository.clearDraft(currentBusinessId);
                 cashTendered = 0.0;
-                cashDue.postValue(0.0);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -181,7 +184,7 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-    public MutableLiveData<Double> getTotalToPay() {
+    public MutableLiveData<BigDecimal> getTotalToPay() {
         return totalToPay;
     }
 
@@ -194,8 +197,8 @@ public class SellViewModel extends AndroidViewModel {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             LocalDateTime actualDate = LocalDateTime.now();
-            double totalPay = totalToPay.getValue();
-            Receipt receipt = new Receipt(generatedReceiptId, currentBusinessId, "", actualDate, totalPay);
+            BigDecimal totalPay = totalToPay.getValue();
+            Receipt receipt = new Receipt(generatedReceiptId, currentBusinessId, "", actualDate, totalPay.doubleValue());
             currentReceiptId = receipt.getReceiptId();//Return the substring of the given id
 
             executorService = Executors.newSingleThreadExecutor();
@@ -336,8 +339,8 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-    public void setTotalToPay(MutableLiveData<Double> totalToPay) {
-        this.totalToPay = totalToPay;
+    public void setTotalToPay(BigDecimal totalToPay) {
+        this.totalToPay.postValue(totalToPay);
     }
 
 
@@ -398,17 +401,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCashTendered(double cashTendered) {
         this.cashTendered = Double.valueOf(df.format(cashTendered));
-        ;
-        cashDue.postValue(Double.valueOf(df.format((cashTendered - totalToPay.getValue()))));
+        cashDue.postValue(BigDecimal.valueOf(cashTendered).subtract(totalToPay.getValue()));
     }
 
-    public MutableLiveData<Double> getCashDue() {
+    public MutableLiveData<BigDecimal> getCashDue() {
         return cashDue;
     }
 
-    public void setCashDue(Double cashDue) {
-        this.cashDue.postValue(cashDue);
-    }
 
     public MutableLiveData<Integer> getCashTenderedAndDueVisibility() {
         return cashTenderedAndDueVisibility;
