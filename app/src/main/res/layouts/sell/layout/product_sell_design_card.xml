@@ -48,7 +48,7 @@
                 android:layout_weight="0"
                 android:contentDescription="@string/image_product_decription"
                 android:scaleType="center"
-                android:src="@drawable/common_google_signin_btn_icon_dark_focused" />
+                android:src="@drawable/broken_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"

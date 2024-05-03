@@ -152,6 +152,7 @@ public class BusinessViewModel extends AndroidViewModel {
         toolBarTitle.postValue(String.valueOf(productProcessItemsComponent.getItemsToProcess().size()));
     }
 
+
     public void longTap(Product product, ProcessItemsComponent<Product> productProcessItemsComponent) {
         selectItem(product, productProcessItemsComponent);
 

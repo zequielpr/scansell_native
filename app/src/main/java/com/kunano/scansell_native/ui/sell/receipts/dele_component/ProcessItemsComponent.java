@@ -218,9 +218,9 @@ public class ProcessItemsComponent<T> {
                         Thread.sleep(Math.round(1000 / itemsToProcess.size()));
 
                         if (i.getClass() == Business.class) {
-                            deleteItem((Business) i).get();
+                            result = deleteItem((Business) i).get();
                         } else if (i.getClass() == Product.class) {
-                            deleteItem((Product) i);
+                            result = deleteItem((Product) i).get();
                         } else if (i.getClass() == Receipt.class) {
                             result = deleteItem((Receipt) i).get();
                         }
@@ -258,8 +258,8 @@ public class ProcessItemsComponent<T> {
 
         }
 
-        private void deleteItem(Product product) {
-
+        private ListenableFuture<Integer> deleteItem(Product product) {
+            return productRepository.deleteProduct(product);
         }
 
 

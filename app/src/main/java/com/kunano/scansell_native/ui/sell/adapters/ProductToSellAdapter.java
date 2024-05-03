@@ -78,7 +78,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
                 activityParent.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (productImg != null){
+                        if (productImg.getImg().length != 0){
                             holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(productImg.getImg()));
                         }
                     }
