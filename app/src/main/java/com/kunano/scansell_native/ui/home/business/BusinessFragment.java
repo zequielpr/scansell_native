@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -77,12 +80,11 @@ public class BusinessFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-
         if (getArguments() != null) {
             businessKey = getArguments().getLong("business_key");
             System.out.println("Business id: " + businessKey);
         }
+
 
 
 
@@ -174,7 +176,6 @@ public class BusinessFragment extends Fragment {
 
             @Override
             public void onLongTap(Product product, ProductCardAdapter.CardHolder cardHolder) {
-
                 if (!productProcessItemsComponent.isProcessItemActive()) {
                     activateDeleteMode();
                 }
@@ -226,7 +227,59 @@ public class BusinessFragment extends Fragment {
 
         businessViewModel.getEmptyBusinessVisibility().observe(getViewLifecycleOwner(),
                 emptyBusinessLayout::setVisibility);
-        updateToolbar();
+        toolbar.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                boolean isDeleteModeActivate = productProcessItemsComponent.isProcessItemActive();
+                toolbar.getMenu().clear();
+
+
+                if (isDeleteModeActivate) {
+                    inflateDeleteMenu();
+                    inflateBackIcon();
+                    if (productProcessItemsComponent.isAllSelected()) {
+                        selectAllIcon.setIcon(R.drawable.checked_circle);
+                    } else {
+                        selectAllIcon.setIcon(R.drawable.unchked_circle);
+                    }
+                } else {
+                    inflateNormalMenu();
+                    inflateBackIcon();
+                }
+
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bin_action:
+                        navigateBusinessBin();
+                        return true;
+                    case R.id.update_action:
+                        upateBusiness();
+                        return true;
+                    case R.id.delete_action:
+                        sendCurrentBusinessTobin();
+                        return true;
+                    case R.id.filter_action:
+                        setFilterMenuListener();
+                        return true;
+                    case R.id.delete_button:
+                        askToSendProductsBin();
+                        return true;
+                    case R.id.select_all_button:
+                        if (productProcessItemsComponent.isAllSelected()) {
+                            unSelectAll();
+                        } else {
+                            selectAll();
+                        }
+                        return true;
+                    case R.id.add:
+                    default:
+                        return true;
+                }
+            }
+        });
 
 
     }
@@ -237,30 +290,6 @@ public class BusinessFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(directions);
     }
 
-
-    public void updateToolbar() {
-        boolean isDeleteModeActivate = productProcessItemsComponent.isProcessItemActive();
-        toolbar.getMenu().clear();
-
-
-        if (isDeleteModeActivate) {
-            inflateDeleteMenu();
-            inflateBackIcon();
-        } else {
-            inflateNormarMenu();
-            inflateBackIcon();
-            return;
-        }
-
-
-        if (productProcessItemsComponent.isAllSelected()) {
-            selectAllIcon.setIcon(R.drawable.checked_circle);
-        } else {
-            selectAllIcon.setIcon(R.drawable.unchked_circle);
-        }
-
-    }
-
     private void inflateBackIcon() {
 
         toolbar.setNavigationIcon(R.drawable.back_arrow);
@@ -268,31 +297,9 @@ public class BusinessFragment extends Fragment {
     }
 
 
-    public void inflateNormarMenu() {
+    public void inflateNormalMenu() {
 
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
-        toolbar.setOnMenuItemClickListener((intemMenu) -> {
-
-            switch (intemMenu.getItemId()) {
-                case R.id.bin_action:
-                    navigateBusinessBin();
-                    return true;
-                case R.id.update_action:
-                    upateBusiness();
-                    return true;
-                case R.id.delete_action:
-                    sendCurrentBusinessTobin();
-                    return true;
-                case R.id.filter_action:
-                    setFiltreMenuListener();
-                    return true;
-                default:
-                    return true;
-            }
-
-        });
-
-
         searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
         searchView.setOnSearchClickListener((v) -> businessViewModel.setSearchModeActive(true));
         searchView.setOnCloseListener(() -> {
@@ -318,7 +325,7 @@ public class BusinessFragment extends Fragment {
     }
 
 
-    private void setFiltreMenuListener() {
+    private void setFilterMenuListener() {
         MenuItem filter = toolbar.getMenu().findItem(R.id.filter_action);
         SubMenu filterOptionsMenu = filter.getSubMenu();
 
@@ -359,25 +366,6 @@ public class BusinessFragment extends Fragment {
         selectAllIcon = toolbar.getMenu().findItem(R.id.select_all_button);
 
         deleteIcon.setVisible(productProcessItemsComponent.getItemsToProcess().size() > 0);
-        toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.delete_button:
-                    askToSendProductsBin();
-                    return true;
-                case R.id.select_all_button:
-                    if (productProcessItemsComponent.isAllSelected()) {
-                        unSelectAll();
-                    } else {
-                        selectAll();
-                    }
-                    return true;
-                case R.id.add:
-
-                default:
-                    return false;
-            }
-        });
-
     }
 
 
@@ -387,7 +375,7 @@ public class BusinessFragment extends Fragment {
         productProcessItemsComponent.setItemsToProcess(new LinkedHashSet<>(productCardAdapter.getCurrentList()));
         productProcessItemsComponent.setAllSelected(true);
         businessViewModel.setToolBarTitle(String.valueOf(productProcessItemsComponent.getItemsToProcess().size()));
-        updateToolbar();
+        toolbar.invalidateMenu();
     }
 
 
@@ -396,7 +384,7 @@ public class BusinessFragment extends Fragment {
         businessViewModel.setCheckedOrUncheckedCircleLivedata(null);
         productProcessItemsComponent.clearItemsToProcess();
         businessViewModel.setToolBarTitle(String.valueOf(productProcessItemsComponent.getItemsToProcess().size()));
-        updateToolbar();
+        toolbar.invalidateMenu();;
     }
 
 
@@ -417,7 +405,7 @@ public class BusinessFragment extends Fragment {
         }else {
             productProcessItemsComponent.setAllSelected(false);
         }
-        updateToolbar();
+        toolbar.invalidateMenu();
 
     }
 
@@ -427,7 +415,7 @@ public class BusinessFragment extends Fragment {
         sendingBusinessToBin = false;
         mainActivityViewModel.hideBottomNavBar();
         fButton.setVisibility(View.GONE);
-        updateToolbar();
+        toolbar.invalidateMenu();
     }
 
     public void desActivateDeleteMode(View view) {
@@ -438,7 +426,7 @@ public class BusinessFragment extends Fragment {
         mainActivityViewModel.showBottomNavBar();
         productProcessItemsComponent.setProcessItemActive(false);
         fButton.setVisibility(View.VISIBLE);
-        updateToolbar();
+        toolbar.invalidateMenu();
     }
 
 
