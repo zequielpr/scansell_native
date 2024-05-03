@@ -23,6 +23,7 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentDeleteAccountBinding;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -97,6 +98,7 @@ public class DeleteAccountFragment extends Fragment {
     }
 
     AskForActionDialog askAskToDeleteAccount;
+    SpinningWheel spinningWheel;
     private void deleteAccountRequest(View view){
         String email = editTextEmail.getText().toString().trim();
         if (!validateEmail(email))return;
@@ -108,6 +110,8 @@ public class DeleteAccountFragment extends Fragment {
             @Override
             public void result(Boolean object) {
                 if (object){
+                    spinningWheel = new SpinningWheel();
+                    spinningWheel.show(getChildFragmentManager(), SpinningWheel.TAG);
                     accountHelper.deleteAccount(DeleteAccountFragment.this::processRequest);
                 }
             }
@@ -130,6 +134,7 @@ public class DeleteAccountFragment extends Fragment {
         }else {
             message = getString(R.string.there_has_been_an_error);
         }
+        if (spinningWheel != null)spinningWheel.dismiss();
         showResult(message);
 
     }
