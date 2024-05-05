@@ -3,7 +3,6 @@ package com.kunano.scansell_native.ui.login;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -16,21 +15,16 @@ import com.kunano.scansell_native.databinding.ActivityLogInBinding;
 public class LogInActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-    private LogInViewModel logInViewModel;
-
     private ActivityLogInBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        logInViewModel = new ViewModelProvider(this).get(LogInViewModel.class);
-
         binding = ActivityLogInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         MaterialToolbar toolbar = binding.toolbar;
-        toolbar.setNavigationOnClickListener((v)->logInViewModel.navigateBack());
         setSupportActionBar(toolbar);
 
 

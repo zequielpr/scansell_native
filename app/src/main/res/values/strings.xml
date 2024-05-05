@@ -1,6 +1,8 @@
 <resources>
     <string name="default_web_client_id">88525641549-aag73eulao2lncjg990thm5jn8cdjnhi.apps.googleusercontent.com</string>
     <string name="default_android_client_id">88525641549-jcsb347tt4bpeltdmoqtg7co53b5ii7h.apps.googleusercontent.com</string>
+    <string name="privacy_policy_link">https://www.kunano.com/privacy-policy</string>
+    <string name="terms_of_service_link">https://www.kunano.com/terms-of-service</string>
 
     <string name="app_name">ScanSell</string>
     <string name="title_home">Home</string>

@@ -1,5 +1,7 @@
 package com.kunano.scansell_native.ui.login.sing_up;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -225,11 +227,31 @@ public class CollectEmailAndSignUpFragment extends Fragment {
 
 
     private void showTermsOfService(View view){
+        String url = getString(R.string.terms_of_service_link);
 
+        // Create an Intent with ACTION_VIEW and the URI of the webpage
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        try {
+            getActivity().startActivity(intent);
+        }catch (Exception e){
+
+        }
     }
     private void showPrivacyPolicy(View view){
+        String url = getString(R.string.privacy_policy_link);
 
+        // Create an Intent with ACTION_VIEW and the URI of the webpage
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        try {
+            getActivity().startActivity(intent);
+        }catch (Exception e){
+
+        }
     }
+
+
 
 
 

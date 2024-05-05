@@ -145,6 +145,7 @@ public class SignInFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         mGoogleSignInClient.signOut();

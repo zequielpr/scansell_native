@@ -14,20 +14,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentVerifyEmailBinding;
 import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class VerifyEmailFragment extends Fragment {
     private Button resendEmailVerificationButton;
     private FragmentVerifyEmailBinding binding;
-    private LogInViewModel logInViewModel;
     private AccountHelper accountHelper = new AccountHelper();
 
 
@@ -40,12 +37,7 @@ public class VerifyEmailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         accountHelper = new AccountHelper();
         setResendEmailVerificationButtonAction(getView());
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
 
-
-    }
-    public void onResume(){
-        super.onResume();
 
     }
 
@@ -54,12 +46,6 @@ public class VerifyEmailFragment extends Fragment {
 
         Navigation.findNavController(getView()).navigate(navigateToStart);
     }
-
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
 
 
     public void signOut(){
