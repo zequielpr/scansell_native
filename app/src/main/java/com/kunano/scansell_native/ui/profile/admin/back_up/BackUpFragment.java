@@ -160,7 +160,7 @@ public class BackUpFragment extends Fragment {
                 Uri treeUri = data.getData();
                 createBackUp(treeUri);
             } else {
-                showResults(getString(R.string.thera_has_been_an_error));
+                showResults(getString(R.string.there_has_been_an_error));
             }
         }
     }
@@ -182,7 +182,7 @@ public class BackUpFragment extends Fragment {
                     showResults(getString(R.string.backup_created_success));
 
                 } else {
-                    showResults(getString(R.string.thera_has_been_an_error));
+                    showResults(getString(R.string.there_has_been_an_error));
                 }
 
             }
@@ -329,7 +329,7 @@ public class BackUpFragment extends Fragment {
             showResults(getString(R.string.data_restored_success));
             return;
         }
-        showResults(getString(R.string.thera_has_been_an_error));
+        showResults(getString(R.string.there_has_been_an_error));
 
     }
 

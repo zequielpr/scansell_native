@@ -39,6 +39,7 @@ public class CreateProductViewModel extends AndroidViewModel {
     private MutableLiveData<String> warningStock;
     private MutableLiveData<Color> buttonColor;
     private MutableLiveData<Integer> cancelImageButtonVisibility;
+    private MutableLiveData<String> barSubtitle;
     private String productId;
     private Long businessId;
     private Bitmap bitmapImg;
@@ -62,6 +63,7 @@ public class CreateProductViewModel extends AndroidViewModel {
         warningBuyinPrice = new MutableLiveData<>();
         warningSellingPrice = new MutableLiveData<>();
         warningStock = new MutableLiveData<>();
+        barSubtitle = new MutableLiveData<>();
         cancelImageButtonVisibility = new MutableLiveData<>(View.GONE);
 
         productNameLiveData = new MutableLiveData<>();
@@ -71,14 +73,12 @@ public class CreateProductViewModel extends AndroidViewModel {
         buttonSaveTitle = new MutableLiveData<>();
     }
 
-    private ExecutorService executors;
-
-
     public void checkIfProductExists(String productId){
 
         if (this.productId != null | this.productId != productId){
             clearOlddata();
         }
+        barSubtitle.postValue(productId);
 
         this.productId = productId;
         productRepository.getProductByIds(productId, businessId, this::showData);
@@ -360,5 +360,13 @@ public class CreateProductViewModel extends AndroidViewModel {
 
     public void setProductToUpdate(boolean productToUpdate) {
         this.productToUpdate = productToUpdate;
+    }
+
+    public MutableLiveData<String> getBarSubtitle() {
+        return barSubtitle;
+    }
+
+    public void setBarSubtitle(String barSubtitle) {
+        this.barSubtitle.postValue(barSubtitle);
     }
 }

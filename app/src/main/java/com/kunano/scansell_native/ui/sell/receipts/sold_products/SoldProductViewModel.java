@@ -14,8 +14,10 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.payment.cash.Cash;
 import com.kunano.scansell_native.repository.sell.SellRepository;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -53,8 +55,8 @@ public class SoldProductViewModel extends AndroidViewModel {
             } else {
                 paymentMethod.postValue(getApplication().getString(R.string.cash));
                 cashDueAndTenderedVisibility.postValue(View.VISIBLE);
-                cashTendered.postValue(String.valueOf(c.getCashTendered()));
-                cashDue.postValue(String.valueOf(c.getCashDue()));
+                cashTendered.postValue(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(c.getCashTendered()))));
+                cashDue.postValue(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(c.getCashDue()))));
             }
         };
 

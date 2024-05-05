@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         toolbar = binding.homeFragmentToolbar;
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
-        homeViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
+        homeViewModel.getSelectedItems().observe(getViewLifecycleOwner(), toolbar::setTitle);
 
         setBusinessCardOncliListener();
         requireActivity().getOnBackPressedDispatcher().
@@ -233,7 +233,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
             @Override
             public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
-                if (homeViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+                if (businessesProcessor.isProcessItemActive()) checkCard(cardHolder, business);
 
                 TextView quantity = cardHolder.getNumProducts();
 
@@ -250,7 +250,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
                 //Show empty circle when the delete mode is activated
                 homeViewModel.getCardBackgroundColor().observe(getViewLifecycleOwner(),
                         cardHolder.getCard()::setCardBackgroundColor);
-                homeViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(), cardHolder.getUnCheckedCircle()::setBackground);
+                homeViewModel.getCheckedOrUncheckedCircleLivedata().observe(getViewLifecycleOwner(), cardHolder.getUnCheckedCircle()::setBackground);
             }
 
             @Override
@@ -265,13 +265,13 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void selectAll() {
         selectAllMenuItem.setIcon(checkedCircle);
-        homeViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
+        homeViewModel.setCheckedOrUncheckedCircleLivedata(checkedCircle);
         homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
         LinkedHashSet<Business> receipts = new LinkedHashSet<>(businessCardAdepter.getCurrentList());
         businessesProcessor.setItemsToProcess(receipts);
         businessesProcessor.setAllSelected(true);
         deleteMenuItem.setVisible(true);
-        homeViewModel.setSelectedItems(businessesProcessor.getItemsToProcess().size());
+        homeViewModel.setSelectedItems(String.valueOf(businessesProcessor.getItemsToProcess().size()));
 
 
     }
@@ -279,11 +279,11 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void unSelectAll() {
         selectAllMenuItem.setIcon(uncheckedCircle);
-        homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
         homeViewModel.setCardBackgroundColor(Color.WHITE);
         businessesProcessor.clearItemsToProcess();
         deleteMenuItem.setVisible(false);
-        homeViewModel.setSelectedItems(businessesProcessor.getItemsToProcess().size());
+        homeViewModel.setSelectedItems(String.valueOf(businessesProcessor.getItemsToProcess().size()));
 
     }
 
@@ -291,7 +291,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
-        boolean isChecked = businessesProcessor.isItemToBeProcess(business);
+        boolean isChecked = businessesProcessor.isItemToBeProcessed(business);
+        System.out.println("Business checked: " + isChecked);
 
         if(isChecked){
             cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
@@ -336,7 +337,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
 
     public void desActivateDeleteMode(View view) {
         businessesProcessor.setProcessItemActive(false);
-        homeViewModel.setCheckedOrUncheckedCirclLivedata(null);
+        homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
         homeViewModel.setCardBackgroundColor(Color.WHITE);
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);

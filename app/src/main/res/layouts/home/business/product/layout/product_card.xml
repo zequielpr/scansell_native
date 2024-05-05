@@ -123,7 +123,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/textView40"
+                        android:id="@+id/dollarSymbol1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
@@ -153,6 +153,15 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="3dp"
                         android:text="Buying price"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/dollarSymbol2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="0"
+                        android:text="@string/dollar_symbol"
                         android:textSize="16sp" />
 
                 </LinearLayout>

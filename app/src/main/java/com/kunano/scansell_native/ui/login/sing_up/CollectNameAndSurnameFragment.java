@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -20,7 +21,6 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.name.NameViewModel;
 
 
@@ -31,7 +31,6 @@ public class CollectNameAndSurnameFragment extends Fragment {
     private Toolbar nameToolbar;
     private Button continueButton;
     private SignUpViewModel signUpViewModel;
-    private LogInViewModel logInViewModel;
     private TextInputLayout nameTextInputLayout;
 
 
@@ -54,7 +53,6 @@ public class CollectNameAndSurnameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         nameViewModel = new ViewModelProvider(this).get(NameViewModel.class);
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
     }
 
 
@@ -70,6 +68,14 @@ public class CollectNameAndSurnameFragment extends Fragment {
         nameToolbar = view.findViewById(R.id.changeNameToolbar);
         nameTextInputLayout = view.findViewById(R.id.nameFilledTextField);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateBack();
+
+            }
+        });
+
         return  view;
     }
 
@@ -77,12 +83,6 @@ public class CollectNameAndSurnameFragment extends Fragment {
         NavDirections navDirectionsToLogIn = CollectNameAndSurnameFragmentDirections.
                 actionCollectNameAndSurnameFragmentToLogInFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
     }
 
     @Override
@@ -120,8 +120,6 @@ public class CollectNameAndSurnameFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
         // Access the activity and its action bar
     }
 
