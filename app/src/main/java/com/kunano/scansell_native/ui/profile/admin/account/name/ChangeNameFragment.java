@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -52,7 +53,6 @@ public class ChangeNameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         nameViewModel = new ViewModelProvider(this).get(NameViewModel.class);
 
         binding = FragmentChangeNameBinding.inflate(inflater, container, false);
@@ -61,6 +61,15 @@ public class ChangeNameFragment extends Fragment {
         newNameWarnTextView = binding.newNameWarnTextView;
         saveButton = binding.buttonSave;
         changeNameToolbar = binding.changeNameToolbar;
+
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
 
         return binding.getRoot();
     }
@@ -78,7 +87,6 @@ public class ChangeNameFragment extends Fragment {
 
     private void handleBackPress(){
         navigateBack(getView());
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void navigateBack(View view){
@@ -110,7 +118,7 @@ public class ChangeNameFragment extends Fragment {
         }else if (result.contains(AccountHelper.NETWORK_ERROR)){
             message = getString(R.string.network_error);
         }else {
-            message = getString(R.string.thera_has_been_an_error);
+            message = getString(R.string.there_has_been_an_error);
         }
         showToast(message);
 

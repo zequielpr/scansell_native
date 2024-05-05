@@ -13,6 +13,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
+import com.kunano.scansell_native.model.sell.payment.Payment;
+import com.kunano.scansell_native.model.sell.payment.card.Card;
+import com.kunano.scansell_native.model.sell.payment.cash.Cash;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
@@ -20,7 +23,9 @@ import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<List<Product>> productToSellMutableLiveData;
-    private MutableLiveData<Double> totalToPay;
+    private MutableLiveData<BigDecimal> totalToPay;
     private ProductRepository productRepository;
     private BusinessRepository businessRepository;
     private ExecutorService executorService;
@@ -49,7 +54,7 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> selectedIndexSpinner;
 
     private double cashTendered;
-    private MutableLiveData<Double> cashDue;
+    private MutableLiveData<BigDecimal> cashDue;
     private MutableLiveData<Integer> cashTenderedAndDueVisibility;
     private MutableLiveData<Boolean> isScanActiveMutableLiveData;
 
@@ -64,7 +69,7 @@ public class SellViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> sellProductsVisibilityMD;
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
     private DecimalFormat df;
-
+    private MutableLiveData<Integer> emptyReceiptSectionVisibility;
     private MutableLiveData<String> totalItemsSellMutableLIveData;
 
 
@@ -75,14 +80,14 @@ public class SellViewModel extends AndroidViewModel {
         sellRepository = new SellRepository(application);
         productToSellMutableLiveData = new MutableLiveData<>();
         totalItemsSellMutableLIveData = new MutableLiveData<>();
+        emptyReceiptSectionVisibility = new MutableLiveData<>();
 
         businessesListLiveData = businessRepository.getAllBusinesses();
-        totalToPay = new MutableLiveData<>(0.0);
+        totalToPay = new MutableLiveData<>(new BigDecimal("0.0"));
         liveDataReceipts = new MutableLiveData<>();
         finishButtonStateVisibility = new MutableLiveData<>(View.GONE);
         selectedIndexSpinner = new MutableLiveData<>(0);
         cashDue = new MutableLiveData<>();
-        totalToPay.observeForever(v -> cashDue.postValue(0 - v));
         df = new DecimalFormat("#.##");
         cashTenderedAndDueVisibility = new MutableLiveData<>();
         listProductsToSellLiveData = new MutableLiveData<>();
@@ -97,13 +102,18 @@ public class SellViewModel extends AndroidViewModel {
             totalItemsSellMutableLIveData.postValue(String.valueOf(productsToSellList.size()));
 
 
-            Double t = productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum);
+            BigDecimal t = BigDecimal.valueOf(productsToSellList.stream().reduce(0.0, (partialAgeResult, p) -> partialAgeResult + p.getSelling_price(), Double::sum));
             totalToPay.postValue(Utils.formatDecimal(t));
-            finishButtonStateVisibility.postValue(productsToSellList.size() > 0?View.VISIBLE:View.GONE);
+            cashDue.postValue(t.negate());
+
+            System.out.println("Number: " + t);
+
+            finishButtonStateVisibility.postValue(productsToSellList.size() > 0 ? View.VISIBLE : View.GONE);
         };
 
         receiptObserver = (List<Receipt> receiptList) -> {
             System.out.println("Observing: " + receiptList.size());
+            emptyReceiptSectionVisibility.postValue(receiptList.size()>0?View.GONE:View.VISIBLE);
             mutableLiveDataReceipt.postValue(receiptList);
         };
 
@@ -123,7 +133,7 @@ public class SellViewModel extends AndroidViewModel {
         return productToSellMutableLiveData;
     }
 
-    public void addProductToSell(Product product) {
+    public void addProductToSell(Product product, ViewModelListener<Boolean> listener) {
         String draftId = UUID.randomUUID().toString();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -134,7 +144,8 @@ public class SellViewModel extends AndroidViewModel {
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
                 try {
-                   sellRepository.insertProductInDraft(productToSellDraft).get();
+                   Long result = sellRepository.insertProductInDraft(productToSellDraft).get();
+                   listener.result(result > 0);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (InterruptedException e) {
@@ -166,7 +177,6 @@ public class SellViewModel extends AndroidViewModel {
             try {
                 sellRepository.clearDraft(currentBusinessId);
                 cashTendered = 0.0;
-                cashDue.postValue(0.0);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -175,7 +185,7 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-    public MutableLiveData<Double> getTotalToPay() {
+    public MutableLiveData<BigDecimal> getTotalToPay() {
         return totalToPay;
     }
 
@@ -183,13 +193,13 @@ public class SellViewModel extends AndroidViewModel {
     /**
      * Finish sell and create receipt
      **/
-    public void finishSell(byte paymentMethod, ViewModelListener<Boolean> listenResponse) {
+    public void finishSell(CollectPaymentMethodFragment.PaymentInfo paymentInfo, ViewModelListener<Boolean> listenResponse) {
         String generatedReceiptId = UUID.randomUUID().toString();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             LocalDateTime actualDate = LocalDateTime.now();
-            double totalPay = totalToPay.getValue();
-            Receipt receipt = new Receipt(generatedReceiptId, currentBusinessId, "", actualDate, totalPay, paymentMethod);
+            BigDecimal totalPay = totalToPay.getValue();
+            Receipt receipt = new Receipt(generatedReceiptId, currentBusinessId, "", actualDate, totalPay.doubleValue());
             currentReceiptId = receipt.getReceiptId();//Return the substring of the given id
 
             executorService = Executors.newSingleThreadExecutor();
@@ -198,9 +208,11 @@ public class SellViewModel extends AndroidViewModel {
                     Long result = sellRepository.insertReceipt(receipt).get();
                     if (result > 0) {
                         updateProductStock();
+                        insertPayment(receipt.getReceiptId()).get();
+                        insertPaymentMethod(paymentInfo, receipt.getReceiptId()).get();
                         listenResponse.result(insertSoldProducts(receipt.getReceiptId()).get().size() > 0);
                     } else {
-
+                        listenResponse.result(false);
                     }
 
                 } catch (ExecutionException e) {
@@ -211,6 +223,27 @@ public class SellViewModel extends AndroidViewModel {
             });
         }
     }
+
+
+    private ListenableFuture<Long> insertPayment(String receiptId) {
+        Payment payment = new Payment(receiptId);
+        return sellRepository.insertPayment(payment);
+    }
+
+    private ListenableFuture<Long> insertPaymentMethod(CollectPaymentMethodFragment.PaymentInfo paymentInfo,
+                                                       String receiptId) {
+
+        if (paymentInfo.getMethod() == CollectPaymentMethodFragment.CARD) {
+            Card paymentMethod = new Card(receiptId);
+            return sellRepository.insertPaymentMethod(paymentMethod);
+        } else {
+            Cash paymentMethod = new Cash(receiptId, paymentInfo.getCashTendered(), paymentInfo.getCashDue());
+            return sellRepository.insertPaymentMethod(paymentMethod);
+        }
+
+
+    }
+
 
     private ListenableFuture<List<Long>> insertSoldProducts(String receiptID) {
         List<SoldProduct> soldProductList = new ArrayList<>();
@@ -307,8 +340,8 @@ public class SellViewModel extends AndroidViewModel {
     }
 
 
-    public void setTotalToPay(MutableLiveData<Double> totalToPay) {
-        this.totalToPay = totalToPay;
+    public void setTotalToPay(BigDecimal totalToPay) {
+        this.totalToPay.postValue(totalToPay);
     }
 
 
@@ -369,17 +402,17 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setCashTendered(double cashTendered) {
         this.cashTendered = Double.valueOf(df.format(cashTendered));
-        ;
-        cashDue.postValue(Double.valueOf(df.format((cashTendered - totalToPay.getValue()))));
+
+        BigDecimal cashDueBigDec = BigDecimal.valueOf(cashTendered).subtract(totalToPay.getValue());
+        System.out.println("cash due: " + cashDueBigDec);
+
+        cashDue.postValue(Utils.formatDecimal(cashDueBigDec));
     }
 
-    public MutableLiveData<Double> getCashDue() {
+    public MutableLiveData<BigDecimal> getCashDue() {
         return cashDue;
     }
 
-    public void setCashDue(Double cashDue) {
-        this.cashDue.postValue(cashDue);
-    }
 
     public MutableLiveData<Integer> getCashTenderedAndDueVisibility() {
         return cashTenderedAndDueVisibility;
@@ -427,5 +460,13 @@ public class SellViewModel extends AndroidViewModel {
 
     public void setIsScanActiveMutableLiveData(Boolean isScanActiveMutableLiveData) {
         this.isScanActiveMutableLiveData.postValue(isScanActiveMutableLiveData);
+    }
+
+    public MutableLiveData<Integer> getEmptyReceiptSectionVisibility() {
+        return emptyReceiptSectionVisibility;
+    }
+
+    public void setEmptyReceiptSectionVisibility(MutableLiveData<Integer> emptyReceiptSectionVisibility) {
+        this.emptyReceiptSectionVisibility = emptyReceiptSectionVisibility;
     }
 }

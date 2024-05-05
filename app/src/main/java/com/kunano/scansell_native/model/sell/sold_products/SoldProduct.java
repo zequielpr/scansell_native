@@ -9,21 +9,22 @@ import androidx.room.Index;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
 
-@Entity( primaryKeys = {"productIdFK", "businessIdFK", "tableId"},
+@Entity( primaryKeys = {"tableId", "productIdFK", "businessIdFK", "receiptIdFK"},
         foreignKeys = {@ForeignKey(entity = Product.class,
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFK", "businessIdFK"},
                 onDelete = ForeignKey.CASCADE),
+
                     @ForeignKey(entity = Receipt.class,
                     parentColumns = "receiptId",
                     childColumns = "receiptIdFK",
                     onDelete = ForeignKey.CASCADE),},
-indices = {@Index(value = {"receiptIdFK", "productIdFK", "businessIdFK"})})
+indices = {@Index(value = {"receiptIdFK", "productIdFK", "businessIdFK", "tableId"}, unique = true)})
 public class SoldProduct {
 
 
     @NonNull
-    String tableId;
+    private String tableId;
 
     @NonNull
     private String productIdFK;

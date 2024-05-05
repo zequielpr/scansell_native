@@ -30,7 +30,7 @@ public class NameViewModel extends AndroidViewModel {
     public boolean validateName(String  newName){
 
         if (newName.isEmpty()){
-            setNewNameWarnMutableData(getApplication().getString(R.string.name));
+            setNewNameWarnMutableData(getApplication().getString(R.string.introduce_name));
             return false;
         }else if(!ValidateData.validateName(newName)) {
             setNewNameWarnMutableData(getApplication().getString(R.string.advert_invalid_name));

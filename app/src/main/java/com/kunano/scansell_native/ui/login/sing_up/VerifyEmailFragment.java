@@ -7,23 +7,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentVerifyEmailBinding;
 import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class VerifyEmailFragment extends Fragment {
     private Button resendEmailVerificationButton;
     private FragmentVerifyEmailBinding binding;
-    private LogInViewModel logInViewModel;
     private AccountHelper accountHelper = new AccountHelper();
 
 
@@ -36,24 +37,15 @@ public class VerifyEmailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         accountHelper = new AccountHelper();
         setResendEmailVerificationButtonAction(getView());
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
-    }
-    public void onResume(){
-        super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
+
+
     }
 
-    private void navigateBack(){
-        NavDirections navDirectionsToLogIn = VerifyEmailFragmentDirections.actionVerifyEmailFragmentToLogInFragment();
-        Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
-        logInViewModel.setLogInViewModelListener(null);
-    }
+    private void navigateToStart(View view){
+        NavDirections navigateToStart = VerifyEmailFragmentDirections.actionVerifyEmailFragmentToLogInFragment();
 
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
+        Navigation.findNavController(getView()).navigate(navigateToStart);
     }
-
 
 
     public void signOut(){
@@ -67,6 +59,9 @@ public class VerifyEmailFragment extends Fragment {
         binding = FragmentVerifyEmailBinding.inflate(inflater, container, false);
         resendEmailVerificationButton = binding.buttonResend;
 
+        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        mToolbar.setNavigationOnClickListener(this::navigateToStart);
+
         return binding.getRoot();
     }
 
@@ -74,12 +69,32 @@ public class VerifyEmailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         resendEmailVerificationButton.setOnClickListener(this::setResendEmailVerificationButtonAction);
+
+
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
+
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateToStart(getView());
+
+            }
+        });
     }
 
     public void setResendEmailVerificationButtonAction(View view){
-
         accountHelper.sendEmailVerification(this::processRequest);
     }
+
 
     private void processRequest(AccountHelper.SEND_EMAIL_VERIFY_RESULT result){
         System.out.println("Result: " + result);
@@ -95,7 +110,7 @@ public class VerifyEmailFragment extends Fragment {
                 message = getString(R.string.email_verification_sent_several_times);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 break;
         }
         showResult(message);

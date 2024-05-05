@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +23,7 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentDeleteAccountBinding;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -47,8 +49,6 @@ public class DeleteAccountFragment extends Fragment {
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         accountHelper = new AccountHelper();
         deleteAccountViewModel = new ViewModelProvider(this).get(DeleteAccountViewModel.class);
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
-
     }
 
     @Override
@@ -61,6 +61,15 @@ public class DeleteAccountFragment extends Fragment {
         deleteButton = binding.deleteButton;
         emailWarnTextView = binding.warnEmailTextView;
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPress();
+                    }
+                });
+
         return binding.getRoot();
     }
 
@@ -72,6 +81,8 @@ public class DeleteAccountFragment extends Fragment {
         deleteAccountToolbar.setNavigationOnClickListener(this::navigateBack);
         deleteAccountViewModel.getEmailWarnVisibilityMutableLiveData().observe(getViewLifecycleOwner(),
                 emailWarnTextView::setVisibility);
+        deleteAccountViewModel.getEmailWarnContentMutableLiveData().observe(getViewLifecycleOwner(),
+                emailWarnTextView::setText);
 
         deleteButton.setOnClickListener(this::deleteAccountRequest);
 
@@ -80,7 +91,6 @@ public class DeleteAccountFragment extends Fragment {
     private void navigateBack(View view){
         NavDirections navDirectionsToAccount = DeleteAccountFragmentDirections.actionDeleteAccountFragmentToAccountFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToAccount);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void handleBackPress(){
@@ -88,9 +98,10 @@ public class DeleteAccountFragment extends Fragment {
     }
 
     AskForActionDialog askAskToDeleteAccount;
+    SpinningWheel spinningWheel;
     private void deleteAccountRequest(View view){
-
-        if (!validateEmail(editTextEmail.getText().toString()))return;
+        String email = editTextEmail.getText().toString().trim();
+        if (!validateEmail(email))return;
 
         askAskToDeleteAccount = new AskForActionDialog(getString(R.string.delete_account),
                 getString(R.string.deleted_account_not_retrievable));
@@ -99,6 +110,8 @@ public class DeleteAccountFragment extends Fragment {
             @Override
             public void result(Boolean object) {
                 if (object){
+                    spinningWheel = new SpinningWheel();
+                    spinningWheel.show(getChildFragmentManager(), SpinningWheel.TAG);
                     accountHelper.deleteAccount(DeleteAccountFragment.this::processRequest);
                 }
             }
@@ -119,8 +132,9 @@ public class DeleteAccountFragment extends Fragment {
         }else if(result.contains(AccountHelper.NETWORK_ERROR)){
             message = getString(R.string.network_error);
         }else {
-            message = getString(R.string.thera_has_been_an_error);
+            message = getString(R.string.there_has_been_an_error);
         }
+        if (spinningWheel != null)spinningWheel.dismiss();
         showResult(message);
 
     }
@@ -130,13 +144,22 @@ public class DeleteAccountFragment extends Fragment {
     }
 
     private boolean validateEmail(String email){
+        if (email.isEmpty()){
+            showWarn(false);
+            deleteAccountViewModel.
+                    setEmailWarnContentMutableLiveData(getString(R.string.introduce_your_account_email));
+            return  false;
+        }
+
+        deleteAccountViewModel.
+                setEmailWarnContentMutableLiveData(getString(R.string.introduced_email_incorrect));
         boolean emailValid = email.equals(accountHelper.getUserEmail());
         showWarn(emailValid);
         return emailValid;
     }
 
     private void showWarn(boolean result){
-        deleteAccountViewModel.setEmailWarnVisibilityMutableLiveData(result?View.GONE:View.VISIBLE);
+        deleteAccountViewModel.setEmailWarnVisibilityMutableLiveData(result?View.INVISIBLE:View.VISIBLE);
 
     }
 }

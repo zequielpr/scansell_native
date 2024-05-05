@@ -42,10 +42,10 @@ public interface SoldProductDao {
 
 
     @Query("SELECT COUNT(*) AS soldQuantity, product_name AS productName, " +
-            "(SELECT COUNT(*) FROM soldproduct INNER JOIN receipt on soldproduct.receiptIdFK = receipt.receiptId " +
+            "(SELECT COUNT(*) FROM soldproduct INNER JOIN receipt on soldproduct.receiptIdFK = receipt.receiptId AND soldproduct.businessIdFK = (:businessId)" +
             "WHERE soldproduct.businessIdFK = (:businessId) AND sellingDate >= (:startOfCurrentWeek)) AS soldProductsTotal " +
             "FROM product " +
-            "INNER JOIN soldproduct ON productId = productIdFK " +
+            "INNER JOIN soldproduct ON productId = productIdFK AND soldproduct.businessIdFK = (:businessId)" +
             "INNER JOIN receipt ON soldproduct.receiptIdFK = receipt.receiptId " +
             "WHERE product.businessIdFK = (:businessId) AND soldproduct.businessIdFK " +
             "AND sellingDate >= (:startOfCurrentWeek)" +

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         AccountHelper accountHelper = new AccountHelper();
 
@@ -88,16 +91,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, LogInActivity.class);
         startActivity(intent);
         finish();
-    }
-    @Override
-    public void onBackPressed() {
-       mainActivityViewModel.notifyBackPressed();
-    }
-
-    @Override
-    public void onDestroy(){
-        System.out.println("main activiti on destroy");
-        super.onDestroy();
     }
 
     public void handleLanguage(){

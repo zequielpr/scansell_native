@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.home.bin;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,28 +11,29 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.ProgressBarDialog;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class UserBinFragment extends Fragment {
@@ -41,16 +43,26 @@ public class UserBinFragment extends Fragment {
     private BusinessCardAdepter businessCardAdepter;
 
     private UserBinViewModel mViewModel;
-    BottomNavigationView deleteOrRestoreOptions;
+    View deleteOrRestoreOptions;
     private Drawable checkedCircle;
     private Drawable uncheckedCircle;
     private MenuItem selectAllIcon;
 
-    private  ProgressBarDialog progressBarDialog;
+    private ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
     HomeViewModel homeViewModel;
+
+    private ImageButton deleteButton;
+    private ImageButton restoreButton;
     private View empty_bin_layout;
+
+    private ProcessItemsComponent<Business> businessProcessItemsComponent;
+
+    public void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+        businessProcessItemsComponent = new ProcessItemsComponent<>(this);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -64,7 +76,9 @@ public class UserBinFragment extends Fragment {
 
 
         toolbar = binding.binToolbar;
-        deleteOrRestoreOptions = binding.deleteOrRestoreOption;
+        deleteOrRestoreOptions = binding.deleteOrRestoreOption.binBottomSheet;
+        deleteButton = binding.deleteOrRestoreOption.deleteImageButton;
+        restoreButton = binding.deleteOrRestoreOption.restoreImageButton;
         recyclerView = binding.recycledBusinessList;
         empty_bin_layout = binding.emptyBinLayout.emptyBinLayout;
 
@@ -101,51 +115,58 @@ public class UserBinFragment extends Fragment {
 
         businessCardAdepter.setListener(new BusinessCardAdepter.OnclickBusinessCardListener() {
             @Override
-            public void onShortTap(Business business, View cardHolder) {
-                mViewModel.shortTap(business);
-                if (mViewModel.isDeleteModeActive()) checkCard(cardHolder, business);
+            public void onShortTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
+                if (businessProcessItemsComponent.isProcessItemActive()) {
+                    mViewModel.shortTap(business, businessProcessItemsComponent);
+                    checkCard(cardHolder, business);
+                }
             }
 
             @Override
-            public void onLongTap(Business business, View cardHolder) {
-                if (!mViewModel.isDeleteModeActive()) {
+            public void onLongTap(Business business, BusinessCardAdepter.CardHolder cardHolder) {
+                if (!businessProcessItemsComponent.isProcessItemActive()) {
                     actcivateDeleteMode();
                 }
-                mViewModel.longTap(business);
+                mViewModel.longTap(business, businessProcessItemsComponent);
                 checkCard(cardHolder, business);
 
 
             }
 
             @Override
-            public void getCardHolderOnBind(View cardHolder, Business business) {
-                mViewModel.setDaysLeftToBeDeleted(business.getBusinessId());
-                TextView quantity =  cardHolder.findViewById(R.id.textViewNumProducts);
+            public void getCardHolderOnBind(BusinessCardAdepter.CardHolder cardHolder, Business business) {
+
+                if (businessProcessItemsComponent.isProcessItemActive())
+                    checkCard(cardHolder, business);
+
+                TextView quantity = cardHolder.getNumProducts();
 
                 homeViewModel.getQuantityOfProductsInBusiness(business.getBusinessId()).observe(
-                        getViewLifecycleOwner(), (q)-> quantity.setText(getString(R.string.current_products).
-                                concat(": ").concat(String.valueOf(q)))
+                        getViewLifecycleOwner(), (q) -> {
+
+                            String label = getString(R.string.current_products);
+                            label = q < 2 ? label.substring(0, label.length() - 1) : label;
+                            quantity.setText(String.valueOf(q) + " " + label);
+                        }
                 );
             }
 
             @Override
-            public void reciveCardHol(View cardHolder) {
-                mViewModel.getCheckedOrUncheckedCirclLivedata().observe(getViewLifecycleOwner(),
-                        cardHolder.findViewById(R.id.checked_unchecked_image_view)::setBackground);
-
-                ImageButton imageButton = cardHolder.findViewById(R.id.imageButtonRestoreFromTrash);
-
+            public void reciveCardHol(BusinessCardAdepter.CardHolder cardHolder) {
+                mViewModel.getCheckedOrUncheckedCircleLivedata().observe(getViewLifecycleOwner(),
+                        cardHolder.getUnCheckedCircle()::setBackground);
 
                 mViewModel.getRestoreButtonVisibilityLiveData().observe(getViewLifecycleOwner(),
-                        imageButton::setVisibility
+                        cardHolder.getImageButtonRestore()::setVisibility
                 );
+                mViewModel.getCardBackgroundColor().observe(getViewLifecycleOwner(),
+                        cardHolder.getCard()::setCardBackgroundColor);
 
-
-                TextView textViewDaysLeft = cardHolder.findViewById(R.id.textViewDaysLeftProduct);
+                /*TextView textViewDaysLeft = cardHolder.getCard().findViewById(R.id.textViewDaysLeftProduct);
                 textViewDaysLeft.setVisibility(View.VISIBLE);
                 mViewModel.getDaysLeftTobeDeletedLiveDate().observe(getViewLifecycleOwner(), (d) -> {
                     textViewDaysLeft.setText((CharSequence) d);
-                });
+                });*/
             }
 
             @Override
@@ -154,30 +175,29 @@ public class UserBinFragment extends Fragment {
             }
         });
 
-
-        mainActivityViewModel.setHandleBackPress(new MainActivityViewModel.HandleBackPress() {
-            @Override
-            public void backButtonPressed() {
-                if (mViewModel.isDeleteModeActive()) {
-                    desactivateDeleteMode();
-                    return;
-                }
-
-
-                mainActivityViewModel.showBottomNavBar();
-                NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
-                Navigation.findNavController(getView()).navigate(action);
-                mainActivityViewModel.setHandleBackPress(null);
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        System.out.println("back");
+                        handleBackPressed();
+                    }
+                });
 
 
         return binding.getRoot();
     }
 
-    public void showDeleteOrRestoreOptions() {
-        DeleteOrRestoreOptions bottomSheetFragment = new DeleteOrRestoreOptions();
-        bottomSheetFragment.show(getParentFragmentManager(), bottomSheetFragment.getTag());
+    private void handleBackPressed() {
+        if (businessProcessItemsComponent.isProcessItemActive()) {
+            desactivateDeleteMode();
+            return;
+        }
+
+
+        mainActivityViewModel.showBottomNavBar();
+        NavDirections action = UserBinFragmentDirections.actionUserBinFragmentToNavigationHome();
+        Navigation.findNavController(getView()).navigate(action);
     }
 
 
@@ -191,7 +211,7 @@ public class UserBinFragment extends Fragment {
     public void actcivateDeleteMode() {
 
         mViewModel.setSelectedItemsNumbLiveData("0");
-        mViewModel.setDeleteModeActive(true);
+        businessProcessItemsComponent.setProcessItemActive(true);
         mViewModel.getSelectedItemsNumbLiveData().observe(getViewLifecycleOwner(), toolbar::setTitle);
         toolbar.setSubtitle("");
         toolbar.getMenu().clear();
@@ -203,42 +223,47 @@ public class UserBinFragment extends Fragment {
     }
 
     public void desactivateDeleteMode() {
-        mViewModel.setDeleteModeActive(false);
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
-        deleteOrRestoreOptions.setVisibility(View.GONE);
-        mainActivityViewModel.showBottomNavBar();
-        mViewModel.desactivateDeleteMod(getString(R.string.recycle_bin));
-        mViewModel.setCheckedOrUncheckedCirclLivedata(null);
-        mViewModel.setRestoreButtonVisibilityLiveData(View.VISIBLE);
+        getActivity().runOnUiThread(() -> {
+            businessProcessItemsComponent.setProcessItemActive(false);
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
+            mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), this::setToolbarSubtitle);
+            deleteOrRestoreOptions.setVisibility(View.GONE);
+            mainActivityViewModel.showBottomNavBar();
+            mViewModel.setSelectedItemsNumbLiveData(getString(R.string.recycle_bin));
+            mViewModel.setCheckedOrUncheckedCircleLivedata(null);
+            mViewModel.setCardBackgroundColor(Color.WHITE);
+            mViewModel.setRestoreButtonVisibilityLiveData(View.VISIBLE);
+            businessProcessItemsComponent.clearItemsToProcess();
+        });
 
     }
 
 
-    public void checkCard(View cardHolder, Business business) {
-        if (mViewModel.getItemsToDelete().isEmpty()){
+    public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
+        if (businessProcessItemsComponent.getItemsToProcess().isEmpty()) {
             deleteOrRestoreOptions.setVisibility(View.GONE);
-        }else {
+        } else {
             deleteOrRestoreOptions.setVisibility(View.VISIBLE);
         }
 
-        if (mViewModel.getItemsToDelete().contains(business)) {
-            cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(checkedCircle);
-            System.out.println("Seleccionada" + cardHolder.getTag());
+        if (businessProcessItemsComponent.isItemToBeProcessed(business)) {
+            cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
+            cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
+            System.out.println("Seleccionada" + cardHolder.getCard().getTag());
             checkIfAllSelected();
             return;
         }
 
 
-
         checkIfAllSelected();
-        cardHolder.findViewById(R.id.checked_unchecked_image_view).setBackground(null);
+        cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
+        cardHolder.getUnCheckedCircle().setBackground(null);
 
 
     }
 
-    public void empryBin(){
+    public void empryBin() {
         actcivateDeleteMode();
         selectAll();
         askDeleteBusiness();
@@ -246,102 +271,48 @@ public class UserBinFragment extends Fragment {
 
 
     public void checkIfAllSelected() {
-        if (selectAllIcon == null)return;
+        if (selectAllIcon == null) return;
 
-        if (mViewModel.isAllSelected()) {
+        if (businessProcessItemsComponent.getItemsToProcess().size() == businessCardAdepter.getCurrentList().size()) {
+            businessProcessItemsComponent.setAllSelected(true);
             selectAllIcon.setIcon(R.drawable.checked_circle);
         } else {
+            businessProcessItemsComponent.setAllSelected(false);
             selectAllIcon.setIcon(R.drawable.unchked_circle);
         }
     }
 
     public void restoreBusinesses() {
-
-        showProgressBar(getString(R.string.restoring));
-        mViewModel.restoreItems(this::hideProgressBar, getString(R.string.recycle_bin));
+        businessProcessItemsComponent.restoreItems(new ViewModelListener<Void>() {
+            @Override
+            public void result(Void object) {
+                desactivateDeleteMode();
+            }
+        });
 
     }
-
-
-
 
 
     public void askDeleteBusiness() {
-        String title = getString(R.string.delete_businesses_warn);
-        AskForActionDialog askWhetherDeleteDialog = new
-                AskForActionDialog( title);
-        askWhetherDeleteDialog.setButtonListener(this::deleteOrCancel);
-        askWhetherDeleteDialog.show(getActivity().getSupportFragmentManager(), "ask to delete business");
-
-    }
-
-
-    public void deleteOrCancel(boolean response){
-        if(response){
-            showProgressBar(getString(R.string.deleting));
-            mViewModel.deleteItems(this::hideProgressBar, getString(R.string.recycle_bin));
-        }else {
-            desactivateDeleteMode();
-        }
-    }
-
-
-    public void showProgressBar(String title) {
-
-        MutableLiveData<Integer> progress =mViewModel.getDeleteProgressLiveData();
-        MutableLiveData<String> deletedBusiness = mViewModel.getDeletedItemsLiveData();
-
-        progressBarDialog = new ProgressBarDialog(
-                title, progress, deletedBusiness);
-
-        progressBarDialog.show(getParentFragmentManager(), "progress bar");
-
-    }
-
-
-    public void hideProgressBar(boolean result) {
-        if(!result){
-            //Show result
-            return;
-        }
-
-        if(progressBarDialog != null){
-            progressBarDialog.dismiss();
-
-            getActivity().runOnUiThread(()->{
+        businessProcessItemsComponent.deleteItems(new ViewModelListener<Void>() {
+            @Override
+            public void result(Void object) {
                 desactivateDeleteMode();
-            });
-        }
+            }
+        });
 
     }
-
-
-
-
-
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(UserBinViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-
-
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l)->{
-            empty_bin_layout.setVisibility(l.size() > 0?View.GONE:View.VISIBLE);
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (l) -> {
+            empty_bin_layout.setVisibility(l.size() > 0 ? View.GONE : View.VISIBLE);
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Delete active: " + mViewModel.isDeleteModeActive());
-                if (mViewModel.isDeleteModeActive()) {
+                if (businessProcessItemsComponent.isProcessItemActive()) {
                     desactivateDeleteMode();
                     return;
                 }
@@ -354,15 +325,13 @@ public class UserBinFragment extends Fragment {
         });
 
 
-        selectAllIcon = toolbar.getMenu().findItem(R.id.select_all);
-
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.edit_bin:
                     actcivateDeleteMode();
                     return true;
                 case R.id.all:
-                    if (mViewModel.isAllSelected()) {
+                    if (businessProcessItemsComponent.isAllSelected()) {
                         unSelectAll();
                     } else {
                         selectAll();
@@ -378,34 +347,28 @@ public class UserBinFragment extends Fragment {
         });
 
 
-        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(),(list)->{
-            if (list.isEmpty()){
+        mViewModel.getRecycledBusinessLiveData().observe(getViewLifecycleOwner(), (list) -> {
+            if (list.isEmpty()) {
                 toolbar.getMenu().clear();
-            }else {
-                if (toolbar.getMenu()!= null)return;
+            } else {
+                if (toolbar.getMenu() != null) return;
                 toolbar.inflateMenu(R.menu.actions_toolbar_user_bin);
             }
         });
 
-        deleteOrRestoreOptions.setOnItemSelectedListener((item)->{
-            switch (item.getItemId()){
-                case R.id.delete:
-                    askDeleteBusiness();
-                    return true;
-                case R.id.restore:
-                    restoreBusinesses();
-                    return true;
-                default :
-                    return false;
-            }
-        });
+        deleteButton.setOnClickListener((v) -> askDeleteBusiness());
+        restoreButton.setOnClickListener((v) -> restoreBusinesses());
     }
 
 
     public void selectAll() {
         selectAllIcon.setIcon(R.drawable.checked_circle);
-        mViewModel.setCheckedOrUncheckedCirclLivedata(checkedCircle);
-        mViewModel.selectAll(mViewModel.parseBusinessListToGeneric());
+        mViewModel.setCheckedOrUncheckedCircleLivedata(checkedCircle);
+        mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));
+        LinkedHashSet<Business> businessList = new LinkedHashSet<>(businessCardAdepter.getCurrentList());
+        businessProcessItemsComponent.setItemsToProcess(businessList);
+        mViewModel.setSelectedItemsNumbLiveData(String.valueOf(businessList.size()));
+        businessProcessItemsComponent.setAllSelected(true);
         deleteOrRestoreOptions.setVisibility(View.VISIBLE);
 
 
@@ -414,8 +377,10 @@ public class UserBinFragment extends Fragment {
 
     public void unSelectAll() {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
-        mViewModel.setCheckedOrUncheckedCirclLivedata(null);
-        mViewModel.unSelectAll();
+        mViewModel.setCheckedOrUncheckedCircleLivedata(null);
+        mViewModel.setSelectedItemsNumbLiveData("0");
+        mViewModel.setCardBackgroundColor(Color.WHITE);
+        businessProcessItemsComponent.clearItemsToProcess();
         deleteOrRestoreOptions.setVisibility(View.GONE);
     }
 

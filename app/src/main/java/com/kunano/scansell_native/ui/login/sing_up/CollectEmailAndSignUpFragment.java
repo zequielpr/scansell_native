@@ -1,5 +1,7 @@
 package com.kunano.scansell_native.ui.login.sing_up;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -25,7 +29,6 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.CollectEmailAndSignedUpBinding;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.email.EmailViewModel;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
 import com.kunano.scansell_native.ui.profile.auth.UserData;
@@ -45,7 +48,6 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     private TextView termOfServicesTextView;
     private TextView privacyPolicyTextView;
     private CheckBox acceptTermAndPolicies;
-    private LogInViewModel logInViewModel;
 
     private TextInputLayout emailTextInputLayout;
     private TextInputLayout emailToConfirmTextInputLayout;
@@ -62,8 +64,6 @@ public class CollectEmailAndSignUpFragment extends Fragment {
         emailViewModel = new ViewModelProvider(this).get(EmailViewModel.class);
         userData = new UserData();
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
-
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
 
     }
 
@@ -86,6 +86,13 @@ public class CollectEmailAndSignUpFragment extends Fragment {
        emailToConfirmTextInputLayout = binding.collectEmailView.confirmEmailFilledTextField;
 
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateBack();
+
+            }
+        });
 
 
        return binding.getRoot();
@@ -95,6 +102,15 @@ public class CollectEmailAndSignUpFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
+
         toolbar.setVisibility(View.GONE);
         signUpButton.setOnClickListener(this::continueAction);
         signUpButton.setText(getText(R.string.sign_up));
@@ -118,26 +134,12 @@ public class CollectEmailAndSignUpFragment extends Fragment {
                 actionCollectEmailToCollectPasswdFragment2();
 
         Navigation.findNavController(getView()).navigate(navDirectionToCollectPasswd);
-        logInViewModel.setLogInViewModelListener(null);
     }
-
-    public void onResume(){
-        super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-    }
-
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
 
     private String email;
     private void continueAction(View view){
-        email = emailEditText.getText().toString();
-        String emailToConfirm = confirmEmailEditText.getText().toString();
+        email = emailEditText.getText().toString().trim();
+        String emailToConfirm = confirmEmailEditText.getText().toString().trim();
 
         if (!validateEmail(email, emailToConfirm)) return;
 
@@ -189,7 +191,7 @@ public class CollectEmailAndSignUpFragment extends Fragment {
                 showResult(message);
                 break;
             case UNKNOWN_ERROR:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showResult(message);
                 break;
             default:
@@ -225,11 +227,31 @@ public class CollectEmailAndSignUpFragment extends Fragment {
 
 
     private void showTermsOfService(View view){
+        String url = getString(R.string.terms_of_service_link);
 
+        // Create an Intent with ACTION_VIEW and the URI of the webpage
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        try {
+            getActivity().startActivity(intent);
+        }catch (Exception e){
+
+        }
     }
     private void showPrivacyPolicy(View view){
+        String url = getString(R.string.privacy_policy_link);
 
+        // Create an Intent with ACTION_VIEW and the URI of the webpage
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        try {
+            getActivity().startActivity(intent);
+        }catch (Exception e){
+
+        }
     }
+
+
 
 
 

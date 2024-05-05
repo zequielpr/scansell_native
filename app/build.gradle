@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.kunano.scansell_native"
-        minSdk 24
+        minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -209,6 +209,6 @@ dependencies {
 
     //qonversion_____________________________
 
-    implementation 'io.qonversion.android.sdk:sdk:3.2.3'
+    implementation 'io.qonversion.android.sdk:sdk:7.+'
 
 }

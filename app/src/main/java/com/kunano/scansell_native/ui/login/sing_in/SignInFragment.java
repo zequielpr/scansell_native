@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.login.sing_in;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -39,6 +42,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.kunano.scansell_native.MainActivity;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentLogInBinding;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
@@ -47,7 +51,8 @@ import com.kunano.scansell_native.ui.profile.auth.Auth;
 
 public class SignInFragment extends Fragment {
     private static String TAG = "results";
-
+    private static String ACCOUNT_DISABLE_BY_THE_ADMINISTRATOR = "account has been disabled by an administrator";
+    private static String NETWORK_ERROR = "network error";
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
     private EditText emailEditText;
@@ -65,6 +70,7 @@ public class SignInFragment extends Fragment {
 
     private FragmentLogInBinding binding;
     private GoogleSignInClient mGoogleSignInClient;
+    private ImageView googleLogo;
 
     ActivityResultLauncher<Intent> singInActivityResult;
 
@@ -95,8 +101,16 @@ public class SignInFragment extends Fragment {
         emailWarnTextView = binding.emailWarnTextViewSignIn;
         passwdWarnTextView = binding.passwdWarnTextViewSignIn;
         showOrHidePasswdCheckBox = binding.checkBoxShowPassword;
+        googleLogo = binding.googleLogo;
 
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+               Utils.askToLeaveApp(SignInFragment.this);
+
+            }
+        });
 
         return binding.getRoot();
     }
@@ -113,6 +127,10 @@ public class SignInFragment extends Fragment {
         passwordViewModel.getHideOrShowPasswordMutableData().observe(getViewLifecycleOwner(),
                 passwordEditText::setInputType);
         forgottenPasswdButton.setOnClickListener(this::passwdForgotten);
+
+        Bitmap googleLogoBitmap = ImageProcessor.
+                drawableToBitmap(getResources(), R.drawable.google_logo, 100, 100);
+        googleLogo.setImageBitmap(googleLogoBitmap);
     }
 
 
@@ -127,6 +145,7 @@ public class SignInFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         mGoogleSignInClient.signOut();
@@ -169,6 +188,13 @@ public class SignInFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            String error = task.getException().toString();
+                            if(error.contains(NETWORK_ERROR)){
+                                Utils.showToast(getActivity(), getString(R.string.network_error), Toast.LENGTH_SHORT);
+                            } else if (error.contains(ACCOUNT_DISABLE_BY_THE_ADMINISTRATOR)) {
+                                Utils.showToast(getActivity(), getString(R.string.account_disabled), Toast.LENGTH_SHORT);
+                            }
+
                             //updateUI(null);
                         }
                         spinningWheel.dismiss();
@@ -203,8 +229,8 @@ public class SignInFragment extends Fragment {
     private SpinningWheel spinningWheel;
     private void signInWithEmailAndPasswdRequest(View view){
 
-        String email = emailEditText.getText().toString();
-        String passwd = passwordEditText.getText().toString();
+        String email = emailEditText.getText().toString().trim();
+        String passwd = passwordEditText.getText().toString().trim();
 
         if (!signInViewModel.validateEmailAndPasswd(email, passwd)) return;
 
@@ -232,7 +258,7 @@ public class SignInFragment extends Fragment {
                 showResult(message);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showResult(message);
                 break;
         }

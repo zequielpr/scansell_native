@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -14,10 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.databinding.FragmentAdminBinding;
 import com.kunano.scansell_native.ui.profile.ProfileFragmentDirections;
 import com.qonversion.android.sdk.Qonversion;
-import com.qonversion.android.sdk.QonversionError;
-import com.qonversion.android.sdk.QonversionPermissionsCallback;
-import com.qonversion.android.sdk.dto.QPermission;
+import com.qonversion.android.sdk.dto.QonversionError;
+import com.qonversion.android.sdk.dto.entitlements.QEntitlement;
 import com.qonversion.android.sdk.dto.products.QProduct;
+import com.qonversion.android.sdk.listeners.QonversionEntitlementsCallback;
 
 import java.util.List;
 import java.util.Map;
@@ -81,13 +82,14 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
     private void backUpSectionAction(View view){
 
-        if (adminViewModel.isHasPremiumPermission()){
-            NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
-            Navigation.findNavController(parentView).navigate(navDirectionsBackUp);
-            dismiss();
+        NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
+        Navigation.findNavController(parentView).navigate(navDirectionsBackUp);
+        dismiss();
+     /*   if (adminViewModel.isHasPremiumPermission()){
+
         }else {
             buyFunctionality();
-        }
+        }*/
 
         /*BuyBackUpFunctionFragment buyBackUpFunctionFragment = new BuyBackUpFunctionFragment();
         buyBackUpFunctionFragment.show(getParentFragmentManager(), "buy function");*/
@@ -99,26 +101,28 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
         List<QProduct> qProducts = adminViewModel.getOfferings().get(0).getProducts();
 
-        Qonversion.purchase(
-                getActivity(), qProducts.isEmpty() ? null : qProducts.get(0),
-                new QonversionPermissionsCallback() {
-                    @Override
-                    public void onError(QonversionError error) {
-                        Toast.makeText(
-                                getContext(),
-                                "Purchase failed: " + error.getDescription() + ", " + error.getAdditionalMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
 
+        Qonversion.getSharedInstance().purchase(
+
+                getActivity(), qProducts.isEmpty() ? null : qProducts.get(0).toPurchaseModel(),
+                new QonversionEntitlementsCallback() {
                     @Override
-                    public void onSuccess(Map<String, QPermission> permissions) {
+                    public void onSuccess(@NonNull Map<String, QEntitlement> map) {
                         Toast.makeText(
                                 getContext(),
                                 "Purchase successful",
                                 Toast.LENGTH_LONG
                         ).show();
                         adminViewModel.updatePermissions();
+                    }
+
+                    @Override
+                    public void onError(@NonNull QonversionError error) {
+                        Toast.makeText(
+                                getContext(),
+                                "Purchase failed: " + error.getDescription() + ", " + error.getAdditionalMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 });
     }

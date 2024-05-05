@@ -1,5 +1,6 @@
 package com.kunano.scansell_native.ui.sell.collect_payment_method;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.databinding.FragmentCollectPaymentMethodBinding;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellFragmentDirections;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
@@ -41,9 +43,12 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private View parentView;
     private View cashDueLayout;
 
-    public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView) {
+    private Activity parentActivity;
+
+    public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView, Activity parentActivity) {
         this.sellViewModel = sellViewModel;
         this.parentView = parentView;
+        this.parentActivity = parentActivity;
     }
 
     @Override
@@ -64,8 +69,8 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
         sellViewModel.getTotalToPay().observe(getViewLifecycleOwner(), (t)->totalToPay.setText(String.valueOf(t)));
         sellViewModel.getCashDue().observe(getViewLifecycleOwner(),(cd)-> {
-            cashDueTextView.setText(String.valueOf(cd));
-            if(cd >= 0){
+            cashDueTextView.setText(String.valueOf(Utils.formatDecimal(cd)));
+            if(cd.doubleValue() >= 0){
                 activateOrdesacPayButton(true);
             }else {
                 activateOrdesacPayButton(false);
@@ -114,7 +119,7 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
                if(paymentMethod == 0){
                    sellViewModel.setCashTenderedAndDueVisibility(View.VISIBLE);
-                   activateOrdesacPayButton(sellViewModel.getCashDue().getValue()>= 0);
+                   activateOrdesacPayButton(sellViewModel.getCashDue().getValue().doubleValue()>= 0);
                }else {
                    sellViewModel.setCashTenderedAndDueVisibility(View.GONE);
                    activateOrdesacPayButton(true);
@@ -130,14 +135,24 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     }
 
     private void pay(View view){
-        sellViewModel.finishSell(paymentMethod, new ViewModelListener<Boolean>() {
+        PaymentInfo paymentInfo;
+        if (paymentMethod == CASH){
+            Double cashTendered = Double.valueOf(cashTenderedEditText.getText().toString());
+            Double cashDue = Double.valueOf(cashDueTextView.getText().toString());
+            paymentInfo = new PaymentInfo(paymentMethod, cashTendered, cashDue);
+        }else {
+            paymentInfo = new PaymentInfo(paymentMethod);
+        }
+
+
+        sellViewModel.finishSell(paymentInfo, new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean result) {
                 if(result){
 
                     try {
                         sellViewModel.clearProductsToSell();
-                        getActivity().runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
+                        parentActivity.runOnUiThread(CollectPaymentMethodFragment.this::navigateToReceipt);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -171,5 +186,45 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
     private void activateOrdesacPayButton(Boolean state){
         payButton.setClickable(state);
+    }
+
+    public class PaymentInfo{
+        byte method;
+        double cashTendered;
+        double cashDue;
+
+
+        public PaymentInfo(byte method, double cashTendered, double cashDue) {
+            this.method = method;
+            this.cashTendered = cashTendered;
+            this.cashDue = cashDue;
+        }
+        public PaymentInfo(byte method) {
+            this.method = method;
+        }
+
+        public byte getMethod() {
+            return method;
+        }
+
+        public void setMethod(byte method) {
+            this.method = method;
+        }
+
+        public double getCashTendered() {
+            return cashTendered;
+        }
+
+        public void setCashTendered(double cashTendered) {
+            this.cashTendered = cashTendered;
+        }
+
+        public double getCashDue() {
+            return cashDue;
+        }
+
+        public void setCashDue(double cashDue) {
+            this.cashDue = cashDue;
+        }
     }
 }

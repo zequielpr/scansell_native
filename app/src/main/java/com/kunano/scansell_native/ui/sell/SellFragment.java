@@ -18,10 +18,12 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.view.PreviewView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -83,12 +85,14 @@ public class SellFragment extends Fragment {
     private View scanLineParentContainer;
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private  AdminPermissions adminPermissions;
+    private ImageButton switchCamera;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);
         adminPermissions.setResultListener(this::navigateToHome);
+
 
     }
 
@@ -120,6 +124,8 @@ public class SellFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+
+
          sellViewModel =
                 new ViewModelProvider(requireActivity()).get(SellViewModel.class);
 
@@ -143,6 +149,7 @@ public class SellFragment extends Fragment {
         itemsTotalTextView = binding.itemsTotalTextView;
         scanningLine = binding.scanLayout.sCanningLine;
         scanLineParentContainer = binding.scanLayout.transparentSpot;
+        switchCamera = binding.switchCamera;
         topSide = binding.bottomSheetTopSide;
                 handleBootomSheetBehavior = new HandleBootomSheetBehavior(binding.productToSellBottomSheet);
         handleBootomSheetBehavior.setupStandardBottomSheet(false);
@@ -180,6 +187,7 @@ public class SellFragment extends Fragment {
         });
 
         sellViewModel.getProductToSellMutableLiveData().observe(getViewLifecycleOwner(),productToSellAdapter::submitList);
+
 
 
 
@@ -230,6 +238,12 @@ public class SellFragment extends Fragment {
         });
 
 
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                    }
+                });
 
 
 
@@ -239,10 +253,21 @@ public class SellFragment extends Fragment {
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                System.out.println("holaaaa");
+                Utils.askToLeaveApp(SellFragment.this);
+
+            }
+        });
+
         //Buttons linkings
         imageButtonScan.setOnClickListener(this::scanNewProduct);
         finishButton.setOnClickListener(this::finish);
         cancelSellButton.setOnClickListener(this::cancelSell);
+        switchCamera.setOnClickListener(this::switchCamera);
+
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), finishButton::setVisibility);
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), cancelSellButton::setVisibility);
         sellViewModel.getFinishButtonStateVisibility().observe(getViewLifecycleOwner(), (v)->{
@@ -256,11 +281,11 @@ public class SellFragment extends Fragment {
 
         sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
                 sellProductView::setVisibility);
+        sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
+                imageButtonScan::setVisibility);
         sellViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
                 createBusinessView::setVisibility);
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(),this::handleViewsVisibilities);
-
-        mainActivityViewModel.setHandleBackPress(null);
 
         toolbar.inflateMenu(R.menu.sell_tool_bar);
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.got_to_receipt);
@@ -290,6 +315,15 @@ public class SellFragment extends Fragment {
        });
     }
 
+
+    private void switchCamera(View view){
+        if (customCamera.getLenFace() == CameraSelector.LENS_FACING_FRONT){
+            customCamera.setLenFace(CameraSelector.LENS_FACING_BACK);
+        }else {
+            customCamera.setLenFace(CameraSelector.LENS_FACING_FRONT);
+        }
+        customCamera.startCamera(true);
+    }
 
 
     private void createNewBusiness(View view){
@@ -328,13 +362,12 @@ public class SellFragment extends Fragment {
 
     private void finish(View view){
         CollectPaymentMethodFragment collectPaymentMethodFragment;
-        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView());
+        collectPaymentMethodFragment = new CollectPaymentMethodFragment(sellViewModel, getView(), getActivity());
         collectPaymentMethodFragment.show(getParentFragmentManager(), "collect_payment_method");
     }
 
     private void cancelSell(View view){
-        AskForActionDialog askToCancelSell = new AskForActionDialog(getString(R.string.cancel_sell),
-                getString(R.string.cancel_sell).concat(" ?"));
+        AskForActionDialog askToCancelSell = new AskForActionDialog(getString(R.string.cancel_sell));
         askToCancelSell.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
             public void result(Boolean object) {
@@ -360,10 +393,17 @@ public class SellFragment extends Fragment {
             return;
         }
 
-        sellViewModel.addProductToSell(product);
-        makeSound();
-        expandBottomSheet();
-        getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+        sellViewModel.addProductToSell(product, new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean result) {
+               if (result){
+                   makeSound();
+                   expandBottomSheet();
+                   //getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+               }
+            }
+        });
+
 
 
 
@@ -456,7 +496,7 @@ public class SellFragment extends Fragment {
 
     private void askToUpdateStock(String barcode){
         AskForActionDialog askForActionDialog = new AskForActionDialog(
-                getString(R.string.out_of_stock), getString(R.string.tray_again),
+                getString(R.string.out_of_stock), getString(R.string.try_again),
                 getString(R.string.update_stock));
         askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
@@ -477,7 +517,7 @@ public class SellFragment extends Fragment {
     //Ask to create a new product or try again
     private void askCreateNewProdOrTryAgain(String barcode){
         AskForActionDialog askForActionDialog = new AskForActionDialog(
-                getString(R.string.scanned_product_not_found), getString(R.string.tray_again),
+                getString(R.string.scanned_product_not_found), getString(R.string.try_again),
                 getString(R.string.create_new_product));
         askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
@@ -543,6 +583,11 @@ public class SellFragment extends Fragment {
             @Override
             public void onCancel(Product product) {
                 sellViewModel.deleteProductToSell(product);
+            }
+
+            @Override
+            public void onListChanged() {
+                recyclerViewProducts.scrollToPosition(0);
             }
         });
     }

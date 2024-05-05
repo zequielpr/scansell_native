@@ -9,8 +9,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
@@ -21,7 +24,6 @@ import com.kunano.scansell_native.databinding.FragmentRecoverPasswdBinding;
 import com.kunano.scansell_native.ui.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.login.sing_in.SignInViewModel;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
 
@@ -32,7 +34,6 @@ public class RecoverPasswdFragment extends Fragment {
     private Auth auth;
     private FragmentRecoverPasswdBinding binding;
     private SignInViewModel signInViewModel;
-    private LogInViewModel logInViewModel;
 
     public RecoverPasswdFragment() {
         // Required empty public constructor
@@ -49,8 +50,6 @@ public class RecoverPasswdFragment extends Fragment {
         super.onCreate(savedInstanceState);
         auth = new Auth();
         signInViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
-        logInViewModel.setLogInViewModelListener(this::backPress);
     }
 
 
@@ -64,31 +63,43 @@ public class RecoverPasswdFragment extends Fragment {
         recoverPasswdButton = binding.recoverPasswdButton;
         emailWarnTextView = binding.emailWarnTextViewRecover;
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                backPressed();
+
+            }
+        });
+
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
+
         signInViewModel.getEmailWarn().observe(getViewLifecycleOwner(), emailWarnTextView::setText);
         recoverPasswdButton.setOnClickListener(this::recoverPasswdRequest);
 
     }
 
-    private void backPress(){
+    private void backPressed(){
         NavDirections navDirectionsToLogIn = RecoverPasswdFragmentDirections.actionRecoverPasswdFragmentToLogInFragment();
         Navigation.findNavController(getView()).navigate(navDirectionsToLogIn);
-        logInViewModel.setLogInViewModelListener(null);
     }
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
 
     private SpinningWheel wait = new SpinningWheel();
     private void recoverPasswdRequest(View view){
-        String email = emailAddressEditText.getText().toString();
+        String email = emailAddressEditText.getText().toString().trim();
 
         if (!signInViewModel.validateEmail(email)) return;
         auth.recoverPassword(email, this::processRequest);
@@ -112,7 +123,7 @@ public class RecoverPasswdFragment extends Fragment {
                 showError(message);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showError(message);
                 break;
         }

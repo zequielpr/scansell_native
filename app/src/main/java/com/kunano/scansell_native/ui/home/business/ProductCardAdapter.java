@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -22,6 +23,10 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.Utils;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.CardHolder> {
     OnclickProductCardListener listener;
@@ -62,16 +67,19 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         return new CardHolder(view);
     }
 
-
-
+    @Override
+    public void onCurrentListChanged(@NonNull List<Product> previousList, @NonNull List<Product> currentList) {
+        super.onCurrentListChanged(previousList, currentList);
+        listener.onListChanged ();
+    }
 
     @Override
     public void onBindViewHolder(CardHolder holder, final int position) {
         Product product = getItem(position);
         holder.title.setText(product.getProductName());
         holder.stock.setText(Integer.toString(product.getStock()));
-        holder.sellingPrice.setText(Double.toString(product.getSelling_price()));
-        holder.buyingPrice.setText(Double.toString(product.getBuying_price()));
+        holder.sellingPrice.setText(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(product.getSelling_price()))));
+        holder.buyingPrice.setText(String.valueOf(BigDecimal.valueOf(product.getBuying_price())));
         //holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(product.getImg()));
         productRepository.getProdductImage(product.getProductId(), product.getBusinessIdFK()
                 , new LisnedProductImage() {
@@ -84,6 +92,11 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
                     public void run() {
                         if (productImg != null){
                             holder.imageViewProduct.setImageBitmap(ImageProcessor.bytesToBitmap(productImg.getImg()));
+                            if (productImg.getImg().length < 1){
+                                holder.imageViewProduct.
+                                        setImageDrawable(ContextCompat.
+                                                getDrawable(activityParent.getApplicationContext(),R.drawable.broken_image ));
+                            }
                         }
                     }
                 });
@@ -215,8 +228,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         }
 
         public CardView getCardView() {
-            CardView cardView = (CardView) view.findViewById(R.id.productCard);;
-            return cardView;
+            return view.findViewById(R.id.productCard);
         }
 
         public void setView(View view) {
@@ -246,6 +258,7 @@ public class ProductCardAdapter extends ListAdapter<Product, ProductCardAdapter.
         abstract void getCardHolderOnBind(ProductCardAdapter.CardHolder cardHolder, Product  prod);
         abstract void reciveCardHol(ProductCardAdapter.CardHolder cardHolder);
         abstract void onRestore(Product product);
+        abstract void onListChanged();
 
     }
 

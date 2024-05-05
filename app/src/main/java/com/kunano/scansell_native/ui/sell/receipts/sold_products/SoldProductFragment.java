@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -26,6 +27,8 @@ import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
+import java.math.BigDecimal;
+
 public class SoldProductFragment extends Fragment{
     private MainActivityViewModel mainActivityViewModel;
     private ProductToSellAdapter soldProductAdapter;
@@ -43,9 +46,19 @@ public class SoldProductFragment extends Fragment{
     private TextView soldItems;
     private TextView cashTendered;
     private TextView cashDue;
+    private TextView cashTenderedLabel;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         soldProductViewModel = new ViewModelProvider(this).get(SoldProductViewModel.class);
 
@@ -57,12 +70,13 @@ public class SoldProductFragment extends Fragment{
             soldProductViewModel.getReceiptByid(business_key, receipt_key).observe(getViewLifecycleOwner(), this::populateReceipt);
             soldProductViewModel.getSoldProducts(business_key, receipt_key).observe(getViewLifecycleOwner(), (soldProductsList)->{
                 soldProductAdapter.submitList(soldProductsList);
-                System.out.println("business: " + business_key + " receipt id: " + receipt_key);
+                soldProductViewModel.setSoldItems(String.valueOf(soldProductsList.size()));
                 double spentAmount = soldProductsList.stream().reduce(0.0, (c, sp) ->
                         c + sp.getSelling_price(), Double::sum);
-                String spentAmountString = String.valueOf(Utils.formatDecimal(spentAmount)) + " ".concat(getString(R.string.dollar_symbol));
+                String spentAmountString = String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(spentAmount))) + " ".concat(getString(R.string.dollar_symbol));
                 toolbar.setSubtitle(spentAmountString);
             });
+            soldProductViewModel.populatePaymentInfo(receipt_key);
         }else {
             business_key = new Long(0);
             receipt_key = "";
@@ -80,6 +94,7 @@ public class SoldProductFragment extends Fragment{
         soldItems = binding.soldItems;
         cashTendered = binding.cashTendered;
         cashDue = binding.casDue;
+        cashTenderedLabel = binding.cashTenderedLabel;
 
         soldProductRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         soldProductRecycleView.setHasFixedSize(true);
@@ -87,9 +102,14 @@ public class SoldProductFragment extends Fragment{
         soldProductAdapter.setActivityParent(getActivity());
         soldProductRecycleView.setAdapter(soldProductAdapter);
 
-
-        mainActivityViewModel.setHandleBackPress(this::handleBackPress);
         setCardListener();
+        requireActivity().getOnBackPressedDispatcher().
+                addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        handleBackPress();
+                    }
+                });
 
 
         return binding.getRoot();
@@ -103,7 +123,6 @@ public class SoldProductFragment extends Fragment{
     private void navigateBack(View view){
         NavDirections navDirections = SoldProductFragmentDirections.actionSoldProductFragment2ToReceiptsFragment2();
         Navigation.findNavController(getView()).navigate(navDirections);
-        mainActivityViewModel.setHandleBackPress(null);
     }
 
     private void populateReceipt(Receipt receipt){
@@ -142,6 +161,11 @@ public class SoldProductFragment extends Fragment{
             public void onCancel(Product product) {
                 askTodeleteProduct(product);
             }
+
+            @Override
+            public void onListChanged() {
+
+            }
         });
     }
 
@@ -173,6 +197,24 @@ public class SoldProductFragment extends Fragment{
 
     public void onViewCreated(@NonNull View view, @NonNull Bundle savedState){
         super.onViewCreated(view, savedState);
+
+        cashTenderedLabel.setText(cashTenderedLabel.getText().toString().concat(":"));
+
+        soldProductViewModel.getCashDueAndTenderedVisibility().observe(getViewLifecycleOwner(),
+                cashTenderedLayout::setVisibility);
+        soldProductViewModel.getCashDueAndTenderedVisibility().observe(getViewLifecycleOwner(),
+                cashDueLayout::setVisibility);
+
+        soldProductViewModel.getPaymentMethod().observe(getViewLifecycleOwner(),
+                paymentMethod::setText);
+        soldProductViewModel.getSoldItems().observe(getViewLifecycleOwner(),
+                soldItems::setText);
+        soldProductViewModel.getCashTendered().observe(getViewLifecycleOwner(),
+                cashTendered::setText);
+        soldProductViewModel.getCashDue().observe(getViewLifecycleOwner(),
+                cashDue::setText);
+
+
         toolbar.setNavigationIcon(R.drawable.back_arrow);
         toolbar.setNavigationOnClickListener(this::navigateBack);
     }

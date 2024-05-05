@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/window_start_side"
-    android:layout_marginEnd="@dimen/window_end_side"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.profile.admin.account.delete_account.DeleteAccountFragment">
-
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/confirmDeleteAccountToolbar"
         android:layout_width="match_parent"
@@ -17,45 +14,53 @@
         android:minHeight="?attr/actionBarSize"
         app:title="@string/delete_account"
         android:theme="?attr/actionBarTheme" />
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailFilledTextField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_below="@id/confirmDeleteAccountToolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/window_top_side"
+        android:layout_height="match_parent"
+        android:layout_below="@id/confirmDeleteAccountToolbar"
+        android:layout_marginStart="@dimen/window_start_side"
+        android:layout_marginEnd="@dimen/window_end_side">
 
-        android:hint="@string/intro_account_email">
-
-        <!--this is the actual edit text which takes the input-->
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTextEmailAddress"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailFilledTextField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_below="@id/confirmDeleteAccountToolbar"
-            android:inputType="textEmailAddress" />
+            android:layout_marginTop="@dimen/window_top_side"
 
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="@string/intro_account_email">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextTextEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_below="@id/confirmDeleteAccountToolbar"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
 
-    <TextView
-        android:id="@+id/warnEmailTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/red"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        android:layout_below="@id/emailFilledTextField"
-        android:text="@string/introduced_email_incorrect" />
+        <TextView
+            android:id="@+id/warnEmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:visibility="invisible"
+            android:layout_below="@id/emailFilledTextField"
+            android:text="@string/introduced_email_incorrect" />
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/button_top_side"
-        android:layout_below="@id/warnEmailTextView"
-        android:text="@string/delete" />
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_top_side"
+            android:layout_below="@id/warnEmailTextView"
+            android:text="@string/delete" />
+    </RelativeLayout>
+
 </RelativeLayout>
+
+

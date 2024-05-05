@@ -1,38 +1,47 @@
 package com.kunano.scansell_native.ui.home;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.DeleteItemsViewModel;
-import com.kunano.scansell_native.ui.components.ListenResponse;
+import com.kunano.scansell_native.repository.home.BusinessRepository;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /***This view model is scooped in the host activity. Home fragment and BottomSheetFragment share it ***/
 
-public class HomeViewModel extends DeleteItemsViewModel {
+public class HomeViewModel extends AndroidViewModel {
     private ListenHomeViewModel listenHomeViewModel;
     private LiveData<List<Business>> businessListLiveData;
     private Long currentBusinessId;
+    private MutableLiveData<String> selectedItems;
 
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
+    private MutableLiveData<Integer> cardBackgroundColor;
+    private BusinessRepository businessRepository;
+    private MutableLiveData<Drawable> checkedOrUncheckedCircleLivedata;
 
 
 
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
+        businessRepository = new BusinessRepository(application);
         this.businessListLiveData = businessRepository.getAllBusinesses();
         currentBusinessId = null;
 
         createNewBusinessVisibilityMD = new MutableLiveData<>();
+        selectedItems = new MutableLiveData<>();
+
+        cardBackgroundColor = new MutableLiveData<>();
+        checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
     }
 
 
@@ -51,69 +60,23 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
 
     //BusinessCard------------------------------------------------------------------------
-    public void shortTap(Business business) {
-        if (isDeleteModeActive) {
-
-            if (itemsToDelete.contains(business)) {
-                itemsToDelete.remove(business);
-
-            } else {
-                itemsToDelete.add(business);
-                //Select to delete
-            }
 
 
-            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = businessListLiveData.getValue().size() == itemsToDelete.size();
-            return;
+
+
+    public void  addOrRemoveItemToProcess(ProcessItemsComponent<Business> businessProcessor, Business business) {
+        boolean isAdded = businessProcessor.isItemToBeProcessed(business);
+        System.out.println("Is added: " + isAdded);
+        if(isAdded){
+            businessProcessor.removeItemToProcess(business);
+        }else {
+            businessProcessor.addItemToProcess(business);
         }
 
-        //currentBusiness = repository.getBusinesById(business.getBusinessId());
-
-        listenHomeViewModel.navigateToProducts(business.getBusinessId());
-        currentBusinessId = business.getBusinessId();
+        selectedItems.postValue(String.valueOf(businessProcessor.getItemsToProcess().size()));
     }
 
 
-
-    public void longTap(Business business) {
-        if (itemsToDelete.contains(business)) {
-            itemsToDelete.remove(business);
-        } else {
-            itemsToDelete.add(business);
-        }
-        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = businessListLiveData.getValue().size() == itemsToDelete.size();
-    }
-
-
-
-    public List<Object> parseBusinessListToGeneric() {
-        return businessListLiveData.getValue().stream()
-                .map(business -> (Object) business)
-                .collect(Collectors.toList());
-    }
-
-
-
-
-
-    public void passBusinessToBin() {
-        this.itemTypeToDelete = ItemTypeToDelete.BUSINESS;
-
-        listenHomeViewModel.showProgressBar();
-
-        super.passItemsToBin(new ListenResponse() {
-            @Override
-            public void isSuccessfull(boolean result) {
-                if(result){
-                    listenHomeViewModel.hideProgressBar();
-                }
-            }
-        },getApplication().getString(R.string.businesses_title));
-
-
-    }
 
 
     public LiveData<Integer> getQuantityOfProductsInBusiness(Long businessId){
@@ -151,5 +114,29 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setCreateNewBusinessVisibilityMD(Integer createNewBusinessVisibilityMD) {
         this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
+    }
+
+    public MutableLiveData<String> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(String selectedItems) {
+        this.selectedItems.postValue(selectedItems);
+    }
+
+    public MutableLiveData<Integer> getCardBackgroundColor() {
+        return cardBackgroundColor;
+    }
+
+    public void setCardBackgroundColor(Integer cardBackgroundColor) {
+        this.cardBackgroundColor.postValue(cardBackgroundColor);
+    }
+
+    public MutableLiveData<Drawable> getCheckedOrUncheckedCircleLivedata() {
+        return checkedOrUncheckedCircleLivedata;
+    }
+
+    public void setCheckedOrUncheckedCircleLivedata(Drawable checkedOrUncheckedCircleLivedata) {
+        this.checkedOrUncheckedCircleLivedata.postValue(checkedOrUncheckedCircleLivedata);
     }
 }

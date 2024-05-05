@@ -18,12 +18,14 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -34,6 +36,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.ImageProcessor;
+import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -41,6 +44,7 @@ import com.kunano.scansell_native.ui.profile.chart.line.CustomLineChart;
 import com.kunano.scansell_native.ui.profile.chart.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -128,6 +132,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         customLineChart = new CustomLineChart(lineChart, this);
         customLineChart.setOnChartValueSelectedListener(getOnChartValueSelectedListener());
         customPieChart = new CustomPieChart(pieChartMostSellProducts);
+
         return binding.getRoot();
     }
 
@@ -135,6 +140,15 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(getView()).navigate(R.id.sell_navigation_graph);
+
+            }
+        });
+
         profileToolbar.setTitle(accountHelper.getUserName());
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
@@ -148,7 +162,8 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                 businessStatsView::setVisibility);
         profileViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
                 createNewBusinessView::setVisibility);
-        profileViewModel.getSellsSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->sellsSumTotal.setText(String.valueOf(t)));
+        profileViewModel.getSellsSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->
+                sellsSumTotal.setText(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(t)))));
 
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
@@ -189,7 +204,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDateTime localDateTime = customLineChart.getLineChartData().getDates().get((int) e.getX());
-                    Float soldAmount = e.getY();
+                    BigDecimal soldAmount = Utils.formatDecimal(BigDecimal.valueOf(e.getY()));
                     profileViewModel.setSelectedDateMutableLiveData(localDateTime.format(formatter)
                     + " / " + soldAmount + getString(R.string.dollar_symbol));
                 }

@@ -1,25 +1,26 @@
 package com.kunano.scansell_native.ui.home.business.business_bin;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.model.db.Converters;
-import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.repository.home.BinsRepository;
+import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-public class BusinessBinViewModel extends DeleteItemsViewModel {
+public class BusinessBinViewModel extends AndroidViewModel{
     private  ListenBusinessBinViewModel listenBusinessBinViewMode;
 
     private LiveData<List<Product>> recycledProductLiveData;
@@ -28,15 +29,26 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
 
     private MutableLiveData<Integer> restoreButtonVisibilityLiveData;
 
+    private MutableLiveData<String> toolBarTitle;
+
+    private BinsRepository binsRepository;
+
+    private MutableLiveData<Drawable> checkedOrUncheckedCircleLivedata;
+
     private long currentBusinessId;
 
 
     public BusinessBinViewModel(@NonNull Application application) {
         super(application);
+
+        binsRepository = new BinsRepository(application);
+
         recycledProductLiveData = new MutableLiveData<>();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
         restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
         currentBusinessId = new Long(-0);
+        checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
+        toolBarTitle = new MutableLiveData<>();
     }
 
 
@@ -47,9 +59,9 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
             try {
                 Integer resultado = binsRepository.restorageProducts(product.getProductId(), currentBusinessId).get();
                 if (resultado > 0){
-                    listenBusinessBinViewMode.requestResult("exitoso");
+                    listenBusinessBinViewMode.requestResult(getApplication().getString(R.string.product_restored_successfully));
                 }else {
-                    listenBusinessBinViewMode.requestResult("no exitoso");
+                    listenBusinessBinViewMode.requestResult(getApplication().getString(R.string.there_has_been_an_error));
                 }
 
             } catch (ExecutionException e) {
@@ -62,7 +74,7 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
     }
 
 
-    public String setDaysLeftToBeDeleted(String productId){
+    /*public String setDaysLeftToBeDeleted(String productId){
 
         if (continuePassing) return "";
         Executor executor = Executors.newSingleThreadExecutor();
@@ -98,38 +110,26 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
 
             daysLeftTobeDeletedLiveDate.postValue(daysLeft);
         }
+    }*/
+
+
+
+    public void shortTap(Product product, ProcessItemsComponent<Product> productProcessItemsComponent) {
+        selectItem(product, productProcessItemsComponent);
     }
 
-
-
-    public void shortTap(Product product) {
-        if (isDeleteModeActive) {
-
-            if (itemsToDelete.contains(product)) {
-                itemsToDelete.remove(product);
-
-            } else {
-                itemsToDelete.add(product);
-                //Select to delete
-            }
-
-
-            selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-            isAllSelected = recycledProductLiveData.getValue().size() == itemsToDelete.size();
-            return;
-        }
-
-        //currentBusiness = repository.getBusinesById(product.getBusinessId());
+    public void longTap(Product product, ProcessItemsComponent<Product> productProcessItemsComponent) {
+        selectItem(product, productProcessItemsComponent);
     }
 
-    public void longTap(Product product) {
-        if (itemsToDelete.contains(product)) {
-            itemsToDelete.remove(product);
-        } else {
-            itemsToDelete.add(product);
+    private void selectItem(Product product, ProcessItemsComponent<Product> productProcessItemsComponent){
+        if (productProcessItemsComponent.isItemToBeProcessed(product)){
+            productProcessItemsComponent.removeItemToProcess(product);
+        }else {
+            productProcessItemsComponent.addItemToProcess(product);
         }
-        selectedItemsNumbLiveData.postValue(Integer.toString(itemsToDelete.size()));
-        isAllSelected = recycledProductLiveData.getValue().size() == itemsToDelete.size();
+
+        toolBarTitle.postValue(String.valueOf(productProcessItemsComponent.getItemsToProcess().size()));
     }
 
 
@@ -148,7 +148,7 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
     public LiveData<List<Product>> getRecycledProductLiveData(long  currentBusinessId) {
         if(this.currentBusinessId != currentBusinessId){
             this.currentBusinessId = currentBusinessId;
-            recycledProductLiveData = getBinsRepository().getProductInBin(this.currentBusinessId);
+            recycledProductLiveData = binsRepository.getProductInBin(this.currentBusinessId);
             return recycledProductLiveData;
         }
         return recycledProductLiveData;
@@ -183,6 +183,22 @@ public class BusinessBinViewModel extends DeleteItemsViewModel {
 
     public void setRestoreButtonVisibilityLiveData(Integer restoreButtonVisibilityLiveData) {
         this.restoreButtonVisibilityLiveData.postValue(restoreButtonVisibilityLiveData);
+    }
+
+    public MutableLiveData<String> getToolBarTitle() {
+        return toolBarTitle;
+    }
+
+    public void setToolBarTitle(String toolBarTitle) {
+        this.toolBarTitle.postValue(toolBarTitle);
+    }
+
+    public MutableLiveData<Drawable> getCheckedOrUncheckedCircleLivedata() {
+        return checkedOrUncheckedCircleLivedata;
+    }
+
+    public void setCheckedOrUncheckedCircleLivedata(Drawable checkedOrUncheckedCircleLivedata) {
+        this.checkedOrUncheckedCircleLivedata.postValue(checkedOrUncheckedCircleLivedata);
     }
 
     public interface ListenBusinessBinViewModel{

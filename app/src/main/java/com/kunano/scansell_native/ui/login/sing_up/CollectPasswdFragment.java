@@ -9,8 +9,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +22,6 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.ui.login.LogInViewModel;
 import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
 
 
@@ -38,7 +40,6 @@ public class CollectPasswdFragment extends Fragment {
     private TextView atLeastEightCharacters;
     private Toolbar updatePasswordToolbar;
     private SignUpViewModel signUpViewModel;
-    private LogInViewModel logInViewModel;
 
 
     public CollectPasswdFragment() {
@@ -62,9 +63,6 @@ public class CollectPasswdFragment extends Fragment {
         passwordViewModel = new ViewModelProvider(this).get(PasswordViewModel.class);
         signUpViewModel = new ViewModelProvider(requireActivity()).get(SignUpViewModel.class);
 
-        logInViewModel = new ViewModelProvider(requireActivity()).get(LogInViewModel.class);
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
-
     }
 
     @Override
@@ -85,6 +83,14 @@ public class CollectPasswdFragment extends Fragment {
         continueButton = view.findViewById(R.id.buttonSavePassword);
 
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateBack();
+
+            }
+        });
+
         return view;
     }
 
@@ -92,25 +98,22 @@ public class CollectPasswdFragment extends Fragment {
         NavDirections navDirectionToCollectName = CollectPasswdFragmentDirections.
                 actionCollectPasswdFragment2ToCollectNameAndSurnameFragment();
         Navigation.findNavController(getView()).navigate(navDirectionToCollectName);
-        logInViewModel.setLogInViewModelListener(null);
     }
-
-    public void onResume(){
-        super.onResume();
-        logInViewModel.setLogInViewModelListener(this::navigateBack);
-    }
-
-    public void onDestroy(){
-        super.onDestroy();
-        logInViewModel.setLogInViewModelListener(null);
-    }
-
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         continueButton.setText(R.string.continue_action);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+            }
+        }
 
 
         passwordEditText.addTextChangedListener(passwordViewModel.getPasswordEditTextWatcher(getContext()));
@@ -139,17 +142,13 @@ public class CollectPasswdFragment extends Fragment {
         updatePasswordToolbar.setVisibility(View.GONE);
     }
 
-    public void navigateBack(View view){
-
-    }
-
     public void continueRequest(View view){
         String passwd = passwordEditText.getText().toString();
         String passwdToConfirm = confirmPasswordEditText.getText().toString();
 
         if (!passwordViewModel.checkIfPasswdMatch(passwd, passwdToConfirm))return;
 
-        signUpViewModel.setPasswd(passwd);
+        signUpViewModel.setPasswd(passwd.trim());
         NavDirections navDirectionToCollectEmail = CollectPasswdFragmentDirections.
                 actionCollectPasswdFragment2ToCollectEmail();
 
