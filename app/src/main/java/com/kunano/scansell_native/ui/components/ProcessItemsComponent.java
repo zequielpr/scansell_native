@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.sell.receipts.dele_component;
+package com.kunano.scansell_native.ui.components;
 
 import android.app.Application;
 import android.widget.Toast;
@@ -16,10 +16,6 @@ import com.kunano.scansell_native.repository.home.BinsRepository;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;

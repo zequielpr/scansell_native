@@ -74,6 +74,9 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private TextView sellsSumTotal;
 
 
+    public ProfileFragment() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

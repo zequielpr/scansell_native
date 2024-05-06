@@ -47,13 +47,15 @@ public class SettingsFragment extends Fragment {
     private TextView currentLanguageTextView;
     private SettingViewModel settingViewModel;
     private SettingRepository settingRepository;
-    Spinner currentSoundSpinner;
-    ArrayAdapter<String> soundsArrayAdapter;
-    SharePreferenceHelper sharePreferenceHelper;
-
+    private Spinner currentSoundSpinner;
+    private ArrayAdapter<String> soundsArrayAdapter;
+    private SharePreferenceHelper sharePreferenceHelper;
     private boolean soudState;
     private Integer currentSound;
 
+
+    public SettingsFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

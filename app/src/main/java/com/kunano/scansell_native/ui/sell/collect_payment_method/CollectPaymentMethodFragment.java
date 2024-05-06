@@ -45,6 +45,10 @@ public class CollectPaymentMethodFragment extends DialogFragment {
 
     private Activity parentActivity;
 
+
+    public CollectPaymentMethodFragment() {
+    }
+
     public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView, Activity parentActivity) {
         this.sellViewModel = sellViewModel;
         this.parentView = parentView;

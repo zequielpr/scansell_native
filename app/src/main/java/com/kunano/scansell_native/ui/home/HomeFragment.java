@@ -33,7 +33,7 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,8 +55,10 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private ImageButton createNewBusinessImgButton;
     private MainActivityViewModel mainActivityViewModel;
     private Toolbar toolbar;
-
     private ProcessItemsComponent<Business> businessesProcessor;
+
+    public HomeFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

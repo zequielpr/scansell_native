@@ -86,6 +86,10 @@ public class CreateProductFragment extends Fragment {
     private TextInputLayout stockTextInputLayout;
 
     private  AdminPermissions adminPermissions;
+
+    public CreateProductFragment() {
+    }
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);

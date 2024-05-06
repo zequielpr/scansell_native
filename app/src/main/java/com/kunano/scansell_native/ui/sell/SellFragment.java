@@ -87,6 +87,10 @@ public class SellFragment extends Fragment {
     private  AdminPermissions adminPermissions;
     private ImageButton switchCamera;
 
+
+    public SellFragment() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

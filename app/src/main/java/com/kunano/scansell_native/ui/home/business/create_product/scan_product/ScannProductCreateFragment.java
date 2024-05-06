@@ -39,6 +39,10 @@ public class ScannProductCreateFragment extends Fragment {
     private View scanningLine;
     private View scanningLineParent;
 
+
+    public ScannProductCreateFragment() {
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -26,6 +26,9 @@ public class AdminFragment extends BottomSheetDialogFragment {
     private AdminViewModel adminViewModel;
     private BillingComponent billingComponent;
 
+    public AdminFragment() {
+    }
+
     public AdminFragment(View parentView){
         this.parentView = parentView;
     }
