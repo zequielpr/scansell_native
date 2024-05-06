@@ -11,12 +11,14 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.databinding.FragmentBuyBackUpFunctionBinding;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
 
 
 public class BuyBackUpFunctionFragment extends BottomSheetDialogFragment {
 
     private Button payButton;
     private FragmentBuyBackUpFunctionBinding binding;
+    private ViewModelListener viewModelListener;
 
     public BuyBackUpFunctionFragment() {
         // Required empty public constructor
@@ -49,6 +51,10 @@ public class BuyBackUpFunctionFragment extends BottomSheetDialogFragment {
 
 
     private void payFunction(View view){
+        if (this.viewModelListener != null)this.viewModelListener.result(null);
+    }
 
+    public void setViewModelListener(ViewModelListener viewModelListener) {
+        this.viewModelListener = viewModelListener;
     }
 }

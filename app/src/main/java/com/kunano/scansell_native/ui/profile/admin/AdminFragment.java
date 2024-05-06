@@ -4,24 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import com.android.billingclient.api.ProductDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.databinding.FragmentAdminBinding;
+import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.components.billing_component.BillingComponent;
 import com.kunano.scansell_native.ui.profile.ProfileFragmentDirections;
-import com.qonversion.android.sdk.Qonversion;
-import com.qonversion.android.sdk.dto.QonversionError;
-import com.qonversion.android.sdk.dto.entitlements.QEntitlement;
-import com.qonversion.android.sdk.dto.products.QProduct;
-import com.qonversion.android.sdk.listeners.QonversionEntitlementsCallback;
-
-import java.util.List;
-import java.util.Map;
 
 public class AdminFragment extends BottomSheetDialogFragment {
     View settingSetcion;
@@ -31,6 +24,7 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
     FragmentAdminBinding binding;
     private AdminViewModel adminViewModel;
+    private BillingComponent billingComponent;
 
     public AdminFragment(View parentView){
         this.parentView = parentView;
@@ -42,7 +36,13 @@ public class AdminFragment extends BottomSheetDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminViewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+        billingComponent = new BillingComponent(getActivity());
 
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        if (billingComponent != null)billingComponent.endConnection();
     }
 
     @Override
@@ -82,48 +82,45 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
     private void backUpSectionAction(View view){
 
+       billingComponent.queryPurchase(BillingComponent.PRODUCT_ID, new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean result) {
+                if (!result){
+                    buyFunctionDialog();
+                }else {
+                    navigateToBackUpSection();
+                }
+            }
+        });
+    }
+
+
+    private void navigateToBackUpSection(){
         NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
         Navigation.findNavController(parentView).navigate(navDirectionsBackUp);
         dismiss();
-     /*   if (adminViewModel.isHasPremiumPermission()){
-
-        }else {
-            buyFunctionality();
-        }*/
-
-        /*BuyBackUpFunctionFragment buyBackUpFunctionFragment = new BuyBackUpFunctionFragment();
-        buyBackUpFunctionFragment.show(getParentFragmentManager(), "buy function");*/
-
-
     }
 
-    private void buyFunctionality() {
+    private BuyBackUpFunctionFragment buyFunctionFragment;
+    private void buyFunctionDialog(){
+        buyFunctionFragment = new BuyBackUpFunctionFragment();
+        buyFunctionFragment.setViewModelListener(new ViewModelListener() {
+            @Override
+            public void result(Object object) {
+                billingComponent.queryProductsToBuy(BillingComponent.PRODUCT_ID, AdminFragment.this::launchPurchaseFlow);
+            }
+        });
 
-        List<QProduct> qProducts = adminViewModel.getOfferings().get(0).getProducts();
+        buyFunctionFragment.show(getChildFragmentManager(), "Ask to buy functionality");
+    }
 
-
-        Qonversion.getSharedInstance().purchase(
-
-                getActivity(), qProducts.isEmpty() ? null : qProducts.get(0).toPurchaseModel(),
-                new QonversionEntitlementsCallback() {
-                    @Override
-                    public void onSuccess(@NonNull Map<String, QEntitlement> map) {
-                        Toast.makeText(
-                                getContext(),
-                                "Purchase successful",
-                                Toast.LENGTH_LONG
-                        ).show();
-                        adminViewModel.updatePermissions();
-                    }
-
-                    @Override
-                    public void onError(@NonNull QonversionError error) {
-                        Toast.makeText(
-                                getContext(),
-                                "Purchase failed: " + error.getDescription() + ", " + error.getAdditionalMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                });
+    private void launchPurchaseFlow(ProductDetails productDetails){
+        billingComponent.setHasTheFunctionBeenBoughtListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object)buyFunctionFragment.dismiss();
+            }
+        });
+        billingComponent.launchPurchaseFlow(productDetails);
     }
 }
