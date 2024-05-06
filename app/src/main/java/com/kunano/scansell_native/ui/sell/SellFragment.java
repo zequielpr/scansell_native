@@ -393,10 +393,17 @@ public class SellFragment extends Fragment {
             return;
         }
 
-        sellViewModel.addProductToSell(product);
-        makeSound();
-        expandBottomSheet();
-        getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+        sellViewModel.addProductToSell(product, new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean result) {
+               if (result){
+                   makeSound();
+                   expandBottomSheet();
+                   //getActivity().runOnUiThread(()->recyclerViewProducts.scrollToPosition(0));
+               }
+            }
+        });
+
 
 
 
@@ -489,7 +496,7 @@ public class SellFragment extends Fragment {
 
     private void askToUpdateStock(String barcode){
         AskForActionDialog askForActionDialog = new AskForActionDialog(
-                getString(R.string.out_of_stock), getString(R.string.tray_again),
+                getString(R.string.out_of_stock), getString(R.string.try_again),
                 getString(R.string.update_stock));
         askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
@@ -510,7 +517,7 @@ public class SellFragment extends Fragment {
     //Ask to create a new product or try again
     private void askCreateNewProdOrTryAgain(String barcode){
         AskForActionDialog askForActionDialog = new AskForActionDialog(
-                getString(R.string.scanned_product_not_found), getString(R.string.tray_again),
+                getString(R.string.scanned_product_not_found), getString(R.string.try_again),
                 getString(R.string.create_new_product));
         askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
             @Override
@@ -576,6 +583,11 @@ public class SellFragment extends Fragment {
             @Override
             public void onCancel(Product product) {
                 sellViewModel.deleteProductToSell(product);
+            }
+
+            @Override
+            public void onListChanged() {
+                recyclerViewProducts.scrollToPosition(0);
             }
         });
     }

@@ -1,13 +1,15 @@
 package com.kunano.scansell_native.ui.home;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.DeleteItemsViewModel;
+import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
 
 import java.util.List;
@@ -15,20 +17,23 @@ import java.util.List;
 
 /***This view model is scooped in the host activity. Home fragment and BottomSheetFragment share it ***/
 
-public class HomeViewModel extends DeleteItemsViewModel {
+public class HomeViewModel extends AndroidViewModel {
     private ListenHomeViewModel listenHomeViewModel;
     private LiveData<List<Business>> businessListLiveData;
     private Long currentBusinessId;
-    private MutableLiveData<Integer> selectedItems;
+    private MutableLiveData<String> selectedItems;
 
     private MutableLiveData<Integer> createNewBusinessVisibilityMD;
     private MutableLiveData<Integer> cardBackgroundColor;
+    private BusinessRepository businessRepository;
+    private MutableLiveData<Drawable> checkedOrUncheckedCircleLivedata;
 
 
 
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
+        businessRepository = new BusinessRepository(application);
         this.businessListLiveData = businessRepository.getAllBusinesses();
         currentBusinessId = null;
 
@@ -36,6 +41,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
         selectedItems = new MutableLiveData<>();
 
         cardBackgroundColor = new MutableLiveData<>();
+        checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
     }
 
 
@@ -59,7 +65,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
 
     public void  addOrRemoveItemToProcess(ProcessItemsComponent<Business> businessProcessor, Business business) {
-        boolean isAdded = businessProcessor.isItemToBeProcess(business);
+        boolean isAdded = businessProcessor.isItemToBeProcessed(business);
         System.out.println("Is added: " + isAdded);
         if(isAdded){
             businessProcessor.removeItemToProcess(business);
@@ -67,7 +73,7 @@ public class HomeViewModel extends DeleteItemsViewModel {
             businessProcessor.addItemToProcess(business);
         }
 
-        selectedItems.postValue(businessProcessor.getItemsToProcess().size());
+        selectedItems.postValue(String.valueOf(businessProcessor.getItemsToProcess().size()));
     }
 
 
@@ -110,11 +116,11 @@ public class HomeViewModel extends DeleteItemsViewModel {
         this.createNewBusinessVisibilityMD.postValue(createNewBusinessVisibilityMD);
     }
 
-    public MutableLiveData<Integer> getSelectedItems() {
+    public MutableLiveData<String> getSelectedItems() {
         return selectedItems;
     }
 
-    public void setSelectedItems(Integer selectedItems) {
+    public void setSelectedItems(String selectedItems) {
         this.selectedItems.postValue(selectedItems);
     }
 
@@ -124,5 +130,13 @@ public class HomeViewModel extends DeleteItemsViewModel {
 
     public void setCardBackgroundColor(Integer cardBackgroundColor) {
         this.cardBackgroundColor.postValue(cardBackgroundColor);
+    }
+
+    public MutableLiveData<Drawable> getCheckedOrUncheckedCircleLivedata() {
+        return checkedOrUncheckedCircleLivedata;
+    }
+
+    public void setCheckedOrUncheckedCircleLivedata(Drawable checkedOrUncheckedCircleLivedata) {
+        this.checkedOrUncheckedCircleLivedata.postValue(checkedOrUncheckedCircleLivedata);
     }
 }

@@ -28,6 +28,7 @@ import androidx.palette.graphics.Palette;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -146,6 +147,14 @@ public class Utils {
         String formattedNumber = decimalFormat.format(decimalToFormat).replace(",", ".");
 
         return Double.parseDouble(formattedNumber);
+    }
+    public static BigDecimal formatDecimal(BigDecimal decimalToFormat){
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+        // Format the number using the DecimalFormat object
+        String formattedNumber = decimalFormat.format(decimalToFormat).replace(",", ".");
+
+        return new BigDecimal(formattedNumber);
     }
 
 

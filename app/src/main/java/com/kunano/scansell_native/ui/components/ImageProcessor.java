@@ -55,10 +55,19 @@ public class ImageProcessor {
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
-    public static Bitmap drawableToBitmap(Resources resources, Integer drawableResourceId) {
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, drawableResourceId);
-        return bitmap;
+    public static Bitmap drawableToBitmap(Resources resources, Integer drawableResourceId, int targetWidth, int targetHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(resources, drawableResourceId, options);
+
+        // Calculate the inSampleSize (ratio to scale down the image)
+        options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(resources, drawableResourceId, options);
     }
+
 
     public static void ImageLoadTask(Uri imageUrl, ViewModelListener<Bitmap> listener){
         if (imageUrl == null) return;
@@ -146,7 +155,7 @@ public class ImageProcessor {
         }
     }
 
-    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of the image
         final int height = options.outHeight;
         final int width = options.outWidth;

@@ -2,6 +2,7 @@ package com.kunano.scansell_native.ui.login.sing_in;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.kunano.scansell_native.MainActivity;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentLogInBinding;
+import com.kunano.scansell_native.ui.components.ImageProcessor;
 import com.kunano.scansell_native.ui.components.SpinningWheel;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
@@ -67,6 +70,7 @@ public class SignInFragment extends Fragment {
 
     private FragmentLogInBinding binding;
     private GoogleSignInClient mGoogleSignInClient;
+    private ImageView googleLogo;
 
     ActivityResultLauncher<Intent> singInActivityResult;
 
@@ -97,6 +101,7 @@ public class SignInFragment extends Fragment {
         emailWarnTextView = binding.emailWarnTextViewSignIn;
         passwdWarnTextView = binding.passwdWarnTextViewSignIn;
         showOrHidePasswdCheckBox = binding.checkBoxShowPassword;
+        googleLogo = binding.googleLogo;
 
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -122,6 +127,10 @@ public class SignInFragment extends Fragment {
         passwordViewModel.getHideOrShowPasswordMutableData().observe(getViewLifecycleOwner(),
                 passwordEditText::setInputType);
         forgottenPasswdButton.setOnClickListener(this::passwdForgotten);
+
+        Bitmap googleLogoBitmap = ImageProcessor.
+                drawableToBitmap(getResources(), R.drawable.google_logo, 100, 100);
+        googleLogo.setImageBitmap(googleLogoBitmap);
     }
 
 
@@ -136,6 +145,7 @@ public class SignInFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         mGoogleSignInClient.signOut();
@@ -248,7 +258,7 @@ public class SignInFragment extends Fragment {
                 showResult(message);
                 break;
             default:
-                message = getString(R.string.thera_has_been_an_error);
+                message = getString(R.string.there_has_been_an_error);
                 showResult(message);
                 break;
         }

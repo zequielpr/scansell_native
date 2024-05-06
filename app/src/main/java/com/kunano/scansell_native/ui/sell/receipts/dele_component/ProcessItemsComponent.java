@@ -24,7 +24,7 @@ import com.kunano.scansell_native.ui.components.ViewModelListener;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ProcessItemsComponent<T> {
@@ -45,7 +45,7 @@ public class ProcessItemsComponent<T> {
 
 
     int itemsCounter;
-    private Executor executor;
+    private ExecutorService executor;
     private boolean isProcessToCancel;
     private boolean isAllSelected;
     private boolean isProcessItemActive;
@@ -86,14 +86,17 @@ public class ProcessItemsComponent<T> {
         this.listener = listener;
         new DeleteItems().deleteSelectedItems();
     }
+
     private ViewModelListener<Void> listener;
 
-    public void restoreItems() {
-        new RestoreItems();
+    public void restoreItems(ViewModelListener<Void> listener) {
+        this.listener = listener;
+        new RestoreItems().restoreSelectedItems();
     }
 
 
     private ProgressBarDialog progressBarDialog;
+
     public void showProcessProgress(String title) {
         progressBarDialog =
                 new ProgressBarDialog(title, processedPercentageMutableLiveData, processedItemsMutableLiveData);
@@ -101,13 +104,13 @@ public class ProcessItemsComponent<T> {
         progressBarDialog.show(fragment.getParentFragmentManager(), SHOW_DELETING_PROGRESS);
     }
 
-    public void hideProgress(){
+    public void hideProgress() {
         if (progressBarDialog != null) progressBarDialog.dismiss();
     }
 
     private void updateProcessProgress(int processedItems) {
         processedItemsMutableLiveData.postValue(processedItems + "/" + itemsToProcess.size());
-        int processedPercentage =  processedItems * 100 / itemsToProcess.size();
+        int processedPercentage = processedItems * 100 / itemsToProcess.size();
         processedPercentageMutableLiveData.postValue(processedPercentage);
     }
 
@@ -130,13 +133,13 @@ public class ProcessItemsComponent<T> {
     }
 
 
-
-
     public void processFinished(String message) {
         itemsToProcess.clear();
-        if( listener != null)listener.result(null);
+        if (listener != null) listener.result(null);
         if (progressBarDialog == null) return;
         progressBarDialog.dismiss();
+        executor.shutdown();
+
     }
 
 
@@ -146,15 +149,16 @@ public class ProcessItemsComponent<T> {
 
     public void setItemsToProcess(LinkedHashSet<T> itemsToProcess) {
         this.itemsToProcess = itemsToProcess;
-        if (itemsToProcess.size() == 0) isAllSelected = false;
+        isAllSelected = itemsToProcess.size() == 0;
     }
 
-    public void clearItemsToProcess(){
+    public void clearItemsToProcess() {
         this.itemsToProcess.clear();
         isAllSelected = false;
     }
 
-    public boolean isItemToBeProcess(T item){
+    public boolean isItemToBeProcessed(T item) {
+
         return itemsToProcess.contains(item);
     }
 
@@ -183,10 +187,12 @@ public class ProcessItemsComponent<T> {
         itemsToProcess.clear();
     }
 
+
     private class DeleteItems {
         public void deleteSelectedItems() {
             String title = fragment.getString(R.string.delete);
             String content = fragment.getString(R.string.delete_selected_items);
+            isProcessToCancel = false;
 
             AskForActionDialog askForActionDialog = new AskForActionDialog(title, content);
             askForActionDialog.setButtonListener(this::deleteSelectedItems);
@@ -195,7 +201,6 @@ public class ProcessItemsComponent<T> {
 
         private void deleteSelectedItems(boolean isToDeletedItems) {
             if (!isToDeletedItems) return;
-
 
 
             String title = fragment.getString(R.string.deleting_selected_items);
@@ -213,28 +218,28 @@ public class ProcessItemsComponent<T> {
                         Thread.sleep(Math.round(1000 / itemsToProcess.size()));
 
                         if (i.getClass() == Business.class) {
-                            deleteItem((Business) i);
+                            result = deleteItem((Business) i).get();
                         } else if (i.getClass() == Product.class) {
-                            deleteItem((Product) i);
+                            result = deleteItem((Product) i).get();
                         } else if (i.getClass() == Receipt.class) {
-                          result  =  deleteItem((Receipt) i).get();
+                            result = deleteItem((Receipt) i).get();
                         }
                         if (result < 0) continue;
                         itemsCounter++;
                         updateProcessProgress(itemsCounter);
                     } catch (InterruptedException e) {
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     } catch (ExecutionException e) {
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         throw new RuntimeException(e);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         hideProgress();
-                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.thera_has_been_an_error),
+                        Utils.showToast(fragment.getActivity(), fragment.getString(R.string.there_has_been_an_error),
                                 Toast.LENGTH_SHORT);
                         e.printStackTrace();
                     }
@@ -248,21 +253,24 @@ public class ProcessItemsComponent<T> {
         }
 
 
-        private void deleteItem(Business business) {
+        private ListenableFuture<Integer> deleteItem(Business business) {
+            return businessRepository.deleteBusiness(business);
 
         }
 
-        private void deleteItem(Product product) {
-
+        private ListenableFuture<Integer> deleteItem(Product product) {
+            return productRepository.deleteProduct(product);
         }
+
 
         private ListenableFuture<Integer> deleteItem(Receipt receipt) throws ExecutionException, InterruptedException {
             return sellRepository.deleteReceipt(receipt);
         }
     }
 
-    private class BinItems{
+    private class BinItems {
         public void binSelectedItems() {
+            isProcessToCancel = false;
 
             String title = fragment.getString(R.string.send_items_to_bin_warning);
 
@@ -274,15 +282,16 @@ public class ProcessItemsComponent<T> {
         private void binSelectedItems(boolean isToDeletedItems) {
             if (!isToDeletedItems) return;
 
+
             String title = fragment.getString(R.string.sending_items_to_bin);
             executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 Integer result = 0;
                 itemsCounter = 0;
 
+                showProcessProgress(title);
                 updateProcessProgress(itemsCounter);
 
-                showProcessProgress(title);
                 for (T i : itemsToProcess) {
                     if (isProcessToCancel) break;
                     try {
@@ -299,10 +308,13 @@ public class ProcessItemsComponent<T> {
                         itemsCounter++;
                         updateProcessProgress(itemsCounter);
                     } catch (InterruptedException e) {
+                        System.out.println("Error: " + e.getCause());
                         e.printStackTrace();
                     } catch (ExecutionException e) {
+                        System.out.println("Error: " + e.getCause());
                         throw new RuntimeException(e);
-                    }catch (Exception e){
+                    } catch (Exception e) {
+                        System.out.println("Error: " + e.getCause());
                         e.printStackTrace();
                     }
                 }
@@ -329,8 +341,72 @@ public class ProcessItemsComponent<T> {
 
     }
 
-    private class RestoreItems{
+    private class RestoreItems {
+        public void restoreSelectedItems() {
+            isProcessToCancel = false;
 
+            String title = fragment.getString(R.string.restore_selected_items);
+
+            AskForActionDialog askForActionDialog = new AskForActionDialog(title);
+            askForActionDialog.setButtonListener(this::restoreSelectedItems);
+            askForActionDialog.show(fragment.getParentFragmentManager(), ASK_TO_BIN_TAG);
+        }
+
+        private void restoreSelectedItems(boolean areItemsToRestore) {
+            if (!areItemsToRestore) return;
+
+
+            String title = fragment.getString(R.string.restoring_items);
+            executor = Executors.newSingleThreadExecutor();
+            executor.execute(() -> {
+                Integer result = 0;
+                itemsCounter = 0;
+
+                showProcessProgress(title);
+                updateProcessProgress(itemsCounter);
+
+                for (T i : itemsToProcess) {
+                    if (isProcessToCancel) break;
+                    try {
+                        Thread.sleep(Math.round(1000 / itemsToProcess.size()));
+
+                        if (i instanceof Business) {
+                            restoreItem((Business) i).get();
+                        } else if (i instanceof Product) {
+                            restoreItem((Product) i).get();
+                        } else if (i instanceof Receipt) {
+
+                        }
+                        if (result < 0) continue;
+                        itemsCounter++;
+                        updateProcessProgress(itemsCounter);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error: " + e.getCause());
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        System.out.println("Error: " + e.getCause());
+                        throw new RuntimeException(e);
+                    } catch (Exception e) {
+                        System.out.println("Error: " + e.getCause());
+                        e.printStackTrace();
+                    }
+                }
+
+                //Show results
+
+                //DesActivate process mode
+                processFinished("holaa");
+            });
+        }
+
+
+        private ListenableFuture<Integer> restoreItem(Business business) {
+            return binsRepository.restorageBusiness(business.getBusinessId());
+        }
+
+        private ListenableFuture<Integer> restoreItem(Product product) {
+            return binsRepository.restorageProducts(product.getProductId(), product.getBusinessIdFK());
+        }
     }
 
 

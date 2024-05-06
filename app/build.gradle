@@ -16,9 +16,9 @@ android {
 
     defaultConfig {
         applicationId "com.kunano.scansell_native"
-        minSdk 24
+        minSdk 28
         targetSdk 33
-        versionCode 1
+        versionCode 6
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -89,6 +89,9 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
 
+    //Billing
+    def billing_version = "6.2.1"
+    implementation "com.android.billingclient:billing:$billing_version"
 
     // Annotation processor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
