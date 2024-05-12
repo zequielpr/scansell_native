@@ -7,6 +7,8 @@ public class MainActivityViewModel extends ViewModel {
     HostComponentListener hostComponentListener;
     MutableLiveData<Integer> bottomNavBarVisibility;
 
+    Boolean isPremiumActive;
+
     public MainActivityViewModel() {
         bottomNavBarVisibility = new MutableLiveData<>();
     }
@@ -36,6 +38,15 @@ public class MainActivityViewModel extends ViewModel {
 
     public void setBottomNavBarVisibility(Integer visibility) {
         this.bottomNavBarVisibility.postValue(visibility);
+    }
+
+
+    public Boolean isPremiumActive() {
+        return isPremiumActive;
+    }
+
+    public void setPremiumActive(Boolean premiumActive) {
+        isPremiumActive = premiumActive;
     }
 
     public interface HostComponentListener{
