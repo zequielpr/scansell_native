@@ -59,6 +59,10 @@ public class BackUpFragment extends Fragment {
     private BackUpViewModel backUpViewModel;
     private AskForActionDialog askForActionDialog;
     private AdminPermissions adminPermissions;
+
+    public BackUpFragment() {
+    }
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);

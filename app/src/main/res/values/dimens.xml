@@ -3,8 +3,8 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="window_start_side">14dp</dimen>
-    <dimen name="window_end_side">14dp</dimen>
+    <dimen name="window_start_side">15dp</dimen>
+    <dimen name="window_end_side">15dp</dimen>
     <dimen name="window_bottom_side">20dp</dimen>
     <dimen name="window_top_side">20dp</dimen>
 

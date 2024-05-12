@@ -19,6 +19,9 @@ public class BackupDestinationFragment extends BottomSheetDialogFragment {
     private TextView optionsTitleTextView;
     private String title;
 
+    public BackupDestinationFragment() {
+    }
+
     public BackupDestinationFragment(String title) {
         // Required empty public constructor
         this.title = title;

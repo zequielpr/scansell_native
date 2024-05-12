@@ -31,7 +31,7 @@ import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -62,6 +62,9 @@ public class UserBinFragment extends Fragment {
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         businessProcessItemsComponent = new ProcessItemsComponent<>(this);
+    }
+
+    public UserBinFragment() {
     }
 
     @Override

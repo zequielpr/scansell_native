@@ -44,6 +44,7 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
     private Long currentBusinessId;
 
 
+
     public BottomSheetFragmentCreateBusiness(String businessName,
                                              String businessAddress,  boolean toUpdate, Long currentBusinessId) {
         this.businessName = businessName;
@@ -52,8 +53,6 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
         this.currentBusinessId = currentBusinessId;
     }
     public BottomSheetFragmentCreateBusiness() {
-        this.title = title;
-        this.buttonTitle = buttonTitle;
         this.toUpdate = false;
     }
 

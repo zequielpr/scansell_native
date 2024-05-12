@@ -66,13 +66,13 @@ public class SignInFragment extends Fragment {
     private SignInViewModel signInViewModel;
     private CheckBox showOrHidePasswdCheckBox;
     private PasswordViewModel passwordViewModel;
-
-
     private FragmentLogInBinding binding;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView googleLogo;
+    private ActivityResultLauncher<Intent> singInActivityResult;
 
-    ActivityResultLauncher<Intent> singInActivityResult;
+    public SignInFragment() {
+    }
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);

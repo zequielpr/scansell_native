@@ -25,6 +25,8 @@ public class SelectSoundFragment extends DialogFragment {
    private RadioButton radioButtonVibrate;
    private FragmentSelectSoundBinding binding;
 
+    public SelectSoundFragment() {
+    }
 
     public SelectSoundFragment(SettingViewModel settingViewModel) {
         this.settingViewModel = settingViewModel;

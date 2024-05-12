@@ -58,6 +58,11 @@ public class AccountHelper extends UserData {
         return userEmail;
     }
 
+    public String getUserId() {
+        if (currentUser != null) return currentUser.getUid();
+        return null;
+    }
+
     public boolean isEmailVerified() {
         return currentUser == null?false:currentUser.isEmailVerified();
     }

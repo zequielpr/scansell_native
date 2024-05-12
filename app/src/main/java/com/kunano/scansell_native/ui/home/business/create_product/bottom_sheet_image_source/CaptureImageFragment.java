@@ -40,6 +40,9 @@ public class CaptureImageFragment extends Fragment {
     private PorterDuffColorFilter colorFilterWhite;
     private CustomCamera customCamera;
 
+    public CaptureImageFragment() {
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
