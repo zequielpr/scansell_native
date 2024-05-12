@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         super.onCreate(savedInstanceState);
         businessesProcessor = new ProcessItemsComponent<>(this);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -343,7 +343,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         homeViewModel.setCardBackgroundColor(Color.WHITE);
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
-        toolbar.setTitle(getString(R.string.businesses_title));
+        homeViewModel.setSelectedItems(getString(R.string.businesses_title));
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.actions_toolbar_home);
 
