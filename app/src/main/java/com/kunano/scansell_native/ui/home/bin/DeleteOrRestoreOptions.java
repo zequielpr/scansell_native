@@ -11,6 +11,8 @@ import com.kunano.scansell_native.R;
 public class DeleteOrRestoreOptions extends BottomSheetDialogFragment {
 
 
+    public DeleteOrRestoreOptions() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

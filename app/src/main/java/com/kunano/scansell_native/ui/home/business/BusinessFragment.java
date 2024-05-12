@@ -37,7 +37,7 @@ import com.kunano.scansell_native.ui.components.ProgressBarDialog;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 
@@ -68,6 +68,9 @@ public class BusinessFragment extends Fragment {
     private SearchView searchView;
     private View emptyBusinessLayout;
     private ProcessItemsComponent<Product> productProcessItemsComponent;
+
+    public BusinessFragment() {
+    }
 
     public void onCreate(Bundle savedState){
         super.onCreate(savedState);

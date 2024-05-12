@@ -17,7 +17,7 @@ import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.ui.components.ListenResponse;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
 
 import java.util.ArrayList;
 import java.util.List;

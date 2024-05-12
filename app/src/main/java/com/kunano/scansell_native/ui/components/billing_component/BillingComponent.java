@@ -20,8 +20,10 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.common.collect.ImmutableList;
+import com.kunano.scansell_native.repository.firebase.Premium;
 import com.kunano.scansell_native.ui.components.Utils;
 import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 import java.util.List;
 
@@ -32,12 +34,16 @@ public class BillingComponent implements PurchasesUpdatedListener {
     private Context context;
     private Activity activity;
     public static final String PRODUCT_ID = "backup_f";
+    private Premium premium;
+    private AccountHelper accountHelper;
     private ViewModelListener<Boolean> hasTheFunctionBeenBoughtListener;
 
 
     public BillingComponent(Activity activity) {
         this.activity = activity;
         this.context = activity.getBaseContext();
+        this.accountHelper = new AccountHelper();
+        this.premium = new Premium();
 
         if (purchasesUpdatedListener == null) {
             purchasesUpdatedListener = new PurchasesUpdatedListener() {
@@ -159,23 +165,34 @@ public class BillingComponent implements PurchasesUpdatedListener {
             return;
         }
 
+        if (accountHelper.getCurrentUser() == null){
+            //Notify user of thee error
+            return;
+        }
+
         if (acknowledgePurchaseResponseListener == null) {
             acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
                 @Override
                 public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                    if (hasTheFunctionBeenBoughtListener != null)hasTheFunctionBeenBoughtListener.result(true);
+
                 }
             };
         }
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            if (!purchase.isAcknowledged()) {
-                AcknowledgePurchaseParams acknowledgePurchaseParams =
-                        AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-            }
+            premium.setPremiumState(PRODUCT_ID, accountHelper.getUserId(), true,
+                    new ViewModelListener<Boolean>() {
+                        @Override
+                        public void result(Boolean result) {
+                            if (!purchase.isAcknowledged() && result) {
+                                AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                        AcknowledgePurchaseParams.newBuilder()
+                                                .setPurchaseToken(purchase.getPurchaseToken())
+                                                .build();
+                                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                            }
+                        }
+                    });
         }
     }
 

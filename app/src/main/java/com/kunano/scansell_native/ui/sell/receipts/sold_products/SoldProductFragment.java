@@ -49,6 +49,9 @@ public class SoldProductFragment extends Fragment{
     private TextView cashTenderedLabel;
 
 
+    public SoldProductFragment() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

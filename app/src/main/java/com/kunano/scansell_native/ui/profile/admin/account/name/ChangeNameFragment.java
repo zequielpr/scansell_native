@@ -40,6 +40,8 @@ public class ChangeNameFragment extends Fragment {
     private Toolbar changeNameToolbar;
 
 
+    public ChangeNameFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

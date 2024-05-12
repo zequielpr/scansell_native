@@ -5,6 +5,7 @@ import static com.kunano.scansell_native.repository.share_preference.SettingRepo
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 
@@ -36,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        super.onCreate(savedInstanceState);
 
         AccountHelper accountHelper = new AccountHelper();
 
