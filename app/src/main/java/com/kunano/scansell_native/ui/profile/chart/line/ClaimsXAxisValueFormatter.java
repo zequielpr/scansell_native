@@ -2,7 +2,7 @@ package com.kunano.scansell_native.ui.profile.chart.line;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

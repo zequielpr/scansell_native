@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.databinding.FragmentBuyBackUpFunctionBinding;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 
 public class BuyBackUpFunctionFragment extends BottomSheetDialogFragment {

@@ -21,8 +21,8 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentCaptureImageBinding;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 public class CaptureImageFragment extends Fragment {

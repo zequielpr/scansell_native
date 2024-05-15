@@ -24,8 +24,8 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentChangeEmailAddressBinding;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 import com.kunano.scansell_native.ui.profile.auth.UserData;
 

@@ -17,8 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.api.services.drive.DriveScopes;
 import com.kunano.scansell_native.model.db.AppDatabase;
-import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ListenResponse;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 import java.io.File;
 import java.io.FileInputStream;

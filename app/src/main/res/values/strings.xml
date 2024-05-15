@@ -214,8 +214,17 @@
     <string name="there_is_not_receipt">There are no receipts</string>
     <string name="never_delete">Never delete</string>
     <string name="unity">unit(s)</string>
+
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="remove_ads" translatable="false">Remove ads</string>
+    <string name="cancel_subscription" translatable="false">Cancel subscription</string>
+    <string name="premium_benefits" translatable="false">Subscribe to this plan and enjoy this app free of ads</string>
+    <string name="subscribe" translatable="false">Subscribe</string>
+    <string name="subscription_has_failed" translatable="false">Your subscription could not be
+    processed. If you have been charged, the amount will be refunded within a week.</string>
+    <string name="subscription_successful" translatable="false">Subscription successful</string>
+    <string name="premium_subscription_canceled" translatable="false">Your premium subscription has been canceled</string>
 
 
 </resources>

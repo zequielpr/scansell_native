@@ -12,7 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.repository.home.BinsRepository;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

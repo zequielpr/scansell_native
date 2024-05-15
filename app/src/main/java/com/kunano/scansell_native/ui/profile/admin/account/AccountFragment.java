@@ -19,7 +19,7 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentAccountBinding;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
+import com.kunano.scansell_native.components.AskForActionDialog;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class AccountFragment extends Fragment {

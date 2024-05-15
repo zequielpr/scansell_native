@@ -11,8 +11,8 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
-import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ListenResponse;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
