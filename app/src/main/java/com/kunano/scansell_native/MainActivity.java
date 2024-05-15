@@ -5,6 +5,7 @@ import static com.kunano.scansell_native.repository.share_preference.SettingRepo
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 
@@ -20,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.login.LogInActivity;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
@@ -36,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        super.onCreate(savedInstanceState);
 
         AccountHelper accountHelper = new AccountHelper();
 

@@ -17,8 +17,8 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.databinding.FragmentScannProductCreateBinding;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.business.BusinessViewModel;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
@@ -38,6 +38,10 @@ public class ScannProductCreateFragment extends Fragment {
     private Long  businessKey;
     private View scanningLine;
     private View scanningLineParent;
+
+
+    public ScannProductCreateFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

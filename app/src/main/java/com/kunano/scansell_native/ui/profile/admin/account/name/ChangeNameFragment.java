@@ -22,8 +22,8 @@ import androidx.navigation.Navigation;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentChangeNameBinding;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class ChangeNameFragment extends Fragment {
@@ -40,6 +40,8 @@ public class ChangeNameFragment extends Fragment {
     private Toolbar changeNameToolbar;
 
 
+    public ChangeNameFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

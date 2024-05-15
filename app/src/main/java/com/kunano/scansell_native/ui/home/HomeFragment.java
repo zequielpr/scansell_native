@@ -30,10 +30,10 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,15 +55,17 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private ImageButton createNewBusinessImgButton;
     private MainActivityViewModel mainActivityViewModel;
     private Toolbar toolbar;
-
     private ProcessItemsComponent<Business> businessesProcessor;
+
+    public HomeFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         businessesProcessor = new ProcessItemsComponent<>(this);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -341,7 +343,7 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
         homeViewModel.setCardBackgroundColor(Color.WHITE);
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
-        toolbar.setTitle(getString(R.string.businesses_title));
+        homeViewModel.setSelectedItems(getString(R.string.businesses_title));
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.actions_toolbar_home);
 

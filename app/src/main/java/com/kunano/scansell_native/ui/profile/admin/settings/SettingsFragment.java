@@ -32,7 +32,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSettingsBinding;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.admin.settings.language.SelectLanguageFragment;
 
 
@@ -47,13 +47,15 @@ public class SettingsFragment extends Fragment {
     private TextView currentLanguageTextView;
     private SettingViewModel settingViewModel;
     private SettingRepository settingRepository;
-    Spinner currentSoundSpinner;
-    ArrayAdapter<String> soundsArrayAdapter;
-    SharePreferenceHelper sharePreferenceHelper;
-
+    private Spinner currentSoundSpinner;
+    private ArrayAdapter<String> soundsArrayAdapter;
+    private SharePreferenceHelper sharePreferenceHelper;
     private boolean soudState;
     private Integer currentSound;
 
+
+    public SettingsFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -19,7 +19,7 @@ import androidx.palette.graphics.Palette;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentImagePreviewBinding;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.home.business.create_product.CreateProductViewModel;
 
 public class ImagePreviewFragment extends Fragment {
@@ -35,8 +35,11 @@ public class ImagePreviewFragment extends Fragment {
     private Button saveButton;
     private MainActivityViewModel mainActivityViewModel;
     private View imagePreviewLayout;
-
     private Palette colorPalette;
+
+    public ImagePreviewFragment() {
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

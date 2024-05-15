@@ -42,9 +42,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.kunano.scansell_native.MainActivity;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentLogInBinding;
-import com.kunano.scansell_native.ui.components.ImageProcessor;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.ImageProcessor;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 import com.kunano.scansell_native.ui.profile.auth.Auth;
@@ -66,13 +66,13 @@ public class SignInFragment extends Fragment {
     private SignInViewModel signInViewModel;
     private CheckBox showOrHidePasswdCheckBox;
     private PasswordViewModel passwordViewModel;
-
-
     private FragmentLogInBinding binding;
     private GoogleSignInClient mGoogleSignInClient;
     private ImageView googleLogo;
+    private ActivityResultLauncher<Intent> singInActivityResult;
 
-    ActivityResultLauncher<Intent> singInActivityResult;
+    public SignInFragment() {
+    }
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);

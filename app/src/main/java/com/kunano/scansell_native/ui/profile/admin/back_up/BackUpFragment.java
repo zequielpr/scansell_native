@@ -36,12 +36,12 @@ import com.kunano.scansell_native.databinding.FragmentBackUpBinding;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.home.DriveServices;
-import com.kunano.scansell_native.ui.components.AdminPermissions;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
+import com.kunano.scansell_native.components.AdminPermissions;
+import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.ProgressBarDialog;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.components.media_picker.CustomMediaPicker;
 
 import java.io.IOException;
 
@@ -59,6 +59,10 @@ public class BackUpFragment extends Fragment {
     private BackUpViewModel backUpViewModel;
     private AskForActionDialog askForActionDialog;
     private AdminPermissions adminPermissions;
+
+    public BackUpFragment() {
+    }
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);

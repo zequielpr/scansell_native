@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.login.LogInActivity;
 
 public class AccountHelper extends UserData {
@@ -56,6 +56,11 @@ public class AccountHelper extends UserData {
     public String getUserEmail() {
         if (currentUser != null) userEmail = currentUser.getEmail();
         return userEmail;
+    }
+
+    public String getUserId() {
+        if (currentUser != null) return currentUser.getUid();
+        return null;
     }
 
     public boolean isEmailVerified() {

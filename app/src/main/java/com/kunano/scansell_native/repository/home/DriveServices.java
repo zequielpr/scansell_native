@@ -18,7 +18,7 @@ import com.google.api.services.drive.model.File;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;

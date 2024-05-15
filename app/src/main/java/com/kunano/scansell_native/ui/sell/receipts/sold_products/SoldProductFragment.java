@@ -22,9 +22,9 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentSoldProductBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
 
 import java.math.BigDecimal;
@@ -48,6 +48,9 @@ public class SoldProductFragment extends Fragment{
     private TextView cashDue;
     private TextView cashTenderedLabel;
 
+
+    public SoldProductFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

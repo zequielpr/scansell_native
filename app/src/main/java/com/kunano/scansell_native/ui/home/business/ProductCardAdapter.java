@@ -22,8 +22,8 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.home.ProductRepository;
-import com.kunano.scansell_native.ui.components.ImageProcessor;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.ImageProcessor;
+import com.kunano.scansell_native.components.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;

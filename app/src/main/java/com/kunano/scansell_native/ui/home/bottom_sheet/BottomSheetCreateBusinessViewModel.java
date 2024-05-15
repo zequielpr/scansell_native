@@ -8,8 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.ValidateData;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
-import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ListenResponse;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 public class BottomSheetCreateBusinessViewModel extends AndroidViewModel {
 

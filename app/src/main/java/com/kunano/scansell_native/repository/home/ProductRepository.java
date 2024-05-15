@@ -8,8 +8,8 @@ import com.kunano.scansell_native.model.Home.product.ProductDao;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.model.Home.product.ProductImgDao;
 import com.kunano.scansell_native.model.db.AppDatabase;
-import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ListenResponse;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.util.List;

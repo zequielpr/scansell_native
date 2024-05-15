@@ -75,7 +75,7 @@
     <string name="error_to_bin_business">Error al mover el negocio a la papelera</string>
     <string name="business_binned_successfully">Negocio movido a la papelera exitosamente</string>
     <string name="finish">Terminar</string>
-    <string name="pay">Pagar</string>
+    <string name="buy">Comprar</string>
     <string name="cash">Efectivo</string>
     <string name="card">Tarjeta</string>
     <string name="receipts">Recibos</string>
@@ -201,9 +201,9 @@
     <string name="business_empty">Negocio vacío</string>
     <string name="empty_bin">Papelera de reciclaje vacía</string>
     <string name="payment_method">Método de pago:</string>
-    <string name="buy_functionality">Funcionalidad de compra</string>
+    <string name="buy_functionality">Copias de seguridad</string>
     <string name="single_payment">Pago único</string>
-    <string name="functionality_description">Guarda copias de tus negocios y restáuralos en cualquier momento.</string>
+    <string name="functionality_description">Compra esta función y guarda copias de tus negocios y restáuralos en cualquier momento.</string>
     <string name="access_denied">Acceso denegado</string>
     <string name="camera_access_required">Se requiere acceso a la cámara del teléfono para esta funcionalidad</string>
     <string name="file_and_media_permission_required">Se requiere acceso a los archivos y medios del teléfono para esta funcionalidad</string>

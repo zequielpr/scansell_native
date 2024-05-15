@@ -1,28 +1,217 @@
-[debug] [2024-03-14T02:35:35.571Z] ----------------------------------------------------------------------
-[debug] [2024-03-14T02:35:35.573Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js projects:list
-[debug] [2024-03-14T02:35:35.573Z] CLI Version:   11.16.0
-[debug] [2024-03-14T02:35:35.573Z] Platform:      win32
-[debug] [2024-03-14T02:35:35.573Z] Node Version:  v16.17.1
-[debug] [2024-03-14T02:35:35.574Z] Time:          Thu Mar 14 2024 02:35:35 GMT+0000 (Western European Standard Time)
-[debug] [2024-03-14T02:35:35.574Z] ----------------------------------------------------------------------
+[debug] [2024-05-13T01:42:13.514Z] ----------------------------------------------------------------------
+[debug] [2024-05-13T01:42:13.517Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-05-13T01:42:13.517Z] CLI Version:   13.8.3
+[debug] [2024-05-13T01:42:13.518Z] Platform:      win32
+[debug] [2024-05-13T01:42:13.518Z] Node Version:  v20.13.1
+[debug] [2024-05-13T01:42:13.518Z] Time:          Mon May 13 2024 02:42:13 GMT+0100 (Western European Summer Time)
+[debug] [2024-05-13T01:42:13.518Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2024-03-14T02:35:35.577Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[debug] [2024-03-14T02:35:35.596Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2024-03-14T02:35:35.597Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
-[debug] [2024-03-14T02:35:35.600Z] > refreshing access token with scopes: []
-[debug] [2024-03-14T02:35:35.601Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
-[debug] [2024-03-14T02:35:35.601Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2024-03-14T02:35:35.665Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
-[debug] [2024-03-14T02:35:35.666Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
-[debug] [2024-03-14T02:35:35.666Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
-[debug] [2024-03-14T02:35:35.719Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 401
-[debug] [2024-03-14T02:35:35.719Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
-[debug] [2024-03-14T02:35:35.720Z] HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
-[debug] [2024-03-14T02:35:35.758Z] FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
-    at responseToError (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:49:12)
-    at RetryOperation._fn (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:288:77)
-    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+[debug] [2024-05-13T01:42:13.581Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:42:13.582Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Proyectos\scansell_native
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-05-13T01:42:17.505Z] Using project from CLI flag: scansell2
+[debug] [2024-05-13T01:42:17.507Z] > refreshing access token with scopes: []
+[debug] [2024-05-13T01:42:17.509Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-05-13T01:42:17.510Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-13T01:42:17.646Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-05-13T01:42:17.646Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-13T01:42:17.651Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 [none]
+[debug] [2024-05-13T01:42:17.874Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 200
+[debug] [2024-05-13T01:42:17.875Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 {"projectId":"scansell2","projectNumber":"88525641549","displayName":"scanSell2","name":"projects/scansell2","resources":{"hostingSite":"scansell2"},"state":"ACTIVE","etag":"1_bd5739d2-4604-4649-9d23-37958b0e6c8b"}
+[info] i  Using project scansell2 (scanSell2) 
+[info] 
+=== Functions Setup
+[debug] [2024-05-13T01:42:17.885Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:42:17.886Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[debug] [2024-05-13T01:42:17.886Z] [iam] checking project scansell2 for permissions ["firebase.projects.get"]
+[debug] [2024-05-13T01:42:17.887Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions [none]
+[debug] [2024-05-13T01:42:17.887Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:42:17.888Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:42:18.511Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions 200
+[debug] [2024-05-13T01:42:18.511Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:42:18.513Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [none]
+[debug] [2024-05-13T01:42:18.513Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:42:18.517Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [none]
+[debug] [2024-05-13T01:42:18.518Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:42:19.370Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com 200
+[debug] [2024-05-13T01:42:19.370Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2024-05-13T01:42:19.403Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com 200
+[debug] [2024-05-13T01:42:19.403Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [omitted]
+[info] 
+Detected existing codebase(s): default
+
+[info] 
+Overwriting codebase default...
+
+[info] +  Wrote functions/requirements.txt 
+[info] +  Wrote functions/.gitignore 
+[info] +  Wrote functions/main.py 
+[debug] [2024-05-13T01:42:27.313Z] Running command with virtualenv: command="D:\Proyectos\scansell_native\functions\venv\Scripts\activate.bat", args=["","&&","pip3","install","--upgrade","pip"]
+[debug] [2024-05-13T01:42:27.362Z] Error: spawn "D:\Proyectos\scansell_native\functions\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:294:12)
 [error] 
-[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
-[debug] [2024-03-14T02:35:35.823Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2024-03-14T02:35:35.823Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-13T01:42:53.008Z] ----------------------------------------------------------------------
+[debug] [2024-05-13T01:42:53.011Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-05-13T01:42:53.011Z] CLI Version:   13.8.3
+[debug] [2024-05-13T01:42:53.011Z] Platform:      win32
+[debug] [2024-05-13T01:42:53.011Z] Node Version:  v20.13.1
+[debug] [2024-05-13T01:42:53.011Z] Time:          Mon May 13 2024 02:42:53 GMT+0100 (Western European Summer Time)
+[debug] [2024-05-13T01:42:53.012Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-13T01:42:53.085Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:42:53.085Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Proyectos\scansell_native
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-05-13T01:42:58.627Z] Using project from CLI flag: scansell2
+[debug] [2024-05-13T01:42:58.629Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 [none]
+[debug] [2024-05-13T01:42:58.952Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 200
+[debug] [2024-05-13T01:42:58.952Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 {"projectId":"scansell2","projectNumber":"88525641549","displayName":"scanSell2","name":"projects/scansell2","resources":{"hostingSite":"scansell2"},"state":"ACTIVE","etag":"1_bd5739d2-4604-4649-9d23-37958b0e6c8b"}
+[info] i  Using project scansell2 (scanSell2) 
+[info] 
+=== Functions Setup
+[debug] [2024-05-13T01:42:58.961Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:42:58.961Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[debug] [2024-05-13T01:42:58.961Z] [iam] checking project scansell2 for permissions ["firebase.projects.get"]
+[debug] [2024-05-13T01:42:58.962Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions [none]
+[debug] [2024-05-13T01:42:58.962Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:42:58.962Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:42:59.582Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions 200
+[debug] [2024-05-13T01:42:59.583Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:42:59.584Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [none]
+[debug] [2024-05-13T01:42:59.585Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:42:59.589Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [none]
+[debug] [2024-05-13T01:42:59.589Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:43:00.409Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com 200
+[debug] [2024-05-13T01:43:00.410Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2024-05-13T01:43:00.412Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com 200
+[debug] [2024-05-13T01:43:00.413Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [omitted]
+[info] 
+Detected existing codebase(s): default
+
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[error] Invalid codebase name. Codebase must be less than 64 characters and can contain only lowercase letters, numeric characters, underscores, and dashes.
+[debug] [2024-05-13T01:43:20.982Z] ----------------------------------------------------------------------
+[debug] [2024-05-13T01:43:20.984Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-05-13T01:43:20.985Z] CLI Version:   13.8.3
+[debug] [2024-05-13T01:43:20.985Z] Platform:      win32
+[debug] [2024-05-13T01:43:20.985Z] Node Version:  v20.13.1
+[debug] [2024-05-13T01:43:20.985Z] Time:          Mon May 13 2024 02:43:20 GMT+0100 (Western European Summer Time)
+[debug] [2024-05-13T01:43:20.985Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-13T01:43:21.058Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:43:21.058Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Proyectos\scansell_native
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-05-13T01:43:26.293Z] Using project from CLI flag: scansell2
+[debug] [2024-05-13T01:43:26.296Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 [none]
+[debug] [2024-05-13T01:43:26.573Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 200
+[debug] [2024-05-13T01:43:26.573Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/scansell2 {"projectId":"scansell2","projectNumber":"88525641549","displayName":"scanSell2","name":"projects/scansell2","resources":{"hostingSite":"scansell2"},"state":"ACTIVE","etag":"1_bd5739d2-4604-4649-9d23-37958b0e6c8b"}
+[info] i  Using project scansell2 (scanSell2) 
+[info] 
+=== Functions Setup
+[debug] [2024-05-13T01:43:26.584Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-13T01:43:26.584Z] > authorizing via signed-in user (zequielperez.r@gmail.com)
+[debug] [2024-05-13T01:43:26.585Z] [iam] checking project scansell2 for permissions ["firebase.projects.get"]
+[debug] [2024-05-13T01:43:26.586Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions [none]
+[debug] [2024-05-13T01:43:26.586Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:43:26.587Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:43:26.753Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions 200
+[debug] [2024-05-13T01:43:26.753Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/scansell2:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-13T01:43:26.755Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [none]
+[debug] [2024-05-13T01:43:26.755Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:43:26.759Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [none]
+[debug] [2024-05-13T01:43:26.759Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/scansell2
+[debug] [2024-05-13T01:43:27.607Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com 200
+[debug] [2024-05-13T01:43:27.607Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2024-05-13T01:43:27.610Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com 200
+[debug] [2024-05-13T01:43:27.611Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/scansell2/services/cloudfunctions.googleapis.com [omitted]
+[info] 
+Detected existing codebase(s): default
+
+[info] 
+Overwriting codebase default...
+
+[info] +  Wrote functions/requirements.txt 
+[info] +  Wrote functions/.gitignore 
+[info] +  Wrote functions/main.py 
+[debug] [2024-05-13T01:43:36.303Z] Running command with virtualenv: command="D:\Proyectos\scansell_native\functions\venv\Scripts\activate.bat", args=["","&&","pip3","install","--upgrade","pip"]
+[debug] [2024-05-13T01:43:36.384Z] Error: spawn "D:\Proyectos\scansell_native\functions\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\Zequi\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:294:12)
+[error] 
+[error] Error: An unexpected error has occurred.

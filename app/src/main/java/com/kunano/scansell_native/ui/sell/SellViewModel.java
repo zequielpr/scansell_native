@@ -21,8 +21,8 @@ import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
 import java.math.BigDecimal;

@@ -73,7 +73,7 @@
     <string name="error_to_bin_business">Error moving business to bin</string>
     <string name="business_binned_successfully">Business moved to bin successfully</string>
     <string name="finish">Finish</string>
-    <string name="pay">Pay</string>
+    <string name="buy">Buy</string>
     <string name="cash">Cash</string>
     <string name="card">Card</string>
     <string name="receipts">Receipts</string>
@@ -182,7 +182,7 @@
     <string name="english">English</string>
     <string name="automatic">Automatic</string>
     <string name="saving_file_in_local">Saving copy. Do not close the app</string>
-    <string name="leave_app">Exit app</string>
+    <string name="leave_app">Leave app</string>
     <string name="ask_to_leave_app">Do you want to leave this app?</string>
     <string name="current_products">Products</string>
     <string name="stock">Stock</string>
@@ -199,9 +199,9 @@
     <string name="business_empty">Business empty</string>
     <string name="empty_bin">Recycle bin empty</string>
     <string name="payment_method">Payment method:</string>
-    <string name="buy_functionality">Purchase functionality</string>
+    <string name="buy_functionality">Backup</string>
     <string name="single_payment">Single payment</string>
-    <string name="functionality_description">Save copies of your businesses and restore them at any time.</string>
+    <string name="functionality_description">Buy this functionality and save copies of your businesses and restore them at any time.</string>
     <string name="access_denied">Access denied</string>
     <string name="camera_access_required">Access to phone camera is required for this functionality</string>
     <string name="file_and_media_permission_required">Access to phone files and media is required for this functionality</string>
@@ -214,6 +214,17 @@
     <string name="there_is_not_receipt">There are no receipts</string>
     <string name="never_delete">Never delete</string>
     <string name="unity">unit(s)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="remove_ads" translatable="false">Remove ads</string>
+    <string name="cancel_subscription" translatable="false">Cancel subscription</string>
+    <string name="premium_benefits" translatable="false">Subscribe to this plan and enjoy this app free of ads</string>
+    <string name="subscribe" translatable="false">Subscribe</string>
+    <string name="subscription_has_failed" translatable="false">Your subscription could not be
+    processed. If you have been charged, the amount will be refunded within a week.</string>
+    <string name="subscription_successful" translatable="false">Subscription successful</string>
+    <string name="premium_subscription_canceled" translatable="false">Your premium subscription has been canceled</string>
 
 
 </resources>

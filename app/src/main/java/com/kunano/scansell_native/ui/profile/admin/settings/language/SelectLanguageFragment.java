@@ -15,7 +15,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kunano.scansell_native.databinding.FragmentSelectLanguageBinding;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 
 public class SelectLanguageFragment extends DialogFragment {

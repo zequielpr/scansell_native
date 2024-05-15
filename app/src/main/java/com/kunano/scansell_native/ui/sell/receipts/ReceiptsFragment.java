@@ -31,9 +31,9 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentReceiptsBinding;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
-import com.kunano.scansell_native.ui.sell.receipts.dele_component.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 
@@ -60,6 +60,8 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private View receiptEmptySectionLayout;
 
+    public ReceiptsFragment() {
+    }
 
     public static ReceiptsFragment newInstance() {
         return new ReceiptsFragment();

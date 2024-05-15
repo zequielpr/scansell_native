@@ -18,8 +18,8 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.databinding.FragmentCollectPaymentMethodBinding;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellFragmentDirections;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
 
@@ -44,6 +44,10 @@ public class CollectPaymentMethodFragment extends DialogFragment {
     private View cashDueLayout;
 
     private Activity parentActivity;
+
+
+    public CollectPaymentMethodFragment() {
+    }
 
     public CollectPaymentMethodFragment(SellViewModel sellViewModel, View parentView, Activity parentActivity) {
         this.sellViewModel = sellViewModel;
