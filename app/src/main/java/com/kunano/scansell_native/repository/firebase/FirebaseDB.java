@@ -1,7 +1,7 @@
 package com.kunano.scansell_native.repository.firebase;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -26,8 +26,8 @@ public class FirebaseDB {
         return firebaseFirestore.collection(USER_COLLECTION).document(userId).set(data);
     }
 
-    public Task<DocumentSnapshot> getUserDocument(String userId){
-        return firebaseFirestore.collection(USER_COLLECTION).document(userId).get();
+    public DocumentReference getUserDocument(String userId){
+        return firebaseFirestore.collection(USER_COLLECTION).document(userId);
     }
 
 

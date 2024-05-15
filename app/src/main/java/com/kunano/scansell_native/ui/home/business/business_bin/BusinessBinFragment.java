@@ -26,11 +26,11 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ProgressBarDialog;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;

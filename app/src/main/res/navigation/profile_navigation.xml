@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_profileFragment_to_settingsFragment23"
             app:destination="@id/settingsFragment2" />
+        <action
+            android:id="@+id/action_profileFragment_to_premiumFragment"
+            app:destination="@id/premiumFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
@@ -94,5 +97,14 @@
         <action
             android:id="@+id/action_deleteAccountFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/premiumFragment"
+        android:name="com.kunano.scansell_native.ui.profile.admin.premium.PremiumFragment"
+        android:label="fragment_premium"
+        tools:layout="@layout/fragment_premium" >
+        <action
+            android:id="@+id/action_premiumFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>

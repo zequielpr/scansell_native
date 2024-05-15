@@ -15,9 +15,9 @@ import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.repository.home.BinsRepository;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.home.ProductRepository;
-import com.kunano.scansell_native.ui.components.ListenResponse;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ListenResponse;
+import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.ArrayList;
 import java.util.List;

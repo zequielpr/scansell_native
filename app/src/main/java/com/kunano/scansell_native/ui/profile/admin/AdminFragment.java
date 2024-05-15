@@ -4,31 +4,36 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
-import com.android.billingclient.api.ProductDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.MainActivityViewModel;
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentAdminBinding;
-import com.kunano.scansell_native.repository.firebase.Premium;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.components.billing_component.BillingComponent;
+import com.kunano.scansell_native.repository.firebase.PremiumRepository;
 import com.kunano.scansell_native.ui.profile.ProfileFragmentDirections;
+import com.kunano.scansell_native.ui.profile.admin.premium.PremiumViewModel;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class AdminFragment extends BottomSheetDialogFragment {
     View settingSetcion;
     View accountSection;
     View backUpSection;
+    View premiumSection;
     View parentView;
+    ImageView premiumImage;
 
     FragmentAdminBinding binding;
-    private AdminViewModel adminViewModel;
-    private BillingComponent billingComponent;
+
     MainActivityViewModel mainActivityViewModel;
+    private PremiumViewModel premiumViewModel;
 
     public AdminFragment() {
     }
@@ -41,16 +46,11 @@ public class AdminFragment extends BottomSheetDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adminViewModel = new ViewModelProvider(this).get(AdminViewModel.class);
-        billingComponent = new BillingComponent(getActivity());
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        premiumViewModel = new ViewModelProvider(this).get(PremiumViewModel.class) ;
 
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        if (billingComponent != null) billingComponent.endConnection();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,15 +62,23 @@ public class AdminFragment extends BottomSheetDialogFragment {
         settingSetcion = binding.settingSection;
         accountSection = binding.accountSection;
         backUpSection = binding.backUpSection;
-
-        settingSetcion.setOnClickListener(this::settingSectionAction);
-        accountSection.setOnClickListener(this::accountSectionAction);
-        backUpSection.setOnClickListener(this::backUpSectionAction);
-
+        premiumSection = binding.premiumSection;
+        premiumImage = binding.premiumImage;
 
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        settingSetcion.setOnClickListener(this::settingSectionAction);
+        accountSection.setOnClickListener(this::accountSectionAction);
+        backUpSection.setOnClickListener(this::backUpSectionAction);
+        premiumSection.setOnClickListener(this::premiumSectionAction);
+        premiumViewModel.getSubscriptionState().observe(getViewLifecycleOwner(), (s)->{
+            premiumImage.setImageDrawable(ContextCompat.getDrawable(getContext(), s? R.drawable.premium_logo:R.drawable.non_premium_icon));
+        });
+    }
 
     private void settingSectionAction(View view) {
         NavDirections navDirectionsSetting = ProfileFragmentDirections.actionProfileFragmentToSettingsFragment23();
@@ -86,64 +94,8 @@ public class AdminFragment extends BottomSheetDialogFragment {
     }
 
     private AccountHelper accountHelper;
-    private Premium premium;
+    private PremiumRepository premiumRepository;
     private void backUpSectionAction(View view) {
-
-        accountHelper = new AccountHelper();
-        premium = new Premium();
-
-        if (mainActivityViewModel.isPremiumActive() == null){
-            premium.getPremiumState(BillingComponent.PRODUCT_ID, accountHelper.getUserId(), new Premium.premiumListener<Boolean, Void>() {
-                @Override
-                public void onSuccess(Boolean result) {
-                    if (result) {
-                        navigateToBackUpSection();
-                    } else {
-                        buyFunctionDialog();
-                    }
-
-                    mainActivityViewModel.setPremiumActive(result);
-                }
-
-                @Override
-                public void onFailure(Void result) {
-
-                }
-            });
-        }else {
-            if (mainActivityViewModel.isPremiumActive()) {
-                navigateToBackUpSection();
-            } else {
-                buyFunctionDialog();
-            }
-        }
-    }
-
-    private BuyBackUpFunctionFragment buyFunctionFragment;
-
-    private void buyFunctionDialog() {
-        buyFunctionFragment = new BuyBackUpFunctionFragment();
-        buyFunctionFragment.setViewModelListener(new ViewModelListener() {
-            @Override
-            public void result(Object object) {
-                billingComponent.queryProductsToBuy(BillingComponent.PRODUCT_ID, AdminFragment.this::launchPurchaseFlow);
-            }
-        });
-
-        buyFunctionFragment.show(getChildFragmentManager(), "Ask to buy functionality");
-    }
-
-    private void launchPurchaseFlow(ProductDetails productDetails) {
-        billingComponent.setHasTheFunctionBeenBoughtListener(new ViewModelListener<Boolean>() {
-            @Override
-            public void result(Boolean object) {
-                if (object) buyFunctionFragment.dismiss();
-            }
-        });
-        billingComponent.launchPurchaseFlow(productDetails);
-    }
-
-    private void navigateToBackUpSection(){
         if (getActivity() != null){
             getActivity().runOnUiThread(()->{
                 NavDirections navDirectionsBackUp = ProfileFragmentDirections.actionProfileFragmentToBackUpFragment();
@@ -152,4 +104,13 @@ public class AdminFragment extends BottomSheetDialogFragment {
             });
         }
     }
+
+
+    private void premiumSectionAction(View view){
+        NavDirections navDirectionsPremium= ProfileFragmentDirections.actionProfileFragmentToPremiumFragment();
+        Navigation.findNavController(parentView).navigate(navDirectionsPremium);
+        dismiss();
+    }
+
+
 }

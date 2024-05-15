@@ -30,10 +30,10 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;

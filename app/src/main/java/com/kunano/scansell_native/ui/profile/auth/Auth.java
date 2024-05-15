@@ -6,7 +6,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 
 public class Auth {
 

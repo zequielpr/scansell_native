@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.login.LogInActivity;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 

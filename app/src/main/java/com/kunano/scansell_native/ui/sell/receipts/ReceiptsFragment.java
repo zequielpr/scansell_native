@@ -31,9 +31,9 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentReceiptsBinding;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 

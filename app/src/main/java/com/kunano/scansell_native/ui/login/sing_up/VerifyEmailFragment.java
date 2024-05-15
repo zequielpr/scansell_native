@@ -19,7 +19,7 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentVerifyEmailBinding;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class VerifyEmailFragment extends Fragment {

@@ -32,12 +32,12 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
 import com.kunano.scansell_native.model.Home.product.Product;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.ProgressBarDialog;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 
