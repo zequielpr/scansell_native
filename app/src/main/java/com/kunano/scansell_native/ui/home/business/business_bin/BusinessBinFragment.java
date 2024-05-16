@@ -190,7 +190,8 @@ public class BusinessBinFragment extends Fragment {
                                         getColor(getContext(), R.color.black_transparent));
                                 return;
                             }
-                            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+                            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                                    R.color.cardBackgroundColor));
                         });
 
                 //cardHolder.getCardView().findViewById(R.id.dayLeftBackground).setVisibility(View.VISIBLE);
@@ -287,7 +288,8 @@ public class BusinessBinFragment extends Fragment {
                     getColor(getContext(), R.color.black_transparent));
             return;
         }
-        cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+        cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
 
 
 

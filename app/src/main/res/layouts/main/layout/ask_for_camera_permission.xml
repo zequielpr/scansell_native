@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ask_for_camera_permission"
+    android:layout_width="match_parent"
+    android:elevation="4dp"
+    android:background="@color/black_ced4da"
+    android:visibility="gone"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/cameraImage"
+        android:layout_width="106dp"
+        android:layout_height="77dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/camera_24" />
+
+    <TextView
+        android:id="@+id/cameraPermissionTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cameraImage"
+        android:layout_centerHorizontal="true"
+        android:text="@string/activate_camera"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/cameraPermissionTitleTextView"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:text="@string/camera_access_required" />
+
+    <Button
+        android:id="@+id/goToSettingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/button_top_side"
+        android:layout_below="@id/messageTextView"
+        android:layout_centerHorizontal="true"
+        android:text="@string/settings" />
+</RelativeLayout>

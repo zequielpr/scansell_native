@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.components.AdminPermissions;
 import com.kunano.scansell_native.components.BarcodeScannerCustom;
 import com.kunano.scansell_native.components.ImageProcessor;
 
@@ -48,6 +49,7 @@ public class CustomCamera {
     private ImageButton imageButtonFlash;
     private CustomCameraListener customCameraListener;
     boolean scanBarCode;
+    AdminPermissions adminPermissions;
 
     Camera camera;
 
@@ -60,6 +62,7 @@ public class CustomCamera {
         colorFilterWhite = new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         this.imageButtonFlash = imageButtonFlash;
         boolean scanBarCode = false;
+        adminPermissions = new AdminPermissions(fragment);
 
 
         imageButtonFlash.setOnClickListener(this::handleFlash);

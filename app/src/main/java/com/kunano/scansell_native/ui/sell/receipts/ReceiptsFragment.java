@@ -2,7 +2,6 @@ package com.kunano.scansell_native.ui.sell.receipts;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,11 +28,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.databinding.FragmentReceiptsBinding;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.sell.SellViewModel;
-import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 
@@ -274,7 +273,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     }
     private void unCheckCard(ReceiptAdapter.CardHolder cardHolder){
         cardHolder.getCheckIndicator().setImageDrawable(null);
-        cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+        cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardBackgroundColor));
     }
 
     private void selectAllItems(){
@@ -290,7 +289,7 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
 
     private void unSelectAllItems(){
         receiptsViewModel.setAllSelectedIconMutableLiveData(null);
-        receiptsViewModel.setReceiptCardBackgroundColor(Color.WHITE);
+        receiptsViewModel.setReceiptCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.cardBackgroundColor));
         processItemsComponent.clearItemsToProcess();
         selectAllMenuItem.setIcon(unCheckedCircle);
         processItemsComponent.setAllSelected(false);

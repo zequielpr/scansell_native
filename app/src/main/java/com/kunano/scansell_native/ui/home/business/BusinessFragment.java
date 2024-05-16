@@ -207,7 +207,8 @@ public class BusinessFragment extends Fragment {
                                 R.color.black_transparent));
                         return;
                     }
-                            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+                            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                                    R.color.cardBackgroundColor));
                         });
             }
 
@@ -405,7 +406,8 @@ public class BusinessFragment extends Fragment {
                     R.color.black_transparent));
         }else {
             cardHolder.getUnCheckedCircle().setBackground(null);
-            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
         }
         if (productProcessItemsComponent.getItemsToProcess().size() ==
                 productCardAdapter.getCurrentList().size()){

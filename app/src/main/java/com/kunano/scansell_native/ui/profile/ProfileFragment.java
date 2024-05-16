@@ -152,7 +152,6 @@ public class ProfileFragment extends Fragment implements MenuProvider {
             }
         });
 
-        profileToolbar.setTitle(accountHelper.getUserName());
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
         profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
@@ -171,8 +170,11 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
-
-        ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
+        if (accountHelper.getCurrentUser() != null){
+            ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
+        }else {
+            profileToolbar.setNavigationIcon(null);
+        }
 
     }
 

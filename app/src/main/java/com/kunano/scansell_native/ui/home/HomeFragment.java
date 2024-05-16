@@ -282,7 +282,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void unSelectAll() {
         selectAllMenuItem.setIcon(uncheckedCircle);
         homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
-        homeViewModel.setCardBackgroundColor(Color.WHITE);
+        homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         businessesProcessor.clearItemsToProcess();
         deleteMenuItem.setVisible(false);
         homeViewModel.setSelectedItems(String.valueOf(businessesProcessor.getItemsToProcess().size()));
@@ -301,7 +302,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
 
         }else {
-            cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
+            cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
             cardHolder.getUnCheckedCircle().setBackground(null);
         }
 
@@ -340,7 +342,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void desActivateDeleteMode(View view) {
         businessesProcessor.setProcessItemActive(false);
         homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
-        homeViewModel.setCardBackgroundColor(Color.WHITE);
+        homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
         homeViewModel.setSelectedItems(getString(R.string.businesses_title));

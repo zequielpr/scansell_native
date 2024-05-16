@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.components.ProcessItemsComponent;
@@ -40,7 +41,7 @@ public class HomeViewModel extends AndroidViewModel {
         createNewBusinessVisibilityMD = new MutableLiveData<>();
         selectedItems = new MutableLiveData<>();
 
-        cardBackgroundColor = new MutableLiveData<>();
+        cardBackgroundColor = new MutableLiveData<>(getApplication().getColor(R.color.cardBackgroundColor));
         checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
     }
 

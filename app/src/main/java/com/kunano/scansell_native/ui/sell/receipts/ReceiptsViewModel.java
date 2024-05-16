@@ -27,7 +27,7 @@ public class ReceiptsViewModel extends AndroidViewModel {
 
         allSelectedIconMutableLiveData = new MutableLiveData<>();
         selectedItemQuantityMutableLiveData = new MutableLiveData<>();
-        receiptCardBackgroundColor = new MutableLiveData<>();
+        receiptCardBackgroundColor = new MutableLiveData<>(getApplication().getColor(R.color.cardBackgroundColor));
     }
 
     public MutableLiveData<Boolean> getIsSearchModeActive() {

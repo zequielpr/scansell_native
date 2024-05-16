@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Settings;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -36,32 +37,10 @@ public class AdminPermissions {
     }
 
     public void handlePermission(boolean isGranted){
-        if (isGranted) {
-            // Permission is granted. Continue the action or workflow in your
-            // app.
-            resultListener.result(true);
-        } else {
-            String cancel = fragment.getString(R.string.cancel);
-            String settings = fragment.getString(R.string.settings);
-            askForActionDialog = new AskForActionDialog(title,
-                    message, cancel, settings, false);
-
-            askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
-                @Override
-                public void result(Boolean object) {
-                    if (object){
-                      navigateToSettings();
-                    }else {
-                        if (resultListener != null) resultListener.result(false);
-                    }
-                }
-            });
-
-            askForActionDialog.show(fragment.getParentFragmentManager(), "show option");
-        }
+        resultListener.result(isGranted);
     }
 
-    private void navigateToSettings(){
+    public void navigateToSettings(View view){
         Intent intent = new Intent( Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", fragment.getActivity().getPackageName(), null);
         intent.setData(uri);
@@ -87,24 +66,7 @@ public class AdminPermissions {
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                 fragment.getActivity(), Manifest.permission.CAMERA)) {
 
-            String cancel = fragment.getString(R.string.cancel);
-            String ok = fragment.getString(R.string.ok);
-
-            askForActionDialog = new AskForActionDialog(title,
-                    message, cancel, ok, false);
-
-            askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
-                @Override
-                public void result(Boolean object) {
-                   if (object){
-                       requestPermissionLauncher.launch(
-                               Manifest.permission.CAMERA);
-                   }else {
-                       if (resultListener != null) resultListener.result(false);
-                   }
-                }
-            });
-            askForActionDialog.show(fragment.getParentFragmentManager(), "show option");
+            resultListener.result(false);
 
         } else {
             // You can directly ask for the permission.
