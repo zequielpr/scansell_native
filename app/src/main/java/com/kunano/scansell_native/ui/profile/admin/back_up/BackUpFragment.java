@@ -133,6 +133,8 @@ public class BackUpFragment extends Fragment {
                     public void result(Boolean object) {
                         if (object){
                             chooseDir();
+                        }else {
+                            askToGoToSettings();
                         }
                     }
                 });
@@ -286,13 +288,19 @@ public class BackUpFragment extends Fragment {
                 if (object){
                     customMediaPicker.lunchImagePicker(new
                             ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+                }else {
+                    askToGoToSettings();
                 }
             }
         });
         adminPermissions.checkMediaPermission();
 
+    }
 
-
+    private void askToGoToSettings(){
+        String title = getString(R.string.enable_backup_func);
+        String message = getString(R.string.file_and_media_permission_required);
+        adminPermissions.showDialogToGotoSettings(title, message);
     }
 
 

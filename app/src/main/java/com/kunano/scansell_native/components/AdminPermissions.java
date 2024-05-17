@@ -19,10 +19,6 @@ import com.kunano.scansell_native.R;
 public class AdminPermissions {
     private Context context;
     Fragment fragment;
-    private AskForActionDialog askForActionDialog;
-
-    private String title;
-    private String message;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     private ViewModelListener<Boolean> resultListener;
@@ -55,8 +51,6 @@ public class AdminPermissions {
 
 
     public void checkCameraPermission(){
-        title = fragment.getString(R.string.access_denied);
-        message = fragment.getString(R.string.camera_access_required);
         if (ContextCompat.checkSelfPermission(
                 context, Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -79,8 +73,6 @@ public class AdminPermissions {
 
 
     public void checkMediaPermission(){
-        title = fragment.getString(R.string.access_denied);
-        message = fragment.getString(R.string.file_and_media_permission_required);
         if (ContextCompat.checkSelfPermission(
                 context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -89,30 +81,34 @@ public class AdminPermissions {
 
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(
                 fragment.getActivity(), Manifest.permission.CAMERA)) {
-
-            String cancel = fragment.getString(R.string.cancel);
-            String ok = fragment.getString(R.string.ok);
-
-            askForActionDialog = new AskForActionDialog(title,
-                    message, cancel, ok, false);
-
-            askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
-                @Override
-                public void result(Boolean object) {
-                    if (object){
-                        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-                    }else {
-                        if (resultListener != null) resultListener.result(false);
-                    }
-                }
-            });
-            askForActionDialog.show(fragment.getParentFragmentManager(), "show option");
+            resultListener.result(false);
 
         } else {
             // You can directly ask for the permission.
             // The registered ActivityResultCallback gets the result of this request.
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+    }
+
+    public void showDialogToGotoSettings(String title, String message){
+        AskForActionDialog askForActionDialog;
+        String cancel = fragment.getString(R.string.cancel);
+        String ok = fragment.getString(R.string.settings);
+
+        askForActionDialog = new AskForActionDialog(title,
+                message, cancel, ok, false);
+
+        askForActionDialog.setButtonListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean object) {
+                if (object){
+                    navigateToSettings(fragment.getView());
+                }else {
+                    askForActionDialog.dismiss();
+                }
+            }
+        });
+        askForActionDialog.show(fragment.getParentFragmentManager(), "show option");
     }
 
 
