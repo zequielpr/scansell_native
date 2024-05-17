@@ -257,12 +257,14 @@ public class CreateProductFragment extends Fragment {
                         if (object){
                             lunchImagePicker();
                         }else {
-                            imageSourceFragment.dismiss();
+                            askToGoToSettingsFile();
                         }
                     }
                 });
                 adminPermissions.checkMediaPermission();
             }
+
+
 
             @Override
             public void fromCamera(View view) {
@@ -273,7 +275,7 @@ public class CreateProductFragment extends Fragment {
                         if (object){
                             captureImage();
                         }else {
-                            askToGoToSettings();
+                            askToGoToSettingsCamera();
                         }
                     }
                 });
@@ -285,10 +287,16 @@ public class CreateProductFragment extends Fragment {
     }
 
 
-    private void askToGoToSettings(){
+    private void askToGoToSettingsCamera(){
         String title = getString(R.string.activate_camera);
         String message = getString(R.string.camera_access_required);
 
+        adminPermissions.showDialogToGotoSettings(title, message);
+    }
+
+    private void askToGoToSettingsFile(){
+        String title = getString(R.string.enable_file_picker);
+        String message = getString(R.string.file_and_media_permission_required);
         adminPermissions.showDialogToGotoSettings(title, message);
     }
 
@@ -321,7 +329,7 @@ public class CreateProductFragment extends Fragment {
             return;
         }
 
-        System.out.println("An error has occured");
+        System.out.println("An error has occurred");
     }
 
 

@@ -204,8 +204,9 @@
     <string name="functionality_description">Buy this functionality and save copies of your businesses and restore them at any time.</string>
     <string name="access_denied">Access denied</string>
     <string name="enable_backup_func">Enable backup functionality</string>
+    <string name="enable_file_picker">Enable file picker</string>
     <string name="camera_access_required">Access to phone camera is required for this functionality. Got to settings and
-    grant permission to the phone camera</string>
+    grant access to the phone camera</string>
     <string name="activate_camera">Enable camera</string>
     <string name="file_and_media_permission_required">Access to phone files and media are required for this functionality.
     Go to settings and grant the permission</string>

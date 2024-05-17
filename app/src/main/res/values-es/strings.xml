@@ -205,6 +205,7 @@
     <string name="single_payment">Pago único</string>
     <string name="functionality_description">Compra esta función y guarda copias de tus negocios y restáuralos en cualquier momento.</string>
     <string name="enable_backup_func">Abilitar copias de seguridad</string>
+    <string name="enable_file_picker">Activar seleccionador de archivos</string>
     <string name="access_denied">Acceso denegado</string>
     <string name="camera_access_required">Se requiere acceso a la cámara del teléfono para usar esta funcionalidad.
     Ve a configuraciones y otorga acceso a la camara</string>
