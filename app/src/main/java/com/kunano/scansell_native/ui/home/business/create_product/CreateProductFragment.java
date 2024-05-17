@@ -273,7 +273,7 @@ public class CreateProductFragment extends Fragment {
                         if (object){
                             captureImage();
                         }else {
-                            imageSourceFragment.dismiss();
+                            askToGoToSettings();
                         }
                     }
                 });
@@ -284,6 +284,13 @@ public class CreateProductFragment extends Fragment {
         imageSourceFragment.show(getParentFragmentManager(), "pick image options");
     }
 
+
+    private void askToGoToSettings(){
+        String title = getString(R.string.activate_camera);
+        String message = getString(R.string.camera_access_required);
+
+        adminPermissions.showDialogToGotoSettings(title, message);
+    }
 
 
 
