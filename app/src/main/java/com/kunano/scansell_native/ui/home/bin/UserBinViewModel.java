@@ -38,7 +38,7 @@ public class UserBinViewModel extends AndroidViewModel {
         recycledBusinessLiveData = binsRepository.getBusinessInBin();
         daysLeftTobeDeletedLiveDate = new MutableLiveData();
         restoreButtonVisibilityLiveData = new MutableLiveData<>(View.VISIBLE);
-        cardBackgroundColor = new MutableLiveData<>();
+        cardBackgroundColor = new MutableLiveData<>(getApplication().getColor(R.color.cardBackgroundColor));
         selectedItemsNumbLiveData = new MutableLiveData<>();
         checkedOrUncheckedCircleLivedata = new MutableLiveData<>();
     }

@@ -14,8 +14,8 @@
         android:background="?colorSurface"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@drawable/profile_icon"
-        app:title="user name" />
+        app:titleTextColor="@color/black"
+        app:title="@string/profile" />
 
     <include
         android:id="@+id/createNewBusinessView"

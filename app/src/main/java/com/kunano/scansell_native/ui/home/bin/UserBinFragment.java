@@ -235,7 +235,8 @@ public class UserBinFragment extends Fragment {
             mainActivityViewModel.showBottomNavBar();
             mViewModel.setSelectedItemsNumbLiveData(getString(R.string.recycle_bin));
             mViewModel.setCheckedOrUncheckedCircleLivedata(null);
-            mViewModel.setCardBackgroundColor(Color.WHITE);
+            mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
             mViewModel.setRestoreButtonVisibilityLiveData(View.VISIBLE);
             businessProcessItemsComponent.clearItemsToProcess();
         });
@@ -260,7 +261,8 @@ public class UserBinFragment extends Fragment {
 
 
         checkIfAllSelected();
-        cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
+        cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         cardHolder.getUnCheckedCircle().setBackground(null);
 
 
@@ -382,7 +384,8 @@ public class UserBinFragment extends Fragment {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         mViewModel.setCheckedOrUncheckedCircleLivedata(null);
         mViewModel.setSelectedItemsNumbLiveData("0");
-        mViewModel.setCardBackgroundColor(Color.WHITE);
+        mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         businessProcessItemsComponent.clearItemsToProcess();
         deleteOrRestoreOptions.setVisibility(View.GONE);
     }

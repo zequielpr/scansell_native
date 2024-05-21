@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp"
         android:layout_margin="5dp"
-        app:cardBackgroundColor="?colorSurface"
+        app:cardBackgroundColor="@color/cardBackgroundColor"
         app:cardElevation="1dp">
         <ImageButton
             android:id="@+id/cancel_b_sell_product"
@@ -32,6 +32,7 @@
         android:layout_marginEnd="10dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/cardBackgroundColor"
         android:outlineSpotShadowColor="@color/black">
 
 

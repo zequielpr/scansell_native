@@ -4,18 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.MainActivityViewModel;
-import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentAdminBinding;
 import com.kunano.scansell_native.repository.firebase.PremiumRepository;
 import com.kunano.scansell_native.ui.profile.ProfileFragmentDirections;
@@ -24,16 +21,13 @@ import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
 
 public class AdminFragment extends BottomSheetDialogFragment {
     View settingSetcion;
-    View accountSection;
+    //View accountSection;
     View backUpSection;
-    View premiumSection;
     View parentView;
-    ImageView premiumImage;
 
     FragmentAdminBinding binding;
 
     MainActivityViewModel mainActivityViewModel;
-    private PremiumViewModel premiumViewModel;
 
     public AdminFragment() {
     }
@@ -47,7 +41,6 @@ public class AdminFragment extends BottomSheetDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
-        premiumViewModel = new ViewModelProvider(this).get(PremiumViewModel.class) ;
 
     }
 
@@ -60,10 +53,8 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
 
         settingSetcion = binding.settingSection;
-        accountSection = binding.accountSection;
+        //accountSection = binding.accountSection;
         backUpSection = binding.backUpSection;
-        premiumSection = binding.premiumSection;
-        premiumImage = binding.premiumImage;
 
         return binding.getRoot();
     }
@@ -72,12 +63,8 @@ public class AdminFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         settingSetcion.setOnClickListener(this::settingSectionAction);
-        accountSection.setOnClickListener(this::accountSectionAction);
+        //accountSection.setOnClickListener(this::accountSectionAction);
         backUpSection.setOnClickListener(this::backUpSectionAction);
-        premiumSection.setOnClickListener(this::premiumSectionAction);
-        premiumViewModel.getSubscriptionState().observe(getViewLifecycleOwner(), (s)->{
-            premiumImage.setImageDrawable(ContextCompat.getDrawable(getContext(), s? R.drawable.premium_logo:R.drawable.non_premium_icon));
-        });
     }
 
     private void settingSectionAction(View view) {
@@ -87,11 +74,11 @@ public class AdminFragment extends BottomSheetDialogFragment {
 
     }
 
-    private void accountSectionAction(View view) {
+   /* private void accountSectionAction(View view) {
         NavDirections navDirectionsAccount = ProfileFragmentDirections.actionProfileFragmentToAccountFragment();
         Navigation.findNavController(parentView).navigate(navDirectionsAccount);
         dismiss();
-    }
+    }*/
 
     private AccountHelper accountHelper;
     private PremiumRepository premiumRepository;
@@ -103,13 +90,6 @@ public class AdminFragment extends BottomSheetDialogFragment {
                 dismiss();
             });
         }
-    }
-
-
-    private void premiumSectionAction(View view){
-        NavDirections navDirectionsPremium= ProfileFragmentDirections.actionProfileFragmentToPremiumFragment();
-        Navigation.findNavController(parentView).navigate(navDirectionsPremium);
-        dismiss();
     }
 
 

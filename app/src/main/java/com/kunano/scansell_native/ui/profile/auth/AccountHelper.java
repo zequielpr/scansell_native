@@ -194,7 +194,7 @@ public class AccountHelper extends UserData {
     }
 
     public Uri getProfilePic(){
-        return currentUser.getPhotoUrl();
+        return currentUser != null? currentUser.getPhotoUrl():null;
     }
 
 

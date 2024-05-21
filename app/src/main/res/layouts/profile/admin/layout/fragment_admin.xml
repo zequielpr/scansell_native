@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+<!--        <LinearLayout
             android:id="@+id/account_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:layout_weight="1"
                 android:text="@string/account" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/setting_section"
@@ -86,7 +86,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:id="@+id/premium_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/remove_ads" />
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 </FrameLayout>

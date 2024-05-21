@@ -1,6 +1,5 @@
 package com.kunano.scansell_native.ui.home.business;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -30,14 +28,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
-import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.components.AdminPermissions;
 import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 import com.kunano.scansell_native.components.ProgressBarDialog;
 import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.databinding.FragmentBusinessBinding;
+import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 
@@ -60,7 +59,7 @@ public class BusinessFragment extends Fragment {
 
     private MenuItem deleteIcon;
     private MenuItem selectAllIcon;
-    private FragmentManager suportFmanager;
+
     private ProgressBarDialog progressBarDialog;
 
     MainActivityViewModel mainActivityViewModel;
@@ -68,6 +67,8 @@ public class BusinessFragment extends Fragment {
     private SearchView searchView;
     private View emptyBusinessLayout;
     private ProcessItemsComponent<Product> productProcessItemsComponent;
+
+    private AdminPermissions adminPermissions;
 
     public BusinessFragment() {
     }
@@ -77,6 +78,7 @@ public class BusinessFragment extends Fragment {
         businessViewModel = new ViewModelProvider(requireActivity()).get(BusinessViewModel.class);
         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         productProcessItemsComponent = new ProcessItemsComponent<>(this);
+        adminPermissions = new AdminPermissions(this);
 
     }
 
@@ -101,9 +103,6 @@ public class BusinessFragment extends Fragment {
         checkedCircle = ContextCompat.getDrawable(getContext(), R.drawable.checked_circle);
         uncheckedCircle = ContextCompat.getDrawable(getContext(), R.drawable.unchked_circle);
         emptyBusinessLayout = binding.emptyBusinessLayout.emptyBusinessLayout;
-
-
-        suportFmanager = getActivity().getSupportFragmentManager();
 
         productCardAdapter = new ProductCardAdapter();
         recyclerViewProduct.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -207,7 +206,8 @@ public class BusinessFragment extends Fragment {
                                 R.color.black_transparent));
                         return;
                     }
-                            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+                            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                                    R.color.cardBackgroundColor));
                         });
             }
 
@@ -225,8 +225,27 @@ public class BusinessFragment extends Fragment {
 
 
     private void navigateToCreateProduct(View view) {
-        NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToScannProductCreateFragment2(businessKey);
-        Navigation.findNavController(getView()).navigate(action);
+
+        adminPermissions.setResultListener(new ViewModelListener<Boolean>() {
+            @Override
+            public void result(Boolean result) {
+                if (result){
+                    NavDirections action = BusinessFragmentDirections.actionBusinessFragment2ToScannProductCreateFragment2(businessKey);
+                    Navigation.findNavController(getView()).navigate(action);
+                }else{
+                    askToGoToSettings();
+                }
+            }
+        });
+
+        adminPermissions.checkCameraPermission();
+    }
+
+    private void askToGoToSettings(){
+        String title = getString(R.string.activate_camera);
+        String message = getString(R.string.camera_access_required);
+
+        adminPermissions.showDialogToGotoSettings(title, message);
     }
 
 
@@ -405,7 +424,8 @@ public class BusinessFragment extends Fragment {
                     R.color.black_transparent));
         }else {
             cardHolder.getUnCheckedCircle().setBackground(null);
-            cardHolder.getCardView().setCardBackgroundColor(Color.WHITE);
+            cardHolder.getCardView().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
         }
         if (productProcessItemsComponent.getItemsToProcess().size() ==
                 productCardAdapter.getCurrentList().size()){
