@@ -30,10 +30,10 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.HomeFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.SpinningWheel;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.SpinningWheel;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -282,7 +282,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void unSelectAll() {
         selectAllMenuItem.setIcon(uncheckedCircle);
         homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
-        homeViewModel.setCardBackgroundColor(Color.WHITE);
+        homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         businessesProcessor.clearItemsToProcess();
         deleteMenuItem.setVisible(false);
         homeViewModel.setSelectedItems(String.valueOf(businessesProcessor.getItemsToProcess().size()));
@@ -301,7 +302,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
             cardHolder.getUnCheckedCircle().setBackground(checkedCircle);
 
         }else {
-            cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
+            cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
             cardHolder.getUnCheckedCircle().setBackground(null);
         }
 
@@ -340,7 +342,8 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void desActivateDeleteMode(View view) {
         businessesProcessor.setProcessItemActive(false);
         homeViewModel.setCheckedOrUncheckedCircleLivedata(null);
-        homeViewModel.setCardBackgroundColor(Color.WHITE);
+        homeViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         mainActivityViewModel.showBottomNavBar();
         toolbar.setNavigationIcon(null);
         homeViewModel.setSelectedItems(getString(R.string.businesses_title));

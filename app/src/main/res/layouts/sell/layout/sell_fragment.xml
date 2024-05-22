@@ -22,7 +22,7 @@
                 android:id="@+id/sellToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="1dp"
+                android:elevation="3dp"
                 android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/actionBarTheme">
 
@@ -42,6 +42,9 @@
                 <include
                     android:id="@+id/scan_layout"
                     layout="@layout/scanner_layout"/>
+                <include
+                    android:id="@+id/ask_for_camera_permission"
+                    layout="@layout/ask_for_camera_permission"/>
 
                 <ImageButton
                     android:id="@+id/switch_camera"

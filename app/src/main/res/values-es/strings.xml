@@ -8,8 +8,8 @@
 
     <string name="app_name">ScanSell</string>
     <string name="title_home">Inicio</string>
-    <string name="title_dashboard">Vender</string>
-    <string name="title_notifications">Perfil</string>
+    <string name="title_sell">Vender</string>
+    <string name="profile">Perfil</string>
     <string name="businesses_title">Negocios</string>
     <string name="admin">Administrar</string>
     <string name="create_new_business">Crear nuevo negocio</string>
@@ -75,7 +75,7 @@
     <string name="error_to_bin_business">Error al mover el negocio a la papelera</string>
     <string name="business_binned_successfully">Negocio movido a la papelera exitosamente</string>
     <string name="finish">Terminar</string>
-    <string name="buy">Comprar</string>
+    <string name="pay">Pagar</string>
     <string name="cash">Efectivo</string>
     <string name="card">Tarjeta</string>
     <string name="receipts">Recibos</string>
@@ -171,7 +171,7 @@
     <string name="email_or_passwd_incorrect">Correo electrónico o contraseña incorrectos</string>
     <string name="introduce_account_passwd">Introduce tu contraseña de cuenta</string>
     <string name="email_verification_sent_several_times">Se han enviado varias veces la verificación por correo electrónico. Inténtalo de nuevo más tarde</string>
-    <string name="accept_terms_and_policies">Acepta los términos de servicio y la política de privacidad para registrarte</string>
+    <string name="accept_terms_and_policies">Acepta los términos de servicio y la política de privacidad para comenzar</string>
     <string name="i_agree">Acepto los</string>
     <string name="terms_of_service">Términos de Servicio</string>
     <string name="and">y</string>
@@ -204,9 +204,14 @@
     <string name="buy_functionality">Copias de seguridad</string>
     <string name="single_payment">Pago único</string>
     <string name="functionality_description">Compra esta función y guarda copias de tus negocios y restáuralos en cualquier momento.</string>
+    <string name="enable_backup_func">Abilitar copias de seguridad</string>
+    <string name="enable_file_picker">Activar seleccionador de archivos</string>
     <string name="access_denied">Acceso denegado</string>
-    <string name="camera_access_required">Se requiere acceso a la cámara del teléfono para esta funcionalidad</string>
-    <string name="file_and_media_permission_required">Se requiere acceso a los archivos y medios del teléfono para esta funcionalidad</string>
+    <string name="camera_access_required">Se requiere acceso a la cámara del teléfono para usar esta funcionalidad.
+    Ve a configuraciones y otorga acceso a la camara</string>
+    <string name="activate_camera">Activar camera</string>
+    <string name="file_and_media_permission_required">Se requiere acceso a los archivos y media del teléfono para esta funcionalidad.
+    Ve a configuraciones y permite el accesso.</string>
     <string name="account_disabled">Esta cuenta ha sido desactivada</string>
     <string name="business_restored_successfully">Negocios restaurados exitosamente</string>
     <string name="products_restored_successfully">Productos restaurados exitosamente</string>
@@ -216,5 +221,10 @@
     <string name="there_is_not_receipt">No hay recibos</string>
     <string name="never_delete">Nunca eliminar</string>
     <string name="unity">unidad(es)</string>
+
+
+    <string name="section_one_description">Resgistra productos de tu negocio, escanealos y vendelos</string>
+    <string name="get_started">Comenzar</string>
+
 
 </resources>

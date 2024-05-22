@@ -78,6 +78,6 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_marginTop="@dimen/button_top_side"
-            android:text="@string/buy" />
+            android:text="@string/pay" />
     </LinearLayout>
 </RelativeLayout>

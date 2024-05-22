@@ -36,12 +36,12 @@ import com.kunano.scansell_native.databinding.FragmentBackUpBinding;
 import com.kunano.scansell_native.model.db.AppDatabase;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.home.DriveServices;
-import com.kunano.scansell_native.ui.components.AdminPermissions;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.components.media_picker.CustomMediaPicker;
+import com.kunano.scansell_native.components.AdminPermissions;
+import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.ProgressBarDialog;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.components.media_picker.CustomMediaPicker;
 
 import java.io.IOException;
 
@@ -133,6 +133,8 @@ public class BackUpFragment extends Fragment {
                     public void result(Boolean object) {
                         if (object){
                             chooseDir();
+                        }else {
+                            askToGoToSettings();
                         }
                     }
                 });
@@ -286,13 +288,19 @@ public class BackUpFragment extends Fragment {
                 if (object){
                     customMediaPicker.lunchImagePicker(new
                             ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+                }else {
+                    askToGoToSettings();
                 }
             }
         });
         adminPermissions.checkMediaPermission();
 
+    }
 
-
+    private void askToGoToSettings(){
+        String title = getString(R.string.enable_backup_func);
+        String message = getString(R.string.file_and_media_permission_required);
+        adminPermissions.showDialogToGotoSettings(title, message);
     }
 
 

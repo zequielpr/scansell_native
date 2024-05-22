@@ -17,7 +17,7 @@ import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.chart.line.LineChartData;
 
 import java.time.DayOfWeek;

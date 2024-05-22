@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.model.db.Converters;
 import com.kunano.scansell_native.model.sell.Receipt;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class ReceiptsViewModel extends AndroidViewModel {
 
         allSelectedIconMutableLiveData = new MutableLiveData<>();
         selectedItemQuantityMutableLiveData = new MutableLiveData<>();
-        receiptCardBackgroundColor = new MutableLiveData<>();
+        receiptCardBackgroundColor = new MutableLiveData<>(getApplication().getColor(R.color.cardBackgroundColor));
     }
 
     public MutableLiveData<Boolean> getIsSearchModeActive() {

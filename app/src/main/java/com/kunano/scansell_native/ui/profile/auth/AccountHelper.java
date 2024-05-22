@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.login.LogInActivity;
 
 public class AccountHelper extends UserData {
@@ -194,7 +194,7 @@ public class AccountHelper extends UserData {
     }
 
     public Uri getProfilePic(){
-        return currentUser.getPhotoUrl();
+        return currentUser != null? currentUser.getPhotoUrl():null;
     }
 
 

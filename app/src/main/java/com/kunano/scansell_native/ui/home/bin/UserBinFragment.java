@@ -27,11 +27,11 @@ import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.FragmentUserBinBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.ProgressBarDialog;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
+import com.kunano.scansell_native.components.ProgressBarDialog;
+import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.ui.home.BusinessCardAdepter;
 import com.kunano.scansell_native.ui.home.HomeViewModel;
-import com.kunano.scansell_native.ui.components.ProcessItemsComponent;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -235,7 +235,8 @@ public class UserBinFragment extends Fragment {
             mainActivityViewModel.showBottomNavBar();
             mViewModel.setSelectedItemsNumbLiveData(getString(R.string.recycle_bin));
             mViewModel.setCheckedOrUncheckedCircleLivedata(null);
-            mViewModel.setCardBackgroundColor(Color.WHITE);
+            mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                    R.color.cardBackgroundColor));
             mViewModel.setRestoreButtonVisibilityLiveData(View.VISIBLE);
             businessProcessItemsComponent.clearItemsToProcess();
         });
@@ -260,7 +261,8 @@ public class UserBinFragment extends Fragment {
 
 
         checkIfAllSelected();
-        cardHolder.getCard().setCardBackgroundColor(Color.WHITE);
+        cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         cardHolder.getUnCheckedCircle().setBackground(null);
 
 
@@ -382,7 +384,8 @@ public class UserBinFragment extends Fragment {
         selectAllIcon.setIcon(R.drawable.unchked_circle);
         mViewModel.setCheckedOrUncheckedCircleLivedata(null);
         mViewModel.setSelectedItemsNumbLiveData("0");
-        mViewModel.setCardBackgroundColor(Color.WHITE);
+        mViewModel.setCardBackgroundColor(ContextCompat.getColor(getContext(),
+                R.color.cardBackgroundColor));
         businessProcessItemsComponent.clearItemsToProcess();
         deleteOrRestoreOptions.setVisibility(View.GONE);
     }

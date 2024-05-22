@@ -41,11 +41,11 @@ import com.kunano.scansell_native.model.Home.business.Business;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.db.SharePreferenceHelper;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
-import com.kunano.scansell_native.ui.components.AdminPermissions;
-import com.kunano.scansell_native.ui.components.AskForActionDialog;
-import com.kunano.scansell_native.ui.components.Utils;
-import com.kunano.scansell_native.ui.components.ViewModelListener;
-import com.kunano.scansell_native.ui.components.custom_camera.CustomCamera;
+import com.kunano.scansell_native.components.AdminPermissions;
+import com.kunano.scansell_native.components.AskForActionDialog;
+import com.kunano.scansell_native.components.Utils;
+import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.components.custom_camera.CustomCamera;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell_native.ui.sell.adapters.ProductToSellAdapter;
@@ -86,6 +86,9 @@ public class SellFragment extends Fragment {
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private  AdminPermissions adminPermissions;
     private ImageButton switchCamera;
+    private View askForCameraPermisionView;
+    private Button navigateToSettinButton;
+    private View productToSellBottomSheet;
 
 
     public SellFragment() {
@@ -95,43 +98,42 @@ public class SellFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adminPermissions = new AdminPermissions(this);
-        adminPermissions.setResultListener(this::navigateToHome);
+        adminPermissions.setResultListener(this::handleCameraRequestResult);
+        sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
+        System.out.println("Check permission");
 
 
     }
 
-    public void onStart(){
+
+    @Override
+    public void onStart() {
         super.onStart();
-        adminPermissions.checkCameraPermission();
+        if (sellViewModel.getBusinessesListLiveData().getValue() != null){
+            if (sellViewModel.getBusinessesListLiveData().getValue().size() > 0){
+                initiateCamera();
+            }
+        }
+
     }
 
-    private void navigateToHome(Boolean result){
+
+
+    private void handleCameraRequestResult(Boolean result){
+        System.out.println("Permission: " + result);
        if (!result){
-           PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
-                   .setGraph(R.navigation.mobile_navigation).
-                   setDestination(R.id.home_navigation_graph)
-                   .createPendingIntent();
-
-
-           try {
-               // This will execute the PendingIntent
-               pendingIntent.send();
-           } catch (PendingIntent.CanceledException e) {
-               // Handle error if PendingIntent is canceled
-               e.printStackTrace();
-           }catch (Exception e){
-
-           }
+           productToSellBottomSheet.setVisibility(View.GONE);
+           imageButtonScan.setVisibility(View.GONE);
+           askForCameraPermisionView.setVisibility(View.VISIBLE);
+       }else {
+           productToSellBottomSheet.setVisibility(View.VISIBLE);
+           imageButtonScan.setVisibility(View.VISIBLE);
+           askForCameraPermisionView.setVisibility(View.GONE);
        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-
-
-         sellViewModel =
-                new ViewModelProvider(requireActivity()).get(SellViewModel.class);
 
 
          mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
@@ -155,7 +157,11 @@ public class SellFragment extends Fragment {
         scanLineParentContainer = binding.scanLayout.transparentSpot;
         switchCamera = binding.switchCamera;
         topSide = binding.bottomSheetTopSide;
-                handleBootomSheetBehavior = new HandleBootomSheetBehavior(binding.productToSellBottomSheet);
+        askForCameraPermisionView = binding.askForCameraPermission.askForCameraPermission;
+        navigateToSettinButton = binding.askForCameraPermission.goToSettingButton;
+        productToSellBottomSheet = binding.productToSellBottomSheet;
+
+                handleBootomSheetBehavior = new HandleBootomSheetBehavior(productToSellBottomSheet);
         handleBootomSheetBehavior.setupStandardBottomSheet(false);
         handleBootomSheetBehavior.setListener(getBottomSheetListener());
 
@@ -224,7 +230,7 @@ public class SellFragment extends Fragment {
 
         customCamera = new CustomCamera(previewView, this, torchButton);
 
-        customCamera.startCamera(true);
+
 
         customCamera.setCustomCameraListener(new CustomCamera.CustomCameraListener() {
             @Override
@@ -282,11 +288,11 @@ public class SellFragment extends Fragment {
         sellViewModel.getTotalItemsSellMutableLIveData().observe(getViewLifecycleOwner(), itemsTotalTextView::setText);
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
+        navigateToSettinButton.setOnClickListener(adminPermissions::navigateToSettings);
 
         sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
                 sellProductView::setVisibility);
-        sellViewModel.getSellProductsVisibilityMD().observe(getViewLifecycleOwner(),
-                imageButtonScan::setVisibility);
+
         sellViewModel.getCreateNewBusinessVisibilityMD().observe(getViewLifecycleOwner(),
                 createBusinessView::setVisibility);
         sellViewModel.getBusinessesListLiveData().observe(getViewLifecycleOwner(),this::handleViewsVisibilities);
@@ -345,10 +351,18 @@ public class SellFragment extends Fragment {
         if (l.size() > 0){
             sellViewModel.setSellProductsVisibilityMD(View.VISIBLE);
             sellViewModel.setCreateNewBusinessVisibilityMD(View.GONE);
+            initiateCamera();
         }else {
+            imageButtonScan.setVisibility(View.GONE);
             sellViewModel.setSellProductsVisibilityMD(View.GONE);
             sellViewModel.setCreateNewBusinessVisibilityMD(View.VISIBLE);
+
         }
+    }
+
+    private void initiateCamera(){
+        adminPermissions.checkCameraPermission();
+        customCamera.startCamera(true);
     }
 
 

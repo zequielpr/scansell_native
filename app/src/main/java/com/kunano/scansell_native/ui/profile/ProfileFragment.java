@@ -35,8 +35,8 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.ProfileFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.ui.components.ImageProcessor;
-import com.kunano.scansell_native.ui.components.Utils;
+import com.kunano.scansell_native.components.ImageProcessor;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.profile.admin.AdminFragment;
 import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
@@ -152,7 +152,6 @@ public class ProfileFragment extends Fragment implements MenuProvider {
             }
         });
 
-        profileToolbar.setTitle(accountHelper.getUserName());
         profileViewModel.getSellsLineChartDataLive().observe(getViewLifecycleOwner(), customLineChart::populateChart);
 
         profileViewModel.getMostSoldProductPieChartMLive().observe(getViewLifecycleOwner(), customPieChart::populatePieChart);
@@ -171,8 +170,11 @@ public class ProfileFragment extends Fragment implements MenuProvider {
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
-
-        ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
+        if (accountHelper.getCurrentUser() != null){
+            ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
+        }else {
+            profileToolbar.setNavigationIcon(null);
+        }
 
     }
 
