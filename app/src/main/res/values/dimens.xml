@@ -7,6 +7,7 @@
     <dimen name="window_end_side">15dp</dimen>
     <dimen name="window_bottom_side">20dp</dimen>
     <dimen name="window_top_side">20dp</dimen>
+    <dimen name="intro_section_bottom_side">40dp</dimen>
 
     <dimen name="button_top_side">20dp</dimen>
 

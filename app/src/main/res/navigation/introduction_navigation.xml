@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/introduction_navigationGraph"
+    app:startDestination="@id/section_1_Fragment">
+
+    <fragment
+        android:id="@+id/section_1_Fragment"
+        android:name="com.kunano.scansell_native.ui.introduction.Section_1_Fragment"
+        android:label="fragment_section_1_"
+        tools:layout="@layout/fragment_section_1_" >
+        <action
+            android:id="@+id/action_section_1_Fragment_to_termsOfUseFragment"
+            app:destination="@id/termsOfUseFragment" />
+        <action
+            android:id="@+id/action_section_1_Fragment_to_privacyPolicyFragment"
+            app:destination="@id/privacyPolicyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/termsOfUseFragment"
+        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
+        android:label="fragment_terms_of_use"
+        tools:layout="@layout/fragment_terms_of_use" >
+        <action
+            android:id="@+id/action_termsOfUseFragment_to_section_1_Fragment"
+            app:destination="@id/section_1_Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
+        android:label="fragment_privacy_policy"
+        tools:layout="@layout/fragment_privacy_policy" >
+        <action
+            android:id="@+id/action_privacyPolicyFragment_to_section_1_Fragment"
+            app:destination="@id/section_1_Fragment" />
+    </fragment>
+</navigation>
