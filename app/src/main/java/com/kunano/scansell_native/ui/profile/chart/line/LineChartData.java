@@ -7,27 +7,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineChartData {
-    private ArrayList<Entry> entries;
+    private ArrayList<Entry> sellsEntries;
+    private ArrayList<Entry> revenuesEntries;
     private List<LocalDateTime> dates;
 
 
     public LineChartData() {
-        entries = new ArrayList<>();
+        sellsEntries = new ArrayList<>();
+        revenuesEntries = new ArrayList<>();
         dates = new ArrayList<>();
     }
 
 
-    public LineChartData(ArrayList<Entry> entries) {
-        this.entries = entries;
+    public LineChartData(ArrayList<Entry> sellsEntries) {
+        this.sellsEntries = sellsEntries;
     }
 
-    public ArrayList<Entry> getEntries() {
-        return entries;
+    public ArrayList<Entry> getSellsEntries() {
+        return sellsEntries;
     }
 
-    public void setEntries(Entry entries) {
-        this.entries.add(entries);
+    public void setSellsEntries(Entry sellsEntries) {
+        this.sellsEntries.add(sellsEntries);
     }
+
+    public void setRevenuesEntries(Entry revenuesEntries){
+        this.revenuesEntries.add(revenuesEntries);
+    }
+
+    public ArrayList<Entry> getRevenuesEntries(){
+        return this.revenuesEntries;
+    }
+
 
     public List<LocalDateTime> getDates() {
         return dates;

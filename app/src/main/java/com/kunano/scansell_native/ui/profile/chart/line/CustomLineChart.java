@@ -16,24 +16,34 @@ public class CustomLineChart {
     LineChart lineChart;
     LineChartData lineChartData;
     int primaryColor;
+    private String salesString;
+    private String revenuesString;
 
     public CustomLineChart(LineChart lineChart, Fragment fragment) {
         this.lineChart = lineChart;
+        this.revenuesString = fragment.getString(R.string.revenues);
+        this.salesString = fragment.getString(R.string.sales);
         primaryColor = ContextCompat.getColor(fragment.getContext(), R.color.appPColor);
     }
 
     public void populateChart(LineChartData lineChartData) {
         this.lineChartData = lineChartData;
 
+        LineDataSet revenuesDataSet = new LineDataSet(lineChartData.getRevenuesEntries(), revenuesString );
+        revenuesDataSet.setColor(R.color.black); // Set a different color for the second line
+        revenuesDataSet.setValueTextColor(Color.BLACK);
+        revenuesDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+        // Combine the datasets into LineData
 
 
-        LineDataSet dataSet = new LineDataSet(lineChartData.getEntries(), "Sells"); // Label for the dataset
-        dataSet.setColor(primaryColor); // Set color for the line
-        dataSet.setValueTextColor(Color.BLACK); // Set color for the text
+        LineDataSet sellsDataSet = new LineDataSet(lineChartData.getSellsEntries(), salesString); // Label for the dataset
+        sellsDataSet.setColor(primaryColor); // Set color for the line
+        sellsDataSet.setValueTextColor(Color.BLACK); // Set color for the text
 
         // Use cubic bezier curves for smoother flow
-        dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        LineData lineData = new LineData(dataSet);
+        sellsDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        LineData lineData = new LineData(sellsDataSet, revenuesDataSet);
         ClaimsXAxisValueFormatter xAxisFormatter = new ClaimsXAxisValueFormatter(lineChartData.getDates());
         lineChart.getXAxis().setValueFormatter(xAxisFormatter);
 

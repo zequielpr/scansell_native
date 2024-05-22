@@ -12,12 +12,12 @@ import androidx.lifecycle.Observer;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieEntry;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.model.sell.Receipt;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
+import com.kunano.scansell_native.model.sell.sold_products.ProductWithReceiptDate;
 import com.kunano.scansell_native.repository.home.BusinessRepository;
 import com.kunano.scansell_native.repository.sell.SellRepository;
-import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.profile.chart.line.LineChartData;
 
 import java.time.DayOfWeek;
@@ -38,11 +38,11 @@ public class ProfileViewModel extends AndroidViewModel {
     private MutableLiveData<List<PieEntry>> mostSoldProductPieChartMLive;
     private LiveData<List<Business>> businessListLivedata;
     private MutableLiveData<Integer> seletedBusiness;
-    private LiveData<List<Receipt>> receiptListLiveData;
+    private LiveData<List<ProductWithReceiptDate>> soldProductsListListLiveData;
     private LiveData<List<MostSoldProducts>> soldProductsListLiveData;
 
     Observer<List<MostSoldProducts>> mostSoldProductsObserver;
-    Observer<List<Receipt>> sellObserver;
+    Observer<List<ProductWithReceiptDate>> sellObserver;
     private LocalDateTime dateToSearch;
     private LocalDateTime currentDate;
     private LocalDateTime currentWeekDate;
@@ -61,7 +61,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
         businessListLivedata = businessRepository.getAllBusinesses();
         seletedBusiness = new MutableLiveData<>(0);
-        receiptListLiveData = new MutableLiveData<>();
+        soldProductsListListLiveData = new MutableLiveData<>();
         soldProductsListLiveData = new MutableLiveData<>();
         sellsSumMutableLiveDta = new MutableLiveData<>();
 
@@ -83,12 +83,12 @@ public class ProfileViewModel extends AndroidViewModel {
             mostSoldProductsTxtViewVisibility.postValue(pieEntryList.isEmpty()? View.GONE:View.VISIBLE);
             mostSoldProductPieChartMLive.postValue(pieEntryList);
         };
-        sellObserver = (List<Receipt> receiptList)->{
+        sellObserver = (List<ProductWithReceiptDate> soldProductsList)->{
 
-            System.out.println("receipts: " + receiptList.size());
+            //System.out.println("receipts: " + soldProductsList.get(0).getReceiptDate());
 
             LineChartData lineChartData;
-            lineChartData = processReceiptsGetWeeklySells(receiptList);
+            lineChartData = processProductsSoldWeekly(soldProductsList);
             sellsLineChartDataLive.postValue(lineChartData);
         };
     }
@@ -128,28 +128,33 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void fetchSellsCurrentWeek(){
         if (dateToSearch != null && currentBusinessId != null) {
-            receiptListLiveData.removeObserver(sellObserver);
-            receiptListLiveData = sellRepository.getCurrentWeekSells(currentBusinessId, dateToSearch);
-            receiptListLiveData.observeForever(sellObserver);
+            soldProductsListListLiveData.removeObserver(sellObserver);
+            soldProductsListListLiveData = sellRepository.geSoldProductInCurrentWeek(currentBusinessId, dateToSearch);
+            soldProductsListListLiveData.observeForever(sellObserver);
         }
     }
 
     public void fetchSellsLastWeek(){
         if (dateToSearch != null && currentBusinessId != null) {
-            receiptListLiveData.removeObserver(sellObserver);
-            receiptListLiveData = sellRepository.getLastWeekSells(currentBusinessId, dateToSearch, currentWeekDate);
-            receiptListLiveData.observeForever(sellObserver);
+            soldProductsListListLiveData.removeObserver(sellObserver);
+            soldProductsListListLiveData = sellRepository.geSoldProductInLastWeek(currentBusinessId, dateToSearch, currentWeekDate);
+            soldProductsListListLiveData.observeForever(sellObserver);
         }
     }
 
-    private LineChartData processReceiptsGetWeeklySells(List<Receipt> receiptList){
+    private LineChartData processProductsSoldWeekly(List<ProductWithReceiptDate> productAndSellDate){
 
-        Double sellsSum = receiptList.stream().reduce(0.0, (a, receipt)
-                ->a + receipt.getSpentAmount(), Double::sum);
-        sellsSumMutableLiveDta.postValue(Utils.formatDecimal(sellsSum));
+        Double salesSum = productAndSellDate.stream().reduce(0.0, (a, l)
+                ->a + l.getProduct().getSelling_price(), Double::sum);
+        Double revenuesSum = productAndSellDate.stream().reduce(0.0, (a, l)
+                ->a + l.getProduct().getSelling_price() - l.getProduct().getBuying_price(), Double::sum);
+
+        sellsSumMutableLiveDta.postValue(Utils.formatDecimal(salesSum));
 
         selectedDateMutableLiveData.postValue("");
         Float sells;
+        Float spentOnSoldProducts;
+        Float revenues;
         LocalDateTime dateTime = dateToSearch;
         LineChartData lineChartData = new LineChartData();
         int x = 0;
@@ -164,10 +169,14 @@ public class ProfileViewModel extends AndroidViewModel {
                     dateTime = dateToSearch.with(TemporalAdjusters.next(dayOfWeek));
                 }
 
-                sells = receiptList.stream().filter((r)-> dayOfWeek == r.getSellingDate().getDayOfWeek()).
-                        reduce(0.0, (a, r) -> a + r.getSpentAmount(), Double::sum).floatValue();
+                sells = productAndSellDate.stream().filter((p)-> dayOfWeek == p.getReceiptDate().getDayOfWeek()).
+                        reduce(0.0, (a, p) -> a + p.getProduct().getSelling_price(), Double::sum).floatValue();
 
-                lineChartData.setEntries(new Entry(x, sells));
+                revenues =productAndSellDate.stream().filter((p)-> dayOfWeek == p.getReceiptDate().getDayOfWeek()).
+                        reduce(0.0, (a, p) -> a + p.getProduct().getSelling_price() - p.getProduct().getBuying_price(), Double::sum).floatValue();;
+
+                lineChartData.setSellsEntries(new Entry(x, sells));
+                lineChartData.setRevenuesEntries(new Entry(x, revenues));
                 lineChartData.setDate(dateTime);
                 x++;
 
@@ -175,8 +184,6 @@ public class ProfileViewModel extends AndroidViewModel {
 
         }
         return lineChartData;
-
-
     }
 
 

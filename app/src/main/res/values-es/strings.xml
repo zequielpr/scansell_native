@@ -89,7 +89,7 @@
     <string name="delete_after_15_days">Eliminar después de 15 días</string>
     <string name="delete_after_30_days">Eliminar después de 30 días</string>
     <string name="options">Opciones</string>
-    <string name="sells_and_revenues">Ventas</string>
+    <string name="sales_and_revenues">Ventas y ganancias</string>
     <string name="most_sold_products">Productos más vendidos</string>
     <string name="not_sold_product">No hay productos vendidos</string>
     <string name="this_week">Esta semana</string>
@@ -225,6 +225,9 @@
 
     <string name="section_one_description">Resgistra productos de tu negocio, escanealos y vendelos</string>
     <string name="get_started">Comenzar</string>
+
+    <string name="revenues">Ganancias</string>
+    <string name="sales">Ventas</string>
 
 
 </resources>

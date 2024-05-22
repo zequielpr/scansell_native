@@ -19,6 +19,7 @@ import com.kunano.scansell_native.model.sell.payment.cash.CashDao;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell_native.model.sell.product_to_sel_draft.ProductToSellDraftDao;
 import com.kunano.scansell_native.model.sell.sold_products.MostSoldProducts;
+import com.kunano.scansell_native.model.sell.sold_products.ProductWithReceiptDate;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell_native.model.sell.sold_products.SoldProductDao;
 
@@ -114,6 +115,16 @@ public class SellRepository {
                                                     LocalDateTime currentWeekDate){
         return receiptDao.getLastWeekSells(businessId, startOfLastWeek, currentWeekDate);
     }
+
+    public LiveData<List<ProductWithReceiptDate>> geSoldProductInCurrentWeek(Long businessId, LocalDateTime startOfCurrentWeek){
+        return soldProductDao.geSoldProductInCurrentWeek(businessId, startOfCurrentWeek);
+    }
+
+    public LiveData<List<ProductWithReceiptDate>> geSoldProductInLastWeek(Long businessId, LocalDateTime startOfLastWeek,
+                                                                          LocalDateTime currentWeekDate){
+        return soldProductDao.geSoldProductInLastWeek(businessId, startOfLastWeek, currentWeekDate);
+    }
+
 
 
 
