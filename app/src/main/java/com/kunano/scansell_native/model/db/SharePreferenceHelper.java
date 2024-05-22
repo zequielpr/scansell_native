@@ -7,17 +7,30 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.repository.share_preference.ShareRepository;
 
 public class SharePreferenceHelper {
 
-    private   SharedPreferences sharedPref;
+    private static SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
 
     private static String FOLDER_ID_KEY = "FOLDER_ID_KEY";
 
     public SharePreferenceHelper(Activity activity, Integer mode) {
-        sharedPref = activity.getPreferences(mode);
+        if (sharedPref == null)sharedPref = activity.getPreferences(mode);
+
     }
+
+    public void setIsFirstStart(boolean isFirstStart){
+        editor = sharedPref.edit();
+        editor.putBoolean(ShareRepository.IS_FIRST_START, isFirstStart);
+        editor.apply();
+    }
+
+    public boolean isFirstStart(){
+        return sharedPref.getBoolean(ShareRepository.IS_FIRST_START, true);
+    }
+
 
 
     public void setSound(Integer sound){

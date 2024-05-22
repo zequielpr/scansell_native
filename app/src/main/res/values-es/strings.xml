@@ -171,7 +171,7 @@
     <string name="email_or_passwd_incorrect">Correo electrónico o contraseña incorrectos</string>
     <string name="introduce_account_passwd">Introduce tu contraseña de cuenta</string>
     <string name="email_verification_sent_several_times">Se han enviado varias veces la verificación por correo electrónico. Inténtalo de nuevo más tarde</string>
-    <string name="accept_terms_and_policies">Acepta los términos de servicio y la política de privacidad para registrarte</string>
+    <string name="accept_terms_and_policies">Acepta los términos de servicio y la política de privacidad para comenzar</string>
     <string name="i_agree">Acepto los</string>
     <string name="terms_of_service">Términos de Servicio</string>
     <string name="and">y</string>
@@ -221,6 +221,10 @@
     <string name="there_is_not_receipt">No hay recibos</string>
     <string name="never_delete">Nunca eliminar</string>
     <string name="unity">unidad(es)</string>
+
+
+    <string name="section_one_description">Resgistra productos de tu negocio, escanealos y vendelos</string>
+    <string name="get_started">Comenzar</string>
 
 
 </resources>
