@@ -72,6 +72,8 @@ public class ProfileFragment extends Fragment implements MenuProvider {
     private ScrollView businessStatsView;
     private Drawable userImage;
     private TextView sellsSumTotal;
+    private TextView revenuesTextView;
+
 
 
     public ProfileFragment() {
@@ -104,6 +106,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
         businessStatsView = binding.businessStatsView;
         sellsSumTotal = binding.sellsSumTextView;
+        revenuesTextView = binding.revenuesTextView;
 
         profileToolbar.addMenuProvider(this);
 
@@ -164,8 +167,11 @@ public class ProfileFragment extends Fragment implements MenuProvider {
                 businessStatsView::setVisibility);
         profileViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
                 createNewBusinessView::setVisibility);
-        profileViewModel.getSellsSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->
-                sellsSumTotal.setText(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(t)))));
+        profileViewModel.getSalesSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->
+                sellsSumTotal.setText(String.valueOf(BigDecimal.valueOf(t))));
+        profileViewModel.getRevenuesMutableLiveData().observe(getViewLifecycleOwner(), t ->{
+            revenuesTextView.setText(String.valueOf(BigDecimal.valueOf(t)));
+        });
 
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);

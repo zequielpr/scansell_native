@@ -50,7 +50,8 @@ public class ProfileViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> mostSoldProductsTxtViewVisibility;
     private MutableLiveData<Integer> businessStatsVisibilityMutableData;
     private MutableLiveData<Integer> createBusinessButtonVisibility;
-    private MutableLiveData<Double> sellsSumMutableLiveDta;
+    private MutableLiveData<Double> salesSumMutableLiveDta;
+    private MutableLiveData<Double> revenuesMutableLiveData;
 
     private Long currentBusinessId;
 
@@ -63,7 +64,7 @@ public class ProfileViewModel extends AndroidViewModel {
         seletedBusiness = new MutableLiveData<>(0);
         soldProductsListListLiveData = new MutableLiveData<>();
         soldProductsListLiveData = new MutableLiveData<>();
-        sellsSumMutableLiveDta = new MutableLiveData<>();
+        salesSumMutableLiveDta = new MutableLiveData<>();
 
         sellsLineChartDataLive = new MutableLiveData<>();
         mostSoldProductPieChartMLive = new MutableLiveData<>();
@@ -71,6 +72,7 @@ public class ProfileViewModel extends AndroidViewModel {
         mostSoldProductsTxtViewVisibility = new MutableLiveData<>();
         businessStatsVisibilityMutableData = new MutableLiveData<>();
         createBusinessButtonVisibility = new MutableLiveData<>();
+        revenuesMutableLiveData = new MutableLiveData<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             currentDate = LocalDateTime.now();
@@ -149,7 +151,8 @@ public class ProfileViewModel extends AndroidViewModel {
         Double revenuesSum = productAndSellDate.stream().reduce(0.0, (a, l)
                 ->a + l.getProduct().getSelling_price() - l.getProduct().getBuying_price(), Double::sum);
 
-        sellsSumMutableLiveDta.postValue(Utils.formatDecimal(salesSum));
+        salesSumMutableLiveDta.postValue(Utils.formatDecimal(salesSum));
+        revenuesMutableLiveData.postValue(Utils.formatDecimal(revenuesSum ));
 
         selectedDateMutableLiveData.postValue("");
         Float sells;
@@ -317,11 +320,19 @@ public class ProfileViewModel extends AndroidViewModel {
         this.createBusinessButtonVisibility.postValue(createBusinessButtonVisibility);
     }
 
-    public MutableLiveData<Double> getSellsSumMutableLiveDta() {
-        return sellsSumMutableLiveDta;
+    public MutableLiveData<Double> getSalesSumMutableLiveDta() {
+        return salesSumMutableLiveDta;
     }
 
-    public void setSellsSumMutableLiveDta(Double sellsSumMutableLiveDta) {
-        this.sellsSumMutableLiveDta.postValue(sellsSumMutableLiveDta);
+    public void setSalesSumMutableLiveDta(Double salesSumMutableLiveDta) {
+        this.salesSumMutableLiveDta.postValue(salesSumMutableLiveDta);
+    }
+
+    public MutableLiveData<Double> getRevenuesMutableLiveData() {
+        return revenuesMutableLiveData;
+    }
+
+    public void setRevenuesMutableLiveData(Double revenuesMutableLiveData) {
+        this.revenuesMutableLiveData.postValue(revenuesMutableLiveData);
     }
 }

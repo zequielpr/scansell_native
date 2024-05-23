@@ -61,6 +61,12 @@
         <action
             android:id="@+id/action_settingsFragment2_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment2_to_privacyPolicyFragment2"
+            app:destination="@id/privacyPolicyFragment2" />
+        <action
+            android:id="@+id/action_settingsFragment2_to_termsOfUseFragment2"
+            app:destination="@id/termsOfUseFragment2" />
     </fragment>
     <fragment
         android:id="@+id/changeNameFragment"
@@ -106,5 +112,23 @@
         <action
             android:id="@+id/action_premiumFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/privacyPolicyFragment2"
+        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
+        android:label="fragment_privacy_policy"
+        tools:layout="@layout/fragment_privacy_policy" >
+        <action
+            android:id="@+id/action_privacyPolicyFragment2_to_settingsFragment2"
+            app:destination="@id/settingsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/termsOfUseFragment2"
+        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
+        android:label="fragment_terms_of_use"
+        tools:layout="@layout/fragment_terms_of_use" >
+        <action
+            android:id="@+id/action_termsOfUseFragment2_to_settingsFragment2"
+            app:destination="@id/settingsFragment2" />
     </fragment>
 </navigation>

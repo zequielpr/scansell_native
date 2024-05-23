@@ -241,6 +241,7 @@
     <string name="get_started">Get started</string>
     <string name="revenues">Revenues</string>
     <string name="sales">Sales</string>
+    <string name="today">\u0020\u0020\u0020\u0020\u0020\Today</string>
 
 
 </resources>

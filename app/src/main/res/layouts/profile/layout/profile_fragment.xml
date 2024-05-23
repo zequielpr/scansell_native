@@ -84,6 +84,33 @@
                     android:layout_weight="1"
                     android:textSize="20sp"
                     android:text="@string/dollar_symbol" />
+
+                <TextView
+                    android:id="@+id/textView40"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:textSize="20sp"
+                    android:text="/"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"/>
+
+                <TextView
+                    android:id="@+id/revenuesTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:textSize="20sp"
+                    android:text="TextView"
+                    />
+                <TextView
+                    android:id="@+id/currencyTextView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:text="@string/dollar_symbol" />
             </LinearLayout>
 
             <TextView
