@@ -4,6 +4,7 @@ import static com.kunano.scansell_native.repository.share_preference.SettingRepo
 import static com.kunano.scansell_native.repository.share_preference.SettingRepository.SPANISH;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -15,12 +16,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.databinding.ActivityMainBinding;
 import com.kunano.scansell_native.repository.share_preference.SettingRepository;
+import com.kunano.scansell_native.repository.share_preference.ShareRepository;
+import com.kunano.scansell_native.ui.introduction.IntroductionActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+
+
+        boolean isFirstStart = new ShareRepository(this, MODE_PRIVATE).isFirstStart();
+        if (isFirstStart)navigateToIntroduction();
 
         handleLanguage();
        /* AccountHelper accountHelper = new AccountHelper();
@@ -81,6 +91,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
     NavController navController;
+
+    private void initializeAds(){
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+    }
+
+
+    private void navigateToIntroduction(){
+        Intent intent = new Intent(MainActivity.this, IntroductionActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 
    /* private void navigateToLogIn(){

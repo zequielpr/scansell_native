@@ -25,16 +25,53 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/soundStateImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="0"
+                android:src="@drawable/sound" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/soundSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_after_scanning"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/currentSoundSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/imageView5"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_weight="0"
                 android:layout_marginEnd="15dp"
+                android:layout_weight="0"
                 android:src="@drawable/language" />
 
             <LinearLayout
@@ -63,38 +100,53 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/privacyPolicySection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
+
             <ImageView
-                android:id="@+id/soundStateImageView"
+                android:id="@+id/imageView14"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_weight="0"
                 android:layout_marginEnd="15dp"
-                android:src="@drawable/sound" />
+                android:layout_weight="0"
+                android:src="@drawable/policy_icon" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textView41"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/privacy_policy" />
+        </LinearLayout>
 
-                android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/termsOfUseSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-                <Switch
-                    android:id="@+id/soundSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:text="@string/sound_after_scanning" />
+            <ImageView
+                android:id="@+id/imageView15"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="0"
+                android:src="@drawable/document_icon" />
 
-                <Spinner
-                    android:id="@+id/currentSoundSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/textView43"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="@string/terms_of_service" />
 
         </LinearLayout>
 

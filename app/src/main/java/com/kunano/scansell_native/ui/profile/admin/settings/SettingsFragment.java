@@ -52,6 +52,8 @@ public class SettingsFragment extends Fragment {
     private SharePreferenceHelper sharePreferenceHelper;
     private boolean soudState;
     private Integer currentSound;
+    private View privacyPolicySection;
+    private View termsOfUseSection;
 
 
     public SettingsFragment() {
@@ -78,6 +80,8 @@ public class SettingsFragment extends Fragment {
         soundStateImageView = binding.soundStateImageView;
         currentLanguageTextView = binding.actualLanguageTextView;
         currentSoundSpinner = binding.currentSoundSpinner;
+        privacyPolicySection = binding.privacyPolicySection;
+        termsOfUseSection = binding.termsOfUseSection;
 
         settingsToolBar.setNavigationIcon(ContextCompat.getDrawable(getContext(), R.drawable.back_arrow));
         settingsToolBar.setNavigationOnClickListener(this::navigateBack);
@@ -135,6 +139,8 @@ public class SettingsFragment extends Fragment {
         soundAfterScanSectionSwitch.setChecked(soudState);
         settingViewModel.setSoundState(soudState);
         settingViewModel.setCurrentSound(currentSound);
+        privacyPolicySection.setOnClickListener(this::goToPrivacyPolicy);
+        termsOfUseSection.setOnClickListener(this::goToTermOfService);
 
         String currentLanguage = sharePreferenceHelper.getLanguage();
         if (currentLanguage.equals(ENGLISH)){
@@ -196,6 +202,17 @@ public class SettingsFragment extends Fragment {
     private void adminSound(CompoundButton compoundButton, boolean b) {
         settingRepository.adminSoundStatus(b);
         settingViewModel.setSoundState(b);
+    }
+
+
+    private void goToPrivacyPolicy(View view){
+        NavDirections directions = SettingsFragmentDirections.actionSettingsFragment2ToPrivacyPolicyFragment2();
+        Navigation.findNavController(getView()).navigate(directions);
+    }
+
+    private void goToTermOfService(View view){
+        NavDirections directions = SettingsFragmentDirections.actionSettingsFragment2ToTermsOfUseFragment2();
+        Navigation.findNavController(getView()).navigate(directions);
     }
 
 

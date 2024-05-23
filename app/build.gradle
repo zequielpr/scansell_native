@@ -8,7 +8,9 @@ android {
     namespace 'com.kunano.scansell_native'
     compileSdk 34
     packagingOptions {
-        pickFirst 'META-INF/DEPENDENCIES'
+        resources {
+            pickFirsts += ['META-INF/DEPENDENCIES']
+        }
     }
     lint {
         baseline = file("lint-baseline.xml")
@@ -82,6 +84,8 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.google.android.gms:play-services-ads:23.1.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.7.6"
