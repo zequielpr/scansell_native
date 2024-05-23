@@ -69,4 +69,19 @@ public interface SoldProductDao {
                                                                    LocalDateTime startOfCurrentWeek,
                                                                    LocalDateTime currentWeekDate);
 
+
+    @Query("SELECT product.*, sp.sellingDate AS receiptDate FROM product " +
+            "INNER JOIN (SELECT productIdFK AS pId, receipt.sellingDate FROM soldproduct " +
+            "INNER JOIN receipt ON receipt.receiptId = soldproduct.receiptIdFK " +
+            "WHERE receipt.businessIdFK = :businessId AND receipt.sellingDate >= :startOfCurrentWeek) AS sp " +
+            "ON product.productId = sp.pId")
+    LiveData<List<ProductWithReceiptDate>> geSoldProductInCurrentWeek(Long businessId, LocalDateTime startOfCurrentWeek);
+
+    @Query("SELECT product.*, sp.sellingDate AS receiptDate FROM product " +
+            "INNER JOIN (SELECT productIdFK AS pId, receipt.sellingDate FROM soldproduct " +
+            "INNER JOIN receipt ON receipt.receiptId = soldproduct.receiptIdFK " +
+            "WHERE receipt.businessIdFK = :businessId AND sellingDate >= (:startOfLastWeek) AND sellingDate < (:currentWeekDate)) AS sp " +
+            "ON product.productId = sp.pId")
+    LiveData<List<ProductWithReceiptDate>> geSoldProductInLastWeek(Long businessId, LocalDateTime startOfLastWeek, LocalDateTime currentWeekDate);
+
 }

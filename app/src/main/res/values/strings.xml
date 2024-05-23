@@ -87,7 +87,7 @@
     <string name="delete_after_15_days">Delete after 15 days</string>
     <string name="delete_after_30_days">Delete after 30 days</string>
     <string name="options">Options</string>
-    <string name="sells_and_revenues">Sales</string>
+    <string name="sales_and_revenues">Sales and revenues</string>
     <string name="most_sold_products">Most sold products</string>
     <string name="not_sold_product">There are no sold products</string>
     <string name="this_week">This week</string>
@@ -239,6 +239,9 @@
     <string name="section_one_description">Register products of your business,
     scan them and sell them</string>
     <string name="get_started">Get started</string>
+    <string name="revenues">Revenues</string>
+    <string name="sales">Sales</string>
+    <string name="today">\u0020\u0020\u0020\u0020\u0020\Today</string>
 
 
 </resources>

@@ -10,7 +10,6 @@ import android.webkit.WebViewClient;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.R;
@@ -71,7 +70,6 @@ public class PrivacyPolicyFragment extends Fragment {
     }
 
     private void navigateBack(){
-        NavDirections getStartedSectionDirection = PrivacyPolicyFragmentDirections.actionPrivacyPolicyFragmentToSection1Fragment();
-        Navigation.findNavController(getView()).navigate(getStartedSectionDirection);
+        Navigation.findNavController(getView()).popBackStack();
     }
 }
