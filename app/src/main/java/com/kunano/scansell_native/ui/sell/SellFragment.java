@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
@@ -89,6 +91,9 @@ public class SellFragment extends Fragment {
     private View askForCameraPermisionView;
     private Button navigateToSettinButton;
     private View productToSellBottomSheet;
+    private FrameLayout addContainer;
+
+    private AdView adView;
 
 
     public SellFragment() {
@@ -101,8 +106,6 @@ public class SellFragment extends Fragment {
         adminPermissions.setResultListener(this::handleCameraRequestResult);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
         System.out.println("Check permission");
-
-
     }
 
 
@@ -160,6 +163,9 @@ public class SellFragment extends Fragment {
         askForCameraPermisionView = binding.askForCameraPermission.askForCameraPermission;
         navigateToSettinButton = binding.askForCameraPermission.goToSettingButton;
         productToSellBottomSheet = binding.productToSellBottomSheet;
+        adView = binding.adView;
+        addContainer = binding.addContainer;
+
 
                 handleBootomSheetBehavior = new HandleBootomSheetBehavior(productToSellBottomSheet);
         handleBootomSheetBehavior.setupStandardBottomSheet(false);
@@ -262,6 +268,8 @@ public class SellFragment extends Fragment {
 
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        Ads.loadBanner(adView, addContainer);
+
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
