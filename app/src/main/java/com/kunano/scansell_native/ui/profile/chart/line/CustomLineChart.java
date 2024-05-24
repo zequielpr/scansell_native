@@ -28,6 +28,7 @@ public class CustomLineChart {
     private String revenuesString;
     private String todayLabel;
     private static float dataTextSize = 8f;
+    private static float LINE_WIDTH = 1.5f;
     int limitLineColor;
 
     public CustomLineChart(LineChart lineChart, Fragment fragment) {
@@ -47,6 +48,7 @@ public class CustomLineChart {
         revenuesDataSet.setValueTextColor(Color.BLACK);
         revenuesDataSet.setValueTextSize(dataTextSize);
         revenuesDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        revenuesDataSet.setLineWidth(LINE_WIDTH);
 
         // Combine the datasets into LineData
 
@@ -56,6 +58,7 @@ public class CustomLineChart {
         salesDataSet.setValueTextColor(Color.BLACK); // Set color for the text
         salesDataSet.setValueTextSize(dataTextSize);
         salesDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        salesDataSet.setLineWidth(LINE_WIDTH);
 
         LineData lineData = new LineData(salesDataSet, revenuesDataSet);
         ClaimsXAxisValueFormatter xAxisFormatter = new ClaimsXAxisValueFormatter(lineChartData.getDates());
@@ -94,7 +97,7 @@ public class CustomLineChart {
             LimitLine limitLine = new LimitLine(currentIndex, todayLabel);
             limitLine.setLineColor(limitLineColor);
 
-            limitLine.setLineWidth(1f);
+            limitLine.setLineWidth(LINE_WIDTH);
             limitLine.setTextColor(Color.BLACK);
             limitLine.setTextSize(8f);
 

@@ -30,7 +30,7 @@
                 <Spinner
                     android:id="@+id/spinnerPickBusiness"
                     style="@style/Spinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </androidx.appcompat.widget.Toolbar>
 

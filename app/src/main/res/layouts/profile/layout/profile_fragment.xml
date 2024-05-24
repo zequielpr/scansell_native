@@ -14,8 +14,13 @@
         android:background="?colorSurface"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:titleTextColor="@color/black"
-        app:title="@string/profile" />
+        app:titleTextColor="@color/black" >
+        <Spinner
+            android:id="@+id/pickBusinessSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </androidx.appcompat.widget.Toolbar>
 
     <include
         android:id="@+id/createNewBusinessView"
@@ -34,33 +39,25 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
 
-                <Spinner
-                    android:id="@+id/pickBusinessSpinner"
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/sellsTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
+                    android:text="@string/sales_and_revenues"
+                    android:textSize="25sp" />
                 <Spinner
                     android:id="@+id/pickPeriodSpinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/sellsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/sales_and_revenues"
-                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
