@@ -71,6 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:textSize="20sp"
+                    android:textColor="@color/appPColor"
                     android:text="TextView" />
 
                 <TextView
@@ -80,6 +81,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:textSize="20sp"
+                    android:textColor="@color/appPColor"
                     android:text="@string/dollar_symbol" />
 
                 <TextView
@@ -98,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:textSize="20sp"
+                    android:textColor="@color/green"
                     android:text="TextView"
                     />
                 <TextView
@@ -107,6 +110,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:textSize="20sp"
+                    android:textColor="@color/green"
                     android:text="@string/dollar_symbol" />
             </LinearLayout>
 

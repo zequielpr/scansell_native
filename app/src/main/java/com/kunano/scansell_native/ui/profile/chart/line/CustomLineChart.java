@@ -24,11 +24,15 @@ public class CustomLineChart {
     LineChart lineChart;
     LineChartData lineChartData;
     int primaryColor;
+    private int revenuesColor;
     private String salesString;
     private String revenuesString;
     private String todayLabel;
     private static float dataTextSize = 8f;
-    private static float LINE_WIDTH = 1.5f;
+    private static float LINE_WIDTH = 1.8f;
+    private static float CIRCLE_SIZE = 3f;
+
+
     int limitLineColor;
 
     public CustomLineChart(LineChart lineChart, Fragment fragment) {
@@ -38,17 +42,22 @@ public class CustomLineChart {
         this.todayLabel = fragment.getString(R.string.today);
         this.limitLineColor = ContextCompat.getColor(fragment.getContext(), R.color.black_transparent);
         primaryColor = ContextCompat.getColor(fragment.getContext(), R.color.appPColor);
+        revenuesColor = ContextCompat.getColor(fragment.getContext(), R.color.green);
     }
 
     public void populateChart(LineChartData lineChartData) {
         this.lineChartData = lineChartData;
 
         LineDataSet revenuesDataSet = new LineDataSet(lineChartData.getRevenuesEntries(), revenuesString );
-        revenuesDataSet.setColor(Color.GREEN); // Set a different color for the second line
+        revenuesDataSet.setColor(revenuesColor); // Set a different color for the second line
         revenuesDataSet.setValueTextColor(Color.BLACK);
         revenuesDataSet.setValueTextSize(dataTextSize);
         revenuesDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         revenuesDataSet.setLineWidth(LINE_WIDTH);
+        revenuesDataSet.setValueTextColor(Color.TRANSPARENT);
+        revenuesDataSet.setCircleHoleColor(revenuesColor);
+        revenuesDataSet.setCircleSize(CIRCLE_SIZE);
+        revenuesDataSet.setCircleColor(revenuesColor);
 
         // Combine the datasets into LineData
 
@@ -57,6 +66,10 @@ public class CustomLineChart {
         salesDataSet.setColor(primaryColor); // Set color for the line
         salesDataSet.setValueTextColor(Color.BLACK); // Set color for the text
         salesDataSet.setValueTextSize(dataTextSize);
+        salesDataSet.setCircleColor(primaryColor);
+        salesDataSet.setCircleHoleColor(primaryColor);
+        salesDataSet.setCircleSize(CIRCLE_SIZE);
+        salesDataSet.setValueTextColor(Color.TRANSPARENT);
         salesDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         salesDataSet.setLineWidth(LINE_WIDTH);
 
@@ -69,6 +82,7 @@ public class CustomLineChart {
         lineChart.getAxisRight().setEnabled(false); // Disable right Y-axis
         lineChart.getDescription().setText("");
         lineChart.setNoDataTextColor(Color.BLACK);
+
 
         highlightCurrentDay(lineChartData.getDates());
 

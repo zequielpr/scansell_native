@@ -212,6 +212,7 @@ public class ProfileFragment extends Fragment implements MenuProvider {
         onChartValueSelectedListener = new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
+
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDateTime localDateTime = customLineChart.getLineChartData().getDates().get((int) e.getX());
