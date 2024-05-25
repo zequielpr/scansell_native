@@ -5,21 +5,21 @@ import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.components.ImageProcessor;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.model.Home.product.ProductImg;
 import com.kunano.scansell_native.repository.home.ProductRepository;
-import com.kunano.scansell_native.components.ImageProcessor;
-import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
 
 import java.math.BigDecimal;
@@ -110,7 +110,7 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
 
         private ImageView imageViewProduct;
 
-        ImageButton cancelButton;
+        CardView cancelCardView;
 
         private  View card;
 
@@ -121,13 +121,13 @@ public class ProductToSellAdapter extends ListAdapter<Product, ProductToSellAdap
             title = itemView.findViewById(R.id.textViewTitleProduct);
             sellingPrice = itemView.findViewById(R.id.textViewSellingPrice);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
-            cancelButton = itemView.findViewById(R.id.cancel_b_sell_product);
+            cancelCardView = itemView.findViewById(R.id.cancel_b_sell_product);
 
             if (listener != null && itemView != null){
                 listener.reciveCardHol(itemView);
             }
 
-            cancelButton.setOnClickListener(new View.OnClickListener() {
+            cancelCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAbsoluteAdapterPosition();

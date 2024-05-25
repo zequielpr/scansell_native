@@ -80,7 +80,7 @@ public class AdminPermissions {
             // You can use the API that requires the permission.
 
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(
-                fragment.getActivity(), Manifest.permission.CAMERA)) {
+                fragment.getActivity(), Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
             resultListener.result(false);
 
         } else {

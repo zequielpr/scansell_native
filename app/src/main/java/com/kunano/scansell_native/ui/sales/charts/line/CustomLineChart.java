@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.sales.chart.line;
+package com.kunano.scansell_native.ui.sales.charts.line;
 
 import android.graphics.Color;
 
@@ -116,6 +116,7 @@ public class CustomLineChart {
             limitLine.setTextSize(8f);
 
             XAxis xAxis = lineChart.getXAxis();
+            if (xAxis.getLimitLines() != null) xAxis.getLimitLines().clear();
             xAxis.addLimitLine(limitLine);
         }
     }

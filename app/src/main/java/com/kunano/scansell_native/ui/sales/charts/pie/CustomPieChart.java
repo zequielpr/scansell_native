@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.sales.chart.pie;
+package com.kunano.scansell_native.ui.sales.charts.pie;
 
 import android.graphics.Color;
 

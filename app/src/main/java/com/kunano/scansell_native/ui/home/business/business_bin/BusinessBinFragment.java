@@ -1,6 +1,5 @@
 package com.kunano.scansell_native.ui.home.business.business_bin;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,13 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
-import com.kunano.scansell_native.model.Home.product.Product;
+import com.kunano.scansell_native.components.ProcessItemsComponent;
 import com.kunano.scansell_native.components.ProgressBarDialog;
 import com.kunano.scansell_native.components.ViewModelListener;
+import com.kunano.scansell_native.databinding.FragmentBusinessBinBinding;
+import com.kunano.scansell_native.model.Home.product.Product;
 import com.kunano.scansell_native.ui.home.bin.DeleteOrRestoreOptions;
 import com.kunano.scansell_native.ui.home.business.ProductCardAdapter;
-import com.kunano.scansell_native.components.ProcessItemsComponent;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -244,7 +243,7 @@ public class BusinessBinFragment extends Fragment {
     private void setToolbarSubtitle(List<Product> businessList) {
         toolbar.setSubtitle(Integer.toString(businessList.size()).
                 concat(" ").
-                concat(getString(R.string.businesses_title)));
+                concat(getString(R.string.current_products)));
     }
 
 

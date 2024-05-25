@@ -1,4 +1,4 @@
-package com.kunano.scansell_native.ui.sales.chart.line;
+package com.kunano.scansell_native.ui.sales.charts.line;
 
 import com.github.mikephil.charting.data.Entry;
 

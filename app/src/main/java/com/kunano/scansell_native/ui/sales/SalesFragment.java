@@ -40,8 +40,8 @@ import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.sales.admin.AdminFragment;
 import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
-import com.kunano.scansell_native.ui.sales.chart.line.CustomLineChart;
-import com.kunano.scansell_native.ui.sales.chart.pie.CustomPieChart;
+import com.kunano.scansell_native.ui.sales.charts.line.CustomLineChart;
+import com.kunano.scansell_native.ui.sales.charts.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
 
 import java.math.BigDecimal;

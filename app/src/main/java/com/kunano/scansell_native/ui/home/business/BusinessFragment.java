@@ -328,7 +328,9 @@ public class BusinessFragment extends Fragment {
 
         toolbar.inflateMenu(R.menu.actions_toolbar_business_screen);
         searchView = (SearchView) toolbar.getMenu().findItem(R.id.search_action).getActionView();
+        searchView.setQueryHint(getString(R.string.type_product_name));
         searchView.setOnSearchClickListener((v) -> businessViewModel.setSearchModeActive(true));
+
         searchView.setOnCloseListener(() -> {
             searchView.onActionViewCollapsed();
             businessViewModel.setSearchModeActive(false);
