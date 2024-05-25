@@ -72,7 +72,6 @@ public class SellFragment extends Fragment {
     private ProductToSellAdapter productToSellAdapter;
     BusinessSpinnerAdapter spinerAdapter;
     private ImageButton imageButtonScan;
-    private MainActivityViewModel mainActivityViewModel;
     private MediaPlayer mediaPlayer;
     private View sellProductView;
     private View createBusinessView;
@@ -85,7 +84,6 @@ public class SellFragment extends Fragment {
     private View topSide;
     private View scanningLine;
     private View scanLineParentContainer;
-    private ActivityResultLauncher<String> requestPermissionLauncher;
     private  AdminPermissions adminPermissions;
     private ImageButton switchCamera;
     private View askForCameraPermisionView;
@@ -139,7 +137,6 @@ public class SellFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
 
-         mainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
         binding = SellFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         spinner = binding.spinnerPickBusiness;
