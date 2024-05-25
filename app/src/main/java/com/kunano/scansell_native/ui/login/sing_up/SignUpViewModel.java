@@ -2,7 +2,7 @@ package com.kunano.scansell_native.ui.login.sing_up;
 
 import androidx.lifecycle.ViewModel;
 
-import com.kunano.scansell_native.ui.profile.auth.UserData;
+import com.kunano.scansell_native.ui.sales.auth.UserData;
 
 public class SignUpViewModel extends ViewModel {
     private Boolean termsAndPoliciesStateCondition;

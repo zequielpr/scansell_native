@@ -29,9 +29,9 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.databinding.CollectEmailAndSignedUpBinding;
 import com.kunano.scansell_native.components.SpinningWheel;
 import com.kunano.scansell_native.components.Utils;
-import com.kunano.scansell_native.ui.profile.admin.account.email.EmailViewModel;
-import com.kunano.scansell_native.ui.profile.auth.Auth;
-import com.kunano.scansell_native.ui.profile.auth.UserData;
+import com.kunano.scansell_native.ui.sales.admin.account.email.EmailViewModel;
+import com.kunano.scansell_native.ui.sales.auth.Auth;
+import com.kunano.scansell_native.ui.sales.auth.UserData;
 
 
 public class CollectEmailAndSignUpFragment extends Fragment {

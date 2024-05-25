@@ -45,9 +45,9 @@ import com.kunano.scansell_native.databinding.FragmentLogInBinding;
 import com.kunano.scansell_native.components.ImageProcessor;
 import com.kunano.scansell_native.components.SpinningWheel;
 import com.kunano.scansell_native.components.Utils;
-import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
-import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
-import com.kunano.scansell_native.ui.profile.auth.Auth;
+import com.kunano.scansell_native.ui.sales.admin.account.password.PasswordViewModel;
+import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
+import com.kunano.scansell_native.ui.sales.auth.Auth;
 
 public class SignInFragment extends Fragment {
     private static String TAG = "results";

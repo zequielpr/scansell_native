@@ -25,7 +25,7 @@ import com.kunano.scansell_native.components.AskForActionDialog;
 import com.kunano.scansell_native.components.SpinningWheel;
 import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.login.sing_in.SignInViewModel;
-import com.kunano.scansell_native.ui.profile.auth.Auth;
+import com.kunano.scansell_native.ui.sales.auth.Auth;
 
 public class RecoverPasswdFragment extends Fragment {
     private EditText emailAddressEditText;
