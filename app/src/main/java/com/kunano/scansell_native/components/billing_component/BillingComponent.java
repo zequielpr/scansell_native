@@ -27,7 +27,7 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.repository.firebase.PremiumRepository;
-import com.kunano.scansell_native.ui.profile.auth.AccountHelper;
+import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
 
 import java.util.List;
 

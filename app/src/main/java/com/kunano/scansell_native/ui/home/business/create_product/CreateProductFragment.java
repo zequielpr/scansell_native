@@ -192,11 +192,11 @@ public class CreateProductFragment extends Fragment {
         createProductViewModel.getProductNameLiveData().observe(getViewLifecycleOwner(),this::inflateToolbar);
         createProductViewModel.getBarSubtitle().observe(getViewLifecycleOwner(), createProductToolbar::setSubtitle);
         createProductViewModel.getBitmapImgMutableLiveData().observe(getViewLifecycleOwner(),
-                this::setToolBarColor);
+                this::setProductColor);
 
     }
 
-    private void setToolBarColor(Bitmap bitmapImg){
+    private void setProductColor(Bitmap bitmapImg){
         if (getActivity() == null || bitmapImg == null) return;
         Palette palette = Utils.getColorPaletteFromImage(bitmapImg);
         Integer brightColor = Utils.getVibrantColor(palette);
@@ -211,8 +211,6 @@ public class CreateProductFragment extends Fragment {
         drawable.setColorFilter(brightColor, PorterDuff.Mode.SRC_IN);
 
         imageButtonFrame.setBackground(drawable);
-        createProductToolbar.setBackground(gradientColor);
-        Utils.setActionBarColor(getActivity(), brightColor);
         saveButton.setBackgroundColor(brightColor);
 
         nameTextInputLayout.setBoxStrokeColor(brightColor);
@@ -488,7 +486,7 @@ public class CreateProductFragment extends Fragment {
     public void onResume() {
         super.onResume();
         System.out.println("On resume");
-        setToolBarColor(createProductViewModel.getBitmapImgMutableLiveData().getValue());
+        setProductColor(createProductViewModel.getBitmapImgMutableLiveData().getValue());
         if (createProductViewModel == null)return;
         productName.setText(createProductViewModel.getProductName());
         buyingPrice.setText(createProductViewModel.getBuyPrice());

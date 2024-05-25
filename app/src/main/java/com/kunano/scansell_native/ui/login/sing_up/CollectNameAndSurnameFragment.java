@@ -21,7 +21,7 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.ui.profile.admin.account.name.NameViewModel;
+import com.kunano.scansell_native.ui.sales.admin.account.name.NameViewModel;
 
 
 public class CollectNameAndSurnameFragment extends Fragment {

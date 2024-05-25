@@ -12,8 +12,8 @@
         android:title="@string/title_sell" />
 
     <item
-        android:id="@+id/profile_navigation_graph"
-        android:icon="@drawable/profile_icon"
-        android:title="@string/profile" />
+        android:id="@+id/sales_navigation_graph"
+        android:icon="@drawable/monitoring_icon"
+        android:title="@string/sales" />
 
 </menu>

@@ -22,7 +22,7 @@ import androidx.navigation.Navigation;
 
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.R;
-import com.kunano.scansell_native.ui.profile.admin.account.password.PasswordViewModel;
+import com.kunano.scansell_native.ui.sales.admin.account.password.PasswordViewModel;
 
 
 public class CollectPasswdFragment extends Fragment {
