@@ -14,13 +14,10 @@ import androidx.navigation.Navigation;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kunano.scansell_native.MainActivityViewModel;
 import com.kunano.scansell_native.databinding.FragmentAdminBinding;
-import com.kunano.scansell_native.repository.firebase.PremiumRepository;
 import com.kunano.scansell_native.ui.sales.SalesFragmentDirections;
-import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
 
 public class AdminFragment extends BottomSheetDialogFragment {
-    View settingSetcion;
-    //View accountSection;
+    View settingSection;
     View backUpSection;
     View parentView;
 
@@ -51,7 +48,7 @@ public class AdminFragment extends BottomSheetDialogFragment {
         binding = FragmentAdminBinding.inflate(inflater, container, false);
 
 
-        settingSetcion = binding.settingSection;
+        settingSection = binding.settingSection;
         //accountSection = binding.accountSection;
         backUpSection = binding.backUpSection;
 
@@ -61,7 +58,7 @@ public class AdminFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        settingSetcion.setOnClickListener(this::settingSectionAction);
+        settingSection.setOnClickListener(this::settingSectionAction);
         //accountSection.setOnClickListener(this::accountSectionAction);
         backUpSection.setOnClickListener(this::backUpSectionAction);
     }
@@ -72,15 +69,6 @@ public class AdminFragment extends BottomSheetDialogFragment {
         Navigation.findNavController(parentView).navigate(navDirectionsSettings);
         dismiss();
     }
-
-   /* private void accountSectionAction(View view) {
-        NavDirections navDirectionsAccount = ProfileFragmentDirections.actionProfileFragmentToAccountFragment();
-        Navigation.findNavController(parentView).navigate(navDirectionsAccount);
-        dismiss();
-    }*/
-
-    private AccountHelper accountHelper;
-    private PremiumRepository premiumRepository;
 
     private void backUpSectionAction(View view) {
         if (getActivity() != null) {

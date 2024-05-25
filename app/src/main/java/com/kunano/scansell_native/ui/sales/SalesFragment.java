@@ -1,7 +1,5 @@
 package com.kunano.scansell_native.ui.sales;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -33,13 +31,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.kunano.scansell_native.R;
+import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.databinding.SalesFragmentBinding;
 import com.kunano.scansell_native.model.Home.business.Business;
-import com.kunano.scansell_native.components.ImageProcessor;
-import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell_native.ui.sales.admin.AdminFragment;
-import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
 import com.kunano.scansell_native.ui.sales.charts.line.CustomLineChart;
 import com.kunano.scansell_native.ui.sales.charts.pie.CustomPieChart;
 import com.kunano.scansell_native.ui.sell.adapters.BusinessSpinnerAdapter;
@@ -64,7 +60,6 @@ public class SalesFragment extends Fragment implements MenuProvider {
     private CustomPieChart customPieChart;
     private TextView selectedDateTextView;
     private Toolbar profileToolbar;
-    private AccountHelper accountHelper;
     private TextView mostSoldProductsTxtView;
     private TextView sellsTxtView;
     private View createNewBusinessView;
@@ -82,7 +77,6 @@ public class SalesFragment extends Fragment implements MenuProvider {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        accountHelper = new AccountHelper();
 
     }
 
@@ -176,23 +170,7 @@ public class SalesFragment extends Fragment implements MenuProvider {
 
         createNewBusinessImgButton.setOnClickListener(this::createNewBusiness);
 
-        if (accountHelper.getCurrentUser() != null){
-            ImageProcessor.ImageLoadTask(accountHelper.getProfilePic(), this::setUserImage);
-        }else {
-            profileToolbar.setNavigationIcon(null);
-        }
 
-    }
-
-    private void setUserImage(Bitmap userImage){
-        Activity activity = getActivity();
-        if (activity == null) return;
-        activity.runOnUiThread(()->{
-            Bitmap roundImg = ImageProcessor.getRoundedBitmap(userImage);
-            this.userImage = ImageProcessor.bitmapToDrawable(SalesFragment.this.getContext(),
-                    roundImg);
-            profileToolbar.setNavigationIcon(this.userImage);
-        });
     }
 
     private void createNewBusiness(View view){

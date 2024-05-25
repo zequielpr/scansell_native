@@ -27,7 +27,6 @@ import com.kunano.scansell_native.R;
 import com.kunano.scansell_native.components.Utils;
 import com.kunano.scansell_native.components.ViewModelListener;
 import com.kunano.scansell_native.repository.firebase.PremiumRepository;
-import com.kunano.scansell_native.ui.sales.auth.AccountHelper;
 
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class BillingComponent {
     private Activity activity;
     public static final String PREMIUM_ID = "ads_free";
     private PremiumRepository premiumRepository;
-    private AccountHelper accountHelper;
     private ViewModelListener<Boolean> hasTheFunctionBeenBoughtListener;
     private Fragment fragment;
 
@@ -47,7 +45,6 @@ public class BillingComponent {
         this.fragment = fragment;
         this.activity = fragment.getActivity();
         this.context = activity.getBaseContext();
-        this.accountHelper = new AccountHelper();
         this.premiumRepository = new PremiumRepository();
 
         if (billingClient == null) {

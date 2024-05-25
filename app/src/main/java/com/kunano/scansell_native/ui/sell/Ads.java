@@ -12,8 +12,6 @@ public class Ads {
 
     public static void loadBanner(AdView adView, FrameLayout adContainer) {
 
-
-
         // Replace ad container with new ad view.
         if (adView.getParent() != null) {
             ((ViewGroup) adView.getParent()).removeView(adView);

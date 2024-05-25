@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.kunano.scansell_native.databinding.IntroductionActivityBinding;
 
 
