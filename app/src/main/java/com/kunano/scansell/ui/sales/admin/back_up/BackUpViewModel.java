@@ -14,8 +14,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.Scope;
-import com.google.api.services.drive.DriveScopes;
 import com.kunano.scansell.components.ListenResponse;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.model.db.AppDatabase;
@@ -49,10 +49,11 @@ public class BackUpViewModel extends AndroidViewModel {
     public static GoogleSignInClient getGoogleSignInClientForDrive(Context context){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .requestScopes(new Scope(Scopes.DRIVE_FILE))
                 .build();
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
-        return mGoogleSignInClient;
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(context, gso);
+        return googleSignInClient;
     }
 
     public MutableLiveData<Integer> getUploadFileToDriveProgress() {

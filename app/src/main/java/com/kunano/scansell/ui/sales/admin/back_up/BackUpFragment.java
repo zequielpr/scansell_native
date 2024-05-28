@@ -209,7 +209,10 @@ public class BackUpFragment extends Fragment {
     private void uploadBackUpToDrive() {
         GoogleSignInClient googleSignInClient = BackUpViewModel.getGoogleSignInClientForDrive(getContext());
 
-        signInForDriveResult.launch(googleSignInClient.getSignInIntent());
+        if (googleSignInClient != null){
+            googleSignInClient.signOut();
+            signInForDriveResult.launch(googleSignInClient.getSignInIntent());
+        }
 
     }
 
@@ -220,6 +223,7 @@ public class BackUpFragment extends Fragment {
                 Task<GoogleSignInAccount> task =
                         GoogleSignIn.getSignedInAccountFromIntent(activityResult.getData());
                 task.addOnSuccessListener(this::saveBackUpInDrive);
+
 
             } else {
                 Toast.makeText(getContext(), "Google Login Error!", Toast.LENGTH_LONG).show();

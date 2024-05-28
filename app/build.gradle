@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id ('androidx.navigation.safeargs')
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -19,7 +20,7 @@ android {
         applicationId "com.kunano.scansell"
         minSdk 28
         targetSdk 33
-        versionCode 11
+        versionCode 12
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
