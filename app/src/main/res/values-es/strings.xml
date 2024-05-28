@@ -188,7 +188,7 @@
     <string name="ask_to_leave_app">¿Quieres salir de esta aplicación?</string>
     <string name="current_products">Productos</string>
     <string name="type_product_name">Escribe el nombre del producto</string>
-    <string name="stock">Existencia</string>
+    <string name="stock">Stock</string>
     <string name="selling_price_two_dots">Precio de venta:</string>
     <string name="buying_price_two_dots">Precio de compra:</string>
     <string name="stock_two_dots">Existencia:</string>

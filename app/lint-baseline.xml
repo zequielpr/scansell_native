@@ -3,7 +3,7 @@
 
     <issue
         id="Instantiatable"
-        message="This class should provide a default constructor (a public constructor with no arguments) (`com.kunano.scansell_native.repository.home.DriveServices`)"
+        message="This class should provide a default constructor (a public constructor with no arguments) (`com.kunano.scansell.repository.home.DriveServices`)"
         errorLine1="        &lt;service android:name=&quot;.repository.home.DriveServices&quot;/>"
         errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location

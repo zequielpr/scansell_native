@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/sell_navigation_graph"
-        android:icon="@android:drawable/ic_menu_camera"
+        android:icon="@drawable/camera_24"
         android:title="@string/title_sell" />
 
     <item

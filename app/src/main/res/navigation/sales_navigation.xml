@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/salesFragment"
-        android:name="com.kunano.scansell_native.ui.sales.SalesFragment"
+        android:name="com.kunano.scansell.ui.sales.SalesFragment"
         android:label="sales_fragment"
         tools:layout="@layout/sales_fragment" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/backUpFragment"
-        android:name="com.kunano.scansell_native.ui.sales.admin.back_up.BackUpFragment"
+        android:name="com.kunano.scansell.ui.sales.admin.back_up.BackUpFragment"
         android:label="fragment_back_up"
         tools:layout="@layout/fragment_back_up" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment2"
-        android:name="com.kunano.scansell_native.ui.sales.admin.settings.SettingsFragment"
+        android:name="com.kunano.scansell.ui.sales.admin.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/privacyPolicyFragment2"
-        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
+        android:name="com.kunano.scansell.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
         android:label="fragment_privacy_policy"
         tools:layout="@layout/fragment_privacy_policy" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/termsOfUseFragment2"
-        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
+        android:name="com.kunano.scansell.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
         android:label="fragment_terms_of_use"
         tools:layout="@layout/fragment_terms_of_use" >
         <action
