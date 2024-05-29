@@ -51,7 +51,7 @@
     <string name="warning">Advertencia</string>
     <string name="bin">Papelera</string>
     <string name="recycle_bin">Papelera de reciclaje</string>
-    <string name="empty">Vacía</string>
+    <string name="empty">Vaciar</string>
     <string name="edit">Editar</string>
     <string name="days">Días</string>
     <string name="day">Día</string>
@@ -62,7 +62,7 @@
     <string name="set_selling_price">Establecer precio de venta</string>
     <string name="set_stock">Establecer stock</string>
     <string name="camera">Cámara</string>
-    <string name="files">Archivos</string>
+    <string name="gallery">Galería</string>
     <string name="try_again">Intentar de nuevo</string>
     <string name="name_a_z">Ordenar por nombre A-Z</string>
     <string name="name_z_a">Ordenar por nombre Z-A</string>
@@ -187,7 +187,8 @@
     <string name="leave_app">Salir de la aplicación</string>
     <string name="ask_to_leave_app">¿Quieres salir de esta aplicación?</string>
     <string name="current_products">Productos</string>
-    <string name="stock">Existencia</string>
+    <string name="type_product_name">Escribe el nombre del producto</string>
+    <string name="stock">Stock</string>
     <string name="selling_price_two_dots">Precio de venta:</string>
     <string name="buying_price_two_dots">Precio de compra:</string>
     <string name="stock_two_dots">Existencia:</string>
