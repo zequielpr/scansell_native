@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.kunano.scansell_native.ui.introduction.Slide_1"
+        android:name="com.kunano.scansell.ui.introduction.Slide_1"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first" >
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.kunano.scansell_native.ui.introduction.Slide_2"
+        android:name="com.kunano.scansell.ui.introduction.Slide_2"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second" >
 

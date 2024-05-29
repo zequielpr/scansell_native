@@ -47,9 +47,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/sellToolbar"
-
                     ads:adSize="BANNER"
-                    ads:adUnitId="ca-app-pub-3940256099942544/9214589741" />
+                    ads:adUnitId="ca-app-pub-4158154560782621~2304183720" />
             </FrameLayout>
 
             <RelativeLayout

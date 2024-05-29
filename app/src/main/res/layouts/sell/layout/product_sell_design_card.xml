@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cancel_b_sell_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp"
@@ -13,6 +12,7 @@
         app:cardBackgroundColor="@color/cardBackgroundColor"
         app:cardElevation="1dp">
         <ImageButton
+            android:id="@+id/cancel_b_sell_product"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_weight="0"
