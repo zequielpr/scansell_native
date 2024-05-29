@@ -1,5 +1,8 @@
 package com.kunano.scansell.ui.home.business.create_product;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,13 +42,13 @@ import androidx.palette.graphics.Palette;
 import com.google.android.material.textfield.TextInputLayout;
 import com.kunano.scansell.MainActivityViewModel;
 import com.kunano.scansell.R;
-import com.kunano.scansell.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell.components.AdminPermissions;
 import com.kunano.scansell.components.AskForActionDialog;
 import com.kunano.scansell.components.ImageProcessor;
 import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.components.media_picker.CustomMediaPicker;
+import com.kunano.scansell.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
 
@@ -68,7 +72,7 @@ public class CreateProductFragment extends Fragment {
     private CreateProductViewModel createProductViewModel;
     private ImageProcessor imageProcessor;
     private CreateProductFragment createProductFragment;
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private ActivityResultLauncher<Intent> pickMedia;
     private Bitmap bitmapImg;
     private MainActivityViewModel mainActivityViewModel;
     private ImageButton cancelImageUploadButton;
@@ -143,8 +147,8 @@ public class CreateProductFragment extends Fragment {
 
 
         createProductFragment = this;
-        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadImageFromFilePath);
-        customMediaPicker = new CustomMediaPicker(pickMedia);
+        pickMedia = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::loadImageFromFilePath);
+        customMediaPicker = CustomMediaPicker.fromPickIntentLauncher(pickMedia);
 
 
         cancelImageUploadButton.setOnClickListener(this::cancelImageUpload);
@@ -336,35 +340,39 @@ public class CreateProductFragment extends Fragment {
 
 
     public void lunchImagePicker(){
-        customMediaPicker.lunchImagePicker(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        customMediaPicker.launchImagePickerFromGalleryIntent(intent);
     }
 
 
 
-    private void loadImageFromFilePath(Uri uri) {
+    private void loadImageFromFilePath(ActivityResult activityResult) {
         imageSourceFragment.dismiss();
-        if(uri == null){
-            return;
+
+        if(activityResult.getResultCode() == RESULT_OK & activityResult.getData() != null){
+
+            Uri uri = activityResult.getData().getData();
+            imageProcessor = new ImageProcessor(this);
+
+            int imageOrientation = imageProcessor.getOrientation(uri);
+            bitmapImg = imageProcessor.decodeUri(uri);
+            bitmapImg = imageProcessor.handleOrientation(bitmapImg, imageOrientation);
+
+
+
+            if ( bitmapImg != null) {
+                // If the decoding was successful, set the Bitmap to the ImageView
+                createProductViewModel.setBitmapImg(bitmapImg);
+                createProductViewModel.setBitmapImgMutableLiveData(bitmapImg);
+                //imageViewAddImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border_shape));
+                createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
+            } else {
+                // Handle the case where decoding fails, e.g., show an error image
+                imageViewAddImage.setImageResource(R.drawable.close_24);
+            }
         }
 
-        imageProcessor = new ImageProcessor(this);
 
-        int imageOrientation = imageProcessor.getOrientation(uri);
-        bitmapImg = imageProcessor.decodeUri(uri);
-        bitmapImg = imageProcessor.handleOrientation(bitmapImg, imageOrientation);
-
-
-
-        if ( bitmapImg != null) {
-            // If the decoding was successful, set the Bitmap to the ImageView
-            createProductViewModel.setBitmapImg(bitmapImg);
-            createProductViewModel.setBitmapImgMutableLiveData(bitmapImg);
-            //imageViewAddImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border_shape));
-            createProductViewModel.setCancelImageButtonVisibility(View.VISIBLE);
-        } else {
-            // Handle the case where decoding fails, e.g., show an error image
-            imageViewAddImage.setImageResource(R.drawable.close_24);
-        }
     }
 
 

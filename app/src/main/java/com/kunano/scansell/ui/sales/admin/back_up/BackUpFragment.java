@@ -80,7 +80,7 @@ public class BackUpFragment extends Fragment {
 
         signInForDriveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::receiveSignInForDriveResult);
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadBackUpFilePath);
-        customMediaPicker = new CustomMediaPicker(pickMedia);
+        customMediaPicker = CustomMediaPicker.fromPickVisualMediaLauncher(pickMedia);
 
         backupToolbar = binding.backupToolbar;
         createBackupSection = binding.createBackupSection;
