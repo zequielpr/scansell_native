@@ -11,8 +11,8 @@
     <string name="businesses_title">Businesses</string>
     <string name="admin">Admin</string>
     <string name="create_new_business">Create new business</string>
-    <string name="business_name">Business name</string>
-    <string name="business_address">Business address</string>
+    <string name="business_name">Business\'s name</string>
+    <string name="business_address">Business\'s address</string>
     <string name="save">Save</string>
     <string name="advert_invalid_name">Name invalid. Only letters and spaces are allowed.</string>
     <string name="advert_invalid_address">Address is invalid. Special characters are not allowed.</string>
@@ -60,7 +60,7 @@
     <string name="set_selling_price">Set selling price</string>
     <string name="set_stock">Set stock</string>
     <string name="camera">Camera</string>
-    <string name="files">Files</string>
+    <string name="gallery">Gallery </string>
     <string name="try_again">Try again</string>
     <string name="name_a_z">Sort by name A-Z</string>
     <string name="name_z_a">Sort by name Z-A</string>
@@ -185,6 +185,7 @@
     <string name="leave_app">Leave app</string>
     <string name="ask_to_leave_app">Do you want to leave this app?</string>
     <string name="current_products">Products</string>
+    <string name="type_product_name">Type in the product\'s name</string>
     <string name="stock">Stock</string>
     <string name="selling_price_two_dots">Selling price:</string>
     <string name="buying_price_two_dots">Buying price:</string>
@@ -205,7 +206,7 @@
     <string name="access_denied">Access denied</string>
     <string name="enable_backup_func">Enable backup functionality</string>
     <string name="enable_file_picker">Enable file picker</string>
-    <string name="camera_access_required">Access to phone camera is required for this functionality. Got to settings and
+    <string name="camera_access_required">Access to the phone camera is required for this functionality. Go to settings and
     grant access to the phone camera</string>
     <string name="activate_camera">Enable camera</string>
     <string name="file_and_media_permission_required">Access to phone files and media are required for this functionality.

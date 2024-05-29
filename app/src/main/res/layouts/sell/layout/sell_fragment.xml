@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.sell.SellFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,15 +30,33 @@
                 <Spinner
                     android:id="@+id/spinnerPickBusiness"
                     style="@style/Spinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </androidx.appcompat.widget.Toolbar>
+
+            <FrameLayout
+                android:id="@+id/addContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:elevation="5dp"
+                android:layout_below="@id/sellToolbar">
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sellToolbar"
+                    ads:adSize="BANNER"
+                    ads:adUnitId="ca-app-pub-4158154560782621~2304183720" />
+            </FrameLayout>
 
             <RelativeLayout
                 android:id="@+id/cameraLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
 
                 <include
                     android:id="@+id/scan_layout"

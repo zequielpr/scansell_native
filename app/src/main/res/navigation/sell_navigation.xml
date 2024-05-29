@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/sellFragment"
-        android:name="com.kunano.scansell_native.ui.sell.SellFragment"
+        android:name="com.kunano.scansell.ui.sell.SellFragment"
         android:label="sell_fragment"
         tools:layout="@layout/sell_fragment" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/receiptsFragment2"
-        android:name="com.kunano.scansell_native.ui.sell.receipts.ReceiptsFragment"
+        android:name="com.kunano.scansell.ui.sell.receipts.ReceiptsFragment"
         android:label="fragment_receipts"
         tools:layout="@layout/fragment_receipts" >
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/soldProductFragment2"
-        android:name="com.kunano.scansell_native.ui.sell.receipts.sold_products.SoldProductFragment"
+        android:name="com.kunano.scansell.ui.sell.receipts.sold_products.SoldProductFragment"
         android:label="fragment_sold_product"
         tools:layout="@layout/fragment_sold_product" >
         <action
@@ -52,7 +52,7 @@
     </fragment>
     <dialog
         android:id="@+id/collectPaymentMethodFragment"
-        android:name="com.kunano.scansell_native.ui.sell.collect_payment_method.CollectPaymentMethodFragment"
+        android:name="com.kunano.scansell.ui.sell.collect_payment_method.CollectPaymentMethodFragment"
         android:label="fragment_collect_payment_method"
         tools:layout="@layout/fragment_collect_payment_method" />
 

@@ -1,64 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools">
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-<uses-permission android:name="android.permission.USE_CREDENTIALS" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    xmlns:tools="http://schemas.android.com/tools">
 
-<uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="com.android.vending.BILLING" />
+    <uses-feature android:name="android.hardware.camera.any" />
 
-<instrumentation
-    android:name="androidx.test.runner.AndroidJUnitRunner"
-    android:targetPackage="com.kunano.scansell_native" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
-<application
-    android:usesCleartextTraffic="true"
-    android:allowBackup="false"
-    android:dataExtractionRules="@xml/data_extraction_rules"
-    android:fullBackupContent="@xml/backup_rules"
-    android:icon="@drawable/app_icon"
-    android:label="@string/app_name"
-    android:roundIcon="@drawable/app_icon"
-    android:supportsRtl="true"
-    android:theme="@style/Theme.Scansell_native"
-    android:requestLegacyExternalStorage="true"
+    <instrumentation
+        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:targetPackage="com.kunano.scansell" />
+    <supports-screens
+        android:largeScreens="false"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="false" />
 
-    tools:targetApi="31">
-    <activity
-        android:name=".MainActivity"
-        android:exported="true"
-        android:screenOrientation="portrait"
+    <compatible-screens>
+        <!-- all small size screens -->
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="xxhdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="xxxhdpi"
+            android:screenSize="small" />
+        <!-- all normal size screens -->
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="xxhdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="xxxhdpi"
+            android:screenSize="normal" />
+    </compatible-screens>
+
+
+    <application
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@drawable/app_icon"
+        android:supportsRtl="true"
         android:theme="@style/Theme.Scansell_native"
-        android:label="@string/app_name">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        android:usesCleartextTraffic="true"
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        <nav-graph android:value="@navigation/mobile_navigation" />
+        tools:targetApi="31">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Scansell_native">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <nav-graph android:value="@navigation/mobile_navigation" />
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <service android:name=".repository.home.DriveServices" />
+
+        <activity
+            android:name="com.kunano.scansell.ui.login.LogInActivity"
+            android:exported="true"
+            android:label="@string/title_activity_log_in"
+            android:theme="@style/Theme.Scansell_native" />
+        <activity
+            android:name=".ui.introduction.IntroductionActivity"
+            android:exported="true"
+            android:label="@string/title_activity_introduction"
+            android:theme="@style/Theme.Scansell_native" />
+
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
 
         <meta-data
-            android:name="android.app.lib_name"
-            android:value="" />
-    </activity>
-    <service android:name=".repository.home.DriveServices" />
-    <activity
-        android:name="com.kunano.scansell_native.ui.login.LogInActivity"
-        android:exported="true"
-        android:label="@string/title_activity_log_in"
-        android:theme="@style/Theme.Scansell_native" />
-    <activity
-        android:name="com.kunano.scansell_native.ui.introduction.IntroductionActivity"
-        android:exported="true"
-        android:label="@string/title_activity_introduction"
-        android:theme="@style/Theme.Scansell_native" />
-</application>
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4158154560782621~2304183720" />
+    </application>
 
 </manifest>

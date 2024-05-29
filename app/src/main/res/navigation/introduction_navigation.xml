@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/section_1_Fragment"
-        android:name="com.kunano.scansell_native.ui.introduction.Section_1_Fragment"
+        android:name="com.kunano.scansell.ui.introduction.Section_1_Fragment"
         android:label="fragment_section_1_"
         tools:layout="@layout/fragment_section_1_" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/termsOfUseFragment"
-        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
+        android:name="com.kunano.scansell.ui.introduction.term_of_use_privacy_policy.TermsOfUseFragment"
         android:label="fragment_terms_of_use"
         tools:layout="@layout/fragment_terms_of_use" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
-        android:name="com.kunano.scansell_native.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
+        android:name="com.kunano.scansell.ui.introduction.term_of_use_privacy_policy.PrivacyPolicyFragment"
         android:label="fragment_privacy_policy"
         tools:layout="@layout/fragment_privacy_policy" >
         <action

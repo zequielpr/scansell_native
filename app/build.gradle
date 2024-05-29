@@ -1,11 +1,11 @@
 plugins {
     id 'com.android.application'
-    id("com.google.gms.google-services")
     id ('androidx.navigation.safeargs')
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace 'com.kunano.scansell_native'
+    namespace 'com.kunano.scansell'
     compileSdk 34
     packagingOptions {
         resources {
@@ -17,10 +17,10 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.kunano.scansell_native"
+        applicationId "com.kunano.scansell"
         minSdk 28
         targetSdk 33
-        versionCode 10
+        versionCode 14
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -77,13 +77,28 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src\\main\\res', 'src\\main\\res\\layouts\\home', 'src\\main\\res\\layouts\\sell', 'src\\main\\res\\layouts\\profile', 'src\\main\\res\\layouts\\main', 'src\\main\\res\\layouts\\home\\layouts\\products', 'src\\main\\res\\layouts\\home\\business', 'src\\main\\res\\layouts\\home\\business\\product', 'src\\main\\res\\menus\\home_menus', 'src\\main\\res\\menus\\sell', 'src\\main\\res\\layouts\\sell\\receipts', 'src\\main\\res\\menus\\profile', 'src\\main\\res\\layouts\\profile\\admin', 'src\\main\\res\\layouts\\log_in'
+                srcDirs 'src\\main\\res',
+                        'src\\main\\res\\layouts\\home',
+                        'src\\main\\res\\layouts\\sell',
+                        'src\\main\\res\\layouts\\sales',
+                        'src\\main\\res\\layouts\\main',
+                        'src\\main\\res\\layouts\\home\\layouts\\products',
+                        'src\\main\\res\\layouts\\home\\business',
+                        'src\\main\\res\\layouts\\home\\business\\product',
+                        'src\\main\\res\\menus\\home_menus',
+                        'src\\main\\res\\menus\\sell',
+                        'src\\main\\res\\layouts\\sell\\receipts',
+                        'src\\main\\res\\menus\\profile',
+                        'src\\main\\res\\layouts\\profile\\admin',
+                        'src\\main\\res\\layouts\\log_in', 'src\\main\\res\\layouts\\sales\\admin'
             }
         }
     }
 }
 
 dependencies {
+
+    implementation 'com.google.android.gms:play-services-ads:23.1.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.7.6"
@@ -100,8 +115,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     //Billing
-    def billing_version = "6.2.1"
-    implementation "com.android.billingclient:billing:$billing_version"
+    //def billing_version = "6.2.1"
+    //implementation "com.android.billingclient:billing:$billing_version"
 
     // Annotation processor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
