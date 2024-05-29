@@ -26,6 +26,7 @@ import androidx.navigation.Navigation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
@@ -222,7 +223,13 @@ public class BackUpFragment extends Fragment {
             if (activityResult.getData() != null) {
                 Task<GoogleSignInAccount> task =
                         GoogleSignIn.getSignedInAccountFromIntent(activityResult.getData());
-                task.addOnSuccessListener(this::saveBackUpInDrive);
+                task.addOnSuccessListener(this::saveBackUpInDrive).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        System.out.println("error: " + e.getMessage());
+                    }
+                });
 
 
             } else {
