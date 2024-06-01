@@ -159,6 +159,8 @@ public class SalesFragment extends Fragment implements MenuProvider {
                 pieChartMostSellProducts::setVisibility);
         salesViewModel.getBusinessStatsVisibilityMutableData().observe(getViewLifecycleOwner(),
                 businessStatsView::setVisibility);
+        salesViewModel.getBusinessStatsVisibilityMutableData().observe(getViewLifecycleOwner(),
+                pickBusinessSpinner::setVisibility);
         salesViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
                 createNewBusinessView::setVisibility);
         salesViewModel.getSalesSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->
