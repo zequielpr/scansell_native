@@ -19,3 +19,22 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class  com.kunano.scansell.model.*{*;}
+-keep class com.kunano.scansell.ui.sales.admin.back_up.*{*;}
+
+# Google Play Services
+-keep class com.google.api.services.drive.** { *; }
+-keep class com.google.auth.oauth2.** { *; }
+-keep class com.google.auth.http.** { *; }
+-keep class com.google.auth.oauth2.*$TypeAdapter
+-keep class com.google.api.client.googleapis.services.* { *; }
+-keep class com.google.api.client.googleapis.json.* { *; }
+-keep class com.google.api.client.extensions.android.** { *; }
+-keep class com.google.api.client.extensions.android.http.** { *; }
+-keep class com.google.api.client.googleapis.extensions.android.gms.auth.** { *; }
+-keep class com.google.api.services.drive.model.** { *; }
+-keepclassmembers class * {
+    @com.google.api.client.util.Key <fields>;
+}
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
