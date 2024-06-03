@@ -103,6 +103,8 @@ public class BackUpViewModel extends AndroidViewModel {
                     // Transfer content from input stream to output stream
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         inputStream.transferTo(outputStream);
+                        restoreProgress.postValue(100);
+                        listenResponse.isSuccessfull(true);
                         System.out.println("Tiramisu");
                     }else {
                         byte[] buffer = new byte[1024];
