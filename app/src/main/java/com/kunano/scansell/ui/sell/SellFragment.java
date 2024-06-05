@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -57,6 +58,9 @@ import java.util.List;
 public class SellFragment extends Fragment {
 
 
+    private Runnable runnable;
+    private Handler handler;
+    private static long  REFRESH_INTERVAL = 30000;
     private SellFragmentBinding binding;
     private Spinner spinner;
     private TextView totalTextView;
@@ -98,6 +102,7 @@ public class SellFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         adminPermissions = new AdminPermissions(this);
         adminPermissions.setResultListener(this::handleCameraRequestResult);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
@@ -263,13 +268,24 @@ public class SellFragment extends Fragment {
 
     public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        Ads.loadBanner(adView, addContainer);
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Ads.loadBanner(adView, addContainer);
+                handler.postDelayed(this,  REFRESH_INTERVAL);
+            }
+        };
+
+        handler.postDelayed(runnable, REFRESH_INTERVAL);
+
+
 
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                System.out.println("holaaaa");
                 Utils.askToLeaveApp(SellFragment.this);
 
             }
@@ -506,6 +522,12 @@ public class SellFragment extends Fragment {
         }
     }
     public void onDestroy() {
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+        }
+        if (adView != null) {
+            adView.destroy();
+        }
         super.onDestroy();
         // Release the MediaPlayer resources
         if (mediaPlayer != null) {
