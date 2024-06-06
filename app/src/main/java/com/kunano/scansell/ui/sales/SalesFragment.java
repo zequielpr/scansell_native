@@ -77,6 +77,7 @@ public class SalesFragment extends Fragment implements MenuProvider {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Utils.handleLanguage(getActivity());
 
     }
 

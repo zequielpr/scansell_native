@@ -12,6 +12,7 @@ android {
             pickFirsts += ['META-INF/DEPENDENCIES']
         }
     }
+
     lint {
         baseline = file("lint-baseline.xml")
     }
@@ -20,7 +21,7 @@ android {
         applicationId "com.kunano.scansell"
         minSdk 29
         targetSdk 34
-        versionCode 23
+        versionCode 24
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,6 +31,7 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        resConfigs "en", "es"
     }
 
     buildTypes {

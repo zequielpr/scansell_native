@@ -106,7 +106,7 @@ public class SellFragment extends Fragment {
         adminPermissions = new AdminPermissions(this);
         adminPermissions.setResultListener(this::handleCameraRequestResult);
         sellViewModel = new ViewModelProvider(requireActivity()).get(SellViewModel.class);
-        System.out.println("Check permission");
+        //Utils.handleLanguage(requireActivity());
     }
 
 
@@ -278,7 +278,7 @@ public class SellFragment extends Fragment {
             }
         };
 
-        handler.postDelayed(runnable, REFRESH_INTERVAL);
+        handler.postDelayed(runnable, 0);
 
 
 

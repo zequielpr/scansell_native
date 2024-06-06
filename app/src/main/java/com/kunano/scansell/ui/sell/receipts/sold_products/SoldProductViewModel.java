@@ -15,7 +15,6 @@ import com.kunano.scansell.model.Home.product.Product;
 import com.kunano.scansell.model.sell.Receipt;
 import com.kunano.scansell.model.sell.payment.cash.Cash;
 import com.kunano.scansell.repository.sell.SellRepository;
-import com.kunano.scansell.R;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +23,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SoldProductViewModel extends AndroidViewModel {
+
+    public static String CARD_CODE = "0";
+    public static String CASH_CODE = "1";
 
     private SellRepository sellRepository;
     ExecutorService executorService;
@@ -50,10 +52,10 @@ public class SoldProductViewModel extends AndroidViewModel {
 
         cashObserver = (Cash c) -> {
             if (c == null) {
-                paymentMethod.postValue(getApplication().getString(R.string.card));
+                paymentMethod.postValue(CARD_CODE);
                 cashDueAndTenderedVisibility.postValue(View.GONE);
             } else {
-                paymentMethod.postValue(getApplication().getString(R.string.cash));
+                paymentMethod.postValue(CASH_CODE);
                 cashDueAndTenderedVisibility.postValue(View.VISIBLE);
                 cashTendered.postValue(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(c.getCashTendered()))));
                 cashDue.postValue(String.valueOf(Utils.formatDecimal(BigDecimal.valueOf(c.getCashDue()))));

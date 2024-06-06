@@ -1,8 +1,5 @@
 package com.kunano.scansell;
 
-import static com.kunano.scansell.repository.share_preference.SettingRepository.ENGLISH;
-import static com.kunano.scansell.repository.share_preference.SettingRepository.SPANISH;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.databinding.ActivityMainBinding;
-import com.kunano.scansell.repository.share_preference.SettingRepository;
 import com.kunano.scansell.repository.share_preference.ShareRepository;
 import com.kunano.scansell.ui.introduction.IntroductionActivity;
 
@@ -49,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isFirstStart = new ShareRepository(this, MODE_PRIVATE).isFirstStart();
         if (isFirstStart)navigateToIntroduction();
 
-        handleLanguage();
+        Utils.handleLanguage(this);
+
        /* AccountHelper accountHelper = new AccountHelper();
         if (accountHelper.getCurrentUser()== null){
             navigateToLogIn();
@@ -115,18 +112,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }*/
 
-    public void handleLanguage(){
-        SettingRepository settingRepository = new SettingRepository(this, MODE_PRIVATE);
-        String language = settingRepository.getLanguage();
 
-        if (language.equals(ENGLISH)) {
-            Utils.setLanguage(ENGLISH, this);
-        } else if (language.equals(SPANISH)) {
-            Utils.setLanguage(SPANISH, this);
-        }else {
-            Utils.setLanguageAutomatic(this);
-        }
-    }
 
 
 
