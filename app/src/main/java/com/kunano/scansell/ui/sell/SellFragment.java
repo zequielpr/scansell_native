@@ -366,10 +366,10 @@ public class SellFragment extends Fragment {
     }
 
     private void handleViewsVisibilities(List<Business> l){
-        System.out.println("business list: " + l.size());
         if (l.size() > 0){
             sellViewModel.setSellProductsVisibilityMD(View.VISIBLE);
             sellViewModel.setCreateNewBusinessVisibilityMD(View.GONE);
+            imageButtonScan.setVisibility(View.VISIBLE);
             initiateCamera();
         }else {
             imageButtonScan.setVisibility(View.GONE);
