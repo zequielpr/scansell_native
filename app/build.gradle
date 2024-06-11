@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "com.kunano.scansell"
-        minSdk 21
+        minSdk 27
         targetSdk 34
         versionCode 25
         versionName "1.0"
