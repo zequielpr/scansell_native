@@ -20,8 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class  com.kunano.scansell.model.*{*;}
--keep class com.kunano.scansell.ui.sales.admin.back_up.*{*;}
+#-keep class  com.kunano.scansell.model.*{*;}
+#-keep class com.kunano.scansell.ui.sales.admin.back_up.*{*;}
 
 # Google Play Services
 -keep class com.google.api.services.drive.** { *; }
