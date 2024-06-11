@@ -36,162 +36,229 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/createProductToolbar">
 
-            <FrameLayout
-                android:id="@+id/imageButtonFrame"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nameFilledTextField"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/name">
+
+                        <!--this is the actual edit text which takes the input-->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextTextNombreProduct"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:ems="10"
+                            android:inputType="text"
+                            android:maxLength="30" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textViewNamePrdWarn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_between_edit_text"
+                        android:layout_weight="0"
+                        android:textColor="@color/red" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/stockFilledTextField"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/stock">
+
+                        <!--this is the actual edit text which takes the input-->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextNumberStock"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:ems="10"
+                            android:inputType="number"
+                            android:maxLength="9" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textViewStockWarn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_between_edit_text"
+                        android:layout_weight="0"
+                        android:textColor="@color/red" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/buyPriceFilledTextField"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/buying_price">
+
+                        <!--this is the actual edit text which takes the input-->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextNumberDcmBuyingPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:ems="10"
+                            android:inputType="numberDecimal"
+                            android:maxLength="7" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textViewBuyingPriceWarn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_between_edit_text"
+                        android:layout_weight="0"
+                        android:textColor="@color/red" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/sellPriceFilledTextField"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/selling_price">
+
+                        <!--this is the actual edit text which takes the input-->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextNumberDcmSellingPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:ems="10"
+                            android:inputType="numberDecimal"
+                            android:maxLength="9" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textViewSellingPriceWarn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_between_edit_text"
+                        android:layout_weight="0"
+                        android:textColor="@color/red" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider_line"
+                android:layout_width="match_parent"
+                android:background="@color/black_transparent"
+                android:layout_marginBottom="@dimen/intro_section_bottom_side"
+                android:layout_height="2dp"/>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button_background"
-                android:layout_marginBottom="@dimen/button_top_side"
-                android:padding="1dp">
+                android:textSize="17sp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/product_image"/>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/imageButtonCardView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/transparent"
-                    app:cardElevation="1dp"
-                    app:cardCornerRadius="8dp">
-                    <androidx.cardview.widget.CardView
+                    app:cardBackgroundColor="?colorSurface"
+                    app:cardCornerRadius="100dp">
+
+                    <ImageButton
+                        android:id="@+id/cancelImageUpload"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/white"
-                        android:layout_gravity="end"
-                        app:cardCornerRadius="100dp">
-                        <ImageButton
-                            android:id="@+id/cancelImageUpload"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:background="@color/transparent"
-                            android:elevation="3dp"
-                            android:src="@drawable/cancel_24" />
-                    </androidx.cardview.widget.CardView>
-                    <ImageButton
-                        android:id="@+id/imageButton"
-                        android:layout_width="92dp"
-                        android:layout_height="92dp"
-                        android:layout_weight="1"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:scaleType="center"
+                        android:layout_alignParentTop="true"
                         android:background="@color/transparent"
-                        android:src="@drawable/add_image_ic_80dp" />
+                        android:elevation="3dp"
+                        android:src="@drawable/cancel_24" />
                 </androidx.cardview.widget.CardView>
 
-            </FrameLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/nameFilledTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name">
-
-                <!--this is the actual edit text which takes the input-->
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextTextNombreProduct"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:id="@+id/imageButtonFrame"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:ems="10"
-                    android:maxLength="30"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="@dimen/button_top_side"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_button_background"
+                    android:padding="1dp">
 
 
-            <TextView
-                android:id="@+id/textViewNamePrdWarn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_between_edit_text"
-                android:layout_weight="0"
-                android:textColor="@color/red" />
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imageButtonCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/transparent"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="1dp">
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/buyPriceFilledTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/buying_price">
 
-                <!--this is the actual edit text which takes the input-->
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextNumberDcmBuyingPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:maxLength="7"
-                    android:ems="10"
-                    android:inputType="numberDecimal"  />
+                        <ImageButton
+                            android:id="@+id/imageButton"
+                            android:layout_width="92dp"
+                            android:layout_height="92dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:scaleType="center"
+                            android:src="@drawable/add_image_ic_80dp" />
+                    </androidx.cardview.widget.CardView>
 
-            </com.google.android.material.textfield.TextInputLayout>
+                </FrameLayout>
+            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/textViewBuyingPriceWarn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_between_edit_text"
-                android:layout_weight="0"
-                android:textColor="@color/red" />
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/sellPriceFilledTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/selling_price">
-
-                <!--this is the actual edit text which takes the input-->
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextNumberDcmSellingPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:maxLength="9"
-                    android:ems="10"
-                    android:inputType="numberDecimal"  />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textViewSellingPriceWarn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_between_edit_text"
-                android:layout_weight="0"
-                android:textColor="@color/red" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/stockFilledTextField"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/stock">
-
-                <!--this is the actual edit text which takes the input-->
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextNumberStock"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:maxLength="9"
-                    android:ems="10"
-                    android:inputType="number"  />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/textViewStockWarn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_between_edit_text"
-                android:layout_weight="0"
-                android:textColor="@color/red" />
 
             <Button
                 android:id="@+id/saveButton"

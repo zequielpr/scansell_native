@@ -220,6 +220,8 @@
     <string name="there_is_not_receipt">There are no receipts</string>
     <string name="never_delete">Never delete</string>
     <string name="unity">unit(s)</string>
+    <string name="product_image">Product\'s image</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
