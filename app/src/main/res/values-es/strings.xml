@@ -223,6 +223,10 @@
     <string name="never_delete">Nunca eliminar</string>
     <string name="unity">unidad(es)</string>
     <string name="product_image">Imagen de producto</string>
+    <string name="register_and_sell">Registra y vende tus productos</string>
+    <string name="monitor_your_sales">Monitorea tus ventas</string>
+    <string name="save_copy_your_business">Guarda copias de tus negocios</string>
+
 
 
     <string name="section_one_description">Resgistra productos de tu negocio, escanealos y vendelos</string>
