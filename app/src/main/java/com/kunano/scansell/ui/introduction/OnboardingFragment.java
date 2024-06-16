@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.kunano.scansell.databinding.FragmentOnboardingBinding;
@@ -14,22 +16,10 @@ import com.kunano.scansell.ui.introduction.sections.SectionTwoFragment;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OnboardingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OnboardingFragment extends Fragment {
     private FragmentOnboardingBinding binding;
+    ArrayList<Fragment> fragmentList;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public OnboardingFragment() {
         // Required empty public constructor
@@ -48,7 +38,13 @@ public class OnboardingFragment extends Fragment {
         binding = FragmentOnboardingBinding.inflate(getLayoutInflater());
 
 
-        ArrayList<Fragment> fragmentList = new ArrayList<>();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fragmentList = new ArrayList<>();
         fragmentList.add(new SectionOneFragment());
         fragmentList.add(new SectionTwoFragment());
         fragmentList.add(new SectionThreeFragment());
@@ -56,13 +52,10 @@ public class OnboardingFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(
                 fragmentList,
                 requireActivity().getSupportFragmentManager(),
-                getLifecycle()
+                requireActivity().getLifecycle()
         );
 
         binding.viewPager.setAdapter(adapter);
         binding.dotsIndicator.attachTo(binding.viewPager);
-
-        return binding.getRoot();
     }
-
 }
