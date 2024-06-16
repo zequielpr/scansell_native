@@ -33,13 +33,24 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
+
+    public  static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+    public static LocalDateTime getCurrentDate(String pattern){
+        // Create a DateTimeFormatter object with the desired pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return localDateTime;
+    }
+
+
     public static long getDateInMilliSeconds(LocalDateTime givenDateString, String format) {
-        String DATE_TIME_FORMAT = format;
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         long timeInMilliseconds = 1;
         try {
             Date mDate = sdf.parse(givenDateString.toString());
@@ -49,6 +60,8 @@ public class Utils {
         }
         return timeInMilliseconds;
     }
+
+
 
     public static void restartApp(Context context) {
         PackageManager pm = context.getPackageManager();
