@@ -22,7 +22,7 @@ android {
         minSdk 29
         targetSdk 34
         versionCode 28
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -100,6 +100,9 @@ android {
 }
 
 dependencies {
+    //required to comply with google's policies
+    implementation 'com.google.android.play:feature-delivery:2.1.0'
+    implementation 'com.google.android.play:feature-delivery-ktx:2.1.0'
 
     //Viewpager2
     implementation "androidx.viewpager2:viewpager2:1.1.0"
