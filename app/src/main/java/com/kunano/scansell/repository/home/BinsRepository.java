@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.model.Home.product.Product;
 import com.kunano.scansell.model.bins.business.BusinessBin;
@@ -14,6 +15,7 @@ import com.kunano.scansell.model.bins.user.UserBinDao;
 import com.kunano.scansell.model.db.AppDatabase;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BinsRepository {
@@ -31,7 +33,7 @@ public class BinsRepository {
 
     public ListenableFuture<Long> sendBusinessTobin(long businessId){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate actualDate = LocalDate.now();
+            LocalDateTime actualDate = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
             return userBinDao.sendBusinessToBin(new UserBin(businessId,actualDate ));
         }
 
@@ -58,8 +60,8 @@ public class BinsRepository {
     //admin business bin---------------------------
     public ListenableFuture<Long> sendProductTobin(long businessIdFK, String productIdFk){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate actualDate = LocalDate.now();
-            return businessBinDao.senProductToBin(new BusinessBin(businessIdFK, productIdFk, actualDate));
+            LocalDateTime localDateTime = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
+            return businessBinDao.senProductToBin(new BusinessBin(businessIdFK, productIdFk, localDateTime));
         }
 
         return null;

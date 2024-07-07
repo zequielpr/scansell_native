@@ -47,7 +47,7 @@ public interface BusinessDao  {
     @Transaction
     @Query("SELECT * FROM product WHERE NOT EXISTS (SELECT 1 FROM businessbin" +
             " WHERE BusinessBin.productIdFk  = product.productId AND product.businessIdFK = businessIdFK) " +
-            "AND product.businessIdFk = (:businessId) " )
+            "AND product.businessIdFk = (:businessId) ORDER BY cratingDate DESC" )
     LiveData<List<Product>> getProducts(Long businessId);
 
 

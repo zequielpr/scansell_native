@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 
 import com.kunano.scansell.components.ListenResponse;
 import com.kunano.scansell.components.ProcessItemsComponent;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.model.Home.product.Product;
@@ -19,6 +20,7 @@ import com.kunano.scansell.repository.home.BinsRepository;
 import com.kunano.scansell.repository.home.BusinessRepository;
 import com.kunano.scansell.repository.home.ProductRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -180,7 +182,8 @@ public class BusinessViewModel extends AndroidViewModel {
     }
 
     public void updateBusiness(String name, String address, String creatingData, ListenResponse listenResponse) {
-        Business business = new Business(name, address, creatingData);
+        LocalDateTime localDateTime = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
+        Business business = new Business(name, address, localDateTime);
         business.setBusinessId(currentBusinessId);
         businessRepository.updateBusiness(business, listenResponse);
     }

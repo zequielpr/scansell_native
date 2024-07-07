@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -20,12 +21,12 @@ public class Business {
     private String businessAddress;
 
     @ColumnInfo(defaultValue = "creating_date")
-    private String cratingDate;
+    private LocalDateTime cratingDate;
     @Ignore
     public Business(){
     }
 
-    public Business(String businessName, String businessAddress, String cratingDate) {
+    public Business(String businessName, String businessAddress, LocalDateTime cratingDate) {
         this.businessName = businessName;
         this.businessAddress = businessAddress;
         this.cratingDate = cratingDate;
@@ -57,11 +58,11 @@ public class Business {
         this.businessAddress = businessAddress;
     }
 
-    public String getCratingDate() {
+    public LocalDateTime getCratingDate() {
         return cratingDate;
     }
 
-    public void setCratingDate(String cratingDate) {
+    public void setCratingDate(LocalDateTime cratingDate) {
         this.cratingDate = cratingDate;
     }
 

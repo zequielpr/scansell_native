@@ -8,7 +8,7 @@ import androidx.room.Index;
 
 import com.kunano.scansell.model.Home.product.Product;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "BusinessBin",
         primaryKeys = {"businessIdFk", "productIdFk"},
@@ -16,7 +16,7 @@ import java.time.LocalDate;
                 parentColumns = {"productId", "businessIdFK"},
                 childColumns = {"productIdFk", "businessIdFk"},
                 onDelete = ForeignKey.CASCADE),
-indices = {@Index(value = {"businessIdFk", "productIdFk"})})
+indices = {@Index(value = {"businessIdFk", "productIdFk"}, unique = true)})
 public class BusinessBin {
 
     @NonNull
@@ -25,14 +25,14 @@ public class BusinessBin {
     @NonNull
     private String productIdFk;
 
-    LocalDate recyclingDate;
+    LocalDateTime recyclingDate;
 
     @Ignore
     public BusinessBin(){
         super();
     }
 
-    public BusinessBin(long businessIdFk, String productIdFk, LocalDate recyclingDate) {
+    public BusinessBin(long businessIdFk, String productIdFk, LocalDateTime recyclingDate) {
         this.businessIdFk = businessIdFk;
         this.productIdFk = productIdFk;
         this.recyclingDate = recyclingDate;
@@ -54,11 +54,11 @@ public class BusinessBin {
         this.productIdFk = productIdFk;
     }
 
-    public LocalDate getRecyclingDate() {
+    public LocalDateTime getRecyclingDate() {
         return recyclingDate;
     }
 
-    public void setRecyclingDate(LocalDate recyclingDate) {
+    public void setRecyclingDate(LocalDateTime recyclingDate) {
         this.recyclingDate = recyclingDate;
     }
 }

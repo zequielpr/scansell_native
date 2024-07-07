@@ -51,6 +51,8 @@ import com.kunano.scansell.components.media_picker.CustomMediaPicker;
 import com.kunano.scansell.databinding.FragmentCreateProductBinding;
 import com.kunano.scansell.ui.home.business.create_product.bottom_sheet_image_source.ImageSourceFragment;
 
+import java.time.LocalDateTime;
+
 
 public class CreateProductFragment extends Fragment {
 
@@ -312,15 +314,16 @@ public class CreateProductFragment extends Fragment {
         String bPrice = buyingPrice.getText().toString();
         String sPrice = sellingPrice.getText().toString();
         String stck = stock.getText().toString();
+        LocalDateTime currentDate = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
 
         byte[] img = imageProcessor.bitmapToBytes(createProductViewModel.getBitmapImg());
 
         if (createProductViewModel.isProductToUpdate()){
             createProductViewModel.updateProduct(createProductViewModel.getProductId(),
-                    name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+                    name, bPrice, sPrice, stck, currentDate, img, this::recibirRespuesta);
         }else {
             createProductViewModel.createProduct(createProductViewModel.getProductId(),
-                    name, bPrice, sPrice, stck, "", img, this::recibirRespuesta);
+                    name, bPrice, sPrice, stck, currentDate, img, this::recibirRespuesta);
         }
 
     }
