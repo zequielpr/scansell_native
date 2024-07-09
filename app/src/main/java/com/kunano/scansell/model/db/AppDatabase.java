@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.model.Home.business.BusinessDao;
 import com.kunano.scansell.model.Home.product.Product;
@@ -32,6 +33,10 @@ import com.kunano.scansell.model.sell.product_to_sel_draft.ProductToSellDraft;
 import com.kunano.scansell.model.sell.product_to_sel_draft.ProductToSellDraftDao;
 import com.kunano.scansell.model.sell.sold_products.SoldProduct;
 import com.kunano.scansell.model.sell.sold_products.SoldProductDao;
+
+import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Database(entities = {Business.class, Product.class, ProductImg.class,
         UserBin.class, BusinessBin.class, Receipt.class, SoldProduct.class,
@@ -89,6 +94,22 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void closeDatabase() {
         instance.close();
+    }
+
+
+    // Populate the database
+    private static ExecutorService executor = Executors.newCachedThreadPool();
+    public static void populateDatabase(AppDatabase db) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                BusinessDao businessDao = db.businessDao();
+                LocalDateTime currentTime = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
+                Business business = new Business("demo", "", currentTime);
+
+                businessDao.insertBusiness(business);
+            }
+        });
     }
 
 

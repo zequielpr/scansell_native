@@ -24,6 +24,7 @@ import com.kunano.scansell.MainActivity;
 import com.kunano.scansell.R;
 import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.databinding.FragmentSectionThreeBinding;
+import com.kunano.scansell.model.db.AppDatabase;
 import com.kunano.scansell.repository.share_preference.ShareRepository;
 import com.kunano.scansell.ui.introduction.OnboardingFragmentDirections;
 
@@ -87,7 +88,13 @@ public class SectionThreeFragment extends Fragment {
             return;
         }
         updateIsFirstTime();
+        populateDatabase();
         startMainActivity();
+    }
+
+    private void populateDatabase(){
+        AppDatabase db = AppDatabase.getInstance(getContext());
+        AppDatabase.populateDatabase(db);
     }
 
 
