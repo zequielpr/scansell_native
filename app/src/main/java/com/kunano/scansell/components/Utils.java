@@ -25,6 +25,7 @@ import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
 
+import com.ironsource.mediationsdk.IronSource;
 import com.kunano.scansell.R;
 import com.kunano.scansell.repository.share_preference.SettingRepository;
 
@@ -40,6 +41,16 @@ import java.util.Locale;
 public class Utils {
 
     public  static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+
+    public static void setIronSourcePermission(Context context){
+
+        //IronSource permissions
+        IronSource.setConsent(true);
+        IronSource.setMetaData("do_not_sell","false");
+        IronSource.setMetaData("is_child_directed","false");
+    }
+
 
     public static LocalDateTime getCurrentDate(String pattern){
         // Create a DateTimeFormatter object with the desired pattern

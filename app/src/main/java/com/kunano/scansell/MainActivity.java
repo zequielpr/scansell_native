@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,9 +14,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.ads.AdInspectorError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.OnAdInspectorClosedListener;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +27,10 @@ import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.databinding.ActivityMainBinding;
 import com.kunano.scansell.repository.share_preference.ShareRepository;
 import com.kunano.scansell.ui.introduction.IntroductionActivity;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,17 +41,21 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
     FirebaseUser currentUser;
     FirebaseAuth firebaseAuth;
+
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+
+        initializeAds();
+
 
 
         boolean isFirstStart = new ShareRepository(this, MODE_PRIVATE).isFirstStart();
-        if (isFirstStart)navigateToIntroduction();
+        if (isFirstStart) navigateToIntroduction();
 
         Utils.handleLanguage(this);
 
@@ -76,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         /*AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -87,19 +98,19 @@ public class MainActivity extends AppCompatActivity {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        getAdIdentifier();
+        launchAdTestMode();
     }
+
     NavController navController;
 
-    private void initializeAds(){
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
+    private void initializeAds() {
+        MobileAds.initialize(this, initializationStatus -> {
         });
     }
 
 
-    private void navigateToIntroduction(){
+    private void navigateToIntroduction() {
         Intent intent = new Intent(MainActivity.this, IntroductionActivity.class);
         startActivity(intent);
         finish();
@@ -112,7 +123,34 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }*/
 
+    //Get ad Identifier
+    private void getAdIdentifier(){
 
+        ExecutorService executors = Executors.newSingleThreadExecutor();
+
+        executors.execute(()->{
+            try {
+                AdvertisingIdClient.Info adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
+                launchAdTestMode();
+                System.out.println("Test ad identifier: " + adInfo);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (GooglePlayServicesNotAvailableException e) {
+                throw new RuntimeException(e);
+            } catch (GooglePlayServicesRepairableException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    //Launch ad test mode
+    private void launchAdTestMode(){
+        MobileAds.openAdInspector(this, new OnAdInspectorClosedListener() {
+            public void onAdInspectorClosed(@Nullable AdInspectorError error) {
+                // Error will be non-null if ad inspector closed due to an error.
+            }
+        });
+    }
 
 
 

@@ -28,11 +28,9 @@ import com.kunano.scansell.model.db.AppDatabase;
 import com.kunano.scansell.repository.share_preference.ShareRepository;
 import com.kunano.scansell.ui.introduction.OnboardingFragmentDirections;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SectionThreeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import okhttp3.internal.Util;
+
+
 public class SectionThreeFragment extends Fragment {
     public static int SECTION_NUMBER = 2;
     private Button getStartedButton;
@@ -90,6 +88,8 @@ public class SectionThreeFragment extends Fragment {
         updateIsFirstTime();
         populateDatabase();
         startMainActivity();
+        Utils.setIronSourcePermission(getContext());
+
     }
 
     private void populateDatabase(){

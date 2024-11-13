@@ -36,11 +36,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.ironsource.mediationsdk.IronSource;
+import com.kunano.scansell.R;
 import com.kunano.scansell.components.AdminPermissions;
 import com.kunano.scansell.components.AskForActionDialog;
 import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.components.custom_camera.CustomCamera;
+import com.kunano.scansell.databinding.SellFragmentBinding;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.model.Home.product.Product;
 import com.kunano.scansell.model.db.SharePreferenceHelper;
@@ -48,8 +51,6 @@ import com.kunano.scansell.repository.share_preference.SettingRepository;
 import com.kunano.scansell.ui.home.bottom_sheet.BottomSheetFragmentCreateBusiness;
 import com.kunano.scansell.ui.sell.adapters.BusinessSpinnerAdapter;
 import com.kunano.scansell.ui.sell.adapters.ProductToSellAdapter;
-import com.kunano.scansell.R;
-import com.kunano.scansell.databinding.SellFragmentBinding;
 import com.kunano.scansell.ui.sell.collect_payment_method.CollectPaymentMethodFragment;
 
 import java.util.ArrayList;
@@ -124,7 +125,6 @@ public class SellFragment extends Fragment {
 
 
     private void handleCameraRequestResult(Boolean result){
-        System.out.println("Permission: " + result);
        if (!result){
            productToSellBottomSheet.setVisibility(View.GONE);
            imageButtonScan.setVisibility(View.GONE);
@@ -266,7 +266,9 @@ public class SellFragment extends Fragment {
         return root;
     }
 
-    public void onViewCreated(  @NonNull View view, @Nullable Bundle savedInstanceState){
+
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
         handler = new Handler();
@@ -277,8 +279,7 @@ public class SellFragment extends Fragment {
                 handler.postDelayed(this,  REFRESH_INTERVAL);
             }
         };
-
-        handler.postDelayed(runnable, 0);
+        startRequestingAds();
 
 
 
@@ -462,15 +463,18 @@ public class SellFragment extends Fragment {
                         toolbar.setVisibility(View.VISIBLE);
                         showBottomSheetViewBar.setVisibility(View.VISIBLE);
                         topSide.setVisibility(View.VISIBLE);
+                        startRequestingAds();
                         break;
                     case BottomSheetBehavior.STATE_HALF_EXPANDED:
                         System.out.println("half_Expanded");
+                        startRequestingAds();
                         toolbar.setVisibility(View.VISIBLE);
                         showBottomSheetViewBar.setVisibility(View.VISIBLE);
                         topSide.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         System.out.println("expanded");
+                        stopAdsRequests();
                         toolbar.setVisibility(View.GONE);
                         topSide.setVisibility(View.GONE);
                         showBottomSheetViewBar.setVisibility(View.GONE);
@@ -521,10 +525,28 @@ public class SellFragment extends Fragment {
             mediaPlayer.start();
         }
     }
-    public void onDestroy() {
-        if (handler != null) {
-            handler.removeCallbacks(runnable);
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( handleBootomSheetBehavior != null
+                & handleBootomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED){
+            handleBootomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else if (handleBootomSheetBehavior != null
+                & handleBootomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            startRequestingAds();
         }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopAdsRequests();
+    }
+
+    public void onDestroy() {
+        stopAdsRequests();
         if (adView != null) {
             adView.destroy();
         }
@@ -535,6 +557,19 @@ public class SellFragment extends Fragment {
             mediaPlayer = null;
         }
     }
+
+    private void stopAdsRequests(){
+        if (handler != null) {
+            handler.removeCallbacks(runnable);
+            IronSource.onPause(getActivity());
+        }
+    }
+    private void startRequestingAds(){
+        stopAdsRequests();
+        IronSource.onResume(getActivity());
+        if (!handler.hasCallbacks(runnable))handler.postDelayed(runnable, REFRESH_INTERVAL);
+    }
+
 
 
     private void askToUpdateStock(String barcode){
