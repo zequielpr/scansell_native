@@ -220,6 +220,11 @@
     <string name="there_is_not_receipt">There are no receipts</string>
     <string name="never_delete">Never delete</string>
     <string name="unity">unit(s)</string>
+    <string name="product_image">Product\'s image</string>
+    <string name="register_and_sell">Register and sell your products</string>
+    <string name="monitor_your_sales">Monitor your sales</string>
+    <string name="save_copy_your_business">Save copies of your businesses</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>

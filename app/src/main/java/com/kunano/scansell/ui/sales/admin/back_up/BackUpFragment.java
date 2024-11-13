@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,16 +30,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.googleapis.media.MediaHttpUploaderProgressListener;
 import com.kunano.scansell.MainActivityViewModel;
+import com.kunano.scansell.R;
 import com.kunano.scansell.components.AdminPermissions;
 import com.kunano.scansell.components.AskForActionDialog;
 import com.kunano.scansell.components.ProgressBarDialog;
 import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
-import com.kunano.scansell.model.db.AppDatabase;
-import com.kunano.scansell.model.db.SharePreferenceHelper;
-import com.kunano.scansell.R;
 import com.kunano.scansell.components.media_picker.CustomMediaPicker;
 import com.kunano.scansell.databinding.FragmentBackUpBinding;
+import com.kunano.scansell.model.db.AppDatabase;
+import com.kunano.scansell.model.db.SharePreferenceHelper;
 import com.kunano.scansell.repository.home.DriveServices;
 
 import java.io.IOException;
@@ -52,7 +51,7 @@ public class BackUpFragment extends Fragment {
     private Toolbar backupToolbar;
     private View createBackupSection;
     private View restoreBackUpSection;
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private ActivityResultLauncher<Intent> pickBackupLauncher;
     private ActivityResultLauncher<Intent> directoryPickerLauncher;
     private ActivityResultLauncher<Intent> signInForDriveResult;
     private CustomMediaPicker customMediaPicker;
@@ -79,8 +78,8 @@ public class BackUpFragment extends Fragment {
         binding = FragmentBackUpBinding.inflate(inflater, container, false);
 
         signInForDriveResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::receiveSignInForDriveResult);
-        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), this::loadBackUpFilePath);
-        customMediaPicker = CustomMediaPicker.fromPickVisualMediaLauncher(pickMedia);
+        pickBackupLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::loadBackUpFilePath);
+        customMediaPicker = CustomMediaPicker.fromPickIntentLauncher(pickBackupLauncher);
 
         backupToolbar = binding.backupToolbar;
         createBackupSection = binding.createBackupSection;
@@ -296,8 +295,7 @@ public class BackUpFragment extends Fragment {
             @Override
             public void result(Boolean object) {
                 if (object){
-                    customMediaPicker.lunchImagePicker(new
-                            ActivityResultContracts.PickVisualMedia.SingleMimeType("application/octet-stream"));
+                    customMediaPicker.launchFilePickerIntent(CustomMediaPicker.getPickFilesIntent());
                 }else {
                     askToGoToSettings();
                 }
@@ -314,8 +312,16 @@ public class BackUpFragment extends Fragment {
     }
 
 
-    private void loadBackUpFilePath(Uri backUpFileUri) {
-        if (backUpFileUri != null) askToRestore(backUpFileUri);
+    private void loadBackUpFilePath(ActivityResult activityResult) {
+
+        if (activityResult.getResultCode() == Activity.RESULT_OK &&
+        activityResult.getData() != null){
+            Uri backUpFileUri = activityResult.getData().getData();
+            if (backUpFileUri != null) askToRestore(backUpFileUri);
+
+        }
+
+
 
     }
 

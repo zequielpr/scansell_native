@@ -25,9 +25,10 @@ public interface BusinessBinDao {
 
 
     //Get products in the bind
-    @Query("SELECT * FROM product WHERE EXISTS (SELECT 1 FROM BusinessBin" +
-            " WHERE BusinessBin.productIdFk  = product.productId AND product.businessIdFK = (:businessId)" +
-            " AND BusinessBin.businessIdFk = (:businessId)) " )
+    @Query("SELECT productId, product.businessIdFK, product_name,  buying_price, " +
+            " selling_price,  stock, cratingDate FROM product INNER JOIN (SELECT * FROM BusinessBin" +
+            " WHERE BusinessBin.businessIdFk = (:businessId)) as bin WHERE bin.productIdFk = productId AND " +
+            "bin.businessIdFk = product.businessIdFK ORDER BY recyclingDate DESC" )
     public LiveData<List<Product>> getProductsInBin(long businessId);
 
 

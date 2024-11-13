@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kunano.scansell.MainActivityViewModel;
 import com.kunano.scansell.components.ProcessItemsComponent;
 import com.kunano.scansell.components.SpinningWheel;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.R;
@@ -36,6 +37,8 @@ import com.kunano.scansell.ui.home.bottom_sheet.BottomSheetFragmentCreateBusines
 
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import okhttp3.internal.Util;
 
 public class HomeFragment extends Fragment implements ListenHomeViewModel {
     private HomeFragmentBinding binding;
@@ -70,7 +73,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = HomeFragmentBinding.inflate(inflater, container, false);
-
         createBusinessView = binding.createNewBusinessView.createNewBusinessView;
         createNewBusinessImgButton = binding.createNewBusinessView.createNewBusinessImgButton;
 
@@ -294,7 +296,6 @@ public class HomeFragment extends Fragment implements ListenHomeViewModel {
     public void checkCard(BusinessCardAdepter.CardHolder cardHolder, Business business) {
 
         boolean isChecked = businessesProcessor.isItemToBeProcessed(business);
-        System.out.println("Business checked: " + isChecked);
 
         if(isChecked){
             cardHolder.getCard().setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.black_transparent));

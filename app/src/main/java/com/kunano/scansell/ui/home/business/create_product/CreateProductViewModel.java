@@ -18,6 +18,7 @@ import com.kunano.scansell.components.ImageProcessor;
 import com.kunano.scansell.components.ListenResponse;
 import com.kunano.scansell.components.ViewModelListener;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -155,8 +156,8 @@ public class CreateProductViewModel extends AndroidViewModel {
         }
     }
 
-    public void createProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
-                              String creatingDate, byte[] img, ListenResponse response) {
+    public void createProduct(String productId, String name, String buyingPrice, String sellingPrice, String stock,
+                              LocalDateTime creatingDate, byte[] img, ListenResponse response) {
 
         double bPrice = Double.parseDouble(buyingPrice);
         double sPrice = Double.parseDouble(sellingPrice);
@@ -168,7 +169,7 @@ public class CreateProductViewModel extends AndroidViewModel {
     }
 
     public void updateProduct(String productId,  String name, String buyingPrice, String sellingPrice, String stock,
-                              String creatingDate, byte[] img, ListenResponse response) {
+                              LocalDateTime creatingDate, byte[] img, ListenResponse response) {
 
         double bPrice = Double.parseDouble(buyingPrice);
         double sPrice = Double.parseDouble(sellingPrice);

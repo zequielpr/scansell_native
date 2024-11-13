@@ -77,6 +77,7 @@ public class SalesFragment extends Fragment implements MenuProvider {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Utils.handleLanguage(getActivity());
 
     }
 
@@ -159,6 +160,8 @@ public class SalesFragment extends Fragment implements MenuProvider {
                 pieChartMostSellProducts::setVisibility);
         salesViewModel.getBusinessStatsVisibilityMutableData().observe(getViewLifecycleOwner(),
                 businessStatsView::setVisibility);
+        salesViewModel.getBusinessStatsVisibilityMutableData().observe(getViewLifecycleOwner(),
+                pickBusinessSpinner::setVisibility);
         salesViewModel.getCreateBusinessButtonVisibility().observe(getViewLifecycleOwner(),
                 createNewBusinessView::setVisibility);
         salesViewModel.getSalesSumMutableLiveDta().observe(getViewLifecycleOwner(), (t)->

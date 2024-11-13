@@ -8,8 +8,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -22,9 +20,12 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
 
+import com.ironsource.mediationsdk.IronSource;
 import com.kunano.scansell.R;
 import com.kunano.scansell.repository.share_preference.SettingRepository;
 
@@ -33,13 +34,34 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
+
+    public  static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+
+    public static void setIronSourcePermission(Context context){
+
+        //IronSource permissions
+        IronSource.setConsent(true);
+        IronSource.setMetaData("do_not_sell","false");
+        IronSource.setMetaData("is_child_directed","false");
+    }
+
+
+    public static LocalDateTime getCurrentDate(String pattern){
+        // Create a DateTimeFormatter object with the desired pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return localDateTime;
+    }
+
+
     public static long getDateInMilliSeconds(LocalDateTime givenDateString, String format) {
-        String DATE_TIME_FORMAT = format;
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         long timeInMilliseconds = 1;
         try {
             Date mDate = sdf.parse(givenDateString.toString());
@@ -49,6 +71,8 @@ public class Utils {
         }
         return timeInMilliseconds;
     }
+
+
 
     public static void restartApp(Context context) {
         PackageManager pm = context.getPackageManager();
@@ -80,15 +104,11 @@ public class Utils {
 
 
     public static void setLanguage(String languageCode, Activity activity) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
 
-        Resources resources = activity.getResources();
 
-        Configuration config = resources.getConfiguration();
-        config.setLocale(locale);
-
-        activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+        LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(languageCode);
+        // Call this on the main thread as it may require Activity.restart()
+        AppCompatDelegate.setApplicationLocales(appLocale);
     }
 
     public static void saveLanguage(String languageCode, Activity activity){
@@ -123,8 +143,24 @@ public class Utils {
     }
 
 
+    public static void handleLanguage(Activity activity){
+        SettingRepository settingRepository = new SettingRepository(activity, MODE_PRIVATE);
+        String language = settingRepository.getLanguage();
+
+        System.out.println("language: " + language);
+        if (language.equals(ENGLISH)) {
+            Utils.setLanguage(ENGLISH, activity);
+        } else if (language.equals(SPANISH)) {
+            Utils.setLanguage(SPANISH, activity);
+        }else {
+            Utils.setLanguageAutomatic(activity);
+        }
+    }
+
+
+
     public static void askToLeaveApp(Fragment fragment){
-        String title = fragment.getContext().getString(R.string.leave_app);
+        String title = fragment.requireActivity().getString(R.string.leave_app);
         String message = fragment.getContext().getString(R.string.ask_to_leave_app);
         AskForActionDialog askForActionDialog = new AskForActionDialog(title, message);
 

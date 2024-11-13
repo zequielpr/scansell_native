@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kunano.scansell.components.ProcessItemsComponent;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.MainActivityViewModel;
 import com.kunano.scansell.R;
@@ -70,8 +71,6 @@ public class ReceiptsFragment extends Fragment implements MenuProvider {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
     }
 

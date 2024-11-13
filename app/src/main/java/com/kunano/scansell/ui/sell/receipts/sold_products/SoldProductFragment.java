@@ -1,5 +1,7 @@
 package com.kunano.scansell.ui.sell.receipts.sold_products;
 
+import static com.kunano.scansell.ui.sell.receipts.sold_products.SoldProductViewModel.CASH_CODE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +57,6 @@ public class SoldProductFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -209,7 +210,13 @@ public class SoldProductFragment extends Fragment{
                 cashDueLayout::setVisibility);
 
         soldProductViewModel.getPaymentMethod().observe(getViewLifecycleOwner(),
-                paymentMethod::setText);
+                (paymentMethod)->{
+                    if (paymentMethod == CASH_CODE) {
+                        this.paymentMethod.setText(getString(R.string.cash));
+                    } else {
+                        this.paymentMethod.setText(getString(R.string.card));
+                    }
+                });
         soldProductViewModel.getSoldItems().observe(getViewLifecycleOwner(),
                 soldItems::setText);
         soldProductViewModel.getCashTendered().observe(getViewLifecycleOwner(),

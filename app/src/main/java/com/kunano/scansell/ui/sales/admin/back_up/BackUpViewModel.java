@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.Scope;
 import com.kunano.scansell.components.ListenResponse;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.model.db.AppDatabase;
 
@@ -26,8 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -103,6 +102,8 @@ public class BackUpViewModel extends AndroidViewModel {
                     // Transfer content from input stream to output stream
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         inputStream.transferTo(outputStream);
+                        restoreProgress.postValue(100);
+                        listenResponse.isSuccessfull(true);
                         System.out.println("Tiramisu");
                     }else {
                         byte[] buffer = new byte[1024];
@@ -159,16 +160,17 @@ public class BackUpViewModel extends AndroidViewModel {
             String fullName = EXPORT_FILE_NAME;
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                String pattern = "yyyy-MM-dd HH:mm:ss";
 
-                // Create a DateTimeFormatter object with the desired pattern
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-                LocalDateTime localDateTime = LocalDateTime.now();
-                fullName = EXPORT_FILE_NAME.concat(localDateTime.format(formatter).toString()).concat(".db");
+                fullName = EXPORT_FILE_NAME.concat(Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS).toString()).concat(".db");
             }
 
             java.io.File dbFile = context.getDatabasePath(AppDatabase.DATABASE_NAME);
+
+
+
             DocumentFile directory = DocumentFile.fromTreeUri(context, uriToSaveBackUp);
+
+
             DocumentFile backUpFile = directory.createFile("application/octet-stream", fullName);
 
 

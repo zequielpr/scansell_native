@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bfe76a9fc93ee586cf4b3b4674708693",
+    "identityHash": "034927c5e3fdad0e221f90845d9b8c81",
     "entities": [
       {
         "tableName": "Business",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`businessId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `business_name` TEXT, `businessAddress` TEXT DEFAULT 'business_address', `cratingDate` TEXT DEFAULT 'creating_date')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`businessId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `business_name` TEXT, `businessAddress` TEXT DEFAULT 'business_address', `cratingDate` INTEGER DEFAULT creating_date)",
         "fields": [
           {
             "fieldPath": "businessId",
@@ -30,9 +30,9 @@
           {
             "fieldPath": "cratingDate",
             "columnName": "cratingDate",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false,
-            "defaultValue": "'creating_date'"
+            "defaultValue": "creating_date"
           }
         ],
         "primaryKey": {
@@ -46,7 +46,7 @@
       },
       {
         "tableName": "product",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` TEXT NOT NULL, `businessIdFK` INTEGER NOT NULL, `product_name` TEXT, `buying_price` REAL NOT NULL DEFAULT 0.0, `selling_price` REAL NOT NULL DEFAULT 0.0, `stock` INTEGER DEFAULT 0.0, `cratingDate` TEXT DEFAULT 'creating_date', PRIMARY KEY(`productId`, `businessIdFK`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` TEXT NOT NULL, `businessIdFK` INTEGER NOT NULL, `product_name` TEXT, `buying_price` REAL NOT NULL DEFAULT 0.0, `selling_price` REAL NOT NULL DEFAULT 0.0, `stock` INTEGER DEFAULT 0.0, `cratingDate` INTEGER DEFAULT creating_date, PRIMARY KEY(`productId`, `businessIdFK`), FOREIGN KEY(`businessIdFK`) REFERENCES `Business`(`businessId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "productId",
@@ -90,9 +90,9 @@
           {
             "fieldPath": "cratingDate",
             "columnName": "cratingDate",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false,
-            "defaultValue": "'creating_date'"
+            "defaultValue": "creating_date"
           }
         ],
         "primaryKey": {
@@ -273,13 +273,13 @@
         "indices": [
           {
             "name": "index_BusinessBin_businessIdFk_productIdFk",
-            "unique": false,
+            "unique": true,
             "columnNames": [
               "businessIdFk",
               "productIdFk"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_BusinessBin_businessIdFk_productIdFk` ON `${TABLE_NAME}` (`businessIdFk`, `productIdFk`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_BusinessBin_businessIdFk_productIdFk` ON `${TABLE_NAME}` (`businessIdFk`, `productIdFk`)"
           }
         ],
         "foreignKeys": [
@@ -665,7 +665,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bfe76a9fc93ee586cf4b3b4674708693')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '034927c5e3fdad0e221f90845d9b8c81')"
     ]
   }
 }

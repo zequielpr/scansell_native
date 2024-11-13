@@ -13,12 +13,13 @@ import android.widget.TextView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.kunano.scansell.components.Utils;
 import com.kunano.scansell.components.ViewModelListener;
 import com.kunano.scansell.model.Home.business.Business;
 import com.kunano.scansell.R;
 import com.kunano.scansell.databinding.HomeBottomSheetCreateBusinessFragmentBinding;
 
-;
+import java.time.LocalDateTime;
 
 
 public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment{
@@ -116,15 +117,17 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
 
 
     public void createBusinessRequest(){
+        LocalDateTime localDateTime = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
         String name = editTextBusinessName.getText().toString().trim();
         String address = editTextBusinessAddress.getText().toString().trim();
 
-        Business newBusiness = new Business(name, address, "");
+        Business newBusiness = new Business(name, address, localDateTime);
         viewModel.createBusiness(newBusiness, requestRestult::result);
 
     }
 
     public void updateBusinessRequest(){
+        LocalDateTime localDateTime = Utils.getCurrentDate(Utils.YYYY_MM_DD_HH_MM_SS);
         if (currentBusinessId == null){
             requestRestult.result(false);
             return;
@@ -132,7 +135,7 @@ public class BottomSheetFragmentCreateBusiness extends BottomSheetDialogFragment
         String name = editTextBusinessName.getText().toString().trim();
         String address = editTextBusinessAddress.getText().toString().trim();
 
-        Business business = new Business(name, address, "");
+        Business business = new Business(name, address, localDateTime);
         business.setBusinessId(currentBusinessId);
         viewModel.updateBusiness(business, requestRestult::result);
     }

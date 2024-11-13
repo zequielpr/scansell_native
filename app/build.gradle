@@ -12,16 +12,17 @@ android {
             pickFirsts += ['META-INF/DEPENDENCIES']
         }
     }
+
     lint {
         baseline = file("lint-baseline.xml")
     }
 
     defaultConfig {
         applicationId "com.kunano.scansell"
-        minSdk 28
-        targetSdk 33
-        versionCode 14
-        versionName "1.0"
+        minSdk 29
+        targetSdk 34
+        versionCode 33
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -30,11 +31,13 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        resConfigs "en", "es"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -97,14 +100,38 @@ android {
 }
 
 dependencies {
+    //required to comply with google's policies
+    implementation 'com.google.android.play:feature-delivery:2.1.0'
+    implementation 'com.google.android.play:feature-delivery-ktx:2.1.0'
 
+    //Viewpager2
+    implementation "androidx.viewpager2:viewpager2:1.1.0"
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
+
+    //Add networks sdk
     implementation 'com.google.android.gms:play-services-ads:23.1.0'
+    implementation("com.google.ads.mediation:facebook:6.17.0.0")
+    implementation("com.google.ads.mediation:ironsource:8.1.0.0")
+
+    //Unity ads
+    //implementation("com.unity3d.ads:unity-ads:4.11.3")
+    //implementation("com.google.ads.mediation:unity:4.12.0.0")
+
+    //For ad tests
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.0'
+
+
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.7.6"
     def lifecycle_version = "2.7.0"
 
     implementation 'androidx.core:core-ktx:1.6.0'
+
+    implementation "androidx.activity:activity-ktx:1.5.0"
+    implementation "androidx.fragment:fragment-ktx:1.5.0"
+
 
     //Firebase
     implementation("com.google.firebase:firebase-functions")
@@ -113,10 +140,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
-
-    //Billing
-    //def billing_version = "6.2.1"
-    //implementation "com.android.billingclient:billing:$billing_version"
 
     // Annotation processor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
@@ -127,6 +150,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    //Duplicated. it is duplicated somewhere
     implementation 'androidx.datastore:datastore-core-android:1.1.0-alpha07'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
