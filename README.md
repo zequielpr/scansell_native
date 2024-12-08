@@ -15,4 +15,4 @@ A solution designed to help small grocery store owners manage products and sales
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/grocery-store-management-app.git
+   git clone https://github.com/zequielpr/scansell_native
